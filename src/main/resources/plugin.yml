@@ -1,0 +1,5 @@
+name: ChromiumFinal
+version: '${project.version}'
+main: me.obito.chromium.Chromium
+api-version: 1.17
+authors: [ Obito17 ]
