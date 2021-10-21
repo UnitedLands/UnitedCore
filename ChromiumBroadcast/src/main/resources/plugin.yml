@@ -1,0 +1,5 @@
+name: ChromiumBroadcast
+version: '${project.version}'
+main: me.obito.chromiumbroadcast.ChromiumBroadcast
+api-version: 1.17
+authors: [ Obito17 ]

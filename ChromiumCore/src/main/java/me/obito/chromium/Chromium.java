@@ -9,6 +9,7 @@ public final class Chromium extends JavaPlugin {
     public void onEnable() {
 
         Bukkit.getServer().getPluginManager().registerEvents(new EventListener(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new GradientListener(), this);
 
     }
 
