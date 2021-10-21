@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ChromiumBroadcast/ChromiumBroadcast.iml" filepath="$PROJECT_DIR$/ChromiumBroadcast/ChromiumBroadcast.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ChromiumChat/ChromiumChat.iml" filepath="$PROJECT_DIR$/ChromiumChat/ChromiumChat.iml" />
       <module fileurl="file://$PROJECT_DIR$/ChromiumCore/ChromiumCore.iml" filepath="$PROJECT_DIR$/ChromiumCore/ChromiumCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/ChromiumCoreAllInOne.iml" filepath="$PROJECT_DIR$/ChromiumCoreAllInOne.iml" />
     </modules>

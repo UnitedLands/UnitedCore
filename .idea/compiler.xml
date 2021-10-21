@@ -7,11 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ChromiumCore" />
+        <module name="ChromiumChat" />
         <module name="ChromiumBroadcast" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ChromiumBroadcast" target="1.8" />
+      <module name="ChromiumChat" target="1.8" />
       <module name="ChromiumCore" target="1.8" />
       <module name="ChromiumCoreAllInOne" target="8" />
       <module name="ChromiumCoreRemakeFinal" target="1.8" />

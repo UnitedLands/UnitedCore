@@ -12,6 +12,7 @@
     <modules>
         <module>ChromiumCore</module>
         <module>ChromiumBroadcast</module>
+        <module>ChromiumChat</module>
     </modules>
 
     <build>
