@@ -1,0 +1,8 @@
+name: ChromiumChat
+version: '${project.version}'
+main: me.obito.chromiumchat.ChromiumChat
+api-version: 1.17
+authors: [ Obito17 ]
+commands:
+  gradient:
+    description: Use gradients in chat

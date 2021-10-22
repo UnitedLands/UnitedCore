@@ -1,6 +1,5 @@
 package me.obito.chromiumchat.player;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import me.obito.chromiumchat.gradient.Gradient;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -16,30 +15,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class ChatPlayer implements Listener {
-
-    private String UUID;
+public class ChatListener implements Listener {
 
 
     @EventHandler
 
     public void onJoin(PlayerJoinEvent e){
-        UUID = e.getPlayer().getUniqueId().toString();
-        createCustomConfig();
-    }
-
-
-
-
-
-    private void createCustomConfig() {
         File customConfigFile;
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumChat").getDataFolder(), UUID + ".yml");
         FileConfiguration customConfig;
+        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumChat").getDataFolder(), e.getPlayer().getUniqueId() + ".yml");
         if (!customConfigFile.exists()) {
             customConfigFile.getParentFile().mkdirs();
 
-            try{
+            try {
 
                 customConfigFile.createNewFile();
                 customConfig = new YamlConfiguration();
@@ -48,32 +36,26 @@ public class ChatPlayer implements Listener {
                 customConfig.set("GradientStart", "#ffffff");
                 customConfig.set("GradientEnd", "#000000");
                 customConfig.save(customConfigFile);
+
             } catch (Exception e1){
-                System.out.println("NERADI");
-                System.out.println("NERADI");
-                System.out.println("NERADI");
-                System.out.println("NERADI");
-                System.out.println("NERADI");
+                System.out.println("EXCEPTION: CANT CREATE NEW FILE OR LOAD IT");
             }
-            Bukkit.getPluginManager().getPlugin("ChromiumChat").saveResource(UUID + ".yml", false);
+            Bukkit.getPluginManager().getPlugin("ChromiumChat").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
         }
-        customConfig = new YamlConfiguration();
 
-
-        try {
-            customConfig.load(customConfigFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
     }
 
-    private Gradient g;
+
+
+
+
+
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e){
 
         File customConfigFile;
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumChat").getDataFolder(), UUID + ".yml");
+        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumChat").getDataFolder(), e.getPlayer().getUniqueId() + ".yml");
         FileConfiguration customConfig;
         customConfig = new YamlConfiguration();
         try{
