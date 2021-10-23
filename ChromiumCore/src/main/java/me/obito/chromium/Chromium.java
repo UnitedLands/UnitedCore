@@ -1,5 +1,6 @@
 package me.obito.chromium;
 
+import me.obito.chromium.commands.ChromiumMainCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,6 +18,7 @@ public final class Chromium extends JavaPlugin {
         System.out.println(ChatColor.YELLOW + "Enabling ChromiumCore main plugin...");
         System.out.println(ChatColor.GREEN + "--------------------");
         System.out.println(ChatColor.AQUA + "Loading extensions...");
+        this.getCommand("chromium").setExecutor(new ChromiumMainCommand());
 
     }
 
