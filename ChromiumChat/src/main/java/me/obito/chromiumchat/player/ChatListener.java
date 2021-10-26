@@ -1,10 +1,13 @@
 package me.obito.chromiumchat.player;
 
+import me.obito.chromiumchat.ChromiumChat;
 import me.obito.chromiumchat.gradient.Gradient;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -13,6 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.UUID;
 
 public class ChatListener implements Listener {
@@ -58,7 +62,7 @@ public class ChatListener implements Listener {
         customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumChat").getDataFolder(), e.getPlayer().getUniqueId() + ".yml");
         FileConfiguration customConfig;
         customConfig = new YamlConfiguration();
-        try{
+        try {
             customConfig.load(customConfigFile);
         } catch (Exception e2){
 
@@ -81,6 +85,19 @@ public class ChatListener implements Listener {
             }
 
 
+        } else {
+
+
+            String m = ChromiumChat.getConfigur().getString("Default Message Color") + e.getMessage();
+            String mm = (ChatColor.translateAlternateColorCodes('&', m));
+            String mmm = mm;
+            for(Player p : Bukkit.getOnlinePlayers()){
+                if(m.toLowerCase().contains(p.getName().toLowerCase())){
+                    mmm = mm.replace(p.getName(), (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getConfigur()
+                            .getString("Player Mention Color") + p.getName() + ChromiumChat.getConfigur().getString("Default Message Color"))));
+                }
+            }
+            e.setMessage(mmm);
         }
 
 

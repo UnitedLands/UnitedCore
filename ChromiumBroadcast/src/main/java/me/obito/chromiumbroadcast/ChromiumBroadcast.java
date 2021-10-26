@@ -25,8 +25,9 @@ public final class ChromiumBroadcast extends JavaPlugin {
 
     @Override
     public void onEnable() {
-    createCustomConfig();
-    int seconds = customConfig.getInt("TimeInSeconds");
+        customConfig = Bukkit.getPluginManager().getPlugin("ChromiumBroadcast").getConfig();
+        Bukkit.getPluginManager().getPlugin("ChromiumBroadcast").saveDefaultConfig();
+        int seconds = customConfig.getInt("TimeInSeconds");
         BukkitScheduler scheduler = getServer().getScheduler();
         scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
@@ -55,11 +56,11 @@ public final class ChromiumBroadcast extends JavaPlugin {
 
 
 
-    private void createCustomConfig() {
-        customConfigFile = new File(getDataFolder(), "messages.yml");
+    /*private void createCustomConfig() {
+        customConfigFile = new File(getDataFolder(), "config.yml");
         if (!customConfigFile.exists()) {
             customConfigFile.getParentFile().mkdirs();
-            saveResource("messages.yml", false);
+            saveResource("config.yml", false);
         }
 
         customConfig= new YamlConfiguration();
@@ -72,6 +73,6 @@ public final class ChromiumBroadcast extends JavaPlugin {
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }

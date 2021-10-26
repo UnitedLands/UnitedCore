@@ -16,8 +16,8 @@ import java.util.Locale;
 
 public class GradientCmd implements CommandExecutor {
 
-    String usage = ChatColor.YELLOW + "Use /gradient <hexcolor1> <hexcolor2>";
-    String usageAdmin = ChatColor.YELLOW + "Use /gradient <hexcolor1> <hexcolor2> [player]";
+    String usage = ChatColor.YELLOW + "Use /gradient <toggle> | <hexcolor1> <hexcolor2>";
+    String usageAdmin = ChatColor.YELLOW + "Use /gradient <toggle> | <hexcolor1> <hexcolor2> [player]";
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
@@ -26,7 +26,41 @@ public class GradientCmd implements CommandExecutor {
             Player p = (Player) sender;
             if(p.hasPermission("chromium.chat.admin")){
 
-                if(args.length < 2 || args.length > 3){
+                if(args.length == 1){
+                    if(!args[0].equalsIgnoreCase("toggle")){
+                        p.sendMessage(usage);
+                    } else {
+                        File customConfigFile;
+                        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumChat").getDataFolder(),
+                                p.getUniqueId() + ".yml");
+                        FileConfiguration customConfig;
+                        customConfig = new YamlConfiguration();
+                        try {
+                            customConfig.load(customConfigFile);
+                        } catch (Exception e2){
+                            System.out.println("Error with loading configuration for player " + p.getName());
+                            p.sendMessage("Error with loading configuration.");
+                        }
+
+                        try{
+                            if(customConfig.getBoolean("GradientEnabled")){
+                                customConfig.set("GradientEnabled", false);
+                                p.sendMessage("Gradient disabled.");
+                                customConfig.save(customConfigFile);
+                            } else {
+                                customConfig.set("GradientEnabled", true);
+                                p.sendMessage("Gradient enabled.");
+                                customConfig.save(customConfigFile);
+                            }
+
+                        } catch (Exception e3){
+                            System.out.println("Error with configuration for player " + p.getName());
+                            p.sendMessage("Error with configuration..");
+                        }
+                    }
+                }
+
+                if(args.length < 1 || args.length > 3){
                     p.sendMessage(usageAdmin);
                 } else {
 
@@ -49,6 +83,7 @@ public class GradientCmd implements CommandExecutor {
                             try{
                                 customConfig.set("GradientColor1", args[0].toLowerCase());
                                 customConfig.set("GradientColor2", args[1].toLowerCase());
+                                customConfig.save(customConfigFile);
                             } catch (Exception e3){
                                 System.out.println("Error with configuration for player " + p.getName());
                                 p.sendMessage("Error with configuration..");
@@ -81,6 +116,7 @@ public class GradientCmd implements CommandExecutor {
                                 try{
                                     customConfig.set("GradientColor1", args[1].toLowerCase());
                                     customConfig.set("GradientColor2", args[2].toLowerCase());
+                                    customConfig.save(customConfigFile);
                                 } catch (Exception e3){
                                     System.out.println("Error with configuration for player " + pla.getName());
                                     p.sendMessage("Error with configuration..");
@@ -100,7 +136,39 @@ public class GradientCmd implements CommandExecutor {
             } else {
 
                 if(p.hasPermission("chromium.chat.gradient")){
+                    if(args.length == 1){
+                        if(!args[0].equalsIgnoreCase("toggle")){
+                            p.sendMessage(usage);
+                        } else {
+                            File customConfigFile;
+                            customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumChat").getDataFolder(),
+                                    p.getUniqueId() + ".yml");
+                            FileConfiguration customConfig;
+                            customConfig = new YamlConfiguration();
+                            try {
+                                customConfig.load(customConfigFile);
+                            } catch (Exception e2){
+                                System.out.println("Error with loading configuration for player " + p.getName());
+                                p.sendMessage("Error with loading configuration.");
+                            }
 
+                            try{
+                                if(customConfig.getBoolean("GradientEnabled")){
+                                    customConfig.set("GradientEnabled", false);
+                                    p.sendMessage("Gradient disabled.");
+                                    customConfig.save(customConfigFile);
+                                } else {
+                                    customConfig.set("GradientEnabled", true);
+                                    p.sendMessage("Gradient enabled.");
+                                    customConfig.save(customConfigFile);
+                                }
+
+                            } catch (Exception e3){
+                                System.out.println("Error with configuration for player " + p.getName());
+                                p.sendMessage("Error with configuration..");
+                            }
+                        }
+                    }
                     if(args.length == 2){
 
                         if(args[0].startsWith("#") && args[1].startsWith("#")){
@@ -120,6 +188,7 @@ public class GradientCmd implements CommandExecutor {
                             try{
                                 customConfig.set("GradientColor1", args[0].toLowerCase());
                                 customConfig.set("GradientColor2", args[1].toLowerCase());
+                                customConfig.save(customConfigFile);
                             } catch (Exception e3){
                                 System.out.println("Error with configuration for player " + p.getName());
                                 p.sendMessage("Error with configuration..");

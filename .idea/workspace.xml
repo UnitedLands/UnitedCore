@@ -5,23 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f322d50a-3fe9-4f73-b3fd-6c737516a368" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/commands/ChromiumMainCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ChromiumBroadcast/src/main/resources/config.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ChromiumChat/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_17_1_R0_1_SNAPSHOT.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_17_1_R0_1_SNAPSHOT.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumBroadcast/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumBroadcast/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/chromiumchat.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/chromiumchat.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/chromiumchat-1.0-SNAPSHOT.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/player/ChatPlayer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumBroadcast/src/main/java/me/obito/chromiumbroadcast/ChromiumBroadcast.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumBroadcast/src/main/java/me/obito/chromiumbroadcast/ChromiumBroadcast.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumBroadcast/src/main/resources/messages.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/commands/GradientCmd.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/commands/GradientCmd.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/player/ChatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/player/ChatListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/ChromiumChat.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/ChromiumChat.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/commands/GradientCmd.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/commands/GradientCmd.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/player/ChatListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/player/ChatListener.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumCore/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCore/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/Chromium.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/Chromium.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumCore/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCore/src/main/resources/plugin.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

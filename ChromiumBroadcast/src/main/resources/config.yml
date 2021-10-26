@@ -1,0 +1,7 @@
+# CHROMIUMBROADCAST MESSAGES CONFIGURATION #
+# AUTHOR: OBITO17 #
+
+TimeInSeconds: 30
+Message 1: "Chromium Message 1"
+Message 2: "Chromium Message 2"
+Message 3: "Chromium Message 3"
