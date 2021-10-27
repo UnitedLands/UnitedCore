@@ -13,6 +13,7 @@
         <module>ChromiumCore</module>
         <module>ChromiumBroadcast</module>
         <module>ChromiumChat</module>
+        <module>ChromiumPvP</module>
     </modules>
 
     <build>

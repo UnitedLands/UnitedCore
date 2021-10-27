@@ -27,7 +27,7 @@ public class ChatListener implements Listener {
     public void onJoin(PlayerJoinEvent e){
         File customConfigFile;
         FileConfiguration customConfig;
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumChat").getDataFolder(), e.getPlayer().getUniqueId() + ".yml");
+        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "/players/" + e.getPlayer().getUniqueId() + ".yml");
         if (!customConfigFile.exists()) {
             customConfigFile.getParentFile().mkdirs();
 
@@ -36,15 +36,17 @@ public class ChatListener implements Listener {
                 customConfigFile.createNewFile();
                 customConfig = new YamlConfiguration();
                 customConfig.load(customConfigFile);
+                customConfig.set("Player Name", e.getPlayer().getName());
                 customConfig.set("GradientEnabled", true);
                 customConfig.set("GradientStart", "#ffffff");
                 customConfig.set("GradientEnd", "#000000");
+                customConfig.set("PvP", false);
                 customConfig.save(customConfigFile);
 
             } catch (Exception e1){
                 System.out.println("EXCEPTION: CANT CREATE NEW FILE OR LOAD IT");
             }
-            Bukkit.getPluginManager().getPlugin("ChromiumChat").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
+            //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
         }
 
     }
@@ -59,7 +61,7 @@ public class ChatListener implements Listener {
     public void onChat(AsyncPlayerChatEvent e){
 
         File customConfigFile;
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumChat").getDataFolder(), e.getPlayer().getUniqueId() + ".yml");
+        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "/players/" + e.getPlayer().getUniqueId() + ".yml");
         FileConfiguration customConfig;
         customConfig = new YamlConfiguration();
         try {

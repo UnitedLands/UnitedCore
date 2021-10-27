@@ -6,10 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="ChromiumPvP" />
         <module name="ChromiumCore" />
         <module name="ChromiumChat" />
         <module name="chromium" />
-        <module name="chromiumchat" />
         <module name="ChromiumBroadcast" />
       </profile>
     </annotationProcessing>
@@ -21,6 +21,7 @@
       <module name="ChromiumCore" target="1.8" />
       <module name="ChromiumCoreAllInOne" target="8" />
       <module name="ChromiumCoreRemakeFinal" target="1.8" />
+      <module name="ChromiumPvP" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

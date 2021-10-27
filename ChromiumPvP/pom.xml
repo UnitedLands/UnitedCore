@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.obito</groupId>
-    <artifactId>ChromiumBroadcast</artifactId>
+    <artifactId>ChromiumPvP</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ChromiumBroadcast</name>
+    <name>ChromiumPvP</name>
 
     <properties>
         <java.version>1.8</java.version>
