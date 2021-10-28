@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.UUID;
+import com.palmergames.bukkit.towny.TownyAPI;
 
 public class ChatListener implements Listener {
 
@@ -69,6 +70,11 @@ public class ChatListener implements Listener {
         } catch (Exception e2){
 
         }
+
+       /* if (TownyAPI.getInstance().isWilderness(e.getPlayer().getLocation())){
+
+        }*/
+
 
         if(customConfig.getBoolean("GradientEnabled")){
             ArrayList<String> colors = new ArrayList<>();

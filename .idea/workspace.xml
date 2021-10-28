@@ -5,31 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f322d50a-3fe9-4f73-b3fd-6c737516a368" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ChromiumPvP/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumPvP/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/ChromiumPvP.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/commands/PvPCmd.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/resources/config.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/resources/plugin.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ChromiumCore/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_17_1_R0_1_SNAPSHOT.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_17_1_R0_1_SNAPSHOT.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumBroadcast/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumBroadcast/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumBroadcast/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumBroadcast/src/main/resources/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/chromiumchat.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/chromiumchat.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/commands/GradientCmd.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/commands/GradientCmd.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/player/ChatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/player/ChatListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/ChromiumChat.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/ChromiumChat.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/commands/GradientCmd.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/commands/GradientCmd.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/player/ChatListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/player/ChatListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/plugin.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumCore/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCore/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/GradientListener.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/Chromium.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/Chromium.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/EventListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/commands/ChromiumMainCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/commands/ChromiumMainCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/commands/PvPCmd.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/commands/PvPCmd.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +41,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
@@ -67,7 +71,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/ChromiumCore" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../corev2" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />

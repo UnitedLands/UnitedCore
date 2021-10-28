@@ -14,58 +14,19 @@ import java.io.File;
 public class PvPCmd implements CommandExecutor {
 
     String usage = ChatColor.YELLOW + "Use /pvp toggle";
-    String usageAdmin = ChatColor.YELLOW + "Use /pvp toggle [player]";
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if(sender instanceof Player){
+        if(sender instanceof Player) {
 
             Player p = (Player) sender;
 
-            if(p.hasPermission("chromium.pvp.admin")){
+            if (args.length != 1) {
+                p.sendMessage(usage);
 
-                if(args[0].equalsIgnoreCase("toggle") && args.length == 1){
 
-                    File customConfigFile;
-                    customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                            "/players/" + p.getUniqueId() + ".yml");
-                    FileConfiguration customConfig;
-                    customConfig = new YamlConfiguration();
-                    try {
-                        customConfig.load(customConfigFile);
-                    } catch (Exception e2){
-                        System.out.println("Error with loading configuration for player " + p.getName());
-                        p.sendMessage("Error with loading configuration.");
-                    }
-
-                    Boolean pvptoggled = customConfig.getBoolean("PvP");
-                    if(pvptoggled){
-                        customConfig.set("PvP", false);
-                        p.sendMessage(ChatColor.YELLOW + "PvP disabled.");
-                        try{
-                            customConfig.save(customConfigFile);
-                        }catch (Exception e1){
-                            System.out.println("Error with saving configuration for player " + p.getName());
-                            p.sendMessage("Error with saving configuration.");
-                        }
-
-                    } else {
-                        customConfig.set("PvP", true);
-                        p.sendMessage(ChatColor.YELLOW + "PvP enabled.");
-                        try{
-                            customConfig.save(customConfigFile);
-                        }catch (Exception e1){
-                            System.out.println("Error with saving configuration for player " + p.getName());
-                            p.sendMessage("Error with saving configuration.");
-                        }
-                    }
-
-                } else {
-                    p.sendMessage(usage);
-                }
-
-            } else {
+        } else {
 
                 if(p.hasPermission("chromium.pvp.command")){
 

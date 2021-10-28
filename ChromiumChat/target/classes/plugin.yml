@@ -3,6 +3,7 @@ version: '1.0-SNAPSHOT'
 main: me.obito.chromiumchat.ChromiumChat
 api-version: 1.17
 authors: [ Obito17 ]
+depend: [Towny]
 commands:
   gradient:
     description: Use gradients in chat
