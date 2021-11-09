@@ -21,6 +21,7 @@ public class ChromiumChat extends JavaPlugin {
         Config = Bukkit.getPluginManager().getPlugin("ChromiumChat").getConfig();
         Bukkit.getServer().getPluginManager().registerEvents(new ChatListener(), this);
         this.getCommand("gradient").setExecutor(new GradientCmd());
+        this.getCommand("cc").setExecutor(new GradientCmd());
     }
 
     public static FileConfiguration getConfigur(){

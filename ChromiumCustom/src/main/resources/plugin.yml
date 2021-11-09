@@ -1,0 +1,8 @@
+name: ChromiumCustom
+version: '${project.version}'
+main: me.obito.chromiumcustom.ChromiumCustom
+api-version: 1.17
+authors: [ Obito17 ]
+depend: [NBTAPI]
+commands:
+  customitem:

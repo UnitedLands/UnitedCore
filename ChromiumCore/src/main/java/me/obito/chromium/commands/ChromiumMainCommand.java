@@ -15,7 +15,7 @@ public class ChromiumMainCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 
-        String usage = "usage";
+        String usage = ChatColor.YELLOW + "Use /chromium";
 
         Player player = (Player) sender;
         if(player.hasPermission("chromium.admin")){
@@ -28,7 +28,7 @@ public class ChromiumMainCommand implements CommandExecutor {
 
                     if(args.length == 1){
 
-                        player.sendMessage(ChatColor.YELLOW + "Modules list:");
+                        player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Modules list:");
 
                         for(Plugin plugin1 : Bukkit.getPluginManager().getPlugins()){
 

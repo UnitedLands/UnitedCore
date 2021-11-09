@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="ChromiumPvP" />
         <module name="ChromiumCore" />
+        <module name="ChromiumCustom" />
         <module name="ChromiumChat" />
         <module name="ChromiumBroadcast" />
       </profile>
@@ -20,6 +21,7 @@
       <module name="ChromiumCore" target="1.8" />
       <module name="ChromiumCoreAllInOne" target="8" />
       <module name="ChromiumCoreRemakeFinal" target="1.8" />
+      <module name="ChromiumCustom" target="1.8" />
       <module name="ChromiumPvP" target="1.8" />
     </bytecodeTargetLevel>
   </component>

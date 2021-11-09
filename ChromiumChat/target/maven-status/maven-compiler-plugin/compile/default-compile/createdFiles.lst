@@ -3,3 +3,4 @@ me\obito\chromiumchat\gradient\GradientWord.class
 me\obito\chromiumchat\commands\GradientCmd.class
 me\obito\chromiumchat\gradient\Gradient.class
 me\obito\chromiumchat\player\ChatListener.class
+me\obito\chromiumchat\commands\ClearChatCmd.class

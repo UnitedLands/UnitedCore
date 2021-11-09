@@ -7,3 +7,6 @@ depend: [Towny]
 commands:
   gradient:
     description: Use gradients in chat
+  cc:
+      description: Use gradients in chat
+
