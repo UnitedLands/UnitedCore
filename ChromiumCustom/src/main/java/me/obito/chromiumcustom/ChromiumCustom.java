@@ -1,6 +1,7 @@
 package me.obito.chromiumcustom;
 
 import me.obito.chromiumcustom.commands.CustomItemCmd;
+import me.obito.chromiumcustom.commands.TreeCmd;
 import me.obito.chromiumcustom.items.*;
 import me.obito.chromiumcustom.items.armor.Burden;
 import me.obito.chromiumcustom.items.weapon.GaelGreatsword;
@@ -22,8 +23,10 @@ public final class ChromiumCustom extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        Bukkit.getPluginManager().registerEvents(new EdibleListener(),this);
+
         this.getCommand("customitem").setExecutor(new CustomItemCmd());
+        this.getCommand("tree").setExecutor(new TreeCmd());
+        Bukkit.getPluginManager().registerEvents(new EdibleListener(),this);
         getServer().getPluginManager().registerEvents(new ItemListener(), this);
         getServer().getPluginManager().registerEvents(new EdibleListener(), this);
         getServer().getPluginManager().registerEvents(new GUIListener(), this);

@@ -1,5 +1,6 @@
 package me.obito.chromiumchat;
 
+import me.obito.chromiumchat.commands.ClearChatCmd;
 import me.obito.chromiumchat.commands.GradientCmd;
 import me.obito.chromiumchat.player.ChatListener;
 import org.bukkit.Bukkit;
@@ -21,7 +22,7 @@ public class ChromiumChat extends JavaPlugin {
         Config = Bukkit.getPluginManager().getPlugin("ChromiumChat").getConfig();
         Bukkit.getServer().getPluginManager().registerEvents(new ChatListener(), this);
         this.getCommand("gradient").setExecutor(new GradientCmd());
-        this.getCommand("cc").setExecutor(new GradientCmd());
+        this.getCommand("cc").setExecutor(new ClearChatCmd());
     }
 
     public static FileConfiguration getConfigur(){

@@ -5,59 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f322d50a-3fe9-4f73-b3fd-6c737516a368" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/commands/ClearChatCmd.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/ChromiumCustom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/commands/CustomItemCmd.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/BracketMushroom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/DarkMagic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/Mango.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/Mimosa.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/Pinecone.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/Sausage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/armor/Burden.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/weapon/GaelGreatsword.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/weapon/Landscaper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/weapon/Whisper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/listeners/EdibleListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/listeners/GUIListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/listeners/ItemListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/sapling/AncientSeed.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/sapling/FloweringAcacia.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/sapling/FungalSapling.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/sapling/MangoSapling.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/sapling/PineSapling.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/trees/Tree.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/trees/TreeType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util/BiomeSelector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util/CustomItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util/Edible.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util/EdibleCustomItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util/GUI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util/GenericLocation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util/Logger.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util/SerializableData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util/ToolCustomItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/resources/plugin.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_17_1_R0_1_SNAPSHOT.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_spigotmc_spigot_api_1_17_1_R0_1_SNAPSHOT.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/commands/TreeCmd.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/resources/plugin.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/ChromiumChat.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/ChromiumChat.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/player/ChatListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/player/ChatListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/plugin.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/commands/ChromiumMainCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/commands/ChromiumMainCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/ChromiumCustom.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/ChromiumCustom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
