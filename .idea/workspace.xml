@@ -5,12 +5,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f322d50a-3fe9-4f73-b3fd-6c737516a368" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/commands/TreeCmd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/gradient/GradientPresets.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/commands/GradientCmd.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/commands/GradientCmd.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/player/ChatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/player/PlayerListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/resources/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/ChromiumChat.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/ChromiumChat.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/commands/GradientCmd.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/commands/GradientCmd.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/player/ChatListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/commands/ChromiumMainCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/commands/ChromiumMainCommand.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/ChromiumCustom.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/ChromiumCustom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/DarkMagic.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/Sausage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/armor/Burden.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/weapon/GaelGreatsword.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/items/weapon/Whisper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/listeners/EdibleListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/listeners/EdibleListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util/SerializableData.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util/SerializableData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumPvP/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/ChromiumPvP.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/ChromiumPvP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/commands/PvPCmd.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/commands/PvPCmd.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumPvP/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/resources/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumPvP/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +84,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/ChromiumCustom/src/main/java/me/obito/chromiumcustom/util" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -304,6 +331,64 @@
             </option>
             <option name="resolveToWorkspace" value="false" />
             <option name="workingDirPath" value="$PROJECT_DIR$/ChromiumCustom" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <configuration name="ChromiumFinal build" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings">
+          <MavenGeneralSettings>
+            <option name="alwaysUpdateSnapshots" value="false" />
+            <option name="checksumPolicy" value="NOT_SET" />
+            <option name="failureBehavior" value="NOT_SET" />
+            <option name="localRepository" value="" />
+            <option name="mavenHome" value="Bundled (Maven 3)" />
+            <option name="nonRecursive" value="false" />
+            <option name="outputLevel" value="INFO" />
+            <option name="pluginUpdatePolicy" value="DEFAULT" />
+            <option name="printErrorStackTraces" value="false" />
+            <option name="showDialogWithAdvancedSettings" value="false" />
+            <option name="threads" />
+            <option name="usePluginRegistry" value="false" />
+            <option name="userSettingsFile" value="" />
+            <option name="workOffline" value="false" />
+          </MavenGeneralSettings>
+        </option>
+        <option name="myRunnerSettings">
+          <MavenRunnerSettings>
+            <option name="delegateBuildToMaven" value="false" />
+            <option name="environmentProperties">
+              <map />
+            </option>
+            <option name="jreName" value="#USE_PROJECT_JDK" />
+            <option name="mavenProperties">
+              <map />
+            </option>
+            <option name="passParentEnv" value="true" />
+            <option name="runMavenInBackground" value="true" />
+            <option name="skipTests" value="false" />
+            <option name="vmOptions" value="" />
+          </MavenRunnerSettings>
+        </option>
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="clean" />
+                <option value="package" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$/ChromiumFinal" />
           </MavenRunnerParameters>
         </option>
       </MavenSettings>

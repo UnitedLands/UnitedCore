@@ -1,5 +1,6 @@
 package me.obito.chromiumpvp;
 
+import com.SirBlobman.combatlogx.api.event.PlayerPreTagEvent;
 import me.obito.chromiumpvp.commands.PvPCmd;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,6 +35,7 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
     public void onDisable() {
         // Plugin shutdown logic
     }
+
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e){
@@ -71,12 +73,12 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
 
                     if(pvpDamager == false){
                         e.setCancelled(true);
-                        damager.sendMessage(ChatColor.GREEN + "You have your pvp disabled!");
+                        damager.sendMessage(ChatColor.RED + "You have your pvp disabled!");
                     } else {
 
                         if(pvpTarget == false){
                             e.setCancelled(true);
-                            damager.sendMessage(ChatColor.GREEN + "That player has disabled their pvp!");
+                            damager.sendMessage(ChatColor.RED + "That player has disabled their pvp!");
                         }
 
                     }

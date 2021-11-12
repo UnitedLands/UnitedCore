@@ -2,3 +2,47 @@
 # AUTHOR: OBITO17 #
 Default Message Color: "&7"
 Player Mention Color: "&e"
+Preset Gradients:
+  rainbow:
+    - "#e07870"
+    - "#e0aa70"
+    - "#e3de84"
+    - "#a3e391"
+    - "#8de0c1"
+    - "#8fd2e3"
+    - "#938de0"
+    - "#c491e3"
+  dragonfruit:
+    - "#ff2c2c"
+    - "#ff005d"
+    - "#ff008f"
+    - "#ff2dc3"
+    - "#ff57f5"
+  jshine:
+    - "#12c2e9"
+    - "#c471ed"
+    - "#f64f59"
+  eveningsunshine:
+    - "#b92b27"
+    - "#1565C0"
+  metapolis:
+    - "#659999"
+    - "#f4791f"
+  kyoopal:
+    - "#dd3e54"
+    - "#6be585"
+  kyemeh:
+    - "#8360c3"
+    - "#2ebf91"
+  wiretap:
+    - "#8A2387"
+    - "#E94057"
+    - "#F27121"
+  magic:
+    - "#59C173"
+    - "#a17fe0"
+    - "#5D26C1"
+  redsunset:
+    - "#355C7D"
+    - "#6C5B7B"
+    - "#C06C84"

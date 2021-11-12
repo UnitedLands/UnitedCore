@@ -3,5 +3,6 @@ version: '${project.version}'
 main: me.obito.chromiumpvp.ChromiumPvP
 api-version: 1.17
 authors: [ Obito17 ]
+depend: [CombatLogX]
 commands:
   pvp:

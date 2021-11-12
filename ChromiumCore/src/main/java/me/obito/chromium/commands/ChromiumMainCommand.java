@@ -15,13 +15,14 @@ public class ChromiumMainCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 
-        String usage = ChatColor.YELLOW + "Use /chromium";
 
         Player player = (Player) sender;
         if(player.hasPermission("chromium.admin")){
 
             if(args.length == 0){
-                player.sendMessage(usage);
+                player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Chromium Admin");
+                player.sendMessage(ChatColor.DARK_AQUA + "/chromium modules");
+                player.sendMessage(ChatColor.DARK_AQUA + "/chromium modules <enable/disable> <module>");
             } else {
 
                 if(args[0].equalsIgnoreCase("modules")){
@@ -44,18 +45,30 @@ public class ChromiumMainCommand implements CommandExecutor {
                         }
 
                     }
+
+                    if(args.length == 2){
+
+                        player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Chromium Admin");
+                        player.sendMessage(ChatColor.DARK_AQUA + "/chromium modules");
+                        player.sendMessage(ChatColor.DARK_AQUA + "/chromium modules <enable/disable> <module>");
+
+                    }
+
                     if(args.length == 3){
 
                         if(args[1].equalsIgnoreCase("disable")){
                             Plugin pl = Bukkit.getPluginManager().getPlugin(args[2]);
 
                             Bukkit.getPluginManager().disablePlugin(pl);
+                            sender.sendMessage(ChatColor.YELLOW + "Module " + ChatColor.RED + pl.getName() + ChatColor.YELLOW + " disabled.");
                         }
 
                         if(args[1].equalsIgnoreCase("enable")){
                             Plugin pl = Bukkit.getPluginManager().getPlugin(args[2]);
 
                             Bukkit.getPluginManager().enablePlugin(pl);
+                            sender.sendMessage(ChatColor.YELLOW + "Module " + ChatColor.GREEN + pl.getName() + ChatColor.YELLOW + " enabled.");
+
                         }
 
                     }

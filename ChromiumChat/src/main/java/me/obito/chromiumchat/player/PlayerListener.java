@@ -2,6 +2,7 @@ package me.obito.chromiumchat.player;
 
 import me.obito.chromiumchat.ChromiumChat;
 import me.obito.chromiumchat.gradient.Gradient;
+import me.obito.chromiumchat.gradient.GradientPresets;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -20,7 +21,7 @@ import java.util.Locale;
 import java.util.UUID;
 import com.palmergames.bukkit.towny.TownyAPI;
 
-public class ChatListener implements Listener {
+public class PlayerListener implements Listener {
 
 
     @EventHandler
@@ -41,6 +42,7 @@ public class ChatListener implements Listener {
                 customConfig.set("GradientEnabled", true);
                 customConfig.set("GradientStart", "#ffffff");
                 customConfig.set("GradientEnd", "#000000");
+                customConfig.set("GradientPreset", "none");
                 customConfig.set("PvP", false);
                 customConfig.save(customConfigFile);
 
@@ -77,20 +79,37 @@ public class ChatListener implements Listener {
 
 
         if(customConfig.getBoolean("GradientEnabled")){
-            ArrayList<String> colors = new ArrayList<>();
-            try {
 
-                colors.add(customConfig.getString("GradientStart"));
-                colors.add(customConfig.getString("GradientEnd"));
-                Gradient g = new Gradient(colors);
-                e.setMessage(g.gradientMessage(e.getMessage(), "", false));
+            if(customConfig.getString("GradientPreset").equals("none")){
+                ArrayList<String> colors = new ArrayList<>();
+                try {
 
-            } catch (Exception e1) {
+                    colors.add(customConfig.getString("GradientStart"));
+                    colors.add(customConfig.getString("GradientEnd"));
+                    Gradient g = new Gradient(colors);
+                    e.setMessage(g.gradientMessage(e.getMessage(), "", false));
 
-                System.out.println("Gradient error with player " + e.getPlayer().getName());
-                e.setMessage(e.getMessage());
+                } catch (Exception e1) {
 
+                    System.out.println("Gradient error with player " + e.getPlayer().getName());
+                    e.setMessage(e.getMessage());
+
+                }
+            } else {
+                try {
+
+                    Gradient g = GradientPresets.getGradient(customConfig.getString("GradientPreset"));
+                    e.setMessage(g.gradientMessage(e.getMessage(), "", false));
+
+                } catch (Exception e1) {
+
+                    System.out.println("Gradient error with player " + e.getPlayer().getName());
+                    e.setMessage(e.getMessage());
+
+                }
             }
+
+
 
 
         } else {

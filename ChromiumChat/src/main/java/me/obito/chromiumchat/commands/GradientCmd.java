@@ -1,6 +1,7 @@
 package me.obito.chromiumchat.commands;
 
 import me.obito.chromiumchat.gradient.Gradient;
+import me.obito.chromiumchat.gradient.GradientPresets;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -16,7 +17,7 @@ import java.util.Locale;
 
 public class GradientCmd implements CommandExecutor {
 
-    String usage = ChatColor.YELLOW + "Use /gradient <toggle> | <hexcolor1> <hexcolor2>";
+    String usage = ChatColor.YELLOW + "Use /gradient <toggle> | <preset> | <hexcolor1> <hexcolor2>";
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
@@ -32,7 +33,38 @@ public class GradientCmd implements CommandExecutor {
 
                     if(args.length == 1){
                         if(!args[0].equalsIgnoreCase("toggle")){
-                            p.sendMessage(usage);
+                            try {
+
+                                Gradient g = GradientPresets.getGradient(args[0]);
+
+                                    File customConfigFile;
+                                    customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
+                                            "/players/" + p.getUniqueId() + ".yml");
+                                    FileConfiguration customConfig;
+                                    customConfig = new YamlConfiguration();
+                                    try{
+                                        customConfig.load(customConfigFile);
+                                    } catch (Exception e2){
+                                        System.out.println("Error with loading configuration for player " + p.getName());
+                                        p.sendMessage("Error with loading configuration.");
+                                    }
+
+                                    try{
+                                        customConfig.set("GradientStart", "none");
+                                        customConfig.set("GradientEnd", "none");
+                                        customConfig.set("GradientPreset", args[0]);
+                                        p.sendMessage(ChatColor.YELLOW + "Gradient changed.");
+                                        customConfig.save(customConfigFile);
+                                    } catch (Exception e3){
+                                        System.out.println("Error with configuration for player " + p.getName());
+                                        p.sendMessage("Error with configuration..");
+                                    }
+
+                                }
+                            catch(Exception exx){
+                                p.sendMessage(ChatColor.RED + "Gradient preset not recognized.");
+                            }
+
                         } else {
                             File customConfigFile;
                             customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
@@ -82,6 +114,7 @@ public class GradientCmd implements CommandExecutor {
                             try{
                                 customConfig.set("GradientStart", args[0].toLowerCase());
                                 customConfig.set("GradientEnd", args[1].toLowerCase());
+                                customConfig.set("GradientPreset", "none");
                                 p.sendMessage(ChatColor.YELLOW + "Gradient changed.");
                                 customConfig.save(customConfigFile);
                             } catch (Exception e3){

@@ -1,3 +1,4 @@
 # CHROMIUMPVP CONFIGURATION #
 # AUTHOR: OBITO17 #
 PvPToggleEnabled: true
+CooldownTimeInSecs: 120

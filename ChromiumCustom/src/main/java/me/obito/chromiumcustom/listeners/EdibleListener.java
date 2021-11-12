@@ -9,6 +9,9 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 public class EdibleListener implements Listener {
 
     @SuppressWarnings("unchecked")
+
+
+
     @EventHandler
     public void onEat(PlayerItemConsumeEvent e) {
         Player p = e.getPlayer();

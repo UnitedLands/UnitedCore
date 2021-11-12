@@ -3,9 +3,9 @@ package me.obito.chromiumcustom.util;
 import java.io.*;
 
 public enum SerializableData {
-    Players("plugins/ChromiumCore/Players"),
-    Wars("plugins/ChromiumCore/Wars"),
-	Farming("plugins/ChromiumCore/Farming");
+    Players("plugins/ChromiumCore/players"),
+    Wars("plugins/ChromiumCore/wars"),
+	Farming("plugins/ChromiumFinal/farming");
     
     private String fileName;
 

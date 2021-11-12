@@ -3,10 +3,7 @@ package me.obito.chromiumcustom;
 import me.obito.chromiumcustom.commands.CustomItemCmd;
 import me.obito.chromiumcustom.commands.TreeCmd;
 import me.obito.chromiumcustom.items.*;
-import me.obito.chromiumcustom.items.armor.Burden;
-import me.obito.chromiumcustom.items.weapon.GaelGreatsword;
 import me.obito.chromiumcustom.items.weapon.Landscaper;
-import me.obito.chromiumcustom.items.weapon.Whisper;
 import me.obito.chromiumcustom.listeners.EdibleListener;
 import me.obito.chromiumcustom.listeners.GUIListener;
 import me.obito.chromiumcustom.listeners.ItemListener;
@@ -16,8 +13,6 @@ import me.obito.chromiumcustom.util.BiomeSelector;
 import me.obito.chromiumcustom.util.SerializableData;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.UUID;
 
 public final class ChromiumCustom extends JavaPlugin {
 
@@ -34,8 +29,6 @@ public final class ChromiumCustom extends JavaPlugin {
 
 
         new Mango();
-        new GaelGreatsword();
-        new DarkMagic();
         //new Croissant();
         new Pinecone();
         new BracketMushroom();
@@ -43,10 +36,7 @@ public final class ChromiumCustom extends JavaPlugin {
         new MangoSapling();
         new PineSapling();
         new AncientSeed();
-        new Sausage();
-        new Whisper();
         new Landscaper();
-        new Burden();
         new FloweringAcacia();
         new Mimosa();
 
