@@ -1,5 +1,6 @@
 package me.obito.chromiumchat.commands;
 
+import me.obito.chromiumchat.ChromiumChat;
 import me.obito.chromiumchat.gradient.Gradient;
 import me.obito.chromiumchat.gradient.GradientPresets;
 import org.bukkit.Bukkit;
@@ -46,23 +47,23 @@ public class GradientCmd implements CommandExecutor {
                                         customConfig.load(customConfigFile);
                                     } catch (Exception e2){
                                         System.out.println("Error with loading configuration for player " + p.getName());
-                                        p.sendMessage("Error with loading configuration.");
+                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("ConfError")));
                                     }
 
                                     try{
                                         customConfig.set("GradientStart", "none");
                                         customConfig.set("GradientEnd", "none");
                                         customConfig.set("GradientPreset", args[0]);
-                                        p.sendMessage(ChatColor.YELLOW + "Gradient changed.");
+                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientChanged")));
                                         customConfig.save(customConfigFile);
                                     } catch (Exception e3){
                                         System.out.println("Error with configuration for player " + p.getName());
-                                        p.sendMessage("Error with configuration..");
+                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("ConfError")));
                                     }
 
                                 }
                             catch(Exception exx){
-                                p.sendMessage(ChatColor.RED + "Gradient preset not recognized.");
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientUnknownPreset")));
                             }
 
                         } else {
@@ -75,23 +76,23 @@ public class GradientCmd implements CommandExecutor {
                                 customConfig.load(customConfigFile);
                             } catch (Exception e2){
                                 System.out.println("Error with loading configuration for player " + p.getName());
-                                p.sendMessage("Error with loading configuration.");
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("ConfError")));
                             }
 
                             try{
                                 if(customConfig.getBoolean("GradientEnabled")){
                                     customConfig.set("GradientEnabled", false);
-                                    p.sendMessage(ChatColor.YELLOW + "Gradient disabled.");
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientOff")));
                                     customConfig.save(customConfigFile);
                                 } else {
                                     customConfig.set("GradientEnabled", true);
-                                    p.sendMessage(ChatColor.YELLOW + "Gradient enabled.");
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientOn")));
                                     customConfig.save(customConfigFile);
                                 }
 
                             } catch (Exception e3){
                                 System.out.println("Error with configuration for player " + p.getName());
-                                p.sendMessage("Error with configuration..");
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("ConfError")));
                             }
                         }
                     }
@@ -115,11 +116,11 @@ public class GradientCmd implements CommandExecutor {
                                 customConfig.set("GradientStart", args[0].toLowerCase());
                                 customConfig.set("GradientEnd", args[1].toLowerCase());
                                 customConfig.set("GradientPreset", "none");
-                                p.sendMessage(ChatColor.YELLOW + "Gradient changed.");
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientChanged")));
                                 customConfig.save(customConfigFile);
                             } catch (Exception e3){
                                 System.out.println("Error with configuration for player " + p.getName());
-                                p.sendMessage("Error with configuration..");
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("ConfError")));
                             }
 
                         } else {
@@ -130,7 +131,8 @@ public class GradientCmd implements CommandExecutor {
 
                 } else {
 
-                    p.sendMessage(ChatColor.RED + "You don't have permission.");
+                    p.sendMessage(
+                            ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("NoPerm")));
 
                 }
 

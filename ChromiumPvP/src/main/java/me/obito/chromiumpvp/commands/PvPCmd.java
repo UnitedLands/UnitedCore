@@ -42,7 +42,7 @@ public class PvPCmd implements CommandExecutor {
                 if(p.hasPermission("chromium.pvp.toggle")){
 
                     if(isInCombat(p)){
-                        p.sendMessage(ChatColor.RED + "You can't use that command while in combat.");
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("InCombat")));
                     } else {
                         File customConfigFile;
                         customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
@@ -73,7 +73,7 @@ public class PvPCmd implements CommandExecutor {
                             Boolean pvptoggled = customConfig.getBoolean("PvP");
                             if(pvptoggled){
                                 customConfig.set("PvP", false);
-                                p.sendMessage(ChatColor.YELLOW + "PvP disabled.");
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPDisabled")));
                                 try{
                                     customConfig.save(customConfigFile);
                                 }catch (Exception e1){
@@ -83,7 +83,7 @@ public class PvPCmd implements CommandExecutor {
 
                             } else {
                                 customConfig.set("PvP", true);
-                                p.sendMessage(ChatColor.YELLOW + "PvP enabled.");
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPEnabled")));
                                 try{
                                     customConfig.save(customConfigFile);
                                 }catch (Exception e1){

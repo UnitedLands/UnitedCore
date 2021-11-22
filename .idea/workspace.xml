@@ -5,14 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f322d50a-3fe9-4f73-b3fd-6c737516a368" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ChromiumCore/src/main/resources/messages.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/commands/ClearChatCmd.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/commands/ClearChatCmd.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/commands/GradientCmd.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/commands/GradientCmd.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/ChromiumChat.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/ChromiumChat.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/commands/GradientCmd.class" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/me/obito/chromiumchat/commands/GradientCmd.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/Chromium.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCore/src/main/java/me/obito/chromium/Chromium.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCore/src/main/resources/messages.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/ChromiumPvP.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/ChromiumPvP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/commands/PvPCmd.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/commands/PvPCmd.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

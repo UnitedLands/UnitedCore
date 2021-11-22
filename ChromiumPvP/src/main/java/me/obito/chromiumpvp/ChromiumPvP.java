@@ -18,6 +18,8 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
 
     File configFile;
     public static FileConfiguration Config;
+    File customConfigFile;
+    FileConfiguration customConfig;
 
     @Override
     public void onEnable(){
@@ -25,6 +27,23 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         Config = Bukkit.getPluginManager().getPlugin("ChromiumPvP").getConfig();
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         this.getCommand("pvp").setExecutor(new PvPCmd());
+
+        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "messages.yml");
+        if (!customConfigFile.exists()) {
+            customConfigFile.getParentFile().mkdirs();
+
+            try {
+
+                customConfigFile.createNewFile();
+                customConfig = new YamlConfiguration();
+                customConfig.load(customConfigFile);
+
+            } catch (Exception e1){
+                System.out.println("EXCEPTION: CANT CREATE NEW FILE OR LOAD IT");
+            }
+            //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
+        }
+
     }
 
     public static FileConfiguration getConfigur(){
@@ -36,6 +55,21 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         // Plugin shutdown logic
     }
 
+    public static String getMsg(String s){
+        File customConfigFile;
+        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
+                "messages.yml");
+        FileConfiguration customConfig;
+        customConfig = new YamlConfiguration();
+        try{
+            customConfig.load(customConfigFile);
+        } catch (Exception e2){
+            System.out.println("Error with loading messages.");
+        }
+
+        return customConfig.getString(s);
+
+    }
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e){

@@ -13,28 +13,10 @@ import java.util.logging.LogRecord;
 public final class Chromium extends JavaPlugin {
 
     FileConfiguration config;
-    File customMsgFile;
-    FileConfiguration customConfig;
 
     @Override
     public void onEnable() {
 
-
-        customMsgFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "messages.yml");
-        if (!customMsgFile.exists()) {
-            customMsgFile.getParentFile().mkdirs();
-            try {
-                customMsgFile.createNewFile();
-                customConfig = new YamlConfiguration();
-                customConfig.load(customMsgFile);
-                saveResource("messages.yml", false);
-                customConfig.save(customMsgFile);
-
-            } catch (Exception e1){
-                System.out.println("EXCEPTION: CANT CREATE NEW FILE OR LOAD IT");
-            }
-            //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
-        }
 
         System.out.println(ChatColor.GREEN + "--------------------");
         System.out.println(ChatColor.YELLOW + "Enabling ChromiumCore main plugin...");
@@ -43,6 +25,7 @@ public final class Chromium extends JavaPlugin {
         config = Bukkit.getPluginManager().getPlugin("ChromiumBroadcast").getConfig();
         Bukkit.getPluginManager().getPlugin("ChromiumFinal").saveDefaultConfig();
         this.getCommand("chromium").setExecutor(new ChromiumMainCommand());
+
 
     }
 
