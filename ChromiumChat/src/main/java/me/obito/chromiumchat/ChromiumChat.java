@@ -4,11 +4,12 @@ import me.obito.chromiumchat.commands.ClearChatCmd;
 import me.obito.chromiumchat.commands.GradientCmd;
 import me.obito.chromiumchat.gradient.GradientPresets;
 import me.obito.chromiumchat.player.PlayerListener;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
 
@@ -17,9 +18,12 @@ public class ChromiumChat extends JavaPlugin {
     File customConfigFile;
     FileConfiguration customConfig;
     public static FileConfiguration Config1;
+    int i = 1;
 
     @Override
     public void onEnable(){
+
+
 
         Bukkit.getPluginManager().getPlugin("ChromiumChat").saveDefaultConfig();
         Config1 = getConfig();
@@ -48,14 +52,34 @@ public class ChromiumChat extends JavaPlugin {
                 customConfig.set("InCombat", "&cYou can't use that command while in combat.");
                 customConfig.set("PvPDisabled", "&ePvP Disabled.");
                 customConfig.set("PvPEnabled", "&ePvP Enabled.");
+                customConfig.set("ReceivedSapling", "&eYou have received a sapling.");
+                customConfig.set("InvalidTree", "&cInvalid tree.");
                 customConfig.save(customConfigFile);
 
             } catch (Exception e1){
                 System.out.println("EXCEPTION: CANT CREATE NEW FILE OR LOAD IT");
             }
+
+
+
             //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
         }
+        int seconds = Config1.getInt("TimeInSeconds");
+        BukkitScheduler scheduler = getServer().getScheduler();
+        scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
 
+                try {
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Config1.getString("Message " + i)));
+                    i++;
+                } catch (Exception e1){
+                    i = 2;
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Config1.getString("Message 1")));
+                }
+
+            }
+        }, 0L, 20L*seconds);
 
     }
 

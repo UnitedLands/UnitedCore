@@ -4,6 +4,7 @@ import me.obito.chromiumchat.ChromiumChat;
 import me.obito.chromiumchat.gradient.Gradient;
 import me.obito.chromiumchat.gradient.GradientPresets;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,6 +28,15 @@ public class PlayerListener implements Listener {
     @EventHandler
 
     public void onJoin(PlayerJoinEvent e){
+
+        FileConfiguration conf = ChromiumChat.getConfigur();
+        if(conf.getBoolean("ClearChatOnJoin") == true){
+
+            e.getPlayer().sendMessage(StringUtils.repeat(" \n", 150));
+
+
+        }
+
         File customConfigFile;
         FileConfiguration customConfig;
         customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "/players/" + e.getPlayer().getUniqueId() + ".yml");

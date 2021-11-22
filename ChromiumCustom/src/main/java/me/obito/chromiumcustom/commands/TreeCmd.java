@@ -1,5 +1,6 @@
 package me.obito.chromiumcustom.commands;
 
+import me.obito.chromiumcustom.ChromiumCustom;
 import me.obito.chromiumcustom.trees.TreeType;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -12,7 +13,7 @@ public class TreeCmd implements CommandExecutor {
     //
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(!sender.hasPermission("chromium.custom.admin")) {
-            sender.sendMessage(org.bukkit.ChatColor.RED + "You don't have permission.");
+            sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getMsg("NoPerm")));
             return false;
         }
 
@@ -51,12 +52,12 @@ public class TreeCmd implements CommandExecutor {
                         if(sender instanceof Player) {
                             Player p = (Player) sender;
                             p.getInventory().addItem(TreeType.valueOf(args[1].toUpperCase()).getSeed());
-                            p.sendMessage("You've received a sapling!");
+                            sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getMsg("ReceivedSapling")));
                         } else {
                             sender.sendMessage("Only a player can execute this command!");
                         }
                     } else {
-                        sender.sendMessage("Invalid tree name.");
+                        sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getMsg("InvalidTree")));
                     }
                 }
                 if(args[0].equals("info")) {
@@ -87,7 +88,7 @@ public class TreeCmd implements CommandExecutor {
                     if(p != null){
                         TreeType tree = TreeType.valueOf(args[2].toUpperCase());
                         if(tree != null) {
-                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou've received a sapling!"));
+                            sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getMsg("ReceivedSapling")));
                             p.getInventory().addItem(tree.getSeed());
                         }
                     }

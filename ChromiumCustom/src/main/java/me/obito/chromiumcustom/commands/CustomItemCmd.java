@@ -1,5 +1,6 @@
 package me.obito.chromiumcustom.commands;
 
+import me.obito.chromiumcustom.ChromiumCustom;
 import me.obito.chromiumcustom.util.CustomItem;
 import me.obito.chromiumcustom.util.Logger;
 import net.md_5.bungee.api.ChatColor;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class CustomItemCmd implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(!sender.hasPermission("chromium.custom.admin")) {
-            sender.sendMessage(org.bukkit.ChatColor.RED + "You don't have permission.");
+            sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getMsg("NoPerm")));
             return false;
         }
 

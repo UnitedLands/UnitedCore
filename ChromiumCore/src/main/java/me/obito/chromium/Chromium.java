@@ -12,7 +12,6 @@ import java.util.logging.LogRecord;
 
 public final class Chromium extends JavaPlugin {
 
-    FileConfiguration config;
 
     @Override
     public void onEnable() {
@@ -22,7 +21,6 @@ public final class Chromium extends JavaPlugin {
         System.out.println(ChatColor.YELLOW + "Enabling ChromiumCore main plugin...");
         System.out.println(ChatColor.GREEN + "--------------------");
         System.out.println(ChatColor.AQUA + "Loading extensions...");
-        config = Bukkit.getPluginManager().getPlugin("ChromiumBroadcast").getConfig();
         Bukkit.getPluginManager().getPlugin("ChromiumFinal").saveDefaultConfig();
         this.getCommand("chromium").setExecutor(new ChromiumMainCommand());
 

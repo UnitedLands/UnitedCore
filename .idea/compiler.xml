@@ -7,11 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ChromiumPvP" />
+        <module name="ChromiumCore" />
+        <module name="ChromiumCustom" />
         <module name="ChromiumChat" />
         <module name="chromium" />
         <module name="ChromiumBroadcast" />
-        <module name="ChromiumCore" />
-        <module name="ChromiumCustom" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
