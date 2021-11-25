@@ -12,6 +12,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChromiumChat extends JavaPlugin {
 
@@ -22,8 +25,6 @@ public class ChromiumChat extends JavaPlugin {
 
     @Override
     public void onEnable(){
-
-
 
         Bukkit.getPluginManager().getPlugin("ChromiumChat").saveDefaultConfig();
         Config1 = getConfig();
@@ -42,6 +43,14 @@ public class ChromiumChat extends JavaPlugin {
                 customConfigFile.createNewFile();
                 customConfig = new YamlConfiguration();
                 customConfig.load(customConfigFile);
+
+                List<String> motd = new ArrayList<>();
+
+                motd.add("&aWelcome");
+                motd.add("&bto");
+                motd.add("&cUnitedLands");
+
+                customConfig.set("Motd", motd);
                 customConfig.set("NoPerm", "&cYou don't have permission.");
                 customConfig.set("ChatCleared", "&bGlobal Chat Cleared.");
                 customConfig.set("ConfError", "&cError with configuration.");
@@ -50,8 +59,19 @@ public class ChromiumChat extends JavaPlugin {
                 customConfig.set("GradientOff", "&eGradient disabled.");
                 customConfig.set("GradientUnknownPreset", "&eGradient preset not recognized.");
                 customConfig.set("InCombat", "&cYou can't use that command while in combat.");
-                customConfig.set("PvPDisabled", "&ePvP Disabled.");
-                customConfig.set("PvPEnabled", "&ePvP Enabled.");
+                customConfig.set("PvPDisabled", "&ePvP disabled.");
+                customConfig.set("PvPEnabled", "&ePvP enabled.");
+                customConfig.set("PvPEnabledOp", "&ePvP enabled for player.");
+                customConfig.set("PvPDisabledOp", "&ePvP disabled for player.");
+                customConfig.set("PvPEnabledByAdmin", "&ePvP enabled by admin.");
+                customConfig.set("PvPDisabledByAdmin", "&ePvP disabled by admin.");
+                customConfig.set("PvPAlreadyOn", "&cPvP already enabled.");
+                customConfig.set("PvPAlreadyOff", "&cPvP already disabled.");
+                customConfig.set("PvPStatusOn", "&ePvP status: ON");
+                customConfig.set("PvPStatusOff", "&cPvP status: OFF");
+                customConfig.set("PlayerNotRecognized", "&cCan't recognize player.");
+                customConfig.set("FFTownDisabled", "&6Friendly Fire in town disabled.");
+                customConfig.set("FFTownEnabled", "&6Friendly Fire in town enabled.");
                 customConfig.set("ReceivedSapling", "&eYou have received a sapling.");
                 customConfig.set("InvalidTree", "&cInvalid tree.");
                 customConfig.save(customConfigFile);
@@ -100,6 +120,22 @@ public class ChromiumChat extends JavaPlugin {
         }
 
             return customConfig.getString(s);
+
+    }
+
+    public static List<String> getList(String s){
+        File customConfigFile;
+        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
+                "messages.yml");
+        FileConfiguration customConfig;
+        customConfig = new YamlConfiguration();
+        try{
+            customConfig.load(customConfigFile);
+        } catch (Exception e2){
+            System.out.println("Error with loading messages.");
+        }
+
+        return customConfig.getStringList(s);
 
     }
 

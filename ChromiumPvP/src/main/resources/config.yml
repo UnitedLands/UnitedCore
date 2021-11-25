@@ -2,3 +2,5 @@
 # AUTHOR: OBITO17 #
 PvPToggleEnabled: true
 CooldownTimeInSecs: 120
+FFTownCooldownTimeInSecs: 5
+FFNationCooldownTimeInSecs: 10

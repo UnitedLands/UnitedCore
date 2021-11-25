@@ -6,3 +6,4 @@ authors: [ Obito17 ]
 depend: [CombatLogX]
 commands:
   pvp:
+  fftown:

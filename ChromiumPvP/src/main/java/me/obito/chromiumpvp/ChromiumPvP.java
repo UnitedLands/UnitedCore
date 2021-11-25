@@ -1,6 +1,9 @@
 package me.obito.chromiumpvp;
 
-import com.SirBlobman.combatlogx.api.event.PlayerPreTagEvent;
+import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
+import me.obito.chromiumpvp.commands.FFTownCmd;
 import me.obito.chromiumpvp.commands.PvPCmd;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,6 +30,7 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         Config = Bukkit.getPluginManager().getPlugin("ChromiumPvP").getConfig();
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         this.getCommand("pvp").setExecutor(new PvPCmd());
+        //this.getCommand("fftown").setExecutor(new FFTownCmd());
 
         customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "messages.yml");
         if (!customConfigFile.exists()) {
@@ -103,16 +107,32 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
                     }
 
                     boolean pvpDamager = customConfigDamager.getBoolean("PvP");
-                    boolean pvpTarget = customConfigDamager.getBoolean("PvP");
+                    boolean pvpTarget = customConfigTarget.getBoolean("PvP");
+
+                    if(pvpTarget == false){
+                        e.setCancelled(true);
+                        damager.sendMessage(ChatColor.RED + "That player has disabled their pvp!");
+                    }
 
                     if(pvpDamager == false){
                         e.setCancelled(true);
                         damager.sendMessage(ChatColor.RED + "You have your pvp disabled!");
-                    } else {
+                    }
 
-                        if(pvpTarget == false){
-                            e.setCancelled(true);
-                            damager.sendMessage(ChatColor.RED + "That player has disabled their pvp!");
+                            Resident resident1 = TownyUniverse.getInstance().getResident(damager.getUniqueId());
+                            Resident resident2 = TownyUniverse.getInstance().getResident(target.getUniqueId());
+
+                            if (resident1.hasTown() && resident2.hasTown()) {
+
+                                if(resident1.getTownOrNull().equals(resident2.getTownOrNull())){
+
+                                    e.setCancelled(true);
+                                    damager.sendMessage(ChatColor.RED + "Player is in same town as you!");
+
+
+                            }
+
+
                         }
 
                     }
@@ -127,4 +147,3 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
 
     }
 
-}

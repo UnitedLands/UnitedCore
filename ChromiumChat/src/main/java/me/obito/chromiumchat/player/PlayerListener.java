@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -30,12 +31,16 @@ public class PlayerListener implements Listener {
     public void onJoin(PlayerJoinEvent e){
 
         FileConfiguration conf = ChromiumChat.getConfigur();
-        if(conf.getBoolean("ClearChatOnJoin") == true){
 
-            e.getPlayer().sendMessage(StringUtils.repeat(" \n", 150));
+        List<String> motd = ChromiumChat.getList("Motd");
 
+        e.getPlayer().sendMessage((StringUtils.repeat(" \n", 150)));
 
+        for(String s : motd){
+            e.getPlayer().sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', s));
         }
+
+
 
         File customConfigFile;
         FileConfiguration customConfig;
