@@ -30,7 +30,7 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         Config = Bukkit.getPluginManager().getPlugin("ChromiumPvP").getConfig();
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
         this.getCommand("pvp").setExecutor(new PvPCmd());
-        //this.getCommand("fftown").setExecutor(new FFTownCmd());
+        this.getCommand("fftown").setExecutor(new FFTownCmd());
 
         customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "messages.yml");
         if (!customConfigFile.exists()) {
@@ -126,8 +126,22 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
 
                                 if(resident1.getTownOrNull().equals(resident2.getTownOrNull())){
 
-                                    e.setCancelled(true);
-                                    damager.sendMessage(ChatColor.RED + "Player is in same town as you!");
+                                    File customFFile;
+                                    customFFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumPvP").getDataFolder(),
+                                            "/towns/" + resident1.getTownOrNull().getName() + ".yml");
+                                    FileConfiguration TownConfig;
+                                    TownConfig = new YamlConfiguration();
+                                    try {
+                                        TownConfig.load(customFFile);
+                                    } catch (Exception e2){
+                                    }
+
+                                    if(TownConfig.getInt("FriendlyFire") == 0){
+                                        e.setCancelled(true);
+                                        damager.sendMessage(ChatColor.RED + "Player is in same town as you!");
+                                    }
+
+
 
 
                             }

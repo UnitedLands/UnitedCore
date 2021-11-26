@@ -119,7 +119,7 @@ public class ChromiumChat extends JavaPlugin {
             System.out.println("Error with loading messages.");
         }
 
-            return customConfig.getString(s);
+        return customConfig.getString(s);
 
     }
 
