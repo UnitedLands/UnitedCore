@@ -72,6 +72,8 @@ public class ChromiumChat extends JavaPlugin {
                 customConfig.set("PlayerNotRecognized", "&cCan't recognize player.");
                 customConfig.set("FFTownDisabled", "&6Friendly Fire in town disabled.");
                 customConfig.set("FFTownEnabled", "&6Friendly Fire in town enabled.");
+                customConfig.set("FFNationDisabled", "&6Friendly Fire in nation disabled.");
+                customConfig.set("FFNationEnabled", "&6Friendly Fire in nation enabled.");
                 customConfig.set("ReceivedSapling", "&eYou have received a sapling.");
                 customConfig.set("InvalidTree", "&cInvalid tree.");
                 customConfig.save(customConfigFile);

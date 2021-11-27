@@ -7,3 +7,4 @@ depend: [CombatLogX]
 commands:
   pvp:
   fftown:
+  ffnation:
