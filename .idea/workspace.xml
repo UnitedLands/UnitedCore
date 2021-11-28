@@ -5,11 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f322d50a-3fe9-4f73-b3fd-6c737516a368" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/commands/FFNationCmd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/commands/TaAdminCmd.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/ChromiumChat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumBroadcast/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumBroadcast/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumBroadcast/src/main/java/me/obito/chromiumbroadcast/ChromiumBroadcast.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumBroadcast/src/main/resources/config.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumBroadcast/src/main/resources/plugin.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/chromiumchat.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/chromiumchat.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/player/PlayerListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/java/me/obito/chromiumchat/player/PlayerListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/classes/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/classes/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/maven-archiver/pom.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumChat/target/original-chromiumchat-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCustom/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCustom/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumCustom/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumCustom/src/main/resources/plugin.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumPvP/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/ChromiumPvP.java" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/java/me/obito/chromiumpvp/ChromiumPvP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChromiumPvP/src/main/resources/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/resources/config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ChromiumPvP/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ChromiumPvP/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

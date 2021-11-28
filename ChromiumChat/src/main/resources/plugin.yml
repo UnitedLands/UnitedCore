@@ -3,7 +3,7 @@ version: '${project.version}'
 main: me.obito.chromiumchat.ChromiumChat
 api-version: 1.17
 authors: [ Obito17 ]
-depend: [Towny]
+depend: [Towny, TownyChat]
 commands:
   gradient:
   cc:

@@ -9,7 +9,6 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/ChromiumBroadcast/pom.xml" />
         <option value="$PROJECT_DIR$/ChromiumPvP/pom.xml" />
         <option value="$PROJECT_DIR$/ChromiumCustom/pom.xml" />
       </list>

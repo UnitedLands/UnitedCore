@@ -6,6 +6,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import me.obito.chromiumpvp.commands.FFNationCmd;
 import me.obito.chromiumpvp.commands.FFTownCmd;
 import me.obito.chromiumpvp.commands.PvPCmd;
+import me.obito.chromiumpvp.commands.TaAdminCmd;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,6 +34,7 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         this.getCommand("pvp").setExecutor(new PvPCmd());
         this.getCommand("fftown").setExecutor(new FFTownCmd());
         this.getCommand("ffnation").setExecutor(new FFNationCmd());
+        this.getCommand("tadmin").setExecutor(new TaAdminCmd());
 
         customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "messages.yml");
         if (!customConfigFile.exists()) {
@@ -148,20 +150,37 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
 
                                 if (resident1.getTownOrNull().equals(resident2.getTownOrNull())) {
 
-                                    File customFFile;
-                                    customFFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumPvP").getDataFolder(),
-                                            "/towns/" + resident1.getTownOrNull().getName() + ".yml");
-                                    FileConfiguration TownConfig;
-                                    TownConfig = new YamlConfiguration();
-                                    try {
-                                        TownConfig.load(customFFile);
-                                    } catch (Exception e2) {
+                                    File customConfigFile5;
+                                    customConfigFile5 = new File(Bukkit.getPluginManager().getPlugin("ChromiumPvP").getDataFolder(),
+                                            "/config.yml");
+                                    FileConfiguration customConfig5;
+                                    customConfig5 = new YamlConfiguration();
+                                    try{
+                                        customConfig5.load(customConfigFile5);
+                                    } catch (Exception e2){
+                                        System.out.println("Error with loading configuration");
                                     }
 
-                                    if (TownConfig.getInt("FriendlyFire") == 0) {
-                                        e.setCancelled(true);
-                                        damager.sendMessage(ChatColor.RED + "Player is in same town as you!");
+                                    if(customConfig5.getInt("GlobalFriendlyFire") == 0){
+                                        File customFFile;
+                                        customFFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumPvP").getDataFolder(),
+                                                "/towns/" + resident1.getTownOrNull().getName() + ".yml");
+                                        FileConfiguration TownConfig;
+                                        TownConfig = new YamlConfiguration();
+                                        try {
+                                            TownConfig.load(customFFile);
+                                        } catch (Exception e2) {
+                                        }
+
+                                        if (TownConfig.getInt("FriendlyFire") == 0) {
+                                            e.setCancelled(true);
+                                            damager.sendMessage(ChatColor.RED + "Player is in same town as you!");
+                                        }
+                                    } else {
+
                                     }
+
+
 
 
                                 }

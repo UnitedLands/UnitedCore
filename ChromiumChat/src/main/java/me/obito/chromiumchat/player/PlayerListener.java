@@ -54,9 +54,9 @@ public class PlayerListener implements Listener {
                 customConfig = new YamlConfiguration();
                 customConfig.load(customConfigFile);
                 customConfig.set("Player Name", e.getPlayer().getName());
-                customConfig.set("GradientEnabled", true);
+                customConfig.set("GradientEnabled", false);
                 customConfig.set("GradientStart", "#ffffff");
-                customConfig.set("GradientEnd", "#000000");
+                customConfig.set("GradientEnd", "#ffffff");
                 customConfig.set("GradientPreset", "none");
                 customConfig.set("PvP", false);
                 customConfig.save(customConfigFile);
