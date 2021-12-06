@@ -21,7 +21,7 @@ public class ClearChatCmd implements CommandExecutor {
 
         if(!sender.hasPermission("chromium.chat.admin")) {
             sender.sendMessage(
-                    ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("NoPerm")));
+                    ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("NoPerm")));
             return false;
         }
 

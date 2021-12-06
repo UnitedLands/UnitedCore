@@ -135,12 +135,12 @@ public class    PvPCmd implements CommandExecutor {
                         try{
                             p = (Player) Bukkit.getServer().getPlayer(args[1]);
                         } catch (Exception e1){
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PlayerNotRecognized")));
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("PlayerNotRecognized")));
                             return false;
                         }
 
                         if(p == null){
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PlayerNotRecognized")));
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("PlayerNotRecognized")));
                             return false;
                         }
 
@@ -284,7 +284,7 @@ public class    PvPCmd implements CommandExecutor {
                     }
                 }
                 } else {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("NoPerm")));
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("NoPerm")));
                 }
 
             }

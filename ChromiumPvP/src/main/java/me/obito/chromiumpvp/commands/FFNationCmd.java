@@ -52,6 +52,7 @@ public class FFNationCmd implements CommandExecutor {
                             nationName = nation.getName();
                     } else {
                         System.out.println("Error: Player that is not in nation tried to execute the ff command.");
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("NoNation")));
                         return false;
                     }
 
@@ -131,6 +132,8 @@ public class FFNationCmd implements CommandExecutor {
 
 
 
+                } else {
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("NoPerm")));
                 }
 
             }

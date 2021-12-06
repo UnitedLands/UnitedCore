@@ -47,7 +47,7 @@ public class GradientCmd implements CommandExecutor {
                                         customConfig.load(customConfigFile);
                                     } catch (Exception e2){
                                         System.out.println("Error with loading configuration for player " + p.getName());
-                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("ConfError")));
+                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
                                     }
 
                                     try{
@@ -58,7 +58,7 @@ public class GradientCmd implements CommandExecutor {
                                         customConfig.save(customConfigFile);
                                     } catch (Exception e3){
                                         System.out.println("Error with configuration for player " + p.getName());
-                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("ConfError")));
+                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
                                     }
 
                                 }
@@ -76,7 +76,7 @@ public class GradientCmd implements CommandExecutor {
                                 customConfig.load(customConfigFile);
                             } catch (Exception e2){
                                 System.out.println("Error with loading configuration for player " + p.getName());
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("ConfError")));
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
                             }
 
                             try{
@@ -92,7 +92,7 @@ public class GradientCmd implements CommandExecutor {
 
                             } catch (Exception e3){
                                 System.out.println("Error with configuration for player " + p.getName());
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("ConfError")));
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
                             }
                         }
                     }
@@ -120,7 +120,7 @@ public class GradientCmd implements CommandExecutor {
                                 customConfig.save(customConfigFile);
                             } catch (Exception e3){
                                 System.out.println("Error with configuration for player " + p.getName());
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("ConfError")));
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
                             }
 
                         } else {
@@ -132,7 +132,7 @@ public class GradientCmd implements CommandExecutor {
                 } else {
 
                     p.sendMessage(
-                            ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("NoPerm")));
+                            ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("NoPerm")));
 
                 }
 

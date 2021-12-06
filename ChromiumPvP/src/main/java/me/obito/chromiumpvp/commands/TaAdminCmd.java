@@ -55,11 +55,11 @@ public class TaAdminCmd implements CommandExecutor {
                             try{
                                 if(customConfig.getInt("GlobalFriendlyFire") == 0){
                                     customConfig.set("GlobalFriendlyFire", 1);
-                                    p.sendMessage("Global FF enabled.");
+                                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("GlobalFFEnabled")));
                                     customConfig.save(customConfigFile);
                                 } else {
                                     customConfig.set("GlobalFriendlyFire", 0);
-                                    p.sendMessage("Global FF disabled.");
+                                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("GlobalFFDisabled")));
                                     customConfig.save(customConfigFile);
                                 }
 
@@ -77,7 +77,7 @@ public class TaAdminCmd implements CommandExecutor {
 
                 }
             } else {
-                p.sendMessage("No permission.");
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("NoPerm")));
             }
 
 

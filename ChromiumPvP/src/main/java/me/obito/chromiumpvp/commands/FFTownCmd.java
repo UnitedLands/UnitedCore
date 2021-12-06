@@ -55,6 +55,7 @@ public class FFTownCmd implements CommandExecutor {
                             townName = town.getName();
                     } else {
                         System.out.println("Error: Player that is not in town tried to execute the ff command.");
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("NoTown")));
                         return false;
                     }
 
@@ -134,6 +135,8 @@ public class FFTownCmd implements CommandExecutor {
 
 
 
+                } else {
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("NoPerm")));
                 }
 
             }

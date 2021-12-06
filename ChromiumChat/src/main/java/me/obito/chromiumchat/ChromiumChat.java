@@ -50,32 +50,40 @@ public class ChromiumChat extends JavaPlugin {
                 motd.add("&bto");
                 motd.add("&cUnitedLands");
 
-                customConfig.set("Motd", motd);
-                customConfig.set("NoPerm", "&cYou don't have permission.");
-                customConfig.set("ChatCleared", "&bGlobal Chat Cleared.");
-                customConfig.set("ConfError", "&cError with configuration.");
-                customConfig.set("GradientChanged", "&eGradient changed.");
-                customConfig.set("GradientOn", "&eGradient enabled.");
-                customConfig.set("GradientOff", "&eGradient disabled.");
-                customConfig.set("GradientUnknownPreset", "&eGradient preset not recognized.");
-                customConfig.set("InCombat", "&cYou can't use that command while in combat.");
-                customConfig.set("PvPDisabled", "&ePvP disabled.");
-                customConfig.set("PvPEnabled", "&ePvP enabled.");
-                customConfig.set("PvPEnabledOp", "&ePvP enabled for player.");
-                customConfig.set("PvPDisabledOp", "&ePvP disabled for player.");
-                customConfig.set("PvPEnabledByAdmin", "&ePvP enabled by admin.");
-                customConfig.set("PvPDisabledByAdmin", "&ePvP disabled by admin.");
-                customConfig.set("PvPAlreadyOn", "&cPvP already enabled.");
-                customConfig.set("PvPAlreadyOff", "&cPvP already disabled.");
-                customConfig.set("PvPStatusOn", "&ePvP status: ON");
-                customConfig.set("PvPStatusOff", "&cPvP status: OFF");
-                customConfig.set("PlayerNotRecognized", "&cCan't recognize player.");
-                customConfig.set("FFTownDisabled", "&6Friendly Fire in town disabled.");
-                customConfig.set("FFTownEnabled", "&6Friendly Fire in town enabled.");
-                customConfig.set("FFNationDisabled", "&6Friendly Fire in nation disabled.");
-                customConfig.set("FFNationEnabled", "&6Friendly Fire in nation enabled.");
-                customConfig.set("ReceivedSapling", "&eYou have received a sapling.");
-                customConfig.set("InvalidTree", "&cInvalid tree.");
+                customConfig.createSection("Global");
+                customConfig.getConfigurationSection("Global").set("Motd", motd);
+                customConfig.getConfigurationSection("Global").set("NoPerm", "&cYou don't have permission.");
+                customConfig.getConfigurationSection("Global").set("PlayerNotRecognized", "&cCan't recognize player.");
+                customConfig.getConfigurationSection("Global").set("ConfError", "&cError with configuration.");
+                customConfig.createSection("Chat");
+                customConfig.getConfigurationSection("Chat").set("ChatCleared", "&bGlobal Chat Cleared.");
+                customConfig.getConfigurationSection("Chat").set("GradientChanged", "&eGradient changed.");
+                customConfig.getConfigurationSection("Chat").set("GradientOn", "&eGradient enabled.");
+                customConfig.getConfigurationSection("Chat").set("GradientOff", "&eGradient disabled.");
+                customConfig.getConfigurationSection("Chat").set("GradientUnknownPreset", "&eGradient preset not recognized.");
+                customConfig.createSection("PvP");
+                customConfig.getConfigurationSection("PvP").set("InCombat", "&cYou can't use that command while in combat.");
+                customConfig.getConfigurationSection("PvP").set("PvPDisabled", "&ePvP disabled.");
+                customConfig.getConfigurationSection("PvP").set("PvPEnabled", "&ePvP enabled.");
+                customConfig.getConfigurationSection("PvP").set("PvPEnabledOp", "&ePvP enabled for player.");
+                customConfig.getConfigurationSection("PvP").set("PvPDisabledOp", "&ePvP disabled for player.");
+                customConfig.getConfigurationSection("PvP").set("PvPEnabledByAdmin", "&ePvP enabled by admin.");
+                customConfig.getConfigurationSection("PvP").set("PvPDisabledByAdmin", "&ePvP disabled by admin.");
+                customConfig.getConfigurationSection("PvP").set("PvPAlreadyOn", "&cPvP already enabled.");
+                customConfig.getConfigurationSection("PvP").set("PvPAlreadyOff", "&cPvP already disabled.");
+                customConfig.getConfigurationSection("PvP").set("PvPStatusOn", "&ePvP status: ON");
+                customConfig.getConfigurationSection("PvP").set("PvPStatusOff", "&cPvP status: OFF");
+                customConfig.getConfigurationSection("PvP").set("FFTownDisabled", "&6Friendly Fire in town disabled.");
+                customConfig.getConfigurationSection("PvP").set("FFTownEnabled", "&6Friendly Fire in town enabled.");
+                customConfig.getConfigurationSection("PvP").set("FFNationDisabled", "&6Friendly Fire in nation disabled.");
+                customConfig.getConfigurationSection("PvP").set("NoNation", "&cYou don't belong to any nation.");
+                customConfig.getConfigurationSection("PvP").set("NoTown", "&cYou don't belong to any town.");
+                customConfig.getConfigurationSection("PvP").set("FFNationEnabled", "&6Friendly Fire in nation enabled.");
+                customConfig.getConfigurationSection("PvP").set("GlobalFFEnabled", "&6Friendly Fire globally enabled!");
+                customConfig.getConfigurationSection("PvP").set("GlobalFFDisabled", "&6Friendly Fire globally disabled!");
+                customConfig.createSection("Items");
+                customConfig.getConfigurationSection("Items").set("ReceivedSapling", "&eYou have received a sapling.");
+                customConfig.getConfigurationSection("Items").set("InvalidTree", "&cInvalid tree.");
                 customConfig.save(customConfigFile);
 
             } catch (Exception e1){
@@ -121,6 +129,22 @@ public class ChromiumChat extends JavaPlugin {
             System.out.println("Error with loading messages.");
         }
 
+        return customConfig.getConfigurationSection("Chat").getString(s);
+
+    }
+
+    public static String getGlobalMsg(String s){
+        File customConfigFile;
+        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
+                "messages.yml");
+        FileConfiguration customConfig;
+        customConfig = new YamlConfiguration();
+        try{
+            customConfig.load(customConfigFile);
+        } catch (Exception e2){
+            System.out.println("Error with loading messages.");
+        }
+
         return customConfig.getString(s);
 
     }
@@ -137,7 +161,7 @@ public class ChromiumChat extends JavaPlugin {
             System.out.println("Error with loading messages.");
         }
 
-        return customConfig.getStringList(s);
+        return customConfig.getConfigurationSection("Global").getStringList(s);
 
     }
 
