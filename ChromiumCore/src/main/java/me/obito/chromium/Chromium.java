@@ -17,9 +17,9 @@ public final class Chromium extends JavaPlugin {
     public void onEnable() {
 
 
-        System.out.println(ChatColor.GREEN + "--------------------");
+        System.out.println(ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "                              ");
         System.out.println(ChatColor.YELLOW + "Enabling ChromiumCore main plugin...");
-        System.out.println(ChatColor.GREEN + "--------------------");
+        System.out.println(ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "                              ");
         System.out.println(ChatColor.AQUA + "Loading extensions...");
         Bukkit.getPluginManager().getPlugin("ChromiumFinal").saveDefaultConfig();
         this.getCommand("chromium").setExecutor(new ChromiumMainCommand());
@@ -30,9 +30,9 @@ public final class Chromium extends JavaPlugin {
     @Override
     public void onDisable() {
 
-        System.out.println(ChatColor.GREEN + "--------------------");
+        System.out.println(ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "                              ");
         System.out.println(ChatColor.DARK_AQUA + "Disabling ChromiumCore main plugin...");
-        System.out.println(ChatColor.GREEN + "--------------------");
+        System.out.println(ChatColor.GREEN + "" + ChatColor.STRIKETHROUGH + "                              ");
         System.out.println(ChatColor.RED + "Disabling extensions...");
 
     }

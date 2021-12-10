@@ -19,28 +19,28 @@ public class TreeCmd implements CommandExecutor {
 
         if(args.length == 0) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7&m---&r &f&lChromium Core &a&lTrees&r &7&m---\n"
-                    + "&b/tree help &f| &7&oUsage of the tree command\n"
-                    + "&b/tree seed &f<name> | &7&oGives a seed of the tree\n"
-                    + "&b/tree info &f<name> | &7&oPrints information for a given tree\n"
-                    + "&b/tree list &f| &7&oPrints all valid tree types\n"
-                    + "&b/tree give <player> <name> &f| &7&oGives the player a tree seed"
+                    + "&e/tree help &f| &7&oUsage of the tree command\n"
+                    + "&e/tree seed &f<name> | &7&oGives a seed of the tree\n"
+                    + "&e/tree info &f<name> | &7&oPrints information for a given tree\n"
+                    + "&e/tree list &f| &7&oPrints all valid tree types\n"
+                    + "&e/tree give <player> <name> &f| &7&oGives the player a tree seed"
             ));
         }
 
         if(args.length > 0) {
             if(args[0].equals("help")) {
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&7&m---&r &f&lChromium Core &a&lTrees&r &7&m---\n"
-                        + "&b/tree help &f| &7&oUsage of the tree command\n"
-                        + "&b/tree seed &f<name> | &7&oGives a seed of the tree\n"
-                        + "&b/tree info &f<name> | &7&oPrints information for a given tree\n"
-                        + "&b/tree list &f| &7&oPrints all valid tree types\n"
-                        + "&b/tree give <player> <name> &f| &7&oGives the player a tree seed"
+                        + "&e/tree help\n"
+                        + "&e/tree seed <name>\n"
+                        + "&e/tree info <name>\n"
+                        + "&e/tree list\n"
+                        + "&e/tree give <player> <name>"
                 ));
             }
             if(args[0].equals("list")) {
                 String trees = "";
                 for(TreeType t : TreeType.values()) {
-                    trees += String.format("&b%s\n",t.name());
+                    trees += String.format("&a%s\n",t.name());
                 };
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&e&lTrees&r\n"+
                         trees)));
@@ -64,12 +64,12 @@ public class TreeCmd implements CommandExecutor {
                     TreeType tree = TreeType.valueOf(args[1].toUpperCase());
                     if(tree != null) {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&e&l%s Tree&r\n"
-                                        + "&bFruit: &7&o%s\n"
-                                        + "&bFruit Block: &7&o%s\n"
-                                        + "&bFruit Replacement Block: &7&o%s\n"
-                                        + "&bStem Block: &7&o%s\n"
-                                        + "&bStem Replacement Block: &7&o%s\n"
-                                        + "&bSeed: &7&o%s",
+                                        + "&eFruit: &7&o%s\n"
+                                        + "&eFruit Block: &7&o%s\n"
+                                        + "&eFruit Replacement Block: &7&o%s\n"
+                                        + "&eStem Block: &7&o%s\n"
+                                        + "&eStem Replacement Block: &7&o%s\n"
+                                        + "&esSeed: &7&o%s",
                                 args[1].toUpperCase(),
                                 tree.getDrop().toString(),
                                 tree.getFruitBlock(),

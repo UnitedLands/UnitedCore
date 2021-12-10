@@ -31,10 +31,11 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().getPlugin("ChromiumPvP").saveDefaultConfig();
         Config = Bukkit.getPluginManager().getPlugin("ChromiumPvP").getConfig();
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
-        this.getCommand("pvp").setExecutor(new PvPCmd());
-        this.getCommand("fftown").setExecutor(new FFTownCmd());
         this.getCommand("ffnation").setExecutor(new FFNationCmd());
         this.getCommand("tadmin").setExecutor(new TaAdminCmd());
+        this.getCommand("fftown").setExecutor(new FFTownCmd());
+        this.getCommand("pvp").setExecutor(new PvPCmd());
+
 
         customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "messages.yml");
         if (!customConfigFile.exists()) {

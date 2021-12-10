@@ -33,12 +33,21 @@ public class PlayerListener implements Listener {
         FileConfiguration conf = ChromiumChat.getConfigur();
 
         List<String> motd = ChromiumChat.getList("Motd");
+        List<String> firstmotd = ChromiumChat.getList("FirstJoinMotd");
 
         e.getPlayer().sendMessage((StringUtils.repeat(" \n", 150)));
 
-        for(String s : motd){
-            e.getPlayer().sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', s));
+        if(e.getPlayer().hasPlayedBefore()){
+            for(String s : motd){
+                e.getPlayer().sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', s));
+            }
+        } else {
+            for(String s : firstmotd){
+                e.getPlayer().sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', s));
+            }
         }
+
+
 
 
 

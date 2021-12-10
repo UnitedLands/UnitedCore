@@ -50,8 +50,15 @@ public class ChromiumChat extends JavaPlugin {
                 motd.add("&bto");
                 motd.add("&cUnitedLands");
 
+                List<String> firstmotd = new ArrayList<>();
+
+                firstmotd.add("&Welcome");
+                firstmotd.add("&eto");
+                firstmotd.add("&3UnitedLands");
+
                 customConfig.createSection("Global");
                 customConfig.getConfigurationSection("Global").set("Motd", motd);
+                customConfig.getConfigurationSection("Global").set("FirstJoinMotd", firstmotd);
                 customConfig.getConfigurationSection("Global").set("NoPerm", "&cYou don't have permission.");
                 customConfig.getConfigurationSection("Global").set("PlayerNotRecognized", "&cCan't recognize player.");
                 customConfig.getConfigurationSection("Global").set("ConfError", "&cError with configuration.");

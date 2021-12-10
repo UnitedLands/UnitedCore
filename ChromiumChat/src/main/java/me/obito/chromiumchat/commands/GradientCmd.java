@@ -19,6 +19,7 @@ import java.util.Locale;
 public class GradientCmd implements CommandExecutor {
 
     String usage = ChatColor.YELLOW + "Use /gradient <toggle> | <preset> | <hexcolor1> <hexcolor2>";
+    String usageAdmin = ChatColor.YELLOW + "Use /gradient <toggle> | <preset> | <hexcolor1> <hexcolor2> | <player>";
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
@@ -26,43 +27,204 @@ public class GradientCmd implements CommandExecutor {
 
             Player p = (Player) sender;
 
-                if(p.hasPermission("chromium.chat.gradient")){
+            if(p.hasPermission("chromium.chat.admin")){
+                if(args.length < 1 || args.length > 3){
+                    p.sendMessage(usageAdmin);
+                }
 
-                    if(args.length < 1 || args.length > 2){
+                if (args.length == 1) {
+                    if (!args[0].equalsIgnoreCase("toggle")) {
+                        try {
+
+                            Gradient g = GradientPresets.getGradient(args[0]);
+
+                            File customConfigFile;
+                            customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
+                                    "/players/" + p.getUniqueId() + ".yml");
+                            FileConfiguration customConfig;
+                            customConfig = new YamlConfiguration();
+                            try {
+                                customConfig.load(customConfigFile);
+                            } catch (Exception e2) {
+                                System.out.println("Error with loading configuration for player " + p.getName());
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
+                            }
+
+
+                            try {
+                                String preset = args[0].toLowerCase();
+                                if (p.hasPermission("chromium.chat.gradient." + preset)) {
+                                    customConfig.set("GradientStart", "none");
+                                    customConfig.set("GradientEnd", "none");
+                                    customConfig.set("GradientPreset", args[0]);
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientChanged")));
+                                    customConfig.save(customConfigFile);
+                                } else {
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("NoPerm")));
+                                }
+
+                            } catch (Exception e3) {
+                                System.out.println("Error with configuration for player " + p.getName());
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
+                            }
+
+
+                        } catch (Exception exx) {
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientUnknownPreset")));
+                        }
+
+                    } else {
+                        File customConfigFile;
+                        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
+                                "/players/" + p.getUniqueId() + ".yml");
+                        FileConfiguration customConfig;
+                        customConfig = new YamlConfiguration();
+                        try {
+                            customConfig.load(customConfigFile);
+                        } catch (Exception e2) {
+                            System.out.println("Error with loading configuration for player " + p.getName());
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
+                        }
+
+                        try {
+                            if (customConfig.getBoolean("GradientEnabled")) {
+                                customConfig.set("GradientEnabled", false);
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientOff")));
+                                customConfig.save(customConfigFile);
+                            } else {
+                                customConfig.set("GradientEnabled", true);
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientOn")));
+                                customConfig.save(customConfigFile);
+                            }
+
+                        } catch (Exception e3) {
+                            System.out.println("Error with configuration for player " + p.getName());
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
+                        }
+                    }
+                }
+                if (args.length == 2) {
+
+                    if (args[0].startsWith("#") && args[1].startsWith("#")) {
+
+                        File customConfigFile;
+                        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
+                                "/players/" + p.getUniqueId() + ".yml");
+                        FileConfiguration customConfig;
+                        customConfig = new YamlConfiguration();
+                        try {
+                            customConfig.load(customConfigFile);
+                        } catch (Exception e2) {
+                            System.out.println("Error with loading configuration for player " + p.getName());
+                            p.sendMessage("Error with loading configuration.");
+                        }
+
+                        try {
+                            customConfig.set("GradientStart", args[0].toLowerCase());
+                            customConfig.set("GradientEnd", args[1].toLowerCase());
+                            customConfig.set("GradientPreset", "none");
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientChanged")));
+                            customConfig.save(customConfigFile);
+                        } catch (Exception e3) {
+                            System.out.println("Error with configuration for player " + p.getName());
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
+                        }
+
+                    } else {
+
+                        try {
+
+                            Gradient g = GradientPresets.getGradient(args[0]);
+                            Player pl = (Player) Bukkit.getServer().getPlayer(args[1]);
+
+                            File customConfigFile;
+                            customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
+                                    "/players/" + pl.getUniqueId() + ".yml");
+                            FileConfiguration customConfig;
+                            customConfig = new YamlConfiguration();
+                            try {
+                                customConfig.load(customConfigFile);
+                            } catch (Exception e2) {
+                                System.out.println("Error with loading configuration for player " + pl.getName());
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
+                            }
+
+
+                            try {
+                                String preset = args[0].toLowerCase();
+                                if (p.hasPermission("chromium.chat.gradient." + preset)) {
+                                    customConfig.set("GradientStart", "none");
+                                    customConfig.set("GradientEnd", "none");
+                                    customConfig.set("GradientPreset", args[0]);
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientChanged")));
+                                    customConfig.save(customConfigFile);
+                                } else {
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("NoPerm")));
+                                }
+
+                            } catch (Exception e3) {
+                                System.out.println("Error with configuration for player " + pl.getName());
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
+                            }
+
+
+                        } catch (Exception exx) {
+                            p.sendMessage(ChatColor.YELLOW + "Error while performing command.");
+                        }
+                    }
+
+                }
+
+                if(args.length == 3){
+
+                }
+
+            } else {
+
+                if (p.hasPermission("chromium.chat.gradient")) {
+
+                    if (args.length < 1 || args.length > 2) {
                         p.sendMessage(usage);
                     }
 
-                    if(args.length == 1){
-                        if(!args[0].equalsIgnoreCase("toggle")){
+                    if (args.length == 1) {
+                        if (!args[0].equalsIgnoreCase("toggle")) {
                             try {
 
                                 Gradient g = GradientPresets.getGradient(args[0]);
 
-                                    File customConfigFile;
-                                    customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                                            "/players/" + p.getUniqueId() + ".yml");
-                                    FileConfiguration customConfig;
-                                    customConfig = new YamlConfiguration();
-                                    try{
-                                        customConfig.load(customConfigFile);
-                                    } catch (Exception e2){
-                                        System.out.println("Error with loading configuration for player " + p.getName());
-                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
-                                    }
+                                File customConfigFile;
+                                customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
+                                        "/players/" + p.getUniqueId() + ".yml");
+                                FileConfiguration customConfig;
+                                customConfig = new YamlConfiguration();
+                                try {
+                                    customConfig.load(customConfigFile);
+                                } catch (Exception e2) {
+                                    System.out.println("Error with loading configuration for player " + p.getName());
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
+                                }
 
-                                    try{
+
+                                try {
+                                    String preset = args[0].toLowerCase();
+                                    if (p.hasPermission("chromium.chat.gradient." + preset)) {
                                         customConfig.set("GradientStart", "none");
                                         customConfig.set("GradientEnd", "none");
                                         customConfig.set("GradientPreset", args[0]);
                                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientChanged")));
                                         customConfig.save(customConfigFile);
-                                    } catch (Exception e3){
-                                        System.out.println("Error with configuration for player " + p.getName());
-                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
+                                    } else {
+                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("NoPerm")));
                                     }
 
+                                } catch (Exception e3) {
+                                    System.out.println("Error with configuration for player " + p.getName());
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
                                 }
-                            catch(Exception exx){
+
+
+                            } catch (Exception exx) {
                                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientUnknownPreset")));
                             }
 
@@ -74,13 +236,13 @@ public class GradientCmd implements CommandExecutor {
                             customConfig = new YamlConfiguration();
                             try {
                                 customConfig.load(customConfigFile);
-                            } catch (Exception e2){
+                            } catch (Exception e2) {
                                 System.out.println("Error with loading configuration for player " + p.getName());
                                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
                             }
 
-                            try{
-                                if(customConfig.getBoolean("GradientEnabled")){
+                            try {
+                                if (customConfig.getBoolean("GradientEnabled")) {
                                     customConfig.set("GradientEnabled", false);
                                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientOff")));
                                     customConfig.save(customConfigFile);
@@ -90,35 +252,35 @@ public class GradientCmd implements CommandExecutor {
                                     customConfig.save(customConfigFile);
                                 }
 
-                            } catch (Exception e3){
+                            } catch (Exception e3) {
                                 System.out.println("Error with configuration for player " + p.getName());
                                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
                             }
                         }
                     }
-                    if(args.length == 2){
+                    if (args.length == 2) {
 
-                        if(args[0].startsWith("#") && args[1].startsWith("#")){
+                        if (args[0].startsWith("#") && args[1].startsWith("#")) {
 
                             File customConfigFile;
                             customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
                                     "/players/" + p.getUniqueId() + ".yml");
                             FileConfiguration customConfig;
                             customConfig = new YamlConfiguration();
-                            try{
+                            try {
                                 customConfig.load(customConfigFile);
-                            } catch (Exception e2){
+                            } catch (Exception e2) {
                                 System.out.println("Error with loading configuration for player " + p.getName());
                                 p.sendMessage("Error with loading configuration.");
                             }
 
-                            try{
+                            try {
                                 customConfig.set("GradientStart", args[0].toLowerCase());
                                 customConfig.set("GradientEnd", args[1].toLowerCase());
                                 customConfig.set("GradientPreset", "none");
                                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientChanged")));
                                 customConfig.save(customConfigFile);
-                            } catch (Exception e3){
+                            } catch (Exception e3) {
                                 System.out.println("Error with configuration for player " + p.getName());
                                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
                             }
@@ -135,6 +297,7 @@ public class GradientCmd implements CommandExecutor {
                             ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("NoPerm")));
 
                 }
+            }
 
             }
 

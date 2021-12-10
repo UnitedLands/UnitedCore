@@ -24,22 +24,22 @@ public class CustomItemCmd implements CommandExecutor {
             Player p = (Player) sender;
             if(args.length == 0) {
                 Logger.logNoPrefix(p, "&e&lChromium Items\n"
-                        + "&a/customitem help &f| &7&oBrings this information up\n"
-                        + "&a/customitem give <name> &f| &7&oGives the item if the name is similar\n"
-                        + "&a/customitem listfqn &f| &7&oList all custom items by there full name (including color)\n"
-                        + "&a/customitem list &f| &7&oList all custom items by there full name");
+                        + "&a/customitem help\n"
+                        + "&a/customitem give <name>\n"
+                        + "&a/customitem listfqn\n"
+                        + "&a/customitem list");
             }
             if(args.length > 0) {
                 if(args[0].equals("help")) {
                     Logger.logNoPrefix(p, "&e&lChromium Items\n"
-                            + "&b/customitem help &f| &7&oBrings this information up\n"
-                            + "&b/customitem give <name> &f| &7&oGives the item if the name is similar\n"
-                            + "&b/customitem listfqn &f| &7&oList all custom items by there full name (including color)\n"
-                            + "&b/customitem list &f| &7&oList all custom items by there full name");
+                            + "&b/customitem help\n"
+                            + "&b/customitem give <name>\n"
+                            + "&b/customitem listfqn\n"
+                            + "&b/customitem list");
                     return true;
                 }
                 if(args[0].equals("listfqn")) {
-                    StringBuilder items = new StringBuilder("&e&llChromium Items&\n");
+                    StringBuilder items = new StringBuilder("&e&llChromium Items&r\n");
                     for (Map.Entry<String, CustomItem> e : CustomItem.getAllItems().entrySet()) {
                         items.append(e.getValue().getItem().getItemMeta().getDisplayName()+"\n");
                     }
@@ -47,7 +47,7 @@ public class CustomItemCmd implements CommandExecutor {
 
                 }
                 if(args[0].equals("list")) {
-                    StringBuilder items = new StringBuilder("&e&llChromium Items&\n");
+                    StringBuilder items = new StringBuilder("&e&llChromium Items\n");
                     for (Map.Entry<String, CustomItem> e : CustomItem.getAllItems().entrySet()) {
                         items.append("&b"+ ChatColor.stripColor(e.getValue().getItem().getItemMeta().getDisplayName())+"\n");
                     }

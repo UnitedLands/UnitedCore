@@ -22,7 +22,7 @@ public class ChromiumMainCommand implements CommandExecutor {
             if(args.length == 0){
                 player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Chromium Admin");
                 player.sendMessage(ChatColor.DARK_AQUA + "/chromium modules");
-                player.sendMessage(ChatColor.DARK_AQUA + "/chromium modules <enable/disable> <module>");
+                player.sendMessage(ChatColor.DARK_AQUA + "/chromium modules <enable/disable/reload> <module>");
             } else {
 
                 if(args[0].equalsIgnoreCase("modules")){
@@ -68,6 +68,15 @@ public class ChromiumMainCommand implements CommandExecutor {
 
                             Bukkit.getPluginManager().enablePlugin(pl);
                             sender.sendMessage(ChatColor.YELLOW + "Module " + ChatColor.GREEN + pl.getName() + ChatColor.YELLOW + " enabled.");
+
+                        }
+
+                        if(args[1].equalsIgnoreCase("reoad")){
+                            Plugin pl = Bukkit.getPluginManager().getPlugin(args[2]);
+
+                            Bukkit.getPluginManager().disablePlugin(pl);
+                            Bukkit.getPluginManager().enablePlugin(pl);
+                            sender.sendMessage(ChatColor.YELLOW + "Module " + ChatColor.GREEN + pl.getName() + ChatColor.YELLOW + " reloaded.");
 
                         }
 
