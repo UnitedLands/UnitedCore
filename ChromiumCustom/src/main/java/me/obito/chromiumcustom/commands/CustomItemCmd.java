@@ -15,7 +15,7 @@ import java.util.Map;
 public class CustomItemCmd implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(!sender.hasPermission("chromium.custom.admin")) {
-            sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getMsg("NoPerm")));
+            sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getGlobalMsg("NoPerm")));
             return false;
         }
 
@@ -39,7 +39,7 @@ public class CustomItemCmd implements CommandExecutor {
                     return true;
                 }
                 if(args[0].equals("listfqn")) {
-                    StringBuilder items = new StringBuilder("&e&llChromium Items&r\n");
+                    StringBuilder items = new StringBuilder("&e&lChromium Items&r\n");
                     for (Map.Entry<String, CustomItem> e : CustomItem.getAllItems().entrySet()) {
                         items.append(e.getValue().getItem().getItemMeta().getDisplayName()+"\n");
                     }
@@ -47,7 +47,7 @@ public class CustomItemCmd implements CommandExecutor {
 
                 }
                 if(args[0].equals("list")) {
-                    StringBuilder items = new StringBuilder("&e&llChromium Items\n");
+                    StringBuilder items = new StringBuilder("&e&lChromium Items\n");
                     for (Map.Entry<String, CustomItem> e : CustomItem.getAllItems().entrySet()) {
                         items.append("&b"+ ChatColor.stripColor(e.getValue().getItem().getItemMeta().getDisplayName())+"\n");
                     }
@@ -57,12 +57,18 @@ public class CustomItemCmd implements CommandExecutor {
             }
             if(args.length > 1) {
                 if(args[0].equals("give")) {
-                    ItemStack item = CustomItem.getItemBySimilarName(args[1]);
-                    if(item != null) {
-                        p.getInventory().addItem(item);
-                        Logger.log("&aYou received a similar item named: "+item.getItemMeta().getDisplayName());
+                    try{
+                        ItemStack item = CustomItem.getItemBySimilarName(args[1]);
+                        if(item != null) {
+                            p.getInventory().addItem(item);
+                            Logger.log("&aYou received a similar item named: "+item.getItemMeta().getDisplayName());
+                            return true;
+                        }
+                    } catch (Exception e1){
+                        p.sendMessage("Contact developer.");
                         return true;
                     }
+
                 }
             }
         }

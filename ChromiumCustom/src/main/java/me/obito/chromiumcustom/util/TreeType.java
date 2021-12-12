@@ -1,7 +1,5 @@
-package me.obito.chromiumcustom.trees;
+package me.obito.chromiumcustom.util;
 
-import me.obito.chromiumcustom.util.CustomItem;
-import me.obito.chromiumcustom.util.Logger;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

@@ -1,9 +1,9 @@
 # CHROMIUMCHAT CONFIGURATION #
 # AUTHOR: OBITO17 #
 TimeInSeconds: 30
-Message 1: "Chromium Message 1"
-Message 2: "Chromium Message 2"
-Message 3: "Chromium Message 3"
+Message 1: "&8&m                             \n&cUnitedLands &fMessage\n&8&m                             "
+Message 2: "&8&m                             \n&aUnitedLands &fMessage\n&8&m                             "
+Message 3: "&8&m                             \n&bUnitedLands &fMessage\n&8&m                             "
 Default Message Color: "&7"
 ClearChatOnJoin: true
 Preset Gradients:

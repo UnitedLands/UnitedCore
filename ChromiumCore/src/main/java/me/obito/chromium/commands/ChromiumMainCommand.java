@@ -50,7 +50,7 @@ public class ChromiumMainCommand implements CommandExecutor {
 
                         player.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "Chromium Admin");
                         player.sendMessage(ChatColor.DARK_AQUA + "/chromium modules");
-                        player.sendMessage(ChatColor.DARK_AQUA + "/chromium modules <enable/disable> <module>");
+                        player.sendMessage(ChatColor.DARK_AQUA + "/chromium modules <enable/disable/reload> <module>");
 
                     }
 
@@ -71,7 +71,7 @@ public class ChromiumMainCommand implements CommandExecutor {
 
                         }
 
-                        if(args[1].equalsIgnoreCase("reoad")){
+                        if(args[1].equalsIgnoreCase("reload")){
                             Plugin pl = Bukkit.getPluginManager().getPlugin(args[2]);
 
                             Bukkit.getPluginManager().disablePlugin(pl);

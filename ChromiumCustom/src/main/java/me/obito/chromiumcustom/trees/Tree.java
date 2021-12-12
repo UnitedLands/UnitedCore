@@ -3,6 +3,7 @@ package me.obito.chromiumcustom.trees;
 import me.obito.chromiumcustom.util.GenericLocation;
 import me.obito.chromiumcustom.util.Logger;
 import me.obito.chromiumcustom.util.SerializableData;
+import me.obito.chromiumcustom.util.TreeType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

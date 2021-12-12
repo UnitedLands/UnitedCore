@@ -1,7 +1,7 @@
 package me.obito.chromiumcustom.commands;
 
 import me.obito.chromiumcustom.ChromiumCustom;
-import me.obito.chromiumcustom.trees.TreeType;
+import me.obito.chromiumcustom.util.TreeType;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -13,7 +13,7 @@ public class TreeCmd implements CommandExecutor {
     //
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(!sender.hasPermission("chromium.custom.admin")) {
-            sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getMsg("NoPerm")));
+            sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getGlobalMsg("NoPerm")));
             return false;
         }
 
@@ -61,9 +61,17 @@ public class TreeCmd implements CommandExecutor {
                     }
                 }
                 if(args[0].equals("info")) {
-                    TreeType tree = TreeType.valueOf(args[1].toUpperCase());
+                    TreeType tree = null;
+                    try{
+                        tree = TreeType.valueOf("MANGO");
+                    } catch (Exception e1){
+                        sender.sendMessage("NE");
+                        return false;
+                    }
+
                     if(tree != null) {
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&e&l%s Tree&r\n"
+                        sender.sendMessage("MANGO");
+                      /* sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&e&l%s Tree&r\n"
                                         + "&eFruit: &7&o%s\n"
                                         + "&eFruit Block: &7&o%s\n"
                                         + "&eFruit Replacement Block: &7&o%s\n"
@@ -76,7 +84,7 @@ public class TreeCmd implements CommandExecutor {
                                 tree.getFruitReplaceBlock(),
                                 tree.getStemBlock(),
                                 tree.getStemReplaceBlock(),
-                                tree.getSeed())));
+                                tree.getSeed())));*/
                     } else {
                         sender.sendMessage("Invalid tree name.");
                     }
@@ -86,11 +94,16 @@ public class TreeCmd implements CommandExecutor {
                 if(args[0].equals("give")) {
                     Player p = Bukkit.getPlayer(args[1]);
                     if(p != null){
-                        TreeType tree = TreeType.valueOf(args[2].toUpperCase());
-                        if(tree != null) {
-                            sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getMsg("ReceivedSapling")));
-                            p.getInventory().addItem(tree.getSeed());
+                        try{
+                            TreeType tree = TreeType.valueOf(args[2].toUpperCase());
+                            if(tree != null) {
+                                sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getMsg("ReceivedSapling")));
+                                p.getInventory().addItem(tree.getSeed());
+                            }
+                        } catch (Exception e1){
+                            e1.printStackTrace();
                         }
+
                     }
                 }
             }

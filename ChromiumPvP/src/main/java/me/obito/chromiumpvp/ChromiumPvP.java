@@ -92,7 +92,8 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
             System.out.println("Error with loading messages.");
         }
 
-        return customConfig.getString(s);
+        return customConfig.getConfigurationSection("Global").getString(s);
+
 
     }
 

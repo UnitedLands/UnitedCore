@@ -81,7 +81,23 @@ public final class ChromiumCustom extends JavaPlugin {
             System.out.println("Error with loading messages.");
         }
 
-        return customConfig.getString(s);
+        return customConfig.getConfigurationSection("Items").getString(s);
+
+    }
+
+    public static String getGlobalMsg(String s){
+        File customConfigFile;
+        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
+                "messages.yml");
+        FileConfiguration customConfig;
+        customConfig = new YamlConfiguration();
+        try{
+            customConfig.load(customConfigFile);
+        } catch (Exception e2){
+            System.out.println("Error with loading messages.");
+        }
+
+        return customConfig.getConfigurationSection("Global").getString(s);
 
     }
 

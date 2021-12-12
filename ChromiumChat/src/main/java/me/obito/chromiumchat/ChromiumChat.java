@@ -52,7 +52,7 @@ public class ChromiumChat extends JavaPlugin {
 
                 List<String> firstmotd = new ArrayList<>();
 
-                firstmotd.add("&Welcome");
+                firstmotd.add("&aWelcome");
                 firstmotd.add("&eto");
                 firstmotd.add("&3UnitedLands");
 
@@ -152,7 +152,7 @@ public class ChromiumChat extends JavaPlugin {
             System.out.println("Error with loading messages.");
         }
 
-        return customConfig.getString(s);
+        return customConfig.getConfigurationSection("Global").getString(s);
 
     }
 
