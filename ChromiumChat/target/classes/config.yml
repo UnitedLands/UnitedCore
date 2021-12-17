@@ -4,8 +4,9 @@ TimeInSeconds: 30
 Message 1: "&8&m                             \n&cUnitedLands &fMessage\n&8&m                             "
 Message 2: "&8&m                             \n&aUnitedLands &fMessage\n&8&m                             "
 Message 3: "&8&m                             \n&bUnitedLands &fMessage\n&8&m                             "
-Default Message Color: "&7"
 ClearChatOnJoin: true
+Default Message Color: "&f"
+BroadcastEnabled: true
 Preset Gradients:
   rainbow:
     - "#e07870"

@@ -93,8 +93,6 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         }
 
         return customConfig.getConfigurationSection("Global").getString(s);
-
-
     }
 
     @EventHandler

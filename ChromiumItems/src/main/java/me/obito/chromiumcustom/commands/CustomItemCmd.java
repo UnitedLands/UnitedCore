@@ -1,6 +1,6 @@
 package me.obito.chromiumcustom.commands;
 
-import me.obito.chromiumcustom.ChromiumCustom;
+import me.obito.chromiumcustom.ChromiumItems;
 import me.obito.chromiumcustom.util.CustomItem;
 import me.obito.chromiumcustom.util.Logger;
 import me.obito.chromiumcustom.util.TreeType;
@@ -16,7 +16,7 @@ import java.util.Map;
 public class CustomItemCmd implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(!sender.hasPermission("chromium.custom.admin")) {
-            sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumCustom.getGlobalMsg("NoPerm")));
+            sender.sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', ChromiumItems.getGlobalMsg("NoPerm")));
             return false;
         }
 

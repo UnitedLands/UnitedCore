@@ -106,18 +106,30 @@ public class ChromiumChat extends JavaPlugin {
         scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
+                if(Config1.getBoolean("BroadcastEnabled") == true) {
+                    try {
 
-                try {
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Config1.getString("Message " + i)));
-                    i++;
-                } catch (Exception e1){
-                    i = 2;
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Config1.getString("Message 1")));
+                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Config1.getString("Message " + i)));
+                        i++;
+
+
+                    } catch (Exception e1){
+                        i = 2;
+                        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Config1.getString("Message 1")));
+                    }
                 }
+
 
             }
         }, 0L, 20L*seconds);
 
+    }
+    public static Boolean getConfigurBool(String s){
+        return Config1.getBoolean(s);
+    }
+
+    public static void setConfigurBool(String s, Boolean b){
+        Config1.set(s, b);
     }
 
     public static FileConfiguration getConfigur(){
