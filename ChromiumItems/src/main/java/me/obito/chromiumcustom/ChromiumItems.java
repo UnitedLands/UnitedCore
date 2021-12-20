@@ -52,7 +52,7 @@ public class ChromiumItems extends JavaPlugin {
 
 
         new Mango();
-        //new Croissant();
+        new Croissant();
         new Pinecone();
         new BracketMushroom();
         new FungalSapling();
@@ -62,6 +62,8 @@ public class ChromiumItems extends JavaPlugin {
         new Landscaper();
         new FloweringAcacia();
         new Mimosa();
+        new DarkMagic();
+        new Sausage();
 
         new BiomeSelector();
 
