@@ -73,6 +73,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+            <repository>
+                <id>placeholderapi</id>
+                <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+            </repository>
     </repositories>
 
     <dependencies>
@@ -86,6 +90,12 @@
             <groupId>com.github.TownyAdvanced</groupId>
             <artifactId>Towny</artifactId>
             <version>0.97.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.10.9</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

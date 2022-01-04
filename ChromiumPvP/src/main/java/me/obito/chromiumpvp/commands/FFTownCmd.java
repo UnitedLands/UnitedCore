@@ -75,9 +75,10 @@ public class FFTownCmd implements CommandExecutor {
                                 customConfig.load(customConfigFile);
                                 customConfig.set("FriendlyFire", 1);
                                 customConfig.save(customConfigFile);
-                                p.sendMessage("File created, friendly fire set to 1.");
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("FFTownEnabled")));
                                 return false;
-                            } catch (Exception e1){
+                            } catch
+                            (Exception e1){
                                 p.sendMessage("Error with config files for town.");
                                 return false;
                             }

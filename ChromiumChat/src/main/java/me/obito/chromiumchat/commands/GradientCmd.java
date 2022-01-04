@@ -1,5 +1,6 @@
 package me.obito.chromiumchat.commands;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.obito.chromiumchat.ChromiumChat;
 import me.obito.chromiumchat.gradient.Gradient;
 import me.obito.chromiumchat.gradient.GradientPresets;
@@ -18,14 +19,18 @@ import java.util.Locale;
 
 public class GradientCmd implements CommandExecutor {
 
-    String usage = ChatColor.YELLOW + "Use /gradient <toggle> | <preset> | <hexcolor1> <hexcolor2>";
-    String usageAdmin = ChatColor.YELLOW + "Use /gradient <toggle> | <preset> | <hexcolor1> <hexcolor2> | <player>";
+
+    //String usageAdmin = (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradAdminCommand")));
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
         if(sender instanceof Player){
 
+            String usage1 = (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradCommand")));
+
             Player p = (Player) sender;
+
+            String usage = PlaceholderAPI.setPlaceholders(p, usage1);
 
                 if (p.hasPermission("chromium.chat.gradient")) {
 

@@ -28,9 +28,8 @@ public class    PvPCmd implements CommandExecutor {
 
     public HashMap<String, Long> cooldowns = new HashMap<String, Long>();
 
-    String usage = ChatColor.YELLOW + "Use /pvp <on/off> | <status>";
-    String usageAdmin = ChatColor.YELLOW + "Use /pvp <on/off> <player> | <status>";
-
+    String usage = (ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPCommand")));
+    String usageAdmin = (ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPAdminCommand")));
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
