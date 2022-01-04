@@ -18,9 +18,7 @@ import java.util.HashMap;
 public class PvPCmd implements CommandExecutor {
 
     public HashMap<String, Long> cooldowns = new HashMap<String, Long>();
-    int cooldownTime = ChromiumPvP.getConfigur().getInt("CooldownTimeInSecs");
-    String usage = (ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPCommand")));
-    String usageAdmin = (ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPAdminCommand")));
+
 
     public boolean isInCombat(Player player) {
         ICombatLogX plugin = (ICombatLogX) Bukkit.getPluginManager().getPlugin("CombatLogX");
@@ -30,6 +28,10 @@ public class PvPCmd implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
+        int cooldownTime = ChromiumPvP.getConfigur().getInt("CooldownTimeInSecs");
+        String usage = (ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPCommand")));
+        String usageAdmin = (ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPAdminCommand")));
 
         if (sender instanceof Player) {
 
