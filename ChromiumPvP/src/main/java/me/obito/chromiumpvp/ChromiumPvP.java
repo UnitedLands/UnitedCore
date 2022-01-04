@@ -2,7 +2,6 @@ package me.obito.chromiumpvp;
 
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
 import me.obito.chromiumpvp.commands.FFNationCmd;
 import me.obito.chromiumpvp.commands.FFTownCmd;
 import me.obito.chromiumpvp.commands.PvPCmd;
@@ -15,19 +14,68 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
 public final class ChromiumPvP extends JavaPlugin implements Listener {
 
-    File configFile;
     public static FileConfiguration Config;
+    static Plugin chromiumFinal = Bukkit.getPluginManager().getPlugin("ChromiumFinal");
     File customConfigFile;
     FileConfiguration customConfig;
 
+    public static FileConfiguration getConfigur() {
+        return Config;
+    }
+
+    public static String getMsg(String s) {
+        File customConfigFile;
+        customConfigFile = new File(chromiumFinal.getDataFolder(), "messages.yml");
+        FileConfiguration customConfig;
+        customConfig = new YamlConfiguration();
+        try {
+            customConfig.load(customConfigFile);
+        } catch (Exception e2) {
+            System.out.println("Error with loading messages.");
+        }
+
+        return customConfig.getConfigurationSection("PvP").getString(s);
+
+    }
+
+    public static String getGlobalMsg(String s) {
+        File customConfigFile;
+        customConfigFile = new File(chromiumFinal.getDataFolder(), "messages.yml");
+        FileConfiguration customConfig;
+        customConfig = new YamlConfiguration();
+        try {
+            customConfig.load(customConfigFile);
+        } catch (Exception e2) {
+            System.out.println("Error with loading messages.");
+        }
+
+        return customConfig.getConfigurationSection("Global").getString(s);
+    }
+
+    public static boolean getPvPStatus(Player player) {
+        File customConfigFile = new File(chromiumFinal.getDataFolder(),
+                "/players/" + player.getUniqueId() + ".yml");
+
+        FileConfiguration playerConfig;
+        playerConfig = new YamlConfiguration();
+        try {
+            playerConfig.load(customConfigFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return playerConfig.getBoolean("PvP");
+    }
+
     @Override
-    public void onEnable(){
+    public void onEnable() {
         Bukkit.getPluginManager().getPlugin("ChromiumPvP").saveDefaultConfig();
         Config = Bukkit.getPluginManager().getPlugin("ChromiumPvP").getConfig();
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
@@ -37,7 +85,7 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         this.getCommand("pvp").setExecutor(new PvPCmd());
 
 
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "messages.yml");
+        customConfigFile = new File(chromiumFinal.getDataFolder(), "messages.yml");
         if (!customConfigFile.exists()) {
             customConfigFile.getParentFile().mkdirs();
 
@@ -47,7 +95,7 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
                 customConfig = new YamlConfiguration();
                 customConfig.load(customConfigFile);
 
-            } catch (Exception e1){
+            } catch (Exception e1) {
                 System.out.println("EXCEPTION: CANT CREATE NEW FILE OR LOAD IT");
             }
             //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
@@ -55,86 +103,32 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
 
     }
 
-    public static FileConfiguration getConfigur(){
-        return Config;
-    }
-
     @Override
     public void onDisable() {
         // Plugin shutdown logic
     }
 
-    public static String getMsg(String s){
-        File customConfigFile;
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                "messages.yml");
-        FileConfiguration customConfig;
-        customConfig = new YamlConfiguration();
-        try{
-            customConfig.load(customConfigFile);
-        } catch (Exception e2){
-            System.out.println("Error with loading messages.");
-        }
-
-        return customConfig.getConfigurationSection("PvP").getString(s);
-
-    }
-
-    public static String getGlobalMsg(String s){
-        File customConfigFile;
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                "messages.yml");
-        FileConfiguration customConfig;
-        customConfig = new YamlConfiguration();
-        try{
-            customConfig.load(customConfigFile);
-        } catch (Exception e2){
-            System.out.println("Error with loading messages.");
-        }
-
-        return customConfig.getConfigurationSection("Global").getString(s);
-    }
-
     @EventHandler
-    public void onDamage(EntityDamageByEntityEvent e){
+    public void onDamage(EntityDamageByEntityEvent e) {
 
-        Boolean enable = Config.getBoolean("PvPToggleEnabled");
+        boolean enable = Config.getBoolean("PvPToggleEnabled");
 
-        if(e.getEntity() instanceof Player){
-            if(e.getDamager() instanceof Player){
-                if(enable) {
+        if (e.getEntity() instanceof Player) {
+            if (e.getDamager() instanceof Player) {
+                if (enable) {
                     Player target = (Player) e.getEntity();
                     Player damager = (Player) e.getDamager();
+                    Plugin chromiumPvP = Bukkit.getPluginManager().getPlugin("ChromiumPvP");
 
-                    File customConfigFile;
-                    customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                            "/players/" + damager.getUniqueId() + ".yml");
-                    FileConfiguration customConfigDamager;
-                    customConfigDamager = new YamlConfiguration();
-                    try {
-                        customConfigDamager.load(customConfigFile);
-                    } catch (Exception e2) {
-                    }
+                    boolean pvpDamager = getPvPStatus((Player) e.getDamager());
+                    boolean pvpTarget = getPvPStatus((Player) e.getEntity());
 
-                    File customConfigFile2;
-                    customConfigFile2 = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                            "/players/" + target.getUniqueId() + ".yml");
-                    FileConfiguration customConfigTarget;
-                    customConfigTarget = new YamlConfiguration();
-                    try {
-                        customConfigTarget.load(customConfigFile2);
-                    } catch (Exception e3) {
-                    }
-
-                    boolean pvpDamager = customConfigDamager.getBoolean("PvP");
-                    boolean pvpTarget = customConfigTarget.getBoolean("PvP");
-
-                    if (pvpTarget == false) {
+                    if (!pvpTarget) {
                         e.setCancelled(true);
                         damager.sendMessage(ChatColor.RED + "That player has disabled their pvp!");
                     }
 
-                    if (pvpDamager == false) {
+                    if (!pvpDamager) {
                         e.setCancelled(true);
                         damager.sendMessage(ChatColor.RED + "You have your pvp disabled!");
                     }
@@ -146,7 +140,7 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
                         if (resident1.getNationOrNull().equals(resident2.getNationOrNull())) {
 
                             File customFFile;
-                            customFFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumPvP").getDataFolder(),
+                            customFFile = new File(chromiumPvP.getDataFolder(),
                                     "/nations/" + resident1.getNationOrNull().getName() + ".yml");
                             FileConfiguration TownConfig;
                             TownConfig = new YamlConfiguration();
@@ -167,19 +161,18 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
                                 if (resident1.getTownOrNull().equals(resident2.getTownOrNull())) {
 
                                     File customConfigFile5;
-                                    customConfigFile5 = new File(Bukkit.getPluginManager().getPlugin("ChromiumPvP").getDataFolder(),
-                                            "/config.yml");
+                                    customConfigFile5 = new File(chromiumPvP.getDataFolder(), "/config.yml");
                                     FileConfiguration customConfig5;
                                     customConfig5 = new YamlConfiguration();
-                                    try{
+                                    try {
                                         customConfig5.load(customConfigFile5);
-                                    } catch (Exception e2){
+                                    } catch (Exception e2) {
                                         System.out.println("Error with loading configuration");
                                     }
 
-                                    if(customConfig5.getInt("GlobalFriendlyFire") == 0){
+                                    if (customConfig5.getInt("GlobalFriendlyFire") == 0) {
                                         File customFFile;
-                                        customFFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumPvP").getDataFolder(),
+                                        customFFile = new File(chromiumPvP.getDataFolder(),
                                                 "/towns/" + resident1.getTownOrNull().getName() + ".yml");
                                         FileConfiguration TownConfig;
                                         TownConfig = new YamlConfiguration();
@@ -197,8 +190,6 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
                                     }
 
 
-
-
                                 }
 
 
@@ -207,16 +198,13 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
                     }
 
 
-
-
                 }
 
 
-                }
             }
         }
-
-
-
     }
+
+
+}
 
