@@ -2,14 +2,11 @@ package me.obito.chromiumpvp;
 
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
-//import me.obito.chromiumpvp.commands.FFNationCmd;
-//import me.obito.chromiumpvp.commands.FFTownCmd;
-//import me.obito.chromiumpvp.commands.PvPCmd;
-//import me.obito.chromiumpvp.commands.TaAdminCmd;
 import me.obito.chromiumpvp.commands.FFNationCmd;
 import me.obito.chromiumpvp.commands.FFTownCmd;
 import me.obito.chromiumpvp.commands.PvPCmd;
 import me.obito.chromiumpvp.commands.TaAdminCmd;
+import me.obito.chromiumpvp.hooks.Placeholders;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -88,8 +85,26 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         this.getCommand("fftown").setExecutor(new FFTownCmd());
         this.getCommand("pvp").setExecutor(new PvPCmd());
 
+        // PlaceholderAPI Expansion Register
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new Placeholders(this).register();
+        }
 
+        customConfigFile = new File(chromiumFinal.getDataFolder(), "messages.yml");
+        if (!customConfigFile.exists()) {
+            customConfigFile.getParentFile().mkdirs();
 
+            try {
+
+                customConfigFile.createNewFile();
+                customConfig = new YamlConfiguration();
+                customConfig.load(customConfigFile);
+
+            } catch (Exception e1) {
+                System.out.println("EXCEPTION: CANT CREATE NEW FILE OR LOAD IT");
+            }
+            //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
+        }
 
     }
 

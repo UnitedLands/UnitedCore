@@ -1,11 +1,15 @@
-/*package me.obito.chromiumpvp.hooks;
+package me.obito.chromiumpvp.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.obito.chromiumpvp.ChromiumPvP;
 import org.bukkit.OfflinePlayer;
 
 public class Placeholders extends PlaceholderExpansion {
+    private final ChromiumPvP plugin;
 
+    public Placeholders(ChromiumPvP plugin) {
+        this.plugin = plugin;
+    }
     @Override
     public String getAuthor() {
         return "Maroon28";
@@ -36,4 +40,4 @@ public class Placeholders extends PlaceholderExpansion {
 
         return null;
     }
-}*/
+}
