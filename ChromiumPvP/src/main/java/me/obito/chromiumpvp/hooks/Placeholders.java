@@ -1,4 +1,4 @@
-package me.obito.chromiumpvp.hooks;
+/*package me.obito.chromiumpvp.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.obito.chromiumpvp.ChromiumPvP;
@@ -36,4 +36,4 @@ public class Placeholders extends PlaceholderExpansion {
 
         return null;
     }
-}
+}*/

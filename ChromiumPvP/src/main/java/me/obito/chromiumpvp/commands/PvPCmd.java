@@ -30,8 +30,8 @@ public class PvPCmd implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         int cooldownTime = ChromiumPvP.getConfigur().getInt("CooldownTimeInSecs");
-        String usage = (ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPCommand")));
-        String usageAdmin = (ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPAdminCommand")));
+        String usage = "&eUse /pvp <on/off> | <status>.";
+        String usageAdmin = "&eUse /pvp <on/off> | <status> | <player>";
 
         if (sender instanceof Player) {
 
@@ -293,80 +293,5 @@ public class PvPCmd implements CommandExecutor {
         return false;
     }
 }
-
-            /*if (args.length > 0) {
-                p.sendMessage(usage);
-
-        } else {
-
-                if(p.hasPermission("chromium.pvp.toggle")){
-
-                    if(isInCombat(p)){
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("InCombat")));
-                    } else {
-                        File customConfigFile;
-                        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                                "/players/" + p.getUniqueId() + ".yml");
-                        FileConfiguration customConfig;
-                        customConfig = new YamlConfiguration();
-                        try {
-                            customConfig.load(customConfigFile);
-                        } catch (Exception e2){
-                            System.out.println("Error with loading configuration for player " + p.getName());
-                            p.sendMessage("Error with loading configuration.");
-                        }
-
-                        int cooldownTime = ChromiumPvP.getConfigur().getInt("CooldownTimeInSecs");
-                        if(cooldowns.containsKey(sender.getName())) {
-                            long secondsLeft = ((cooldowns.get(sender.getName())/1000)+cooldownTime) - (System.currentTimeMillis()/1000);
-                            if(secondsLeft>0) {
-                                sender.sendMessage(ChatColor.RED + "You can use that command in " + secondsLeft + " seconds.");
-                                return true;
-                            }
-                        }
-                        if(!p.hasPermission("chromium.pvp.cooldown.ignore")){
-                            cooldowns.put(sender.getName(), System.currentTimeMillis());
-                        }
-
-
-
-
-                        if(args.length == 0){
-
-                            Boolean pvptoggled = customConfig.getBoolean("PvP");
-                            if(pvptoggled){
-                                customConfig.set("PvP", false);
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPDisabled")));
-                                try{
-                                    customConfig.save(customConfigFile);
-                                }catch (Exception e1){
-                                    System.out.println("Error with saving configuration for player " + p.getName());
-                                    p.sendMessage("Error with saving configuration.");
-                                }
-
-                            } else {
-                                customConfig.set("PvP", true);
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPEnabled")));
-                                try{
-                                    customConfig.save(customConfigFile);
-                                }catch (Exception e1){
-                                    System.out.println("Error with saving configuration for player " + p.getName());
-                                    p.sendMessage("Error with saving configuration.");
-                                }
-                            }
-
-                        } else {
-                            p.sendMessage(usage);
-                        }
-                    }
-
-
-
-                }
-
-            }
-
-        }
-*/
 
 

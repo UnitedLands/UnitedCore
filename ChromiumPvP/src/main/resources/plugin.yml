@@ -3,7 +3,7 @@ version: '${project.version}'
 main: me.obito.chromiumpvp.ChromiumPvP
 api-version: 1.17
 authors: [ Obito17 ]
-depend: [ CombatLogX, Towny, TownyChat ]
+depend: [ CombatLogX, Towny, TownyChat, ChromiumFinal ]
 softdepend: [ PlaceholderAPI ]
 commands:
   pvp:
