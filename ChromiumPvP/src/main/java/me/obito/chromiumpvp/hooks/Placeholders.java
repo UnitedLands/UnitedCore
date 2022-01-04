@@ -26,6 +26,11 @@ public class Placeholders extends PlaceholderExpansion {
     }
 
     @Override
+    public boolean persist() {
+        return true;
+    }
+
+    @Override
     public String onRequest(OfflinePlayer player, String params) {
         if (player.getPlayer() != null) {
             if (params.equalsIgnoreCase("status")) {
