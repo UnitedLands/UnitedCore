@@ -30,8 +30,8 @@ public class PvPCmd implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         int cooldownTime = ChromiumPvP.getConfigur().getInt("CooldownTimeInSecs");
-        String usage = "&eUse /pvp <on/off> | <status>.";
-        String usageAdmin = "&eUse /pvp <on/off> | <status> | <player>";
+        String usage = "§eUse /pvp <on/off> | <status>.";
+        String usageAdmin = "§eUse /pvp <on/off> | <status> | <player>";
 
         if (sender instanceof Player) {
 

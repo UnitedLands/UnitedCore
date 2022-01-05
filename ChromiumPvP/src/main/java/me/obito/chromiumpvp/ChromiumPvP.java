@@ -1,7 +1,9 @@
 package me.obito.chromiumpvp;
 
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import me.obito.chromiumpvp.commands.FFNationCmd;
 import me.obito.chromiumpvp.commands.FFTownCmd;
 import me.obito.chromiumpvp.commands.PvPCmd;
@@ -26,6 +28,7 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
     static Plugin chromiumFinal = Bukkit.getPluginManager().getPlugin("ChromiumFinal");
     File customConfigFile;
     FileConfiguration customConfig;
+    TownyUniverse towny = TownyUniverse.getInstance();
 
     public static FileConfiguration getConfigur() {
         return Config;
@@ -61,6 +64,13 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
     }
 
     public static boolean getPvPStatus(Player player) {
+
+        boolean isCitizensNPC = player.hasMetadata("NPC");
+
+        if (isCitizensNPC) {
+            return false;
+        }
+
         File customConfigFile = new File(chromiumFinal.getDataFolder(),
                 "/players/" + player.getUniqueId() + ".yml");
 
@@ -71,8 +81,9 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return playerConfig.getBoolean("PvP");
+
+
     }
 
     @Override
@@ -86,7 +97,7 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         this.getCommand("pvp").setExecutor(new PvPCmd());
 
         // PlaceholderAPI Expansion Register
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new Placeholders(this).register();
         }
 
@@ -117,10 +128,16 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
     public void onDamage(EntityDamageByEntityEvent e) {
 
         boolean enable = Config.getBoolean("PvPToggleEnabled");
+        boolean isIgnoredWorld = Config.getList("IgnoredWorlds").contains(
+                e.getEntity().getWorld().getName());
+        boolean isCitizensNPC = e.getEntity().hasMetadata("NPC");
+        if (isCitizensNPC) {
+            return;
+        }
 
         if (e.getEntity() instanceof Player) {
             if (e.getDamager() instanceof Player) {
-                if (enable) {
+                if (enable && !isIgnoredWorld) {
                     Player target = (Player) e.getEntity();
                     Player damager = (Player) e.getDamager();
                     Plugin chromiumPvP = Bukkit.getPluginManager().getPlugin("ChromiumPvP");
@@ -138,20 +155,24 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
                         damager.sendMessage(ChatColor.RED + "You have your pvp disabled!");
                     }
 
-                    Resident resident1 = TownyUniverse.getInstance().getResident(damager.getUniqueId());
-                    Resident resident2 = TownyUniverse.getInstance().getResident(target.getUniqueId());
+                    Resident damagerResident = towny.getResident(damager.getUniqueId());
+                    Resident targetResident = towny.getResident(target.getUniqueId());
 
-                    if (resident1.hasNation() && resident2.hasNation()) {
-                        if (resident1.getNationOrNull().equals(resident2.getNationOrNull())) {
+                    if (damagerResident.hasNation() && targetResident.hasNation()) {
+
+                        Nation nation = damagerResident.getNationOrNull();
+
+                        if (nation.getResidents().contains(targetResident)) {
 
                             File customFFile;
                             customFFile = new File(chromiumPvP.getDataFolder(),
-                                    "/nations/" + resident1.getNationOrNull().getName() + ".yml");
+                                    "/nations/" + nation.getName() + ".yml");
                             FileConfiguration TownConfig;
                             TownConfig = new YamlConfiguration();
                             try {
                                 TownConfig.load(customFFile);
                             } catch (Exception e2) {
+                                e2.printStackTrace();
                             }
 
                             if (TownConfig.getInt("FriendlyFire") == 0) {
@@ -161,9 +182,10 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
 
 
                         } else {
-                            if (resident1.hasTown() && resident2.hasTown()) {
+                            if (damagerResident.hasTown() && targetResident.hasTown()) {
+                                Town town = damagerResident.getTownOrNull();
 
-                                if (resident1.getTownOrNull().equals(resident2.getTownOrNull())) {
+                                if (town.getResidents().contains(targetResident)) {
 
                                     File customConfigFile5;
                                     customConfigFile5 = new File(chromiumPvP.getDataFolder(), "/config.yml");
@@ -178,20 +200,19 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
                                     if (customConfig5.getInt("GlobalFriendlyFire") == 0) {
                                         File customFFile;
                                         customFFile = new File(chromiumPvP.getDataFolder(),
-                                                "/towns/" + resident1.getTownOrNull().getName() + ".yml");
+                                                "/towns/" + town.getName() + ".yml");
                                         FileConfiguration TownConfig;
                                         TownConfig = new YamlConfiguration();
                                         try {
                                             TownConfig.load(customFFile);
                                         } catch (Exception e2) {
+                                            e2.printStackTrace();
                                         }
 
                                         if (TownConfig.getInt("FriendlyFire") == 0) {
                                             e.setCancelled(true);
                                             damager.sendMessage(ChatColor.RED + "Player is in same town as you!");
                                         }
-                                    } else {
-
                                     }
 
 
@@ -212,4 +233,3 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
 
 
 }
-
