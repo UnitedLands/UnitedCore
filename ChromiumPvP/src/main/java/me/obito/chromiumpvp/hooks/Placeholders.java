@@ -40,6 +40,13 @@ public class Placeholders extends PlaceholderExpansion {
                 } else {
                     return "§a🛡";
                 }
+            } else if (params.equalsIgnoreCase("status-string")) {
+                boolean pvp = ChromiumPvP.getPvPStatus(player.getPlayer());
+                if (pvp) {
+                    return "enabled";
+                } else {
+                    return "disabled";
+                }
             }
         }
 
