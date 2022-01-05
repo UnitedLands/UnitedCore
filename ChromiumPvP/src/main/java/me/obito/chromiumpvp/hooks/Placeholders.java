@@ -2,6 +2,7 @@ package me.obito.chromiumpvp.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.obito.chromiumpvp.ChromiumPvP;
+import me.obito.chromiumpvp.util.Utils;
 import org.bukkit.OfflinePlayer;
 
 public class Placeholders extends PlaceholderExpansion {
@@ -34,14 +35,14 @@ public class Placeholders extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, String params) {
         if (player.getPlayer() != null) {
             if (params.equalsIgnoreCase("status")) {
-                boolean pvp = ChromiumPvP.getPvPStatus(player.getPlayer());
+                boolean pvp = Utils.getPvPStatus(player.getPlayer());
                 if (pvp) {
                     return "§c⚔";
                 } else {
                     return "§a🛡";
                 }
             } else if (params.equalsIgnoreCase("status-string")) {
-                boolean pvp = ChromiumPvP.getPvPStatus(player.getPlayer());
+                boolean pvp = Utils.getPvPStatus(player.getPlayer());
                 if (pvp) {
                     return "enabled";
                 } else {

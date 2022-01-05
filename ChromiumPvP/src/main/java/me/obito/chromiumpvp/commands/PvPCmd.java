@@ -3,16 +3,14 @@ package me.obito.chromiumpvp.commands;
 import com.SirBlobman.combatlogx.api.ICombatLogX;
 import com.SirBlobman.combatlogx.api.utility.ICombatManager;
 import me.obito.chromiumpvp.ChromiumPvP;
+import me.obito.chromiumpvp.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.util.HashMap;
 
 public class PvPCmd implements CommandExecutor {
@@ -33,9 +31,11 @@ public class PvPCmd implements CommandExecutor {
         String usage = "§eUse /pvp <on/off> | <status>.";
         String usageAdmin = "§eUse /pvp <on/off> | <status> | <player>";
 
+
         if (sender instanceof Player) {
 
             Player p = (Player) sender;
+            boolean pvp = Utils.getPvPStatus(p);
 
             if (p.hasPermission("chromium.pvp.admin")) {
                 if (args.length > 2 || args.length < 1) {
@@ -44,28 +44,17 @@ public class PvPCmd implements CommandExecutor {
                     if (args.length == 1) {
 
                         if (args[0].equalsIgnoreCase("status")) {
-                            File customConfigFile;
-                            customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                                    "/players/" + p.getUniqueId() + ".yml");
-                            FileConfiguration customConfig;
-                            customConfig = new YamlConfiguration();
-                            try {
-                                customConfig.load(customConfigFile);
-                            } catch (Exception e2) {
-                                System.out.println("Error with loading configuration for player " + p.getName());
-                                p.sendMessage("Error with loading configuration.");
-                            }
 
-                            if (customConfig.getBoolean("PvP") == true) {
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPStatusOn")));
+                            if (pvp == true) {
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPStatusOn")));
                             } else {
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPStatusOff")));
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPStatusOff")));
                             }
 
 
                         } else {
                             if (isInCombat(p)) {
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("InCombat")));
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("InCombat")));
                             } else {
                                 if (cooldowns.containsKey(sender.getName())) {
                                     long secondsLeft = ((cooldowns.get(sender.getName()) / 1000) + cooldownTime) - (System.currentTimeMillis() / 1000);
@@ -77,46 +66,23 @@ public class PvPCmd implements CommandExecutor {
                                     if (!p.hasPermission("chromium.pvp.cooldown.ignore")) {
                                         cooldowns.put(sender.getName(), System.currentTimeMillis());
                                     }
-                                    File customConfigFile;
-                                    customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                                            "/players/" + p.getUniqueId() + ".yml");
-                                    FileConfiguration customConfig;
-                                    customConfig = new YamlConfiguration();
-                                    try {
-                                        customConfig.load(customConfigFile);
-                                    } catch (Exception e2) {
-                                        System.out.println("Error with loading configuration for player " + p.getName());
-                                        p.sendMessage("Error with loading configuration.");
-                                    }
 
                                     if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
                                         if (args[0].equalsIgnoreCase("on")) {
-                                            if (customConfig.getBoolean("PvP") == false) {
-                                                customConfig.set("PvP", true);
-                                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPEnabled")));
-                                                try {
-                                                    customConfig.save(customConfigFile);
-                                                } catch (Exception e1) {
-                                                    System.out.println("Error with saving configuration for player " + p.getName());
-                                                    p.sendMessage("Error with saving configuration.");
-                                                }
+                                            if (pvp == false) {
+                                                Utils.setPvPStatus(p, true);
+                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPEnabled")));
                                             } else {
-                                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPAlreadyOn")));
+                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOn")));
                                             }
 
                                         }
                                         if (args[0].equalsIgnoreCase("off")) {
-                                            if (customConfig.getBoolean("PvP") == true) {
-                                                customConfig.set("PvP", false);
-                                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPDisabled")));
-                                                try {
-                                                    customConfig.save(customConfigFile);
-                                                } catch (Exception e1) {
-                                                    System.out.println("Error with saving configuration for player " + p.getName());
-                                                    p.sendMessage("Error with saving configuration.");
-                                                }
+                                            if (pvp == true) {
+                                                Utils.setPvPStatus(p, false);
+                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPDisabled")));
                                             } else {
-                                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPAlreadyOff")));
+                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOff")));
                                             }
 
                                         }
@@ -132,59 +98,35 @@ public class PvPCmd implements CommandExecutor {
                     }
                     if (args.length == 2) {
                         try {
-                            p = (Player) Bukkit.getServer().getPlayer(args[1]);
+                            p = Bukkit.getServer().getPlayer(args[1]);
                         } catch (Exception e1) {
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("PlayerNotRecognized")));
+                            sender.sendMessage(Utils.color(ChromiumPvP.getGlobalMsg("PlayerNotRecognized")));
                             return false;
                         }
 
                         if (p == null) {
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("PlayerNotRecognized")));
+                            sender.sendMessage(Utils.color(ChromiumPvP.getGlobalMsg("PlayerNotRecognized")));
                             return false;
-                        }
-
-                        File customConfigFile;
-                        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                                "/players/" + p.getUniqueId() + ".yml");
-                        FileConfiguration customConfig;
-                        customConfig = new YamlConfiguration();
-                        try {
-                            customConfig.load(customConfigFile);
-                        } catch (Exception e2) {
-                            System.out.println("Error with loading configuration for player " + p.getName());
-                            p.sendMessage("Error with loading configuration.");
                         }
 
                         if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
                             if (args[0].equalsIgnoreCase("on")) {
-                                if (customConfig.getBoolean("PvP") == false) {
-                                    customConfig.set("PvP", true);
-                                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPEnabledOp")));
-                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPEnabledByAdmin")));
-                                    try {
-                                        customConfig.save(customConfigFile);
-                                    } catch (Exception e1) {
-                                        System.out.println("Error with saving configuration for player " + p.getName());
-                                        p.sendMessage("Error with saving configuration.");
-                                    }
+                                if (pvp == false) {
+                                    Utils.setPvPStatus(p, true);
+                                    sender.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPEnabledOp")));
+                                    p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPEnabledByAdmin")));
                                 } else {
-                                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPAlreadyOn")));
+                                    sender.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOn")));
                                 }
 
                             }
                             if (args[0].equalsIgnoreCase("off")) {
-                                if (customConfig.getBoolean("PvP") == true) {
-                                    customConfig.set("PvP", false);
-                                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPDisabledOp")));
-                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPDisabledByAdmin")));
-                                    try {
-                                        customConfig.save(customConfigFile);
-                                    } catch (Exception e1) {
-                                        System.out.println("Error with saving configuration for player " + p.getName());
-                                        p.sendMessage("Error with saving configuration.");
-                                    }
+                                if (pvp == true) {
+                                    Utils.setPvPStatus(p, false);
+                                    sender.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPDisabledOp")));
+                                    p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPDisabledByAdmin")));
                                 } else {
-                                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPAlreadyOff")));
+                                    sender.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOff")));
                                 }
 
                             }
@@ -198,28 +140,17 @@ public class PvPCmd implements CommandExecutor {
                     if (args.length == 1) {
 
                         if (args[0].equalsIgnoreCase("status")) {
-                            File customConfigFile;
-                            customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                                    "/players/" + p.getUniqueId() + ".yml");
-                            FileConfiguration customConfig;
-                            customConfig = new YamlConfiguration();
-                            try {
-                                customConfig.load(customConfigFile);
-                            } catch (Exception e2) {
-                                System.out.println("Error with loading configuration for player " + p.getName());
-                                p.sendMessage("Error with loading configuration.");
-                            }
 
-                            if (customConfig.getBoolean("PvP") == true) {
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPStatusOn")));
+                            if (pvp == true) {
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPStatusOn")));
                             } else {
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPStatusOff")));
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPStatusOff")));
                             }
 
 
                         } else {
                             if (isInCombat(p)) {
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("InCombat")));
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("InCombat")));
                             } else {
                                 if (cooldowns.containsKey(sender.getName())) {
                                     long secondsLeft = ((cooldowns.get(sender.getName()) / 1000) + cooldownTime) - (System.currentTimeMillis() / 1000);
@@ -231,46 +162,23 @@ public class PvPCmd implements CommandExecutor {
                                     if (!p.hasPermission("chromium.pvp.cooldown.ignore")) {
                                         cooldowns.put(sender.getName(), System.currentTimeMillis());
                                     }
-                                    File customConfigFile;
-                                    customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(),
-                                            "/players/" + p.getUniqueId() + ".yml");
-                                    FileConfiguration customConfig;
-                                    customConfig = new YamlConfiguration();
-                                    try {
-                                        customConfig.load(customConfigFile);
-                                    } catch (Exception e2) {
-                                        System.out.println("Error with loading configuration for player " + p.getName());
-                                        p.sendMessage("Error with loading configuration.");
-                                    }
 
                                     if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
                                         if (args[0].equalsIgnoreCase("on")) {
-                                            if (customConfig.getBoolean("PvP") == false) {
-                                                customConfig.set("PvP", true);
-                                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPEnabled")));
-                                                try {
-                                                    customConfig.save(customConfigFile);
-                                                } catch (Exception e1) {
-                                                    System.out.println("Error with saving configuration for player " + p.getName());
-                                                    p.sendMessage("Error with saving configuration.");
-                                                }
+                                            if (pvp == false) {
+                                                Utils.setPvPStatus(p, true);
+                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPEnabled")));
                                             } else {
-                                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPAlreadyOn")));
+                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOn")));
                                             }
 
                                         }
                                         if (args[0].equalsIgnoreCase("off")) {
-                                            if (customConfig.getBoolean("PvP") == true) {
-                                                customConfig.set("PvP", false);
-                                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPDisabled")));
-                                                try {
-                                                    customConfig.save(customConfigFile);
-                                                } catch (Exception e1) {
-                                                    System.out.println("Error with saving configuration for player " + p.getName());
-                                                    p.sendMessage("Error with saving configuration.");
-                                                }
+                                            if (pvp == true) {
+                                                Utils.setPvPStatus(p, false);
+                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPDisabled")));
                                             } else {
-                                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("PvPAlreadyOff")));
+                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOff")));
                                             }
 
                                         }
@@ -283,11 +191,10 @@ public class PvPCmd implements CommandExecutor {
                         }
                     }
                 } else {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("NoPerm")));
+                    p.sendMessage(Utils.color(ChromiumPvP.getGlobalMsg("NoPerm")));
                 }
 
             }
-
 
         }
         return false;

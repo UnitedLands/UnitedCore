@@ -9,6 +9,7 @@ import me.obito.chromiumpvp.commands.FFTownCmd;
 import me.obito.chromiumpvp.commands.PvPCmd;
 import me.obito.chromiumpvp.commands.TaAdminCmd;
 import me.obito.chromiumpvp.hooks.Placeholders;
+import me.obito.chromiumpvp.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,7 +26,7 @@ import java.io.File;
 public final class ChromiumPvP extends JavaPlugin implements Listener {
 
     public static FileConfiguration Config;
-    static Plugin chromiumFinal = Bukkit.getPluginManager().getPlugin("ChromiumFinal");
+    public static Plugin chromiumFinal = Bukkit.getPluginManager().getPlugin("ChromiumFinal");
     File customConfigFile;
     FileConfiguration customConfig;
     TownyUniverse towny = TownyUniverse.getInstance();
@@ -61,29 +62,6 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         }
 
         return customConfig.getConfigurationSection("Global").getString(s);
-    }
-
-    public static boolean getPvPStatus(Player player) {
-
-        boolean isCitizensNPC = player.hasMetadata("NPC");
-
-        if (isCitizensNPC) {
-            return false;
-        }
-
-        File customConfigFile = new File(chromiumFinal.getDataFolder(),
-                "/players/" + player.getUniqueId() + ".yml");
-
-        FileConfiguration playerConfig;
-        playerConfig = new YamlConfiguration();
-        try {
-            playerConfig.load(customConfigFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return playerConfig.getBoolean("PvP");
-
-
     }
 
     @Override
@@ -142,8 +120,8 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
                     Player damager = (Player) e.getDamager();
                     Plugin chromiumPvP = Bukkit.getPluginManager().getPlugin("ChromiumPvP");
 
-                    boolean pvpDamager = getPvPStatus((Player) e.getDamager());
-                    boolean pvpTarget = getPvPStatus((Player) e.getEntity());
+                    boolean pvpDamager = Utils.getPvPStatus((Player) e.getDamager());
+                    boolean pvpTarget = Utils.getPvPStatus((Player) e.getEntity());
 
                     if (!pvpTarget) {
                         e.setCancelled(true);
