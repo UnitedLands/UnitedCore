@@ -2,10 +2,12 @@ package me.obito.chromiumpvp.commands;
 
 import com.SirBlobman.combatlogx.api.ICombatLogX;
 import com.SirBlobman.combatlogx.api.utility.ICombatManager;
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import me.obito.chromiumpvp.ChromiumPvP;
+import me.obito.chromiumpvp.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -22,6 +24,7 @@ public class FFNationCmd implements CommandExecutor {
 
     public HashMap<String, Long> cooldowns = new HashMap<String, Long>();
     String usage = ChatColor.YELLOW + "Use /ffnation to enable/disable the friendly fire in your nation.";
+    TownyUniverse towny = TownyUniverse.getInstance();
 
     public boolean isInCombat(Player player) {
         ICombatLogX plugin = (ICombatLogX) Bukkit.getPluginManager().getPlugin("CombatLogX");
@@ -41,21 +44,21 @@ public class FFNationCmd implements CommandExecutor {
 
             } else {
 
-                String nationName = "ignore";
+                String nationName;
                 if (p.hasPermission("towny.command.nation.friendlyfire")) {
 
-                    Resident resident = TownyUniverse.getInstance().getResident(p.getUniqueId());
+                    Resident resident = towny.getResident(p.getUniqueId());
                     if (resident.hasNation()) {
                         Nation nation = resident.getNationOrNull();
                         nationName = nation.getName();
                     } else {
                         System.out.println("Error: Player that is not in nation tried to execute the ff command.");
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("NoNation")));
+                        p.sendMessage(Utils.color(ChromiumPvP.getMsg("NoNation")));
                         return false;
                     }
 
                     if (isInCombat(p)) {
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("InCombat")));
+                        p.sendMessage(Utils.color(ChromiumPvP.getMsg("InCombat")));
                     } else {
                         File customConfigFile;
                         customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumPvP").getDataFolder(),
@@ -70,7 +73,7 @@ public class FFNationCmd implements CommandExecutor {
                                 customConfig.load(customConfigFile);
                                 customConfig.set("FriendlyFire", 1);
                                 customConfig.save(customConfigFile);
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("FFNationEnabled")));
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("FFNationEnabled")));
                                 return false;
                             } catch (Exception e1) {
                                 p.sendMessage("Error with config files for nation.");
@@ -103,7 +106,7 @@ public class FFNationCmd implements CommandExecutor {
                             int ff = customConfig.getInt("FriendlyFire");
                             if (ff == 0) {
                                 customConfig.set("FriendlyFire", 1);
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("FFNationEnabled")));
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("FFNationEnabled")));
                                 try {
                                     customConfig.save(customConfigFile);
                                 } catch (Exception e1) {
@@ -113,7 +116,7 @@ public class FFNationCmd implements CommandExecutor {
 
                             } else {
                                 customConfig.set("FriendlyFire", 0);
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("FFNationDisabled")));
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("FFNationDisabled")));
                                 try {
                                     customConfig.save(customConfigFile);
                                 } catch (Exception e1) {
@@ -129,7 +132,7 @@ public class FFNationCmd implements CommandExecutor {
 
 
                 } else {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("NoPerm")));
+                    p.sendMessage(Utils.color(ChromiumPvP.getGlobalMsg("NoPerm")));
                 }
 
             }

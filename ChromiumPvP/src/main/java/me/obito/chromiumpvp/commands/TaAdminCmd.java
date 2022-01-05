@@ -1,6 +1,7 @@
 package me.obito.chromiumpvp.commands;
 
 import me.obito.chromiumpvp.ChromiumPvP;
+import me.obito.chromiumpvp.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -48,11 +49,11 @@ public class TaAdminCmd implements CommandExecutor {
                         try {
                             if (customConfig.getInt("GlobalFriendlyFire") == 0) {
                                 customConfig.set("GlobalFriendlyFire", 1);
-                                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("GlobalFFEnabled")));
+                                Bukkit.broadcastMessage(Utils.color(ChromiumPvP.getMsg("GlobalFFEnabled")));
                                 customConfig.save(customConfigFile);
                             } else {
                                 customConfig.set("GlobalFriendlyFire", 0);
-                                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("GlobalFFDisabled")));
+                                Bukkit.broadcastMessage(Utils.color(ChromiumPvP.getMsg("GlobalFFDisabled")));
                                 customConfig.save(customConfigFile);
                             }
 
@@ -68,7 +69,7 @@ public class TaAdminCmd implements CommandExecutor {
 
                 }
             } else {
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("NoPerm")));
+                p.sendMessage(Utils.color(ChromiumPvP.getGlobalMsg("NoPerm")));
             }
 
 

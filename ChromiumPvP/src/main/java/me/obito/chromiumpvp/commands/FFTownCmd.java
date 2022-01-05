@@ -6,6 +6,7 @@ import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import me.obito.chromiumpvp.ChromiumPvP;
+import me.obito.chromiumpvp.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -50,12 +51,12 @@ public class FFTownCmd implements CommandExecutor {
                         townName = town.getName();
                     } else {
                         System.out.println("Error: Player that is not in town tried to execute the ff command.");
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("NoTown")));
+                        p.sendMessage(Utils.color(ChromiumPvP.getMsg("NoTown")));
                         return false;
                     }
 
                     if (isInCombat(p)) {
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("InCombat")));
+                        p.sendMessage(Utils.color(ChromiumPvP.getMsg("InCombat")));
                     } else {
                         File customConfigFile;
                         customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumPvP").getDataFolder(),
@@ -70,7 +71,7 @@ public class FFTownCmd implements CommandExecutor {
                                 customConfig.load(customConfigFile);
                                 customConfig.set("FriendlyFire", 1);
                                 customConfig.save(customConfigFile);
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("FFTownEnabled")));
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("FFTownEnabled")));
                                 return false;
                             } catch
                             (Exception e1) {
@@ -104,23 +105,17 @@ public class FFTownCmd implements CommandExecutor {
                             int ff = customConfig.getInt("FriendlyFire");
                             if (ff == 0) {
                                 customConfig.set("FriendlyFire", 1);
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("FFTownEnabled")));
-                                try {
-                                    customConfig.save(customConfigFile);
-                                } catch (Exception e1) {
-                                    System.out.println("Error with saving configuration for town.");
-                                    p.sendMessage("Error with saving configuration.");
-                                }
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("FFTownEnabled")));
 
                             } else {
                                 customConfig.set("FriendlyFire", 0);
-                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getMsg("FFTownDisabled")));
-                                try {
-                                    customConfig.save(customConfigFile);
-                                } catch (Exception e1) {
-                                    System.out.println("Error with saving configuration for town.");
-                                    p.sendMessage("Error with saving configuration.");
-                                }
+                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("FFTownDisabled")));
+                            }
+                            try {
+                                customConfig.save(customConfigFile);
+                            } catch (Exception e1) {
+                                System.out.println("Error with saving configuration for town.");
+                                p.sendMessage("Error with saving configuration.");
                             }
 
                         } else {
@@ -130,7 +125,7 @@ public class FFTownCmd implements CommandExecutor {
 
 
                 } else {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumPvP.getGlobalMsg("NoPerm")));
+                    p.sendMessage(Utils.color(ChromiumPvP.getGlobalMsg("NoPerm")));
                 }
 
             }
