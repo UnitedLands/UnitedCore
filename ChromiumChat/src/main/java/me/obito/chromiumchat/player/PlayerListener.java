@@ -1,14 +1,13 @@
 package me.obito.chromiumchat.player;
 
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
-import com.palmergames.bukkit.TownyChat.events.PlayerJoinChatChannelEvent;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.obito.chromiumchat.ChromiumChat;
 import me.obito.chromiumchat.gradient.Gradient;
 import me.obito.chromiumchat.gradient.GradientPresets;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,15 +37,17 @@ public class PlayerListener implements Listener {
         List<String> motd = ChromiumChat.getList("Motd");
         List<String> firstmotd = ChromiumChat.getList("FirstJoinMotd");
 
-        e.getPlayer().sendMessage((StringUtils.repeat(" \n", 150)));
+        Player p = e.getPlayer();
 
-        if(e.getPlayer().hasPlayedBefore()){
+        p.sendMessage((StringUtils.repeat(" \n", 150)));
+
+        if(p.hasPlayedBefore()){
             for(String s : motd){
-                e.getPlayer().sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', s));
+                p.sendMessage(PlaceholderAPI.setPlaceholders(p, ChatColor.translateAlternateColorCodes('&', s)));
             }
         } else {
             for(String s : firstmotd){
-                e.getPlayer().sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', s));
+                p.sendMessage(PlaceholderAPI.setPlaceholders(p, ChatColor.translateAlternateColorCodes('&', s)));
             }
         }
 
@@ -82,20 +83,10 @@ public class PlayerListener implements Listener {
     }
 
 
-    @EventHandler
-    public void onTownyChat(AsyncChatHookEvent ev){
-        ev.getPlayer().sendMessage("Chat Event works");
-    }
+
 
     @EventHandler
-    public void onTownyChange(PlayerJoinChatChannelEvent ev){
-        ev.getPlayer().sendMessage("Change Event works");
-    }
-
-    /*@EventHandler
-    public void onChat(AsyncPlayerChatEvent e){
-
-
+    public void onChat(AsyncChatHookEvent e){
 
         File customConfigFile;
         customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "/players/" + e.getPlayer().getUniqueId() + ".yml");
@@ -108,7 +99,7 @@ public class PlayerListener implements Listener {
         }
 
 
-        if(customConfig.getBoolean("GradientEnabled")){
+        if(customConfig.getBoolean("GradientEnabled") && e.getChannel().getName().equals("general")){
 
             if(customConfig.getString("GradientPreset").equals("none")){
                 ArrayList<String> colors = new ArrayList<>();
@@ -117,16 +108,7 @@ public class PlayerListener implements Listener {
                     colors.add(customConfig.getString("GradientStart"));
                     colors.add(customConfig.getString("GradientEnd"));
                     Gradient g = new Gradient(colors);
-                    String mes = (g.gradientMessage(e.getMessage(), "", false));
-                    String mmm = mes;
-                    for(Player p : Bukkit.getOnlinePlayers()){
-                        if(e.getMessage().toLowerCase().contains(p.getName().toLowerCase())){
-                            mmm = mes.replace(p.getName(), (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getConfigur()
-                                    .getString("Player Mention Color") + p.getName())));
-                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
-                        }
-                    }
-                    e.setMessage(mmm);
+                    e.setMessage(g.gradientMessage(e.getMessage(), "", false));
 
                 } catch (Exception e1) {
 
@@ -138,16 +120,7 @@ public class PlayerListener implements Listener {
                 try {
 
                     Gradient g = GradientPresets.getGradient(customConfig.getString("GradientPreset"));
-                    String mes = (g.gradientMessage(e.getMessage(), "", false));
-                    String mmm = mes;
-                    for(Player p : Bukkit.getOnlinePlayers()){
-                        if(e.getMessage().toLowerCase().contains(p.getName().toLowerCase())){
-                            mmm = mes.replace(p.getName(), (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getConfigur()
-                                    .getString("Player Mention Color") + p.getName())));
-                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
-                        }
-                    }
-                    e.setMessage(mmm);
+                    e.setMessage(g.gradientMessage(e.getMessage(), "", false));
 
                 } catch (Exception e1) {
 
@@ -162,9 +135,6 @@ public class PlayerListener implements Listener {
 
         } else {
 
-
-
-            //player mention logic
             String m = ChromiumChat.getConfigur().getString("Default Message Color") + e.getMessage();
             String mm = (ChatColor.translateAlternateColorCodes('&', m));
             String mmm = mm;
@@ -172,7 +142,6 @@ public class PlayerListener implements Listener {
                 if(m.toLowerCase().contains(p.getName().toLowerCase())){
                     mmm = mm.replace(p.getName(), (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getConfigur()
                             .getString("Player Mention Color") + p.getName() + ChromiumChat.getConfigur().getString("Default Message Color"))));
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                 }
             }
             e.setMessage(mmm);
@@ -180,7 +149,7 @@ public class PlayerListener implements Listener {
 
 
 
-    }*/
+    }
 
 
 }
