@@ -28,6 +28,8 @@ public class ChromiumChat extends JavaPlugin {
     @Override
     public void onEnable(){
 
+
+
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             Bukkit.getPluginManager().getPlugin("ChromiumChat").saveDefaultConfig();
             Config1 = getConfig();

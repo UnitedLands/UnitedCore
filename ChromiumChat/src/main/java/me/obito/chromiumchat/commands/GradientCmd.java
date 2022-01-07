@@ -39,7 +39,7 @@ public class GradientCmd implements CommandExecutor {
                     }
 
                     if (args.length == 1) {
-                        if (!args[0].equalsIgnoreCase("toggle")) {
+                        if (!args[0].equalsIgnoreCase("on") && !args[0].equalsIgnoreCase("off")) {
                             try {
 
                                 Gradient g = GradientPresets.getGradient(args[0]);
@@ -93,7 +93,7 @@ public class GradientCmd implements CommandExecutor {
                             }
 
                             try {
-                                if (customConfig.getBoolean("GradientEnabled")) {
+                                if (args[0].equalsIgnoreCase("off")) {
                                     customConfig.set("GradientEnabled", false);
                                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientOff")));
                                     customConfig.save(customConfigFile);

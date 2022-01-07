@@ -7,6 +7,7 @@ Message 3: "&8&m                             \n&bUnitedLands &fMessage\n&8&m    
 ClearChatOnJoin: true
 Default Message Color: "&f"
 BroadcastEnabled: true
+Player Mention Color: "&e&o"
 Preset Gradients:
   rainbow:
     - "#e07870"
