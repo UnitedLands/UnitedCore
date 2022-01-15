@@ -56,10 +56,21 @@ public class GradientCmd implements CommandExecutor {
                                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getGlobalMsg("ConfError")));
                                 }
 
+                                if(customConfig.getBoolean("GradientEnabled") == false){
+                                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientIsOff")));
+                                    return false;
+                                }
 
                                 try {
                                     String preset = args[0].toLowerCase();
                                     if (p.hasPermission("chromium.chat.gradient." + preset)) {
+
+                                            Gradient gr = GradientPresets.getGradient(preset);
+                                            if(gr == null){
+                                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientUnknownPreset")));
+                                                return false;
+                                            }
+
                                         customConfig.set("GradientStart", "none");
                                         customConfig.set("GradientEnd", "none");
                                         customConfig.set("GradientPreset", args[0]);
@@ -123,6 +134,11 @@ public class GradientCmd implements CommandExecutor {
                             } catch (Exception e2) {
                                 System.out.println("Error with loading configuration for player " + p.getName());
                                 p.sendMessage("Error with loading configuration.");
+                            }
+
+                            if(customConfig.getBoolean("GradientEnabled") == false){
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradientIsOff")));
+                                return false;
                             }
 
                             try {

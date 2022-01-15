@@ -74,6 +74,7 @@ public class ChromiumChat extends JavaPlugin {
                     customConfig.getConfigurationSection("Chat").set("GradCommand", "&eUse /gradient <toggle> | <preset> | <hexcolor1> <hexcolor2> %player_name%");
                     customConfig.getConfigurationSection("Chat").set("GradAdminCommand", "&eUse /gradient <toggle> | <preset> | <hexcolor1> <hexcolor2> | <player>");
                     customConfig.getConfigurationSection("Chat").set("GradientOff", "&eGradient disabled.");
+                    customConfig.getConfigurationSection("Chat").set("GradientOff", "&cYour gradient is disabled.");
                     customConfig.getConfigurationSection("Chat").set("GradientUnknownPreset", "&eGradient preset not recognized.");
                     customConfig.createSection("PvP");
                     customConfig.getConfigurationSection("PvP").set("InCombat", "&cYou can't use that command while in combat.");
