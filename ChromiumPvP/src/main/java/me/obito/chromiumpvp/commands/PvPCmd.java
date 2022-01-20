@@ -46,15 +46,15 @@ public class PvPCmd implements CommandExecutor {
                         if (args[0].equalsIgnoreCase("status")) {
 
                             if (pvp == true) {
-                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPStatusOn")));
+                                p.sendMessage(Utils.color(Utils.getMsg("PvPStatusOn")));
                             } else {
-                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPStatusOff")));
+                                p.sendMessage(Utils.color(Utils.getMsg("PvPStatusOff")));
                             }
 
 
                         } else {
                             if (isInCombat(p)) {
-                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("InCombat")));
+                                p.sendMessage(Utils.color(Utils.getMsg("InCombat")));
                             } else {
                                 if (cooldowns.containsKey(sender.getName())) {
                                     long secondsLeft = ((cooldowns.get(sender.getName()) / 1000) + cooldownTime) - (System.currentTimeMillis() / 1000);
@@ -71,18 +71,18 @@ public class PvPCmd implements CommandExecutor {
                                         if (args[0].equalsIgnoreCase("on")) {
                                             if (pvp == false) {
                                                 Utils.setPvPStatus(p, true);
-                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPEnabled")));
+                                                p.sendMessage(Utils.color(Utils.getMsg("PvPEnabled")));
                                             } else {
-                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOn")));
+                                                p.sendMessage(Utils.color(Utils.getMsg("PvPAlreadyOn")));
                                             }
 
                                         }
                                         if (args[0].equalsIgnoreCase("off")) {
                                             if (pvp == true) {
                                                 Utils.setPvPStatus(p, false);
-                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPDisabled")));
+                                                p.sendMessage(Utils.color(Utils.getMsg("PvPDisabled")));
                                             } else {
-                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOff")));
+                                                p.sendMessage(Utils.color(Utils.getMsg("PvPAlreadyOff")));
                                             }
 
                                         }
@@ -101,12 +101,12 @@ public class PvPCmd implements CommandExecutor {
                             p = Bukkit.getServer().getPlayer(args[1]);
                             pvp = Utils.getPvPStatus(p);
                         } catch (Exception e1) {
-                            sender.sendMessage(Utils.color(ChromiumPvP.getGlobalMsg("PlayerNotRecognized")));
+                            sender.sendMessage(Utils.color(Utils.getGlobalMsg("PlayerNotRecognized")));
                             return false;
                         }
 
                         if (p == null) {
-                            sender.sendMessage(Utils.color(ChromiumPvP.getGlobalMsg("PlayerNotRecognized")));
+                            sender.sendMessage(Utils.color(Utils.getGlobalMsg("PlayerNotRecognized")));
                             return false;
                         }
 
@@ -114,20 +114,20 @@ public class PvPCmd implements CommandExecutor {
                             if (args[0].equalsIgnoreCase("on")) {
                                 if (pvp == false) {
                                     Utils.setPvPStatus(p, true);
-                                    sender.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPEnabledOp")));
-                                    p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPEnabledByAdmin")));
+                                    sender.sendMessage(Utils.color(Utils.getMsg("PvPEnabledOp")));
+                                    p.sendMessage(Utils.color(Utils.getMsg("PvPEnabledByAdmin")));
                                 } else {
-                                    sender.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOn")));
+                                    sender.sendMessage(Utils.color(Utils.getMsg("PvPAlreadyOn")));
                                 }
 
                             }
                             if (args[0].equalsIgnoreCase("off")) {
                                 if (pvp == true) {
                                     Utils.setPvPStatus(p, false);
-                                    sender.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPDisabledOp")));
-                                    p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPDisabledByAdmin")));
+                                    sender.sendMessage(Utils.color(Utils.getMsg("PvPDisabledOp")));
+                                    p.sendMessage(Utils.color(Utils.getMsg("PvPDisabledByAdmin")));
                                 } else {
-                                    sender.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOff")));
+                                    sender.sendMessage(Utils.color(Utils.getMsg("PvPAlreadyOff")));
                                 }
 
                             }
@@ -143,15 +143,15 @@ public class PvPCmd implements CommandExecutor {
                         if (args[0].equalsIgnoreCase("status")) {
 
                             if (pvp == true) {
-                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPStatusOn")));
+                                p.sendMessage(Utils.color(Utils.getMsg("PvPStatusOn")));
                             } else {
-                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPStatusOff")));
+                                p.sendMessage(Utils.color(Utils.getMsg("PvPStatusOff")));
                             }
 
 
                         } else {
                             if (isInCombat(p)) {
-                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("InCombat")));
+                                p.sendMessage(Utils.color(Utils.getMsg("InCombat")));
                             } else {
                                 if (cooldowns.containsKey(sender.getName())) {
                                     long secondsLeft = ((cooldowns.get(sender.getName()) / 1000) + cooldownTime) - (System.currentTimeMillis() / 1000);
@@ -168,18 +168,18 @@ public class PvPCmd implements CommandExecutor {
                                         if (args[0].equalsIgnoreCase("on")) {
                                             if (pvp == false) {
                                                 Utils.setPvPStatus(p, true);
-                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPEnabled")));
+                                                p.sendMessage(Utils.color(Utils.getMsg("PvPEnabled")));
                                             } else {
-                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOn")));
+                                                p.sendMessage(Utils.color(Utils.getMsg("PvPAlreadyOn")));
                                             }
 
                                         }
                                         if (args[0].equalsIgnoreCase("off")) {
                                             if (pvp == true) {
                                                 Utils.setPvPStatus(p, false);
-                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPDisabled")));
+                                                p.sendMessage(Utils.color(Utils.getMsg("PvPDisabled")));
                                             } else {
-                                                p.sendMessage(Utils.color(ChromiumPvP.getMsg("PvPAlreadyOff")));
+                                                p.sendMessage(Utils.color(Utils.getMsg("PvPAlreadyOff")));
                                             }
 
                                         }
@@ -192,7 +192,7 @@ public class PvPCmd implements CommandExecutor {
                         }
                     }
                 } else {
-                    p.sendMessage(Utils.color(ChromiumPvP.getGlobalMsg("NoPerm")));
+                    p.sendMessage(Utils.color(Utils.getGlobalMsg("NoPerm")));
                 }
 
             }
