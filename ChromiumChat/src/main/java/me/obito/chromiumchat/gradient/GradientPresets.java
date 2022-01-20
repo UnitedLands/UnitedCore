@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class GradientPresets {
 
@@ -22,7 +23,14 @@ public class GradientPresets {
         }
 
         public static Gradient getGradient(String name) {
-            return gradients.get(name);
+
+                if(gradients.containsKey(name.toLowerCase())){
+                    return gradients.get(name);
+                } else {
+                    return null;
+                }
+
+
         }
 
 }
