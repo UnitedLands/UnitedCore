@@ -99,6 +99,7 @@ public class PvPCmd implements CommandExecutor {
                     if (args.length == 2) {
                         try {
                             p = Bukkit.getServer().getPlayer(args[1]);
+                            pvp = Utils.getPvPStatus(p);
                         } catch (Exception e1) {
                             sender.sendMessage(Utils.color(ChromiumPvP.getGlobalMsg("PlayerNotRecognized")));
                             return false;
