@@ -63,7 +63,7 @@ public class GradientCmd implements CommandExecutor {
 
                                 try {
                                     String preset = args[0].toLowerCase();
-                                    if (p.hasPermission("chromium.chat.gradient." + preset)) {
+                                    if (p.hasPermission("chromium.chat.gradient." + preset) || p.hasPermission("chromium.chat.gradient.all")) {
 
                                             Gradient gr = GradientPresets.getGradient(preset);
                                             if(gr == null){
