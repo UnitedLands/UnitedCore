@@ -77,11 +77,6 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         boolean enable = Config.getBoolean("PvPToggleEnabled");
         boolean isIgnoredWorld = Config.getList("IgnoredWorlds").contains(
                 e.getEntity().getWorld().getName());
-        boolean isCitizensNPC = e.getEntity().hasMetadata("NPC");
-        if (isCitizensNPC) {
-            return;
-        }
-
 
         if (enable && !isIgnoredWorld) {
             if (Utils.isPvP(e)) {
