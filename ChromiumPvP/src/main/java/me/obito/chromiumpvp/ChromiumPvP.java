@@ -8,12 +8,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
 
@@ -75,31 +82,50 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
             return;
         }
 
-        if (e.getEntity() instanceof Player) {
-            if (e.getDamager() instanceof Player) {
-                if (enable && !isIgnoredWorld) {
-                    Player target = (Player) e.getEntity();
-                    Player damager = (Player) e.getDamager();
 
-                    boolean pvpDamager = Utils.getPvPStatus((Player) e.getDamager());
-                    boolean pvpTarget = Utils.getPvPStatus((Player) e.getEntity());
+        if (enable && !isIgnoredWorld) {
+            if (Utils.isPvP(e)) {
+                Player target = (Player) e.getEntity();
+                Player damager = getAttacker(e.getDamager());
 
-                    if (!pvpTarget) {
-                        e.setCancelled(true);
-                        damager.sendMessage(ChatColor.RED + "That player has disabled their pvp!");
-                    }
+                boolean pvpDamager = Utils.getPvPStatus(damager);
+                boolean pvpTarget = Utils.getPvPStatus(target);
 
-                    if (!pvpDamager) {
-                        e.setCancelled(true);
-                        damager.sendMessage(ChatColor.RED + "You have your pvp disabled!");
-                    }
 
+                if (!pvpTarget) {
+                    e.setCancelled(true);
+                    damager.sendMessage(ChatColor.RED + "That player has disabled their pvp!");
                 }
 
-
+                if (!pvpDamager) {
+                    e.setCancelled(true);
+                    damager.sendMessage(ChatColor.RED + "You have your pvp disabled!");
+                }
             }
         }
     }
 
+    @EventHandler
+    public final void onPotionSplash(final PotionSplashEvent event) {
+        final ThrownPotion potion = event.getPotion();
+        if (event.getAffectedEntities().isEmpty() || !(potion.getShooter() instanceof Player))
+            return;
+
+        for (final PotionEffect effect : potion.getEffects())
+            if (effect.getType().equals(PotionEffectType.POISON) || effect.getType().equals(PotionEffectType.HARM)) {
+                for (final LivingEntity e : event.getAffectedEntities())
+                    if (e instanceof Player && !Utils.getPvPStatus((Player) e)) {
+                        event.setIntensity(e, 0);
+                    }
+                return;
+            }
+    }
+
+    private Player getAttacker(final Entity damager) {
+        if (damager instanceof Projectile) {
+            return (Player) ((Projectile) damager).getShooter();
+        }
+        return (Player) damager;
+    }
 
 }

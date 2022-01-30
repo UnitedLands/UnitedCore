@@ -4,7 +4,11 @@ import me.obito.chromiumpvp.ChromiumPvP;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -12,7 +16,6 @@ import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 
 public class Utils {
-
 
 
     public static void setPvPStatus(Player player, boolean bool) {
@@ -96,5 +99,24 @@ public class Utils {
 
         return customConfig.getConfigurationSection("PvP").getString(s);
 
+    }
+
+    public static boolean isPvP(final EntityDamageByEntityEvent event) {
+        final Entity damager = event.getDamager();
+        final Entity target = event.getEntity();
+
+        if (target instanceof Player && !target.hasMetadata("NPC")) {
+            if (damager instanceof Player && !damager.hasMetadata("NPC"))
+                return true;
+            if (damager instanceof Projectile) {
+                final ProjectileSource projSource = ((Projectile) damager).getShooter();
+                if (projSource instanceof Player) {
+                    final Entity shooter = (Entity) projSource;
+                    if (!shooter.equals(target) && !shooter.hasMetadata("NPC"))
+                        return !(event.getDamage() == 0);
+                }
+            }
+        }
+        return false;
     }
 }

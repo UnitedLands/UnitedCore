@@ -75,8 +75,9 @@ public class ChromiumMainCommand implements CommandExecutor {
                             Plugin pl = Bukkit.getPluginManager().getPlugin(args[2]);
 
                             Bukkit.getPluginManager().disablePlugin(pl);
-                            sender.sendMessage(ChatColor.YELLOW + "Module " + ChatColor.GREEN + pl.getName() + ChatColor.YELLOW + " reloaded.");
                             Bukkit.getPluginManager().enablePlugin(pl);
+                            sender.sendMessage(ChatColor.YELLOW + "Module " + ChatColor.GREEN + pl.getName() + ChatColor.YELLOW + " reloaded.");
+
                         }
 
                     }
