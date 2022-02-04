@@ -1,5 +1,5 @@
 name: ChromiumChat
-version: '1.0-SNAPSHOT'
+version: '1.0'
 main: me.obito.chromiumchat.ChromiumChat
 api-version: 1.17
 authors: [ Obito17 ]

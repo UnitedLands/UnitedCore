@@ -99,8 +99,11 @@ public class PlayerListener implements Listener {
 
         }
 
+        if(e.getChannel().getName().equals("general")){
 
-        if(customConfig.getBoolean("GradientEnabled") && e.getChannel().getName().equals("general")){
+        }
+
+        if(customConfig.getBoolean("GradientEnabled")){
 
             if(customConfig.getString("GradientPreset").equals("none")){
                 ArrayList<String> colors = new ArrayList<>();
@@ -109,7 +112,16 @@ public class PlayerListener implements Listener {
                     colors.add(customConfig.getString("GradientStart"));
                     colors.add(customConfig.getString("GradientEnd"));
                     Gradient g = new Gradient(colors);
-                    e.setMessage(g.gradientMessage(e.getMessage(), "", false));
+                    String mes = (g.gradientMessage(e.getMessage(), "", false));
+                    String mmm = mes;
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(e.getMessage().toLowerCase().contains(p.getName().toLowerCase())){
+                            mmm = mes.replace(p.getName(), (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getConfigur()
+                                    .getString("Player Mention Color") + p.getName())));
+                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+                        }
+                    }
+                    e.setMessage(mmm);
 
                 } catch (Exception e1) {
 
@@ -121,7 +133,16 @@ public class PlayerListener implements Listener {
                 try {
 
                     Gradient g = GradientPresets.getGradient(customConfig.getString("GradientPreset"));
-                    e.setMessage(g.gradientMessage(e.getMessage(), "", false));
+                    String mes = (g.gradientMessage(e.getMessage(), "", false));
+                    String mmm = mes;
+                    for(Player p : Bukkit.getOnlinePlayers()){
+                        if(e.getMessage().toLowerCase().contains(p.getName().toLowerCase())){
+                            mmm = mes.replace(p.getName(), (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getConfigur()
+                                    .getString("Player Mention Color") + p.getName())));
+                            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+                        }
+                    }
+                    e.setMessage(mmm);
 
                 } catch (Exception e1) {
 
