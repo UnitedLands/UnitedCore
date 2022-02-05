@@ -63,7 +63,7 @@ public class UpkeepCalculators {
         double fallMod = (fallStep * nationResidentStep) + 1;
 
         double upkeepPerPlot = Math.floor(((baseUpkeepPrice * riseMod) / fallMod) * townCountMod);
-        double upkeep = upkeepPerPlot * nationPlotCount;
+        double upkeep = Math.floor(upkeepPerPlot * nationPlotCount);
 
         return upkeep;
     }
