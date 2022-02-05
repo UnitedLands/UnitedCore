@@ -1,0 +1,17 @@
+town:
+  # The base price which all calculations are based off of
+  baseUpkeepPrice: 16
+  # The % that the upkeep increases by everytime a town reaches the configured plot amount in riseAt.
+  riseStep: 0.25
+  # The amount that the upkeep increases at, if set to 30 for example then every 30 plots the upkeep will rise by the value configured above
+  riseAt: 20
+  # The % that the upkeep decreases by everytime a town reaches the configured resident amount in riseAt
+  fallStep: 0.25
+  # The amount that the upkeep decreases it (residents). If set to 3, then every 3 residents the upkeep will decrease by 0.04 or as configured above
+  fallAt: 3
+nation: # Configurations are the same as explained above, but it applies for the total claims and residents in the town
+  baseUpkeepPrice: 8
+  riseStep: 0.25
+  riseAt: 20
+  fallStep: 0.25
+  fallAt: 3
