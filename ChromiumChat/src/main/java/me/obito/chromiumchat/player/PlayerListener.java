@@ -99,12 +99,8 @@ public class PlayerListener implements Listener {
 
         }
 
-        if (!e.getChannel().getName().equals("general")) {
-            return;
-        }
 
-
-        if(customConfig.getBoolean("GradientEnabled")){
+        if(customConfig.getBoolean("GradientEnabled") && e.getChannel().getName().equals("general")){
 
             if(customConfig.getString("GradientPreset").equals("none")){
                 ArrayList<String> colors = new ArrayList<>();
@@ -134,6 +130,10 @@ public class PlayerListener implements Listener {
 
                 }
             }
+
+
+
+
         } else {
 
             String m = ChromiumChat.getConfigur().getString("Default Message Color") + e.getMessage();
