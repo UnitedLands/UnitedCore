@@ -1,11 +1,16 @@
 package me.obito.chromiumpvp;
 
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.event.PlayerEnterTownEvent;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import me.obito.chromiumpvp.commands.PvPCmd;
 import me.obito.chromiumpvp.hooks.Placeholders;
 import me.obito.chromiumpvp.util.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -14,8 +19,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,7 +40,6 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
     public static Plugin chromiumFinal = Bukkit.getPluginManager().getPlugin("ChromiumFinal");
     File customConfigFile;
     FileConfiguration customConfig;
-    TownyUniverse towny = TownyUniverse.getInstance();
 
     public static FileConfiguration getConfigur() {
         return Config;
@@ -61,7 +70,6 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
             } catch (Exception e1) {
                 System.out.println("EXCEPTION: CANT CREATE NEW FILE OR LOAD IT");
             }
-            //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
         }
 
     }
@@ -122,5 +130,36 @@ public final class ChromiumPvP extends JavaPlugin implements Listener {
         }
         return (Player) damager;
     }
+
+    @EventHandler
+    public final void onExplosiveDamage(final EntityDamageByEntityEvent event) {
+
+        Entity e = event.getEntity();
+
+        if (e instanceof Player) {
+            if (event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)) {
+                for (final Entity entity : e.getNearbyEntities(10, 10, 10))
+                    if (e instanceof Player && !Utils.getPvPStatus((Player) e)) {
+                        event.setDamage(0);
+                    }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onTownEnter(PlayerEnterTownEvent event) {
+
+        Player player = event.getPlayer();
+        Resident outlaw = TownyUniverse.getInstance().getResident(player.getUniqueId());
+        Town town = event.getEnteredtown();
+
+        if (town.hasOutlaw(outlaw)){
+            Utils.setPvPStatus(player, true);
+            player.sendTitle("§4§lPvP Enabled!", "§cYou are outlawed in §e" + town.getName() + "§c!", 20, 60, 20);
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.4F);
+        }
+
+    }
+
 
 }
