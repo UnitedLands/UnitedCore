@@ -76,7 +76,7 @@ public class PlayerListener implements Listener {
                 customConfig.save(customConfigFile);
 
             } catch (Exception e1){
-                System.out.println("EXCEPTION: CANT CREATE NEW FILE OR LOAD IT");
+
             }
             //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
         }
@@ -116,7 +116,6 @@ public class PlayerListener implements Listener {
 
                 } catch (Exception e1) {
 
-                    System.out.println("Gradient error with player " + e.getPlayer().getName());
                     e.setMessage(e.getMessage());
 
                 }
@@ -127,8 +126,7 @@ public class PlayerListener implements Listener {
                     e.setMessage(g.gradientMessage(e.getMessage(), "", false));
 
                 } catch (Exception e1) {
-
-                    System.out.println("Gradient error with player " + e.getPlayer().getName());
+                    
                     e.setMessage(e.getMessage());
 
                 }
@@ -139,17 +137,17 @@ public class PlayerListener implements Listener {
 
         } else {
 
-            String m = ChromiumChat.getConfigur().getString("Default Message Color") + e.getMessage();
-            String mm = (ChatColor.translateAlternateColorCodes('&', m));
-            String mmm = mm;
+            String messageDefault = ChromiumChat.getConfigur().getString("Default Message Color") + e.getMessage();
+            String messageColored = (ChatColor.translateAlternateColorCodes('&', messageDefault));
+            String messageFinal = messageColored;
             for(Player p : Bukkit.getOnlinePlayers()){
-                if(m.toLowerCase().contains(p.getName().toLowerCase())){
-                    mmm = mm.replace(p.getName(), (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getConfigur()
+                if(messageDefault.toLowerCase().contains(p.getName().toLowerCase())){
+                    messageFinal = messageColored.replace(p.getName(), (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getConfigur()
                             .getString("Player Mention Color") + p.getName() + ChromiumChat.getConfigur().getString("Default Message Color"))));
                     p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                 }
             }
-            e.setMessage(mmm);
+            e.setMessage(messageFinal);
         }
 
 

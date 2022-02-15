@@ -13,9 +13,6 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.File;
 
 public class ClearChatCmd implements CommandExecutor {
-    //
-
-        //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 

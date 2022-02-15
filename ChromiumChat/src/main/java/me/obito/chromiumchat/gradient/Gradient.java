@@ -15,6 +15,10 @@ public class Gradient implements Serializable {
 
     /**
      *
+     * do not
+     * touch
+     * this
+     * class
      */
     private static final long serialVersionUID = 1L;
     private ArrayList<Color> colors;
@@ -101,25 +105,6 @@ public class Gradient implements Serializable {
             formatted.append(" ");
         }
         msg = formatted.toString();
-		/*
-		if(sty != null)
-			sty = ChatColor.translateAlternateColorCodes('&', sty);
-		if(this.colors != null) {
-			//StringBuilder formatted = new StringBuilder(msg);
-			//List<String> hueShift = this.stepGradient(msg.length());
-			int startSize = msg.length();
-			String style = sty;
-			if(style != null)
-				style = ChatColor.translateAlternateColorCodes('&', style);
-			for(int i = 0; i < startSize; i ++) {
-				if(style != null) {
-					formatted.insert((15+style.length())*i, ChatColor.of(hueShift.get(i) == null ? "#FF0000" : hueShift.get(i)).toString()+style);
-				} else {
-					formatted.insert(15*i, ChatColor.of(hueShift.get(i) == null ? "#FF0000" : hueShift.get(i)));
-				}
-			}
-			msg = formatted.toString();
-		}*/
         return msg;
     }
 }

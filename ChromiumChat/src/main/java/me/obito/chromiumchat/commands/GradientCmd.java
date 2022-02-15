@@ -26,11 +26,11 @@ public class GradientCmd implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
         if(sender instanceof Player){
 
-            String usage1 = (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradCommand")));
+            String usageGrad = (ChatColor.translateAlternateColorCodes('&', ChromiumChat.getMsg("GradCommand")));
 
             Player p = (Player) sender;
 
-            String usage = PlaceholderAPI.setPlaceholders(p, usage1);
+            String usage = PlaceholderAPI.setPlaceholders(p, usageGrad);
 
                 if (p.hasPermission("chromium.chat.gradient")) {
 

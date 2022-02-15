@@ -16,10 +16,12 @@ import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 public class ChromiumChat extends JavaPlugin {
 
+    private Logger log;
     File customConfigFile;
     FileConfiguration customConfig;
     public static FileConfiguration Config1;
@@ -28,7 +30,7 @@ public class ChromiumChat extends JavaPlugin {
     @Override
     public void onEnable(){
 
-
+        log = getLogger();
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             Bukkit.getPluginManager().getPlugin("ChromiumChat").saveDefaultConfig();
@@ -55,15 +57,19 @@ public class ChromiumChat extends JavaPlugin {
                     motd.add("&bto");
                     motd.add("&cUnitedLands");
 
-                    List<String> firstmotd = new ArrayList<>();
+                    List<String> defaultMotd = new ArrayList<>();
 
-                    firstmotd.add("&aWelcome");
-                    firstmotd.add("&eto");
-                    firstmotd.add("&3UnitedLands");
+                    // default motd
+
+                    defaultMotd.add("&aWelcome");
+                    defaultMotd.add("&eto");
+                    defaultMotd.add("&3UnitedLands");
+
+                    // default messages
 
                     customConfig.createSection("Global");
                     customConfig.getConfigurationSection("Global").set("Motd", motd);
-                    customConfig.getConfigurationSection("Global").set("FirstJoinMotd", firstmotd);
+                    customConfig.getConfigurationSection("Global").set("FirstJoinMotd", defaultMotd);
                     customConfig.getConfigurationSection("Global").set("NoPerm", "&cYou don't have permission.");
                     customConfig.getConfigurationSection("Global").set("PlayerNotRecognized", "&cCan't recognize player.");
                     customConfig.getConfigurationSection("Global").set("ConfError", "&cError with configuration.");
@@ -104,12 +110,10 @@ public class ChromiumChat extends JavaPlugin {
                     customConfig.save(customConfigFile);
 
                 } catch (Exception e1){
-                    System.out.println("EXCEPTION: CANT CREATE NEW FILE OR LOAD IT");
+                    log.warning("[Exception] Can't create new file or load it");
                 }
 
 
-
-                //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
             }
             int seconds = Config1.getInt("TimeInSeconds");
             BukkitScheduler scheduler = getServer().getScheduler();
@@ -132,13 +136,8 @@ public class ChromiumChat extends JavaPlugin {
 
                 }
             }, 0L, 20L*seconds);
-            System.out.println(ChatColor.RED + "cchat loaded.");
         } else {
-            /*
-             * We inform about the fact that PlaceholderAPI isn't installed and then
-             * disable this plugin to prevent issues.
-             */
-            System.out.println(ChatColor.RED + "Could not find PlaceholderAPI! This plugin is required.");
+            getLogger().warning("[Exception] PlaceholderAPI is required!");
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
@@ -149,7 +148,7 @@ public class ChromiumChat extends JavaPlugin {
         return Config1.getBoolean(s);
     }
 
-    public static void setConfigurBool(String s, Boolean b){
+    public static void setConfigBool(String s, Boolean b){
         Config1.set(s, b);
     }
 
@@ -166,7 +165,7 @@ public class ChromiumChat extends JavaPlugin {
         try{
             customConfig.load(customConfigFile);
         } catch (Exception e2){
-            System.out.println("Error with loading messages.");
+
         }
 
         return customConfig.getConfigurationSection("Chat").getString(s);
@@ -182,7 +181,7 @@ public class ChromiumChat extends JavaPlugin {
         try{
             customConfig.load(customConfigFile);
         } catch (Exception e2){
-            System.out.println("Error with loading messages.");
+
         }
 
         return customConfig.getConfigurationSection("Global").getString(s);
@@ -198,7 +197,7 @@ public class ChromiumChat extends JavaPlugin {
         try{
             customConfig.load(customConfigFile);
         } catch (Exception e2){
-            System.out.println("Error with loading messages.");
+
         }
 
         return customConfig.getConfigurationSection("Global").getStringList(s);
