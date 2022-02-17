@@ -97,6 +97,11 @@ public class UpkeepCalculators {
         if (bonusBlocks == 0) {
             return 0;
         }
+
+        if (bonusBlocks >= totalBlocks) {
+            return calculateTownUpkeep(config, town, true);
+        }
+
         return bonusBlocks * upkeepPerPlot;
 
     }
