@@ -5,7 +5,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class UpkeepCalculators {
-    public static double calculateTownUpkeep(FileConfiguration config, Town town, boolean discount) {
+    public static double calculateTownUpkeep(FileConfiguration config, Town town, boolean nationDiscount) {
 
         int baseUpkeepPrice = config.getInt("town.baseUpkeepPrice");
         int townPlotCount = town.getTownBlocks().size();
@@ -26,14 +26,14 @@ public class UpkeepCalculators {
 
         double upkeepPerPlot;
 
-        if (discount) {
+        if (nationDiscount) {
             upkeepPerPlot = (baseUpkeepPrice * riseMod) / (fallMod + calculateNationDiscount(town));
 
         } else {
             upkeepPerPlot = (baseUpkeepPrice * riseMod) / fallMod;
         }
 
-        double upkeep = Math.floor(upkeepPerPlot * townPlotCount);
+        double upkeep = Math.floor((upkeepPerPlot * townPlotCount));
 
         return upkeep;
 
@@ -68,7 +68,7 @@ public class UpkeepCalculators {
         return upkeep;
     }
 
-    public static double calculateNationDiscount(Town town) {
+    private static double calculateNationDiscount(Town town) {
 
         if (!town.hasNation()) {
             return 0;
@@ -86,6 +86,24 @@ public class UpkeepCalculators {
         double nationDiscountModifier = residentContributionPercent + claimContributionPercent;
 
         return nationDiscountModifier;
+    }
+
+    public static double calculateBonusDiscount(FileConfiguration config, Town town) {
+
+        int totalBlocks = town.getTownBlocks().size();
+        int bonusBlocks = town.getBonusBlocks();
+        double upkeepPerPlot = Math.floor(calculateTownUpkeep(config, town, false) / totalBlocks);
+
+        if (bonusBlocks == 0) {
+            return 0;
+        }
+
+        if (bonusBlocks >= totalBlocks) {
+            return calculateTownUpkeep(config, town, true);
+        }
+
+        return bonusBlocks * upkeepPerPlot;
+
     }
 
 }
