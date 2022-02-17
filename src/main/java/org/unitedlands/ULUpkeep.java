@@ -3,7 +3,6 @@ package org.unitedlands;
 import com.palmergames.adventure.text.Component;
 import com.palmergames.adventure.text.TextComponent;
 import com.palmergames.bukkit.towny.event.NationUpkeepCalculationEvent;
-import com.palmergames.bukkit.towny.event.TownClaimEvent;
 import com.palmergames.bukkit.towny.event.TownUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
 import com.palmergames.bukkit.towny.object.Nation;
@@ -29,8 +28,11 @@ public class ULUpkeep extends JavaPlugin implements Listener {
     public void calculateTownUpkeepEvent(TownUpkeepCalculationEvent event) {
         Town town = event.getTown();
         double bonusDiscount = UpkeepCalculators.calculateBonusDiscount(config, town);
-        double upkeep = Math.abs(UpkeepCalculators.calculateTownUpkeep(config, town, true) - bonusDiscount);
-
+        double upkeep = UpkeepCalculators.calculateTownUpkeep(config, town, true) - bonusDiscount;
+        // set the upkeep to 0 if it's negative. This is in case a town has more/equal bonus blocks than/to plots.
+        if (upkeep <= 0) {
+            upkeep = 0;
+        }
         event.setUpkeep(upkeep);
     }
 
@@ -56,13 +58,11 @@ public class ULUpkeep extends JavaPlugin implements Listener {
 
         double discountedUpkeep = Math.abs(upkeepWithNationDiscount - bonusDiscount);
 
-        getServer().broadcastMessage("Discount: " + nationDiscount);
         // Loop through the components in the status screen
         screenComponents.forEach(component -> {
             var componentContent = component.content();
             // Check if the component is the town size
             if (componentContent.contains("Town Size")) {
-
                 // Replace towny's default component with our new one, without the slashes in it
                 Component newComponent = Component.text("\n§2Town Size: §a" + townsize);
                 screen.replaceComponent("townblocks", (TextComponent) newComponent);
@@ -70,12 +70,12 @@ public class ULUpkeep extends JavaPlugin implements Listener {
 
             if (componentContent.contains("Upkeep")) {
                 Component upkeepComponent;
-                // checking if there's a discount to begin with
 
-                if (nationDiscount > 0 && bonusDiscount > 0) {
+                // Checking the least likely scenario to begin with. Bonus discount may be negative, so not the same check as nation discount
+                if (nationDiscount > 0 && bonusDiscount != 0) {
                     upkeepComponent = Component.text("§2Upkeep: §7§m" + undiscountedUpkeep + "§r§c " +
                             discountedUpkeep + " Gold" + " §2[Bonus Discount: §a" + bonusDiscount + " Gold§2]" +
-                            " [Nation Discount: §a" + nationDiscount +" Gold§2]");
+                            " [Nation Discount: §a" + nationDiscount + " Gold§2]");
                     screen.replaceComponent("upkeep", (TextComponent) upkeepComponent);
                 } else if (nationDiscount > 0) {
                     // Define our custom component, and replace the default one with it.

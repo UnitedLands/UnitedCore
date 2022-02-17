@@ -80,8 +80,8 @@ public class UpkeepCalculators {
             return 0;
         }
 
-        double claimContributionPercent = (double) town.getTownBlocks().size() / (double) nation.getTownBlocks().size();
-        double residentContributionPercent = (double) town.getNumResidents() / (double) nation.getNumResidents();
+        double claimContributionPercent = (double) town.getTownBlocks().size() / nation.getTownBlocks().size();
+        double residentContributionPercent = (double) town.getNumResidents() / nation.getNumResidents();
 
         double nationDiscountModifier = residentContributionPercent + claimContributionPercent;
 
