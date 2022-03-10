@@ -1,0 +1,9 @@
+# UnitedPvP CONFIGURATION #
+PvPToggleEnabled: true
+CooldownTimeInSecs: 120
+FFTownCooldownTimeInSecs: 5
+FFNationCooldownTimeInSecs: 10
+GlobalFriendlyFire: 0
+IgnoredWorlds:
+  - pvparena
+  - world_ffa

@@ -1,9 +1,0 @@
-name: ChromiumItems
-version: '${project.version}'
-main: me.obito.chromiumcustom.ChromiumItems
-api-version: 1.17
-authors: [ Obito17 ]
-depend: [NBTAPI, Towny, TownyChat]
-commands:
-  customitem:
-  tree:

@@ -1,0 +1,9 @@
+name: UnitedItems
+version: '${project.version}'
+main: org.unitedlands.uniteditems.UnitedItems
+api-version: 1.17
+authors: [ Obito17 ]
+depend: [NBTAPI, Towny, TownyChat]
+commands:
+  customitem:
+  tree:
