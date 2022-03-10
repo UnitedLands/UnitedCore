@@ -53,33 +53,36 @@ public class PlayerListener implements Listener {
         }
 
 
+        try{
+            File customConfigFile;
+            FileConfiguration customConfig;
+            customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "/players/" + e.getPlayer().getUniqueId() + ".yml");
+            if (!customConfigFile.exists()) {
+                customConfigFile.getParentFile().mkdirs();
 
+                try {
 
+                    customConfigFile.createNewFile();
+                    customConfig = new YamlConfiguration();
+                    customConfig.load(customConfigFile);
+                    customConfig.set("Player Name", e.getPlayer().getName());
+                    customConfig.set("GradientEnabled", false);
+                    customConfig.set("GradientStart", "#ffffff");
+                    customConfig.set("GradientEnd", "#ffffff");
+                    customConfig.set("GradientPreset", "none");
+                    customConfig.set("PvP", false);
+                    customConfig.save(customConfigFile);
 
-        File customConfigFile;
-        FileConfiguration customConfig;
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("ChromiumFinal").getDataFolder(), "/players/" + e.getPlayer().getUniqueId() + ".yml");
-        if (!customConfigFile.exists()) {
-            customConfigFile.getParentFile().mkdirs();
+                } catch (Exception e1){
 
-            try {
-
-                customConfigFile.createNewFile();
-                customConfig = new YamlConfiguration();
-                customConfig.load(customConfigFile);
-                customConfig.set("Player Name", e.getPlayer().getName());
-                customConfig.set("GradientEnabled", false);
-                customConfig.set("GradientStart", "#ffffff");
-                customConfig.set("GradientEnd", "#ffffff");
-                customConfig.set("GradientPreset", "none");
-                customConfig.set("PvP", false);
-                customConfig.save(customConfigFile);
-
-            } catch (Exception e1){
-
+                }
+                //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
             }
-            //Bukkit.getPluginManager().getPlugin("ChromiumCore").saveResource(e.getPlayer().getUniqueId() + ".yml", false);
+        } catch (Exception e1){
+
         }
+
+
 
     }
 
