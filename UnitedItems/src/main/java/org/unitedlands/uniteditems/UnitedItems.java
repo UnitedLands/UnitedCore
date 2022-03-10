@@ -2,12 +2,10 @@ package org.unitedlands.uniteditems;
 
 import org.unitedlands.uniteditems.commands.CustomItemCmd;
 import org.unitedlands.uniteditems.commands.TreeCmd;
-import org.unitedlands.uniteditems.items.weapon.Landscaper;
 import org.unitedlands.uniteditems.listeners.EdibleListener;
 import org.unitedlands.uniteditems.listeners.GUIListener;
 import org.unitedlands.uniteditems.listeners.ItemListener;
 import org.unitedlands.uniteditems.trees.Tree;
-import org.unitedlands.uniteditems.util.BiomeSelector;
 import org.unitedlands.uniteditems.util.SerializableData;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,11 +13,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.uniteditems.items.BracketMushroom;
 import org.unitedlands.uniteditems.items.Croissant;
-import org.unitedlands.uniteditems.items.DarkMagic;
 import org.unitedlands.uniteditems.items.Mango;
 import org.unitedlands.uniteditems.items.Mimosa;
 import org.unitedlands.uniteditems.items.Pinecone;
-import org.unitedlands.uniteditems.items.Sausage;
 import org.unitedlands.uniteditems.sapling.AncientSeed;
 import org.unitedlands.uniteditems.sapling.FloweringAcacia;
 import org.unitedlands.uniteditems.sapling.FungalSapling;
@@ -68,13 +64,8 @@ public class UnitedItems extends JavaPlugin {
         new MangoSapling();
         new PineSapling();
         new AncientSeed();
-        new Landscaper();
         new FloweringAcacia();
         new Mimosa();
-        new DarkMagic();
-        new Sausage();
-
-        new BiomeSelector();
 
         Tree.load();
 
