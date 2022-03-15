@@ -1,53 +1,35 @@
-# UNITEDCHAT CONFIGURATION #
-TimeInSeconds: 30
-Message 1: "&8&m                             \n&cUnitedLands &fMessage\n&8&m                             "
-Message 2: "&8&m                             \n&aUnitedLands &fMessage\n&8&m                             "
-Message 3: "&8&m                             \n&bUnitedLands &fMessage\n&8&m                             "
-ClearChatOnJoin: true
-Default Message Color: "&f"
-BroadcastEnabled: true
-Player Mention Color: "&e&o"
-Preset Gradients:
-  rainbow:
-    - "#e07870"
-    - "#e0aa70"
-    - "#e3de84"
-    - "#a3e391"
-    - "#8de0c1"
-    - "#8fd2e3"
-    - "#938de0"
-    - "#c491e3"
-  dragonfruit:
-    - "#ff2c2c"
-    - "#ff005d"
-    - "#ff008f"
-    - "#ff2dc3"
-    - "#ff57f5"
-  jshine:
-    - "#12c2e9"
-    - "#c471ed"
-    - "#f64f59"
-  eveningsunshine:
-    - "#b92b27"
-    - "#1565C0"
-  metapolis:
-    - "#659999"
-    - "#f4791f"
-  kyoopal:
-    - "#dd3e54"
-    - "#6be585"
-  kyemeh:
-    - "#8360c3"
-    - "#2ebf91"
-  wiretap:
-    - "#8A2387"
-    - "#E94057"
-    - "#F27121"
-  magic:
-    - "#59C173"
-    - "#a17fe0"
-    - "#5D26C1"
-  redsunset:
-    - "#355C7D"
-    - "#6C5B7B"
-    - "#C06C84"
+Presets:
+  # #hex1:#hex2:#hex3....
+  rainbow: "#e07870:#e0aa70:#e3de84:#a3e391:#8de0c1:#8fd2e3:#938de0:#c491e3"
+  dragonfruit: "#ff2c2c:#ff005d:#ff008f:#ff2dc3:#ff57f5"
+  jshine: "#12c2e9:#c471ed:#f64f59"
+  eveningsunshine: "#b92b27:#1565C0"
+  metapolis: "#659999:#f4791f"
+  kyoopal: "#dd3e54:#6be585"
+  kyemeh: "#8360c3:#2ebf91"
+  wiretap: "#8A2387:#E94057:#F27121"
+  magic: "#59C173:#a17fe0:#5D26C1"
+  redsunset: "#355C7D:#6C5B7B:#C06C84"
+messages:
+  Motd:
+    - '<gradient:#ffffff:#ff5555>------------------------------</gradient>'
+    - '                     <red><bold>UNITED<white><bold>LANDS     '
+    - '                <red>Welcome back <yellow><italics>%player_name%<red>!'
+    - '    <red>There are currently <white>%server_online% <red>players online.'
+    - '<gradient:#ffffff:#ff5555>------------------------------</gradient>'
+  FirstJoinMotd:
+    - '<gradient:#ffffff:#ff5555>------------------------------</gradient>'
+    - '                     <red><bold>UNITED<white><bold>LANDS     '
+    - '             <red>Welcome to <red><bold>United<white><bold>Lands <yellow><italic>%player_name%&c!'
+    - '    <red>There are currently <white>%server_online% <red>players online.'
+    - '<gradient:#ffffff:#ff5555>------------------------------</gradient>'
+  ChatCleared: '&c&lU&f&lL &cChat &8&l» &cGlobal Chat Cleared.'
+  GradientChanged: '&c&lU&f&lL &cChat &8&l» &aGradient changed.'
+  GradientOn: '&c&lU&f&lL &cChat &8&l» &aGradient enabled.'
+  GradCommand: '&c&lU&f&lL &cChat &8&l» &eUse /gradient [toggle] | [preset] | [hexcolor1] [hexcolor2] %player_name%'
+  GradAdminCommand: '&c&lU&f&lL &cChat &8&l» &eUse /gradient [toggle] | [preset] | [hexcolor1] [hexcolor] |[player]'
+  GradientOff: '&c&lU&f&lL &cChat &8&l» &cGradient disabled.'
+  GradientUnknownPreset: '&c&lU&f&lL &cChat &8&l» &cPreset not recognized.'
+  GradientIsOff: '&c&lU&f&lL &cChat &8&l» &cYour gradient is disabled.'
+  GradientIsOn: '&c&lU&f&lL &cChat &8&l» &cYour gradient is enabled.'
+  NoPerm: '&c&lU&f&lL &8&l» &cYou don''t have permission.'
