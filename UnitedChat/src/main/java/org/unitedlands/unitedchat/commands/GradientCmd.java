@@ -37,17 +37,17 @@ public class GradientCmd implements CommandExecutor {
             return false;
         }
 
-
         if (args.length != 1) {
             player.sendMessage(helpMessage);
             return true;
         }
 
         if (args[0].equalsIgnoreCase("info")) {
-            String gradient = uc.getPlayerConfig(player).getString("Gradient");
-            player.sendMessage(color("&c&lU&f&lL &cChat &8&l» &cYour current gradient is:&f " + gradient));
+            String gradient = uc.getPlayerConfig(player).getString("Gradient").replace(":", "\n- ");
+            player.sendMessage(color("&c&lU&f&lL &cChat &8&l» &cYour current gradient is:&f \n- " + gradient));
             return true;
         }
+
         if (args[0].equalsIgnoreCase("on")) {
             if (!getGradientStatus(player)) {
                 setGradientStatus(player, true);
@@ -70,6 +70,7 @@ public class GradientCmd implements CommandExecutor {
 
         if (presets.getString(args[0]) == null) {
             player.sendMessage(UnitedChat.getMsg("GradientUnknownPreset", config));
+            return true;
         }
 
         if (presets.contains(args[0])) {
@@ -91,8 +92,8 @@ public class GradientCmd implements CommandExecutor {
             }
         } else {
             player.sendMessage(noPermMessage);
+            return true;
         }
-
 
         return false;
     }

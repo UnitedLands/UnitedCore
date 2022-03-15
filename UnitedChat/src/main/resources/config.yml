@@ -31,4 +31,5 @@ messages:
   GradientOff: '&c&lU&f&lL &cChat &8&l» &cGradient disabled.'
   GradientUnknownPreset: '&c&lU&f&lL &cChat &8&l» &cPreset not recognized.'
   GradientIsOff: '&c&lU&f&lL &cChat &8&l» &cYour gradient is disabled.'
+  GradientIsOn: '&c&lU&f&lL &cChat &8&l» &cYour gradient is enabled.'
   NoPerm: '&c&lU&f&lL &8&l» &cYou don''t have permission.'
