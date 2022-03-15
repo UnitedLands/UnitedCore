@@ -30,8 +30,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         FileConfiguration config = uc.getConfig();
-        List<String> firstMotd = config.getStringList("FirstJoinMotd");
-        List<String> motd = config.getStringList("Motd");
+        List<String> firstMotd = config.getStringList("messages.FirstJoinMotd");
+        List<String> motd = config.getStringList("messages.Motd");
         Player p = event.getPlayer();
 
         if (p.hasPermission("united.chat.gradient")) {
@@ -40,11 +40,11 @@ public class PlayerListener implements Listener {
 
         if (p.hasPlayedBefore()) {
             for (String s : motd) {
-                miniMessage.deserialize(PlaceholderAPI.setPlaceholders(p, s));
+                p.sendMessage(miniMessage.deserialize(PlaceholderAPI.setPlaceholders(p, s)));
             }
         } else {
             for (String s : firstMotd) {
-                miniMessage.deserialize(PlaceholderAPI.setPlaceholders(p, s));
+                p.sendMessage(miniMessage.deserialize(PlaceholderAPI.setPlaceholders(p, s)));
             }
         }
 
