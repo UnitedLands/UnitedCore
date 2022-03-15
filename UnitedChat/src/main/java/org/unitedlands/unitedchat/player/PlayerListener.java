@@ -110,7 +110,7 @@ public class PlayerListener implements Listener {
         return ChatColor.translateAlternateColorCodes('&', string);
     }
 
-    public static boolean isURL(String url) {
+    private boolean isURL(String url) {
         try {
             new URL(url);
             return true;
