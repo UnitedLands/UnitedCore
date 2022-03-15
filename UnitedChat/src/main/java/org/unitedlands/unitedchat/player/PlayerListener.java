@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.unitedlands.unitedchat.UnitedChat;
 
+import java.net.URL;
 import java.util.List;
 
 
@@ -62,8 +63,9 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        String message = resetEmojisAndAddPings(event.getMessage());
+        String message = finalizeGradientMessage(event.getMessage());
         String serializedMessage;
+
         boolean gradientEnabled = uc.getPlayerConfig(player).getBoolean("GradientEnabled");
         if (gradientEnabled) {
             String gradient = uc.getPlayerConfig(player).getString("Gradient");
@@ -72,17 +74,14 @@ public class PlayerListener implements Listener {
             }
             Component gradientedComponent = miniMessage.deserialize("<gradient:" + gradient + ">" + message + "</gradient>");
             serializedMessage = sectionRGB.serialize(gradientedComponent);
-            event.setMessage(color(serializedMessage));
         } else {
             Component messageWithPings = miniMessage.deserialize(message);
             serializedMessage = LegacyComponentSerializer.legacyAmpersand().serialize(messageWithPings);
-            event.setMessage(color(serializedMessage));
         }
-
+        event.setMessage(color(serializedMessage));
     }
 
-
-    private String resetEmojisAndAddPings(String message) {
+    private String finalizeGradientMessage(String message) {
         String[] parts = message.split(" ");
         String excludedPart;
         String pingedPlayer;
@@ -98,11 +97,25 @@ public class PlayerListener implements Listener {
                     player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
                 }
             }
+            if (isURL(part)) {
+                String highlightedURL = "<click:open_url:'" + part + "'><u><color:#10afee>" +
+                        part + "</color:#10afee></u></click>";
+                message = message.replace(part, highlightedURL);
+            }
         }
         return message;
     }
 
     private String color(String string) {
         return ChatColor.translateAlternateColorCodes('&', string);
+    }
+
+    private boolean isURL(String url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
