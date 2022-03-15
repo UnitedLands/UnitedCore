@@ -58,6 +58,10 @@ public class PlayerListener implements Listener {
             return;
         }
 
+        if (!event.getChannel().getName().equals("general")) {
+            return;
+        }
+
         String message = resetEmojisAndAddPings(event.getMessage());
         String serializedMessage;
         boolean gradientEnabled = uc.getPlayerConfig(player).getBoolean("GradientEnabled");
