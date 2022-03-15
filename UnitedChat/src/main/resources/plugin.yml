@@ -7,5 +7,15 @@ depend: [Towny, TownyChat]
 softdepend: [PlaceholderAPI]
 commands:
   gradient:
+    description: Main gradient command, used to set gradients, or enable and disable them
+    permission: united.chat.gradient
+    permission-message: '&c&lU&f&lL &8&l» &cYou don''t have permission.'
+    aliases:
+      - gradient
+      - gradientchat
   cc:
-
+    description: Clears chat
+    permission: united.chat.admin
+    permission-message: '&c&lU&f&lL &8&l» &cYou don''t have permission.'
+    aliases:
+      - clearchat

@@ -2,153 +2,100 @@ package org.unitedlands.unitedchat.player;
 
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.unitedlands.unitedchat.UnitedChat;
-import org.unitedlands.unitedchat.gradient.Gradient;
-import org.unitedlands.unitedchat.gradient.GradientPresets;
-import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.StringUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.unitedlands.unitedchat.UnitedChat;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerListener implements Listener {
 
+public class PlayerListener implements Listener {
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private final LegacyComponentSerializer sectionRGB = LegacyComponentSerializer.builder().character('§').hexCharacter('#').hexColors().build();
+    private final UnitedChat uc;
+
+    public PlayerListener(UnitedChat uc) {
+        this.uc = uc;
+    }
 
     @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        FileConfiguration config = uc.getConfig();
+        List<String> firstMotd = config.getStringList("FirstJoinMotd");
+        List<String> motd = config.getStringList("Motd");
+        Player p = event.getPlayer();
 
-    public void onJoin(PlayerJoinEvent e){
+        if (p.hasPermission("united.chat.gradient")) {
+            uc.createPlayerFile(p);
+        }
 
-        FileConfiguration conf = UnitedChat.getConfigur();
-
-        List<String> motd = UnitedChat.getList("Motd");
-        List<String> firstmotd = UnitedChat.getList("FirstJoinMotd");
-
-        Player p = e.getPlayer();
-
-        p.sendMessage((StringUtils.repeat(" \n", 150)));
-
-        if(p.hasPlayedBefore()){
-            for(String s : motd){
-                p.sendMessage(PlaceholderAPI.setPlaceholders(p, ChatColor.translateAlternateColorCodes('&', s)));
+        if (p.hasPlayedBefore()) {
+            for (String s : motd) {
+                miniMessage.deserialize(PlaceholderAPI.setPlaceholders(p, s));
             }
         } else {
-            for(String s : firstmotd){
-                p.sendMessage(PlaceholderAPI.setPlaceholders(p, ChatColor.translateAlternateColorCodes('&', s)));
+            for (String s : firstMotd) {
+                miniMessage.deserialize(PlaceholderAPI.setPlaceholders(p, s));
             }
         }
-
-
-        try{
-            File customConfigFile;
-            FileConfiguration customConfig;
-            customConfigFile = new File(Bukkit.getPluginManager().getPlugin("UnitedCore").getDataFolder(), "/players/" + e.getPlayer().getUniqueId() + ".yml");
-            if (!customConfigFile.exists()) {
-                customConfigFile.getParentFile().mkdirs();
-
-                try {
-
-                    customConfigFile.createNewFile();
-                    customConfig = new YamlConfiguration();
-                    customConfig.load(customConfigFile);
-                    customConfig.set("Player Name", e.getPlayer().getName());
-                    customConfig.set("GradientEnabled", false);
-                    customConfig.set("GradientStart", "#ffffff");
-                    customConfig.set("GradientEnd", "#ffffff");
-                    customConfig.set("GradientPreset", "none");
-                    customConfig.set("PvP", false);
-                    customConfig.save(customConfigFile);
-
-                } catch (Exception e1){
-
-                }
-            }
-        } catch (Exception e1){
-
-        }
-
-
 
     }
 
-
-
-
     @EventHandler
-    public void onChat(AsyncChatHookEvent e){
+    public void onChat(AsyncChatHookEvent event) {
+        Player player = event.getPlayer();
 
-        File customConfigFile;
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("UnitedCore").getDataFolder(), "/players/" + e.getPlayer().getUniqueId() + ".yml");
-        FileConfiguration customConfig;
-        customConfig = new YamlConfiguration();
-        try {
-            customConfig.load(customConfigFile);
-        } catch (Exception e2){
-
-        }
-
-        if (!e.getChannel().getName().equals("general")) {
+        if (!player.hasPermission("united.chat.gradient")) {
             return;
         }
 
-        if(customConfig.getBoolean("GradientEnabled") ){
-
-            if(customConfig.getString("GradientPreset").equals("none")){
-                ArrayList<String> colors = new ArrayList<>();
-                try {
-
-                    colors.add(customConfig.getString("GradientStart"));
-                    colors.add(customConfig.getString("GradientEnd"));
-                    Gradient g = new Gradient(colors);
-                    e.setMessage(g.gradientMessage(e.getMessage(), "", false));
-
-                } catch (Exception e1) {
-
-                    e.setMessage(e.getMessage());
-
-                }
-            } else {
-                try {
-
-                    Gradient g = GradientPresets.getGradient(customConfig.getString("GradientPreset"));
-                    e.setMessage(g.gradientMessage(e.getMessage(), "", false));
-
-                } catch (Exception e1) {
-                    
-                    e.setMessage(e.getMessage());
-
-                }
-            }
-
-
-
-
+        String message = resetEmojisAndAddPings(event.getMessage());
+        String serializedMessage;
+        boolean gradientEnabled = uc.getPlayerConfig(player).getBoolean("GradientEnabled");
+        if (gradientEnabled) {
+            String gradient = uc.getPlayerConfig(player).getString("Gradient");
+            Component gradientedComponent = miniMessage.deserialize("<gradient:" + gradient + ">" + message + "</gradient>");
+            serializedMessage = sectionRGB.serialize(gradientedComponent);
+            event.setMessage(color(serializedMessage));
         } else {
-
-            String messageDefault = UnitedChat.getConfigur().getString("Default Message Color") + e.getMessage();
-            String messageColored = (ChatColor.translateAlternateColorCodes('&', messageDefault));
-            String messageFinal = messageColored;
-            for(Player p : Bukkit.getOnlinePlayers()){
-                if(messageDefault.toLowerCase().contains(p.getName().toLowerCase())){
-                    messageFinal = messageColored.replace(p.getName(), (ChatColor.translateAlternateColorCodes('&', UnitedChat.getConfigur()
-                            .getString("Player Mention Color") + p.getName() + UnitedChat.getConfigur().getString("Default Message Color"))));
-                    p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
-                }
-            }
-            e.setMessage(messageFinal);
+            Component messageWithPings = miniMessage.deserialize(message);
+            serializedMessage = LegacyComponentSerializer.legacyAmpersand().serialize(messageWithPings);
+            event.setMessage(color(serializedMessage));
         }
-
-
 
     }
 
 
+    private String resetEmojisAndAddPings(String message) {
+        String[] parts = message.split(" ");
+        String excludedPart;
+        String pingedPlayer;
+        for (String part : parts) {
+            if (part.startsWith(":") && part.endsWith(":")) {
+                excludedPart = "<white>" + part + "</white>";
+                message = message.replace(part, excludedPart);
+            }
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (part.equals(player.getName())) {
+                    pingedPlayer = "<yellow><i>" + player.getName() + "</i></yellow>";
+                    message = message.replace(part, pingedPlayer);
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+                }
+            }
+        }
+        return message;
+    }
+
+    private String color(String string) {
+        return ChatColor.translateAlternateColorCodes('&', string);
+    }
 }
