@@ -1,5 +1,6 @@
 package org.unitedlands.unitedchat.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,11 +38,16 @@ public class GradientCmd implements CommandExecutor {
         }
 
 
-        if (args.length < 1 || args.length > 1) {
+        if (args.length != 1) {
             player.sendMessage(helpMessage);
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("info")) {
+            String gradient = uc.getPlayerConfig(player).getString("Gradient");
+            player.sendMessage(color("&c&lU&f&lL &cChat &8&l» &cYour current gradient is:&f " + gradient));
+            return true;
+        }
         if (args[0].equalsIgnoreCase("on")) {
             if (!getGradientStatus(player)) {
                 setGradientStatus(player, true);
@@ -89,6 +95,10 @@ public class GradientCmd implements CommandExecutor {
 
 
         return false;
+    }
+
+    private String color(String string) {
+        return ChatColor.translateAlternateColorCodes('&', string);
     }
 
     private void setGradient(Player player, String gradient) {

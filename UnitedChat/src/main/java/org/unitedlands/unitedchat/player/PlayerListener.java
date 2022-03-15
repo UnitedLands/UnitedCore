@@ -67,6 +67,9 @@ public class PlayerListener implements Listener {
         boolean gradientEnabled = uc.getPlayerConfig(player).getBoolean("GradientEnabled");
         if (gradientEnabled) {
             String gradient = uc.getPlayerConfig(player).getString("Gradient");
+            if (gradient == null) {
+                return;
+            }
             Component gradientedComponent = miniMessage.deserialize("<gradient:" + gradient + ">" + message + "</gradient>");
             serializedMessage = sectionRGB.serialize(gradientedComponent);
             event.setMessage(color(serializedMessage));
