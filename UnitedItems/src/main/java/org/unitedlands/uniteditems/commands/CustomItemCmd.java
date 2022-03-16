@@ -55,7 +55,7 @@ public class CustomItemCmd implements CommandExecutor {
                 if(args[0].equals("list")) {
                     StringBuilder items = new StringBuilder("&e&lUnited Items\n");
                     for (Map.Entry<String, CustomItem> e : CustomItem.getAllItems().entrySet()) {
-                        items.append("&b"+ ChatColor.stripColor(e.getValue().getItem().getItemMeta().getDisplayName())+"\n");
+                        items.append("&b"+ ChatColor.stripColor(e.getValue().getItem().getItemMeta().getDisplayName().replaceAll(" ", "_"))+"\n");
                     }
                     Logger.logNoPrefix(p,items.toString());
 

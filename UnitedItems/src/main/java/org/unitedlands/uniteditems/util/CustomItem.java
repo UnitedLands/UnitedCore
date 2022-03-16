@@ -1,5 +1,7 @@
 package org.unitedlands.uniteditems.util;
 
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.unitedlands.uniteditems.listeners.ItemListener;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
@@ -108,7 +110,8 @@ public class CustomItem extends ItemListener {
 
     public static ItemStack getItemBySimilarName(String name) {
         for (Map.Entry<String, CustomItem> e : customItems.entrySet()) {
-            if(e.getValue().getItem().getItemMeta().getDisplayName().replaceAll(" ", "_").contains(name)) {
+            String itemName = e.getValue().getItem().getItemMeta().getDisplayName().replaceAll(" ", "_");
+            if(StringUtils.getLevenshteinDistance(itemName, name) <= 5) {
                 return e.getValue().getItem();
             }
         }
