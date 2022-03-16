@@ -1,8 +1,6 @@
 package org.unitedlands.uniteditems.listeners;
 
 import de.tr7zw.nbtapi.NBTItem;
-import org.unitedlands.uniteditems.util.CustomItem;
-import org.unitedlands.uniteditems.util.ToolCustomItem;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -10,18 +8,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.unitedlands.uniteditems.util.CustomItem;
+import org.unitedlands.uniteditems.util.ToolCustomItem;
 
 import java.util.function.Consumer;
 
 public class ItemListener implements Listener {
 
     private Consumer<PlayerInteractEvent> onRightClickConsumer;
-    private Consumer<EntityShootBowEvent> onBowFireConsumer;
     private Consumer<ProjectileLaunchEvent> onThrowConsumer;
 
     public void setOnRightClickConsumer(Consumer<PlayerInteractEvent> e) {
@@ -55,14 +53,13 @@ public class ItemListener implements Listener {
         if(item.hasKey("SOURCE")) {
             if(item.getString("SOURCE").equals(e.getPlayer().getUniqueId().toString())) {
                 e.getItem().setPickupDelay(20);
-                e.setCancelled(true);
             } else {
                 e.getItem().remove();
                 e.getPlayer().setNoDamageTicks(0);
                 e.getPlayer().damage(2);
                 e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.ENTITY_WITHER_SHOOT, 5, 1);
-                e.setCancelled(true);
             }
+            e.setCancelled(true);
         }
     }
 
@@ -84,25 +81,8 @@ public class ItemListener implements Listener {
             if(customTool != null) {
                 if(customTool.getOnRightClickConsumer() != null) {
                     customTool.getOnRightClickConsumer().accept(e);
-                    return;
                 }
             }
-        }
-    }
-
-    public void setOnBowFireConsumer(Consumer<EntityShootBowEvent> e) {
-        this.onBowFireConsumer = e;
-    }
-
-    public Consumer<EntityShootBowEvent> getOnBowFireConsumer() {
-        return onBowFireConsumer;
-    }
-
-    @EventHandler
-    public void onBowFire(EntityShootBowEvent e) {
-        ToolCustomItem custom = ToolCustomItem.getItem(e.getBow());
-        if(custom != null && custom.getOnBowFireConsumer() != null) {
-            custom.getOnBowFireConsumer().accept(e);
         }
     }
 
