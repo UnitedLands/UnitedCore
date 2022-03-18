@@ -17,7 +17,6 @@ import java.io.IOException;
 public class UnitedChat extends JavaPlugin {
 
     private FileConfiguration playerDataConfig;
-    private File playerFile;
 
     public static String getMsg(String name, FileConfiguration config) {
         String message = config.getString("messages." + name);
@@ -31,7 +30,7 @@ public class UnitedChat extends JavaPlugin {
             getLogger().warning("[Exception] PlaceholderAPI is required!");
             Bukkit.getPluginManager().disablePlugin(this);
         }
-        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(this, new Formatter()), this);
         this.getCommand("gradient").setExecutor(new GradientCmd(this));
         this.getCommand("cc").setExecutor(new ClearChatCmd());
         saveDefaultConfig();
@@ -67,7 +66,7 @@ public class UnitedChat extends JavaPlugin {
     }
 
     public File getPlayerFile(Player player) {
-        return playerFile = new File(getDataFolder(), getFilePath(player));
+        return new File(getDataFolder(), getFilePath(player));
     }
 
 
