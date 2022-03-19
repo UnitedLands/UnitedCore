@@ -1,47 +1,21 @@
-package org.unitedlands;
+package org.unitedlands.listeners;
 
 import com.palmergames.adventure.text.Component;
 import com.palmergames.adventure.text.TextComponent;
-import com.palmergames.bukkit.towny.event.NationUpkeepCalculationEvent;
-import com.palmergames.bukkit.towny.event.TownUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
-import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.unitedlands.UnitedLandsUpkeep;
+import org.unitedlands.calculators.TownUpkeepCalculator;
 
-public class ULUpkeep extends JavaPlugin implements Listener {
+public class StatusScreenListener implements Listener {
+    private final UnitedLandsUpkeep unitedLandsUpkeep;
 
-    FileConfiguration config = getConfig();
-
-
-    @Override
-    public void onEnable() {
-        this.saveDefaultConfig();
-        this.getServer().getPluginManager().registerEvents(this, this);
-
+    public StatusScreenListener(UnitedLandsUpkeep unitedLandsUpkeep) {
+        this.unitedLandsUpkeep = unitedLandsUpkeep;
     }
 
-    @EventHandler
-    public void calculateTownUpkeepEvent(TownUpkeepCalculationEvent event) {
-        Town town = event.getTown();
-        double bonusDiscount = UpkeepCalculators.calculateBonusDiscount(config, town);
-        double upkeep = UpkeepCalculators.calculateTownUpkeep(config, town, true) - bonusDiscount;
-        // set the upkeep to 0 if it's negative. This is in case a town has more/equal bonus blocks than/to plots.
-        if (upkeep <= 0) {
-            upkeep = 0;
-        }
-        event.setUpkeep(upkeep);
-    }
-
-    @EventHandler
-    public void calculateNationUpkeepEvent(NationUpkeepCalculationEvent event) {
-        Nation nation = event.getNation();
-        double upkeep = UpkeepCalculators.calculateNationUpkeep(config, nation);
-        event.setUpkeep(upkeep);
-    }
 
     @EventHandler
     public void sendStatusScreen(TownStatusScreenEvent event) {
@@ -49,14 +23,15 @@ public class ULUpkeep extends JavaPlugin implements Listener {
         var screenComponents = screen.getComponents();
         Town town = event.getTown();
         int townsize = town.getTownBlocks().size();
+        final TownUpkeepCalculator calculator = getTownUpkeepCalculator(town);
 
-        double undiscountedUpkeep = UpkeepCalculators.calculateTownUpkeep(config, town, false);
-        double upkeepWithNationDiscount = UpkeepCalculators.calculateTownUpkeep(config, town, true);
+        double undiscountedUpkeep = calculator.calculateTownUpkeep();
+        double upkeepWithNationDiscount = calculator.calculateDiscountedTownUpkeep();
 
         double nationDiscount = undiscountedUpkeep - upkeepWithNationDiscount;
-        double bonusDiscount = UpkeepCalculators.calculateBonusDiscount(config, town);
+        double bonusBlockDiscount = calculator.calculateBonusBlockDiscount();
 
-        double discountedUpkeep = Math.abs(upkeepWithNationDiscount - bonusDiscount);
+        double discountedUpkeep = Math.abs(upkeepWithNationDiscount - bonusBlockDiscount);
 
         // Loop through the components in the status screen
         screenComponents.forEach(component -> {
@@ -72,9 +47,9 @@ public class ULUpkeep extends JavaPlugin implements Listener {
                 Component upkeepComponent;
 
                 // Checking the least likely scenario to begin with. Bonus discount may be negative, so not the same check as nation discount
-                if (nationDiscount > 0 && bonusDiscount != 0) {
+                if (nationDiscount > 0 && bonusBlockDiscount != 0) {
                     upkeepComponent = Component.text("§2Upkeep: §7§m" + undiscountedUpkeep + "§r§c " +
-                            discountedUpkeep + " Gold" + " §2[Bonus Discount: §a" + bonusDiscount + " Gold§2]" +
+                            discountedUpkeep + " Gold" + " §2[Bonus Discount: §a" + bonusBlockDiscount + " Gold§2]" +
                             " [Nation Discount: §a" + nationDiscount + " Gold§2]");
                     screen.replaceComponent("upkeep", (TextComponent) upkeepComponent);
                 } else if (nationDiscount > 0) {
@@ -82,9 +57,9 @@ public class ULUpkeep extends JavaPlugin implements Listener {
                     upkeepComponent = Component.text("§2Upkeep: §7§m" + undiscountedUpkeep + "§r§c " + discountedUpkeep +
                             " Gold" + " §2[Nation Discount: §a" + nationDiscount + " Gold§2]");
                     screen.replaceComponent("upkeep", (TextComponent) upkeepComponent);
-                } else if (bonusDiscount != 0) {
+                } else if (bonusBlockDiscount != 0) {
                     upkeepComponent = Component.text("§2Upkeep: §7§m" + undiscountedUpkeep + "§r§c " + discountedUpkeep +
-                            " Gold" + " §2[Bonus Discount: §a" + bonusDiscount + " Gold§2]");
+                            " Gold" + " §2[Bonus Discount: §a" + bonusBlockDiscount + " Gold§2]");
                     screen.replaceComponent("upkeep", (TextComponent) upkeepComponent);
                 }
             }
@@ -92,5 +67,7 @@ public class ULUpkeep extends JavaPlugin implements Listener {
 
     }
 
-
+    private TownUpkeepCalculator getTownUpkeepCalculator(Town town) {
+        return new TownUpkeepCalculator(unitedLandsUpkeep, town);
+    }
 }
