@@ -1,6 +1,6 @@
-name: ULUpkeep
+name: UnitedUpkeep
 version: ${project.version}
-main: org.unitedlands.ULUpkeep
+main: org.unitedlands.UnitedUpkeep
 api-version: 1.18
 prefix: UlUpkeep
 depend: [ Towny ]
