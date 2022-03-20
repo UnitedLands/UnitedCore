@@ -15,6 +15,7 @@
         <module>UnitedPvP</module>
         <module>UnitedItems</module>
         <module>UnitedCore</module>
+        <module>UnitedUpkeep</module>
     </modules>
 
     <build>

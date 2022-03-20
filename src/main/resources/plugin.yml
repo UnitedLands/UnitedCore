@@ -1,9 +1,0 @@
-name: UnitedUpkeep
-version: ${project.version}
-main: org.unitedlands.UnitedUpkeep
-api-version: 1.18
-prefix: UlUpkeep
-depend: [ Towny ]
-authors: [ Maroon28 ]
-description: Town and nation upkeep manager for Unitedlands
-website: unitedlands.org
