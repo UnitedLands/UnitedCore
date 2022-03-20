@@ -1,20 +1,16 @@
-package org.unitedlands.calculators;
+package org.unitedlands.upkeep.calculators;
 
 import com.palmergames.bukkit.towny.object.Nation;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.unitedlands.UnitedLandsUpkeep;
+import org.unitedlands.upkeep.UnitedUpkeep;
 
 public class NationUpkeepCalculator {
-    private final UnitedLandsUpkeep unitedLandsUpkeep;
+    private final UnitedUpkeep unitedUpkeep;
     private final Nation nation;
 
-    public NationUpkeepCalculator(UnitedLandsUpkeep unitedLandsUpkeep, Nation nation) {
-        this.unitedLandsUpkeep = unitedLandsUpkeep;
+    public NationUpkeepCalculator(UnitedUpkeep unitedUpkeep, Nation nation) {
+        this.unitedUpkeep = unitedUpkeep;
         this.nation = nation;
-    }
-
-    public NationUpkeepCalculator getNationCalculator(Nation nation) {
-        return new NationUpkeepCalculator(unitedLandsUpkeep, nation);
     }
 
     public double calculateNationUpkeep() {
@@ -57,7 +53,7 @@ public class NationUpkeepCalculator {
     }
 
     private FileConfiguration getConfiguration() {
-        return unitedLandsUpkeep.getConfig();
+        return unitedUpkeep.getConfig();
     }
 
 }

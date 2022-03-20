@@ -1,10 +1,10 @@
-package org.unitedlands;
+package org.unitedlands.upkeep;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import org.unitedlands.listeners.CalculationListener;
-import org.unitedlands.listeners.StatusScreenListener;
+import org.unitedlands.upkeep.listeners.CalculationListener;
+import org.unitedlands.upkeep.listeners.StatusScreenListener;
 
-public class UnitedLandsUpkeep extends JavaPlugin {
+public class UnitedUpkeep extends JavaPlugin {
 
     @Override
     public void onEnable() {

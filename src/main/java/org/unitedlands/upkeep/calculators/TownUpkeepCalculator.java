@@ -1,21 +1,21 @@
-package org.unitedlands.calculators;
+package org.unitedlands.upkeep.calculators;
 
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.unitedlands.UnitedLandsUpkeep;
+import org.unitedlands.upkeep.UnitedUpkeep;
 
 public class TownUpkeepCalculator {
 
-    private final UnitedLandsUpkeep unitedLandsUpkeep;
+    private final UnitedUpkeep unitedUpkeep;
     private final Town town;
 
-    public TownUpkeepCalculator(UnitedLandsUpkeep unitedLandsUpkeep, Town town) {
-        this.unitedLandsUpkeep = unitedLandsUpkeep;
+    public TownUpkeepCalculator(UnitedUpkeep unitedUpkeep, Town town) {
+        this.unitedUpkeep = unitedUpkeep;
         this.town = town;
     }
 
-    public double calculateDiscountedTownUpkeep() {
+    public double calculateNationDiscountedTownUpkeep() {
         double upkeepPerPlot = (getBaseTownUpkeepPrice() * getRiseMod()) / (getFallMod() + calculateNationDiscount());
         return Math.floor((upkeepPerPlot * getTownPlotCount()));
 
@@ -37,7 +37,7 @@ public class TownUpkeepCalculator {
         }
 
         if (bonusBlocks >= totalBlocks) {
-            return calculateDiscountedTownUpkeep();
+            return calculateNationDiscountedTownUpkeep();
         }
 
         return bonusBlocks * upkeepPerPlot;
@@ -71,13 +71,10 @@ public class TownUpkeepCalculator {
     }
 
     private double calculateNationDiscount() {
-
         if (!town.hasNation()) {
             return 0;
         }
-
         Nation nation = town.getNationOrNull();
-
         if (nation.getNumTowns() == 1) {
             return 0;
         }
@@ -89,12 +86,19 @@ public class TownUpkeepCalculator {
     }
 
     private int getBaseTownUpkeepPrice() {
-
         return getConfiguration().getInt("town.baseUpkeepPrice");
     }
 
     private FileConfiguration getConfiguration() {
-        return unitedLandsUpkeep.getConfig();
+        return unitedUpkeep.getConfig();
+    }
+
+    public double getNationDiscount() {
+        return calculateTownUpkeep() - calculateNationDiscountedTownUpkeep();
+    }
+
+    public double getDiscountedUpkeep() {
+        return Math.abs(calculateNationDiscountedTownUpkeep() - calculateBonusBlockDiscount());
     }
 
 }
