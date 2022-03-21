@@ -1,5 +1,6 @@
 # User-specific stuff
 UnitedUpkeep/.idea/
+.idea
 
 *.iml
 *.ipr
@@ -111,3 +112,47 @@ buildNumber.properties
 
 # Common working directory
 run/
+/UnitedProtection/.gitignore
+/.idea/jarRepositories.xml
+/.idea/libraries/Maven__com_github_cryptomorin_XSeries_8_6_2.xml
+/.idea/libraries/Maven__com_github_sirblobman_api_core_2_3_SNAPSHOT.xml
+/.idea/libraries/Maven__com_github_TownyAdvanced_Towny_0_97_3_0.xml
+/.idea/libraries/Maven__com_github_TownyAdvanced_TownyChat_0_85.xml
+/.idea/libraries/Maven__com_google_code_findbugs_jsr305_3_0_2.xml
+/.idea/libraries/Maven__com_google_code_gson_gson_2_8_9.xml
+/.idea/libraries/Maven__com_google_errorprone_error_prone_annotations_2_7_1.xml
+/.idea/libraries/Maven__com_google_guava_failureaccess_1_0_1.xml
+/.idea/libraries/Maven__com_google_guava_guava_31_0_1_jre.xml
+/.idea/libraries/Maven__com_google_guava_listenablefuture_9999_0_empty_to_avoid_conflict_with_guava.xml
+/.idea/libraries/Maven__com_google_j2objc_j2objc_annotations_1_3.xml
+/.idea/libraries/Maven__com_googlecode_json_simple_json_simple_1_1_1.xml
+/.idea/libraries/Maven__com_SirBlobman_combatlogx_CombatLogX_API_10_0_0_0_SNAPSHOT.xml
+/.idea/libraries/Maven__commons_lang_commons_lang_2_6.xml
+/.idea/libraries/Maven__de_tr7zw_item_nbt_api_plugin_2_9_2.xml
+/.idea/libraries/Maven__io_papermc_paper_paper_api_1_18_2_R0_1_SNAPSHOT.xml
+/.idea/libraries/Maven__it_unimi_dsi_fastutil_8_5_6.xml
+/.idea/libraries/Maven__me_clip_placeholderapi_2_10_9.xml
+/.idea/libraries/Maven__me_clip_placeholderapi_2_10_10.xml
+/.idea/libraries/Maven__net_kyori_adventure_api_4_10_1.xml
+/.idea/libraries/Maven__net_kyori_adventure_key_4_10_1.xml
+/.idea/libraries/Maven__net_kyori_adventure_text_minimessage_4_10_1.xml
+/.idea/libraries/Maven__net_kyori_adventure_text_serializer_gson_4_10_1.xml
+/.idea/libraries/Maven__net_kyori_adventure_text_serializer_legacy_4_10_1.xml
+/.idea/libraries/Maven__net_kyori_adventure_text_serializer_plain_4_10_1.xml
+/.idea/libraries/Maven__net_kyori_examination_api_1_3_0.xml
+/.idea/libraries/Maven__net_kyori_examination_string_1_3_0.xml
+/.idea/libraries/Maven__net_md_5_bungeecord_chat_1_16_R0_4_deprecated_build_6.xml
+/.idea/libraries/Maven__org_apache_logging_log4j_log4j_api_2_17_1.xml
+/.idea/libraries/Maven__org_checkerframework_checker_qual_3_21_0.xml
+/.idea/libraries/Maven__org_jetbrains_annotations_16_0_2.xml
+/.idea/libraries/Maven__org_jetbrains_annotations_19_0_0.xml
+/.idea/libraries/Maven__org_jetbrains_annotations_23_0_0.xml
+/.idea/libraries/Maven__org_ow2_asm_asm_9_2.xml
+/.idea/libraries/Maven__org_ow2_asm_asm_analysis_9_2.xml
+/.idea/libraries/Maven__org_ow2_asm_asm_commons_9_2.xml
+/.idea/libraries/Maven__org_ow2_asm_asm_tree_9_2.xml
+/.idea/libraries/Maven__org_slf4j_slf4j_api_1_8_0_beta4.xml
+/.idea/libraries/Maven__org_yaml_snakeyaml_1_30.xml
+/.idea/misc.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
