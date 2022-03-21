@@ -1,0 +1,4 @@
+name: UnitedUpkeep
+version: ${project.version}
+main: org.unitedlands.upkeep.UnitedUpkeep
+api-version: 1.18
