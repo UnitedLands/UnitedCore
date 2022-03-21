@@ -16,6 +16,7 @@
         <module>UnitedItems</module>
         <module>UnitedCore</module>
         <module>UnitedUpkeep</module>
+        <module>UnitedProtection</module>
     </modules>
 
     <build>

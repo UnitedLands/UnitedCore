@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/UnitedCore/UnitedCore.iml" filepath="$PROJECT_DIR$/UnitedCore/UnitedCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/UnitedCore (1).iml" filepath="$PROJECT_DIR$/UnitedCore (1).iml" />
       <module fileurl="file://$PROJECT_DIR$/UnitedItems/UnitedItems.iml" filepath="$PROJECT_DIR$/UnitedItems/UnitedItems.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UnitedProtection/UnitedProtection.iml" filepath="$PROJECT_DIR$/UnitedProtection/UnitedProtection.iml" />
       <module fileurl="file://$PROJECT_DIR$/UnitedPvP/UnitedPvP.iml" filepath="$PROJECT_DIR$/UnitedPvP/UnitedPvP.iml" />
       <module fileurl="file://$PROJECT_DIR$/UnitedUpkeep/UnitedUpkeep.iml" filepath="$PROJECT_DIR$/UnitedUpkeep/UnitedUpkeep.iml" />
     </modules>

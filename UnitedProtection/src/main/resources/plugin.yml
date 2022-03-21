@@ -1,0 +1,8 @@
+name: UnitedProtection
+version: ${project.version}
+main: org.unitedlands.protection.UnitedProtection
+api-version: 1.18
+depend: [ Towny ]
+authors: [ Maroon28 ]
+description: A plugin which protects the ores minable in the Earth world's caves on UnitedLands
+website: unitedlands.org

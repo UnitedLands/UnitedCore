@@ -8,16 +8,18 @@
         <outputRelativeToContentRoot value="true" />
         <module name="UnitedChat" />
         <module name="UnitedItems" />
+        <module name="UnitedProtection" />
         <module name="UnitedUpkeep" />
         <module name="UnitedPvP" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="UnitedChat" target="16" />
+      <module name="UnitedChat" target="15" />
       <module name="UnitedCore" target="8" />
-      <module name="UnitedCore (1)" target="17" />
+      <module name="UnitedCore (1)" target="8" />
       <module name="UnitedCore (2)" target="1.5" />
       <module name="UnitedItems" target="17" />
+      <module name="UnitedProtection" target="1.8" />
       <module name="UnitedPvP" target="17" />
       <module name="UnitedUpkeep" target="10" />
     </bytecodeTargetLevel>
