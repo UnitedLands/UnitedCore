@@ -97,6 +97,10 @@ public class PlayerListener implements Listener {
             return true;
         }
 
+        if (player.hasPermission("united.protection.bypass")) {
+            return true;
+        }
+
         return playerY >= getProtectedY() || isInTown(resident);
     }
 }
