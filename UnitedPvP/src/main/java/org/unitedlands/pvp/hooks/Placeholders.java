@@ -1,15 +1,14 @@
-package org.unitedlands.unitedpvp.hooks;
+package org.unitedlands.pvp.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.unitedlands.unitedpvp.UnitedPvP;
-import org.unitedlands.unitedpvp.util.Utils;
+import org.unitedlands.pvp.util.Utils;
 import org.bukkit.OfflinePlayer;
 
 public class Placeholders extends PlaceholderExpansion {
-    private final UnitedPvP plugin;
+    private final Utils utils;
 
-    public Placeholders(UnitedPvP plugin) {
-        this.plugin = plugin;
+    public Placeholders(Utils utils) {
+        this.utils = utils;
     }
     @Override
     public String getAuthor() {
@@ -34,15 +33,14 @@ public class Placeholders extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String params) {
         if (player.getPlayer() != null) {
+            boolean pvp = utils.getPvPStatus(player.getPlayer());
             if (params.equalsIgnoreCase("status")) {
-                boolean pvp = Utils.getPvPStatus(player.getPlayer());
                 if (pvp) {
                     return "§c⚔";
                 } else {
                     return "§a🛡";
                 }
             } else if (params.equalsIgnoreCase("status-string")) {
-                boolean pvp = Utils.getPvPStatus(player.getPlayer());
                 if (pvp) {
                     return "enabled";
                 } else {

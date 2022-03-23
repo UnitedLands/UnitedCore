@@ -1,12 +1,11 @@
 name: UnitedPvP
 version: '${project.version}'
-main: org.unitedlands.unitedpvp.UnitedPvP
+main: org.unitedlands.pvp.UnitedPvP
 api-version: 1.17
-authors: [ Obito17 ]
+authors: [ Maroon28 ]
 depend: [ CombatLogX, Towny, TownyChat, UnitedCore ]
 softdepend: [ PlaceholderAPI ]
 commands:
   pvp:
-  fftown:
-  ffnation:
-  tadmin:
+     description: Main PVP command. Used to enable and disable pvp status.
+     usage: /pvp on | off | status [player]

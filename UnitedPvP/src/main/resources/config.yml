@@ -1,9 +1,20 @@
-# UnitedPvP CONFIGURATION #
-PvPToggleEnabled: true
-CooldownTimeInSecs: 120
-FFTownCooldownTimeInSecs: 5
-FFNationCooldownTimeInSecs: 10
-GlobalFriendlyFire: 0
 IgnoredWorlds:
   - pvparena
   - world_ffa
+messages:
+  InCombat: '&cYou can''t use that command while in combat.'
+  PvPDisabled: '&ePvP disabled.'
+  PvPEnabled: '&ePvP enabled.'
+  PvPCommand: '&eUse /pvp <on/off> | <status>.'
+  PvPAdminCommand: '&eUse /pvp <on/off> | <player> | <status>.'
+  PvPEnabledOp: '&ePvP enabled for player.'
+  PvPDisabledOp: '&ePvP disabled for player.'
+  PvPEnabledByAdmin: '&ePvP enabled by admin.'
+  PvPDisabledByAdmin: '&ePvP disabled by admin.'
+  PvPAlreadyOn: '&cPvP already enabled.'
+  PvPAlreadyOff: '&cPvP already disabled.'
+  PvPStatusOn: '&ePvP status: ON'
+  PvPStatusOff: '&cPvP status: OFF'
+  PlayerNotRecognized: '&cPlayer not found'
+  TargetPvPDisabled: '&cThat player has their pvp disabled!'
+  OwnPvPDisabled: '&cYour pvp is disabled!'
