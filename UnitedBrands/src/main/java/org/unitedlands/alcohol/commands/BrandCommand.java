@@ -27,9 +27,12 @@ public class BrandCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        Player player = (Player) sender;
+        if (!(sender instanceof Player)) {
+            return false;
+        }
 
-        Brand brand;
+        Player player = (Player) sender;
+        Brand brand = Util.getPlayerBrand(player);
 
         if (args[0].equals("create")) {
             brand = new Brand(unitedBrands, args[1], player, null);
@@ -64,12 +67,12 @@ public class BrandCommand implements CommandExecutor {
                 receiver.sendMessage(Util.getMessage("brand-invite", brandName));
                 return true;
             }
-            receiver.sendMessage(Util.getMessage("not-in-a-brand", ""));
+            receiver.sendMessage(Util.getMessage("must-own-brand", ""));
             return true;
         }
 
         if (args[0].equals("accept")) {
-            InviteRequest request = getReceiverRequest(player);
+            InviteRequest request = getRequest(player);
             if (request != null) {
                 brand = Util.getPlayerBrand(request.getSender());
                 brand.addMember(player);
@@ -83,9 +86,40 @@ public class BrandCommand implements CommandExecutor {
             return true;
         }
 
+        if (args[0].equals("kick")) {
+            if (!isBrandOwner(player, brand)) {
+                player.sendMessage(Util.getMessage("must-own-brand", brandName));
+                return true;
+            }
+            Player kickedPlayer = Bukkit.getPlayer(args[1]);
+
+            if (kickedPlayer == player) {
+                player.sendMessage(Util.getMessage("cannot-kick-self", brandName));
+                return true;
+            }
+
+            brand.removeMember(kickedPlayer);
+            kickedPlayer.sendMessage(Util.getMessage("kicked-from-brand", brandName));
+            player.sendMessage(Util.getMessage("player-kicked", brandName));
+            return true;
+        }
+
+        if (args[0].equals("leave")) {
+            if (isBrandOwner(player, brand)) {
+                player.sendMessage(Util.getMessage("must-delete-brand", brandName));
+                return true;
+            }
+            if (Util.hasBrand(player)) {
+                brand.removeMember(player);
+                player.sendMessage(Util.getMessage("brand-leave", brandName));
+                return true;
+            }
+            player.sendMessage(Util.getMessage("must-have-brand", brandName));
+        }
+
 
         if (args[0].equals("deny")) {
-            InviteRequest request = getReceiverRequest(player);
+            InviteRequest request = getRequest(player);
             if (request != null) {
                 request.getSender().sendMessage(Util.getMessage("brand-deny-sender".replace("<player>", request.getSender().getName())
                         , brandName));
@@ -121,27 +155,9 @@ public class BrandCommand implements CommandExecutor {
     }
 
 
-    private InviteRequest getSenderRequest(Player player) {
+    private InviteRequest getRequest(Player receiver) {
         for (InviteRequest request : inviteRequests) {
-            if (request.getSender().equals(player)) {
-                return request;
-            }
-        }
-        return null;
-    }
-
-    private InviteRequest getReceiverRequest(Player player) {
-        for (InviteRequest request : inviteRequests) {
-            if (request.getReceiver().equals(player)) {
-                return request;
-            }
-        }
-        return null;
-    }
-
-    private InviteRequest getRequest(Player sender, Player receiver) {
-        for (InviteRequest request : inviteRequests) {
-            if (request.getSender().equals(sender) && request.getReceiver().equals(receiver)) {
+            if (request.getReceiver().equals(receiver)) {
                 return request;
             }
         }

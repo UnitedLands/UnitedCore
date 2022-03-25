@@ -18,8 +18,4 @@ public class InviteRequest {
     public Player getSender() {
         return sender;
     }
-
-    public InviteRequest getSenderRequest(Player player) {
-        return new InviteRequest(sender, player);
-    }
 }

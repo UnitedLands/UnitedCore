@@ -71,6 +71,21 @@ public class Brand {
         }
     }
 
+    public void removeMember(Player player) {
+        FileConfiguration brandsConfig = getBrandsConfig();
+        @NotNull List<String> members = getMembers();
+        if (members == null) {
+            members = brandsConfig.getStringList("brands." + name + ".members");
+        }
+        try {
+            members.remove(player.getUniqueId().toString());
+            getBrandsFile().saveConfig(brandsConfig);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void deleteBrand() {
         FileConfiguration brandsConfig = getBrandsConfig();
         brandsConfig.set("brands." + name, null);
