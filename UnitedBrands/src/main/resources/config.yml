@@ -1,0 +1,9 @@
+messages:
+  brand-created: 'Brand <brand> has been successfully created! You can set a slogan with /brand slogan!'
+  brand-deleted: 'Brand <brand> has been successfully deleted!'
+  brand-already-exists: 'Brand <brand> already exists!'
+  in-a-brand: 'You are member of <brand>! Leave/delete it first before making a new brand!'
+  brand-invite: 'You were invited to join <brand>! Use /brand accept or /brand deny!'
+  brand-leave: 'You left <brand>!'
+  brand-join: 'You joined <brand>!'
+  slogan-changed: 'Sucessfully changed the slogan of <brand>! It will be printed on the next bottle you brew!'

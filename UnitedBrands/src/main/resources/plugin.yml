@@ -1,0 +1,10 @@
+name: UnitedBrands
+version: ${project.version}
+main: org.unitedlands.alcohol.UnitedBrands
+api-version: 1.18
+depend: [ Brewery ]
+authors: [ Maroon28 ]
+description: Alcohol Branding feature for UnitedLands
+commands:
+  brand:
+    description: main brands command
