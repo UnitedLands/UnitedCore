@@ -5,72 +5,156 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.alcohol.Brand;
+import org.unitedlands.alcohol.InviteRequest;
+import org.unitedlands.alcohol.UnitedBrands;
 import org.unitedlands.alcohol.Util;
+import org.unitedlands.alcohol.brand.Brand;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BrandCommand implements CommandExecutor {
-    private final Brand brand;
-    Map<UUID, List<UUID>> invites = new HashMap<>();
-    Map<UUID, BukkitTask> inviteTask = new HashMap<>();
+    private final UnitedBrands unitedBrands;
 
-    public BrandCommand(Brand brand) {
-        this.brand = brand;
+    public BrandCommand(UnitedBrands unitedBrands) {
+        this.unitedBrands = unitedBrands;
     }
+
+    Set<InviteRequest> inviteRequests = new HashSet<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         Player player = (Player) sender;
 
+        Brand brand;
+
         if (args[0].equals("create")) {
-            if (brand.hasBrand(player)) {
-                player.sendMessage(Util.getMessage("in-a-brand", brand.getPlayerBrand(player)));
+            brand = new Brand(unitedBrands, args[1], player, null);
+            if (Util.hasBrand(player)) {
+                player.sendMessage(Util.getMessage("in-a-brand", brand.getBrandName()));
                 return true;
             }
-            brand.createBrand(args[1], player);
+            brand.createBrand();
             return true;
         }
 
         if (args[0].equals("delete")) {
-            String brandName = brand.getPlayerBrand(player);
-            if (brand.hasBrand(player) && isBrandOwner(player, brandName)) {
-                brand.deleteBrand(brandName);
-                player.sendMessage(Util.getMessage("brand-deleted", brandName));
+            brand = new Brand(unitedBrands, args[1], player, null);
+            if (Util.hasBrand(player) && isBrandOwner(player, brand)) {
+                brand.deleteBrand();
+                player.sendMessage(Util.getMessage("brand-deleted", brand.getBrandName()));
+                return true;
             }
+            player.sendMessage(Util.getMessage("brand-cannot-be-deleted", brand.getBrandName()));
+            return true;
+        }
+
+        String brandName = Util.getPlayerBrand(player).getBrandName();
+
+        if (args[0].equals("invite")) {
+            Player receiver = Bukkit.getPlayer(args[1]);
+            brand = Util.getPlayerBrand(player);
+
+            if (Util.hasBrand(player) && isBrandOwner(player, brand)) {
+                InviteRequest inviteRequest = new InviteRequest(player, receiver);
+                inviteRequests.add(inviteRequest);
+                receiver.sendMessage(Util.getMessage("brand-invite", brandName));
+                return true;
+            }
+            receiver.sendMessage(Util.getMessage("not-in-a-brand", ""));
+            return true;
+        }
+
+        if (args[0].equals("accept")) {
+            InviteRequest request = getReceiverRequest(player);
+            if (request != null) {
+                brand = Util.getPlayerBrand(request.getSender());
+                brand.addMember(player);
+                request.getSender().sendMessage(Util.getMessage("brand-join-sender", brandName));
+                request.getReceiver().sendMessage(Util.getMessage("brand-join", brandName));
+                inviteRequests.remove(request);
+
+                return true;
+            }
+            player.sendMessage(Util.getMessage("no-requests", ""));
+            return true;
+        }
+
+
+        if (args[0].equals("deny")) {
+            InviteRequest request = getReceiverRequest(player);
+            if (request != null) {
+                request.getSender().sendMessage(Util.getMessage("brand-deny-sender".replace("<player>", request.getSender().getName())
+                        , brandName));
+                request.getReceiver().sendMessage(Util.getMessage("brand-deny", brandName));
+                inviteRequests.remove(request);
+                return true;
+            }
+            player.sendMessage(Util.getMessage("no-requests", ""));
+            return true;
         }
 
         if (args[0].equals("slogan")) {
             String[] rawSlogan = removeFirstArgument(args);
             String slogan = String.join(" ", rawSlogan);
-            String brandName = brand.getPlayerBrand(player);
+            brand = new Brand(unitedBrands, brandName, player, null);
             try {
-                brand.setSlogan(brandName, slogan);
+                brand.setSlogan(slogan);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             player.sendMessage(Util.getMessage("slogan-changed", brandName));
+            return true;
         }
 
         if (args[0].equals("info")) {
-            String brandName = brand.getPlayerBrand(player);
-            String brandSlogan = brand.getBrandSlogan(brandName);
+            brand = new Brand(unitedBrands, brandName, player, null);
+            String brandSlogan = brand.getBrandSlogan();
             player.sendMessage(brandName + ": " + brandSlogan);
+            return true;
         }
 
         return true;
     }
 
-    private boolean isBrandOwner(Player player, String brandName) {
-        return brand.getBrandOwner(brandName).equals(player);
+
+    private InviteRequest getSenderRequest(Player player) {
+        for (InviteRequest request : inviteRequests) {
+            if (request.getSender().equals(player)) {
+                return request;
+            }
+        }
+        return null;
+    }
+
+    private InviteRequest getReceiverRequest(Player player) {
+        for (InviteRequest request : inviteRequests) {
+            if (request.getReceiver().equals(player)) {
+                return request;
+            }
+        }
+        return null;
+    }
+
+    private InviteRequest getRequest(Player sender, Player receiver) {
+        for (InviteRequest request : inviteRequests) {
+            if (request.getSender().equals(sender) && request.getReceiver().equals(receiver)) {
+                return request;
+            }
+        }
+        return null;
+    }
+
+    private boolean isBrandOwner(Player player, Brand brand) {
+        try {
+            return brand.getBrandOwner().equals(player);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private String[] removeFirstArgument(String[] args) {

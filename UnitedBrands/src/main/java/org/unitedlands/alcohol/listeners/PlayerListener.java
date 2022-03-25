@@ -4,21 +4,23 @@ import com.dre.brewery.api.events.PlayerFillBottleEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.unitedlands.alcohol.Brand;
+import org.unitedlands.alcohol.UnitedBrands;
+import org.unitedlands.alcohol.Util;
+import org.unitedlands.alcohol.brand.Brand;
 
 import java.util.ArrayList;
 
 public class PlayerListener implements Listener {
-    private final Brand brand;
 
-    public PlayerListener(Brand brand) {
-        this.brand = brand;
+    private final UnitedBrands unitedBrands;
+
+    public PlayerListener(UnitedBrands unitedBrands) {
+        this.unitedBrands = unitedBrands;
     }
 
     @EventHandler
@@ -28,8 +30,10 @@ public class PlayerListener implements Listener {
         ItemMeta bottleMeta = bottle.getItemMeta();
         var bottleLore = new ArrayList<Component>();
 
+        Brand brand = Util.getPlayerBrand(player);
+
         bottleLore.add(getBrewedByComponent(player));
-        bottleLore.add(getSloganComponent(player));
+        bottleLore.add(getSloganComponent(brand, player));
         bottleMeta.lore(bottleLore);
         bottle.setItemMeta(bottleMeta);
 
@@ -37,8 +41,8 @@ public class PlayerListener implements Listener {
 
     private Component getBrewedByComponent(Player player) {
         String name = player.getName();
-        if (brand.hasBrand(player)) {
-            name = brand.getPlayerBrand(player);
+        if (Util.hasBrand(player)) {
+            name = Util.getPlayerBrand(player).getBrandName();
             return Component
                     .text("Product Of ", NamedTextColor.YELLOW)
                     .append(Component.text(name, NamedTextColor.GOLD))
@@ -50,15 +54,14 @@ public class PlayerListener implements Listener {
                 .decoration(TextDecoration.ITALIC, false);
     }
 
-    private Component getSloganComponent(Player player) {
+    private Component getSloganComponent(Brand brand, Player player) {
         String slogan;
 
-        if (!brand.hasBrand(player)) {
+        if (!Util.hasBrand(player)) {
             return null;
         }
 
-        String brandName = brand.getPlayerBrand(player);
-        slogan = brand.getBrandSlogan(brandName);
+        slogan = brand.getBrandSlogan();
 
         if (slogan == null) {
             return null;
