@@ -61,9 +61,15 @@ public class BrandCommand implements CommandExecutor {
             Player receiver = Bukkit.getPlayer(args[1]);
             brand = Util.getPlayerBrand(player);
 
+            if (player == receiver) {
+                player.sendMessage(Util.getMessage("cannot-invite-self", brandName));
+                return true;
+            }
+
             if (Util.hasBrand(player) && isBrandOwner(player, brand)) {
                 InviteRequest inviteRequest = new InviteRequest(player, receiver);
                 inviteRequests.add(inviteRequest);
+                player.sendMessage(Util.getMessage("player-invited", brandName));
                 receiver.sendMessage(Util.getMessage("brand-invite", brandName));
                 return true;
             }

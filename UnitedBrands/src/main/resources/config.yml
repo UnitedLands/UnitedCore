@@ -8,6 +8,7 @@ messages:
   must-have-brand: 'You must be in a brand to use this command!'
   must-delete-brand: 'You cannot leave <brand>! You can only delete it.'
   brand-invite: 'You were invited to join <brand>! Use /brand accept or /brand deny!'
+  player-invited: 'Invite sent to player!'
   no-requests: 'You do not have any invites!'
   brand-leave: 'You left <brand>!'
   brand-join: 'You joined <brand>!'
@@ -18,3 +19,4 @@ messages:
   player-kicked: 'Successfully kicked <player> from <brand>!'
   kicked-from-brand: 'You have been kicked from <brand>!'
   cannot-kick-self: 'You cannot kick yourself from <brand>!'
+  cannot-invite-self: 'You cannot invite yourself to <brand>!'
