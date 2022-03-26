@@ -1,4 +1,15 @@
 messages:
+  help-command:
+    - '&c&lUnited&f&lBrands'
+    - '/brand help: shows a list of all commands'
+    - '/brand create <name>: Creates a new brand with the specified name (can have multiple words)'
+    - '/brand slogan <slogan>: Sets your brand''s slogan to a new slogan (multiple words supported)'
+    - '/brand delete: Deletes your current brand, if it exists'
+    - '/brand invite <player>: Invites a player to your brand'
+    - '/brand kick <player>: Kicks a player from your brand'
+    - '/brand accept: Accepts any incoming brand join requests'
+    - '/brand deny: Denies any incoming brand join requests'
+    - '/brand leave: Makes you leave from your current brand'
   brand-created: 'Brand <brand> has been successfully created! You can set a slogan with /brand slogan!'
   brand-deleted: 'Brand <brand> has been successfully deleted!'
   brand-cannot-be-deleted: 'You must own <brand> before deleting it!'
@@ -24,3 +35,6 @@ messages:
   must-specify-kicked-player: 'Player argument missing! Please use /brand kick <player-name>!'
   must-specify-invited-player: 'Player argument missing! Please use /brand invite <player-name>!'
   must-specify-brand-name: 'Brand name required! Please use /brand create <brand name>, or /brand delete <brand name>'
+  must-specify-slogan: 'You must specify the new slogan!'
+  player-left-brand: '<player> left your brand!'
+  invalid-player: 'A player with that name does not exist!'
