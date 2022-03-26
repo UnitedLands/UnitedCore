@@ -10,7 +10,6 @@ import org.unitedlands.alcohol.InviteRequest;
 import org.unitedlands.alcohol.UnitedBrands;
 import org.unitedlands.alcohol.Util;
 import org.unitedlands.alcohol.brand.Brand;
-import org.unitedlands.alcohol.brand.BrandsFile;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -69,11 +68,6 @@ public class BrandCommand implements CommandExecutor {
             }
 
             String brandName = brand.getBrandName();
-
-            if (!Util.brandExists(brand)) {
-                player.sendMessage(Util.getMessage("brand-does-not-exist", ""));
-                return true;
-            }
 
             if (Util.hasBrand(player) && isBrandOwner(player, brand)) {
                 brand.deleteBrand();
@@ -205,13 +199,6 @@ public class BrandCommand implements CommandExecutor {
                 e.printStackTrace();
             }
             player.sendMessage(Util.getMessage("slogan-changed", brandName));
-            return true;
-        }
-
-        if (args[0].equals("info")) {
-            brand = new Brand(unitedBrands, brandName, player, null);
-            String brandSlogan = brand.getBrandSlogan();
-            player.sendMessage(brandName + ": " + brandSlogan);
             return true;
         }
 
