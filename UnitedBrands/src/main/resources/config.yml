@@ -20,3 +20,6 @@ messages:
   kicked-from-brand: 'You have been kicked from <brand>!'
   cannot-kick-self: 'You cannot kick yourself from <brand>!'
   cannot-invite-self: 'You cannot invite yourself to <brand>!'
+  must-specify-kicked-player: 'Player argument missing! Please use /brand kick <player-name>!'
+  must-specify-invited-player: 'Player argument missing! Please use /brand invite <player-name>!'
+  must-specify-brand-name: 'Brand name required! Please use /brand create <brand name>, or /brand delete <brand name>'

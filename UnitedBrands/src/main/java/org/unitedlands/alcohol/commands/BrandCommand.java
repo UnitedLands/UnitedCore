@@ -17,15 +17,14 @@ import java.util.Set;
 
 public class BrandCommand implements CommandExecutor {
     private final UnitedBrands unitedBrands;
+    Set<InviteRequest> inviteRequests = new HashSet<>();
 
     public BrandCommand(UnitedBrands unitedBrands) {
         this.unitedBrands = unitedBrands;
     }
 
-    Set<InviteRequest> inviteRequests = new HashSet<>();
-
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 
         if (!(sender instanceof Player)) {
             return false;
@@ -35,7 +34,16 @@ public class BrandCommand implements CommandExecutor {
         Brand brand = Util.getPlayerBrand(player);
 
         if (args[0].equals("create")) {
-            brand = new Brand(unitedBrands, args[1], player, null);
+
+            if (args[1] == null) {
+                player.sendMessage(Util.getMessage("must-specify-brand-name", ""));
+                return true;
+            }
+
+            String[] rawBrandName = removeFirstArgument(args);
+            String brandName = String.join(" ", rawBrandName);
+
+            brand = new Brand(unitedBrands, brandName, player, null);
             if (Util.hasBrand(player)) {
                 player.sendMessage(Util.getMessage("in-a-brand", brand.getBrandName()));
                 return true;
@@ -45,6 +53,12 @@ public class BrandCommand implements CommandExecutor {
         }
 
         if (args[0].equals("delete")) {
+
+            if (args[1] == null) {
+                player.sendMessage(Util.getMessage("must-specify-brand-name", ""));
+                return true;
+            }
+
             brand = new Brand(unitedBrands, args[1], player, null);
             if (Util.hasBrand(player) && isBrandOwner(player, brand)) {
                 brand.deleteBrand();
@@ -58,6 +72,12 @@ public class BrandCommand implements CommandExecutor {
         String brandName = Util.getPlayerBrand(player).getBrandName();
 
         if (args[0].equals("invite")) {
+
+            if (args[1] == null) {
+                player.sendMessage(Util.getMessage("must-specify-invited-player", ""));
+                return true;
+            }
+
             Player receiver = Bukkit.getPlayer(args[1]);
             brand = Util.getPlayerBrand(player);
 
@@ -79,20 +99,36 @@ public class BrandCommand implements CommandExecutor {
 
         if (args[0].equals("accept")) {
             InviteRequest request = getRequest(player);
-            if (request != null) {
-                brand = Util.getPlayerBrand(request.getSender());
-                brand.addMember(player);
-                request.getSender().sendMessage(Util.getMessage("brand-join-sender", brandName));
-                request.getReceiver().sendMessage(Util.getMessage("brand-join", brandName));
-                inviteRequests.remove(request);
 
+            if (request == null) {
+                player.sendMessage(Util.getMessage("no-requests", ""));
                 return true;
             }
-            player.sendMessage(Util.getMessage("no-requests", ""));
+
+            if (Util.getPlayerBrand(request.getReceiver()) != null) {
+                player.sendMessage(Util.getMessage("already-in-a-brand", ""));
+                return true;
+            }
+
+            brand = Util.getPlayerBrand(request.getSender());
+            brandName = brand.getBrandName();
+            brand.addMember(player);
+
+            request.getSender().sendMessage(Util.getMessage("brand-join-sender", brandName));
+            request.getReceiver().sendMessage(Util.getMessage("brand-join", brandName));
+
+            inviteRequests.remove(request);
             return true;
+
         }
 
         if (args[0].equals("kick")) {
+
+            if (args[1] == null) {
+                player.sendMessage(Util.getMessage("must-specify-kicked-player", ""));
+                return true;
+            }
+
             if (!isBrandOwner(player, brand)) {
                 player.sendMessage(Util.getMessage("must-own-brand", brandName));
                 return true;
