@@ -69,8 +69,11 @@ public class BrandCommand implements CommandExecutor {
             return true;
         }
 
-        String brandName = Util.getPlayerBrand(player).getBrandName();
+        String brandName = "";
 
+        if (Util.hasBrand(player)) {
+            brandName = Util.getPlayerBrand(player).getBrandName();
+        }
         if (args[0].equals("invite")) {
 
             if (args[1] == null) {
