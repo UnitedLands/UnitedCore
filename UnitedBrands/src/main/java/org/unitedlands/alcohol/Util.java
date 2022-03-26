@@ -13,8 +13,20 @@ import java.util.UUID;
 
 public class Util {
 
+    public static String getMessage(String message) {
+        return color(getUnitedBrands().getConfig().getString("messages." + message));
+    }
+
     public static String getMessage(String message, String brandName) {
-        return color(getUnitedBrands().getConfig().getString("messages." + message).replace("<brand>", brandName));
+        return getMessage(message).replace("<brand>", brandName);
+    }
+
+    public static String getMessage(String message, Player player) {
+        return getMessage(message).replace("<player>", player.getName());
+    }
+
+    public static String getMessage(String message, String brandName, Player player) {
+        return getMessage(message, brandName).replace("<player>", player.getName());
     }
 
     private static String color(String message) {

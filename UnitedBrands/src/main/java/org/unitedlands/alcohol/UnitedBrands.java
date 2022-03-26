@@ -17,8 +17,4 @@ public final class UnitedBrands extends JavaPlugin {
         getCommand("brand").setExecutor(new BrandCommand(this));
     }
 
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
-    }
 }

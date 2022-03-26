@@ -27,6 +27,10 @@ public class PlayerListener implements Listener {
     public void onPlayerFillBottle(PlayerFillBottleEvent event) {
         Player player = event.getPlayer();
         ItemStack bottle = event.getBottle();
+        brandFilledBottle(player, bottle);
+    }
+
+    private void brandFilledBottle(Player player, ItemStack bottle) {
         ItemMeta bottleMeta = bottle.getItemMeta();
         var bottleLore = new ArrayList<Component>();
 
@@ -36,7 +40,6 @@ public class PlayerListener implements Listener {
         bottleLore.add(getSloganComponent(brand, player));
         bottleMeta.lore(bottleLore);
         bottle.setItemMeta(bottleMeta);
-
     }
 
     private Component getBrewedByComponent(Player player) {
