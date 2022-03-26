@@ -79,6 +79,7 @@ public class Brand {
         }
         try {
             members.remove(player.getUniqueId().toString());
+            brandsConfig.set("brands." + name + ".members", members);
             getBrandsFile().saveConfig(brandsConfig);
         }
         catch (Exception e) {

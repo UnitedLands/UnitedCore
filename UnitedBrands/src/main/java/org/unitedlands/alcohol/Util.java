@@ -33,7 +33,8 @@ public class Util {
 
         for (String key : keys) {
             if (key.contains("owner-uuid") || key.contains("members")) {
-                if (uuid.equals(brandsConfig.getString("brands." + key))) {
+                if (uuid.equals(brandsConfig.getString("brands." + key)) ||
+                        brandsConfig.getStringList("brands." + key).contains(uuid)) {
                     // MyBrand.owner-uuid -> [MyBrand, owner-uuid] -> MyBrand. Fuck this
                     String brandName = key.split("\\.")[0];
                     UUID ownerUUID = UUID.fromString(brandsConfig.getString("brands." + brandName + ".owner-uuid"));
@@ -48,7 +49,7 @@ public class Util {
         return null;
     }
 
-    private static boolean brandExists(Brand brand) {
+    public static boolean brandExists(Brand brand) {
         BrandsFile brandsFile = getBrandsFile();
         FileConfiguration brandsConfig = brandsFile.getBrandsConfig();
         Set<String> brandNames = brandsConfig.getConfigurationSection("brands").getKeys(false);
@@ -62,7 +63,7 @@ public class Util {
 
     @NotNull
     private static BrandsFile getBrandsFile() {
-        return new BrandsFile((UnitedBrands) getUnitedBrands());
+        return new BrandsFile(getUnitedBrands());
     }
 
     public static boolean hasBrand(Player player) {

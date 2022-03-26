@@ -10,6 +10,7 @@ import org.unitedlands.alcohol.InviteRequest;
 import org.unitedlands.alcohol.UnitedBrands;
 import org.unitedlands.alcohol.Util;
 import org.unitedlands.alcohol.brand.Brand;
+import org.unitedlands.alcohol.brand.BrandsFile;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -45,27 +46,41 @@ public class BrandCommand implements CommandExecutor {
 
             brand = new Brand(unitedBrands, brandName, player, null);
             if (Util.hasBrand(player)) {
-                player.sendMessage(Util.getMessage("in-a-brand", brand.getBrandName()));
+                player.sendMessage(Util.getMessage("in-a-brand", Util.getPlayerBrand(player).getBrandName()));
                 return true;
             }
+
+            if (Util.brandExists(brand)) {
+                player.sendMessage(Util.getMessage("brand-already-exists", brandName));
+                return true;
+            }
+
             brand.createBrand();
             return true;
         }
 
         if (args[0].equals("delete")) {
 
-            if (args[1] == null) {
-                player.sendMessage(Util.getMessage("must-specify-brand-name", ""));
+            brand = Util.getPlayerBrand(player);
+
+            if (brand == null) {
+                player.sendMessage(Util.getMessage("must-own-brand", ""));
                 return true;
             }
 
-            brand = new Brand(unitedBrands, args[1], player, null);
-            if (Util.hasBrand(player) && isBrandOwner(player, brand)) {
-                brand.deleteBrand();
-                player.sendMessage(Util.getMessage("brand-deleted", brand.getBrandName()));
+            String brandName = brand.getBrandName();
+
+            if (!Util.brandExists(brand)) {
+                player.sendMessage(Util.getMessage("brand-does-not-exist", ""));
                 return true;
             }
-            player.sendMessage(Util.getMessage("brand-cannot-be-deleted", brand.getBrandName()));
+
+            if (Util.hasBrand(player) && isBrandOwner(player, brand)) {
+                brand.deleteBrand();
+                player.sendMessage(Util.getMessage("brand-deleted", brandName));
+                return true;
+            }
+            player.sendMessage(Util.getMessage("brand-cannot-be-deleted", brandName));
             return true;
         }
 
@@ -155,7 +170,11 @@ public class BrandCommand implements CommandExecutor {
                 return true;
             }
             if (Util.hasBrand(player)) {
-                brand.removeMember(player);
+                try {
+                    brand.removeMember(player);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 player.sendMessage(Util.getMessage("brand-leave", brandName));
                 return true;
             }
