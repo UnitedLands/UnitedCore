@@ -1,5 +1,6 @@
 package org.unitedlands.alcohol.brand;
 
+import com.google.common.base.Charsets;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -8,6 +9,8 @@ import org.unitedlands.alcohol.UnitedBrands;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class BrandsFile {
     private FileConfiguration brandConfig;
@@ -49,6 +52,17 @@ public class BrandsFile {
             e.printStackTrace();
         }
         return brandConfig;
+    }
+
+    public void reloadConfig() {
+        FileConfiguration newConfig = YamlConfiguration.loadConfiguration(getBrandFile());
+
+        final InputStream defConfigStream = ub.getResource("brands.yml");
+        if (defConfigStream == null) {
+            return;
+        }
+
+        newConfig.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
     }
 
     @NotNull

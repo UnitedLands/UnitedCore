@@ -8,3 +8,6 @@ description: Alcohol Branding feature for UnitedLands
 commands:
   brand:
     description: main brands command
+  brandadmin:
+    description: command used for administrating brands
+    permission: united.brands.admin

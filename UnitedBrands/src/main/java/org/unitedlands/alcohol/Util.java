@@ -2,12 +2,14 @@ package org.unitedlands.alcohol;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.alcohol.brand.Brand;
 import org.unitedlands.alcohol.brand.BrandsFile;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,7 +36,7 @@ public class Util {
     }
 
     private static UnitedBrands getUnitedBrands() {
-       return (UnitedBrands) Bukkit.getPluginManager().getPlugin("UnitedBrands");
+        return (UnitedBrands) Bukkit.getPluginManager().getPlugin("UnitedBrands");
     }
 
     public static Brand getPlayerBrand(Player player) {
@@ -56,6 +58,22 @@ public class Util {
                         e.printStackTrace();
                     }
                 }
+            }
+        }
+        return null;
+    }
+
+    public static Brand getBrandFromName(String name) {
+        BrandsFile brandsFile = getBrandsFile();
+        FileConfiguration brandsConfig = brandsFile.getBrandsConfig();
+        ConfigurationSection brandsSection = brandsConfig.getConfigurationSection("brands");
+        Set<String> brands = brandsSection.getKeys(false);
+
+        for (String brandName : brands) {
+            if (name.equals(brandName)) {
+                UUID ownerUUID = UUID.fromString(brandsSection.getString(brandName + ".owner-uuid"));
+                List<String> members = brandsSection.getStringList(brandName + ".members");
+                return new Brand(getUnitedBrands(), brandName, Bukkit.getPlayer(ownerUUID), members);
             }
         }
         return null;

@@ -43,6 +43,7 @@ public class BrandCommand implements CommandExecutor {
         }
 
         switch (args[0]) {
+            case "help" -> sendHelpMessage();
             case "create" -> createBrand(args);
             case "delete" -> deletePlayerBrand();
             case "invite" -> {
