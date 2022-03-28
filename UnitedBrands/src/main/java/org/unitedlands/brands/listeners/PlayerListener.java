@@ -1,4 +1,4 @@
-package org.unitedlands.alcohol.listeners;
+package org.unitedlands.brands.listeners;
 
 import com.dre.brewery.api.events.PlayerFillBottleEvent;
 import net.kyori.adventure.text.Component;
@@ -9,9 +9,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.unitedlands.alcohol.UnitedBrands;
-import org.unitedlands.alcohol.Util;
-import org.unitedlands.alcohol.brand.Brand;
+import org.unitedlands.brands.UnitedBrands;
+import org.unitedlands.brands.Util;
+import org.unitedlands.brands.brewery.Brewery;
 
 import java.util.ArrayList;
 
@@ -34,18 +34,18 @@ public class PlayerListener implements Listener {
         ItemMeta bottleMeta = bottle.getItemMeta();
         var bottleLore = new ArrayList<Component>();
 
-        Brand brand = Util.getPlayerBrand(player);
+        Brewery brewery = Util.getPlayerBrewery(player);
 
         bottleLore.add(getBrewedByComponent(player));
-        bottleLore.add(getSloganComponent(brand, player));
+        bottleLore.add(getSloganComponent(brewery, player));
         bottleMeta.lore(bottleLore);
         bottle.setItemMeta(bottleMeta);
     }
 
     private Component getBrewedByComponent(Player player) {
         String name = player.getName();
-        if (Util.hasBrand(player)) {
-            name = Util.getPlayerBrand(player).getBrandName();
+        if (Util.hasBrewery(player)) {
+            name = Util.getPlayerBrewery(player).getBreweryName();
             return Component
                     .text("Product Of ", NamedTextColor.YELLOW)
                     .append(Component.text(name, NamedTextColor.GOLD))
@@ -57,14 +57,14 @@ public class PlayerListener implements Listener {
                 .decoration(TextDecoration.ITALIC, false);
     }
 
-    private Component getSloganComponent(Brand brand, Player player) {
+    private Component getSloganComponent(Brewery brewery, Player player) {
         String slogan;
 
-        if (!Util.hasBrand(player)) {
+        if (!Util.hasBrewery(player)) {
             return null;
         }
 
-        slogan = brand.getBrandSlogan();
+        slogan = brewery.getBrewerySlogan();
 
         if (slogan == null) {
             return null;

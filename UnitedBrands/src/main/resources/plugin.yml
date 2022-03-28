@@ -1,13 +1,13 @@
 name: UnitedBrands
 version: ${project.version}
-main: org.unitedlands.alcohol.UnitedBrands
+main: org.unitedlands.brands.UnitedBrands
 api-version: 1.18
 depend: [ Brewery ]
 authors: [ Maroon28 ]
-description: Alcohol Branding feature for UnitedLands
+description: Item branding feature for UnitedLands
 commands:
-  brand:
-    description: main brands command
-  brandadmin:
-    description: command used for administrating brands
+  brewery:
+    description: main brewery command
+  breweryadmin:
+    description: command used for administrating breweries
     permission: united.brands.admin

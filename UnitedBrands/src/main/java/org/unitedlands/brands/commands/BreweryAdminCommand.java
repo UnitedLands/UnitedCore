@@ -1,4 +1,4 @@
-package org.unitedlands.alcohol.commands;
+package org.unitedlands.brands.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -9,23 +9,23 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.alcohol.UnitedBrands;
-import org.unitedlands.alcohol.Util;
-import org.unitedlands.alcohol.brand.Brand;
-import org.unitedlands.alcohol.brand.BrandsFile;
+import org.unitedlands.brands.UnitedBrands;
+import org.unitedlands.brands.Util;
+import org.unitedlands.brands.brewery.Brewery;
+import org.unitedlands.brands.brewery.BreweriesFile;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class BrandAdminCommand implements CommandExecutor {
+public class BreweryAdminCommand implements CommandExecutor {
     private CommandSender sender;
     private final UnitedBrands unitedBrands;
-    private final BrandsFile brandsFile;
-    private Brand brand;
+    private final BreweriesFile breweriesFile;
+    private Brewery brewery;
 
-    public BrandAdminCommand(UnitedBrands unitedBrands, BrandsFile brandsFile) {
+    public BreweryAdminCommand(UnitedBrands unitedBrands, BreweriesFile breweriesFile) {
         this.unitedBrands = unitedBrands;
-        this.brandsFile = brandsFile;
+        this.breweriesFile = breweriesFile;
     }
 
     @Override
@@ -58,9 +58,9 @@ public class BrandAdminCommand implements CommandExecutor {
         }
 
         if (args.length == 2) {
-            brand = Util.getBrandFromName(extractMultiWordString(args, 1));
-            if (brand == null) {
-                sender.sendMessage(Util.getMessage("brand-does-not-exist"));
+            brewery = Util.getBreweryFromName(extractMultiWordString(args, 1));
+            if (brewery == null) {
+                sender.sendMessage(Util.getMessage("brewery-does-not-exist"));
                 return true;
             }
 
@@ -69,13 +69,13 @@ public class BrandAdminCommand implements CommandExecutor {
             }
 
             if (args[0].equals("delete")) {
-                return deleteBrand();
+                return deleteBrewery();
             }
             sendHelpMessage();
         }
 
         if (args.length == 3) {
-            brand = Util.getBrandFromName(extractMultiWordString(args, 2));
+            brewery = Util.getBreweryFromName(extractMultiWordString(args, 2));
             Player targetPlayer = Bukkit.getPlayer(args[1]);
 
             if (targetPlayer == null) {
@@ -105,46 +105,46 @@ public class BrandAdminCommand implements CommandExecutor {
 
     private void reloadPlugin() {
         unitedBrands.reloadConfig();
-        brandsFile.reloadConfig();
+        breweriesFile.reloadConfig();
         sender.sendMessage(Component.text("All configurations and data reloaded!", NamedTextColor.GREEN));
     }
 
-    private boolean deleteBrand() {
-        brand.deleteBrand();
-        sender.sendMessage(Component.text("Brand " + brand.getBrandName() + " has been successfully deleted!", NamedTextColor.GREEN));
+    private boolean deleteBrewery() {
+        brewery.deleteBrewery();
+        sender.sendMessage(Component.text("Brewery " + brewery.getBreweryName() + " has been successfully deleted!", NamedTextColor.GREEN));
         return true;
     }
 
     private boolean clearSlogan() {
-        brand.setSlogan(null);
-        sender.sendMessage(Component.text(brand.getBrandName() + "'s slogan been successfully cleared!", NamedTextColor.GREEN));
+        brewery.setSlogan(null);
+        sender.sendMessage(Component.text(brewery.getBreweryName() + "'s slogan been successfully cleared!", NamedTextColor.GREEN));
         return true;
     }
 
     private boolean addMember(Player player) {
-        if (brand.getMembers().contains(player.getUniqueId().toString())) {
-            sender.sendMessage(Component.text("A member with that uuid already exists in this brand!", NamedTextColor.RED));
+        if (brewery.getBreweryMembers().contains(player.getUniqueId().toString())) {
+            sender.sendMessage(Component.text("A member with that uuid already exists in this brewery!", NamedTextColor.RED));
             return true;
         }
 
-        if (Util.hasBrand(player)) {
+        if (Util.hasBrewery(player)) {
             sender.sendMessage(Component
-                    .text("That player is already in a different called ", NamedTextColor.RED)
-                    .append(Component.text(Util.getPlayerBrand(player).getBrandName(), NamedTextColor.YELLOW)));
+                    .text("That player is already in a different brewery called ", NamedTextColor.RED)
+                    .append(Component.text(Util.getPlayerBrewery(player).getBreweryName(), NamedTextColor.YELLOW)));
             return true;
         }
-        sender.sendMessage(Component.text("Player " + player.getName() + " has been added to " + brand.getBrandName(), NamedTextColor.GREEN));
-        brand.addMember(player);
+        sender.sendMessage(Component.text("Player " + player.getName() + " has been added to " + brewery.getBreweryName(), NamedTextColor.GREEN));
+        brewery.addMemberToBrewery(player);
         return true;
     }
 
     private boolean removeMember(Player player) {
-        if (!brand.getMembers().contains(player.getUniqueId().toString())) {
-            sender.sendMessage(Component.text("A member with that uuid could not be found in that brand!", NamedTextColor.RED));
+        if (!brewery.getBreweryMembers().contains(player.getUniqueId().toString())) {
+            sender.sendMessage(Component.text("A member with that uuid could not be found in that brewery!", NamedTextColor.RED));
             return true;
         }
-        sender.sendMessage(Component.text("Player " + player.getName() + " has been removed from " + brand.getBrandName(), NamedTextColor.GREEN));
-        brand.removeMember(player);
+        sender.sendMessage(Component.text("Player " + player.getName() + " has been removed from " + brewery.getBreweryName(), NamedTextColor.GREEN));
+        brewery.removeMemberFromBrewery(player);
         return true;
     }
 

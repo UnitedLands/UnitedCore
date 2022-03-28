@@ -1,4 +1,4 @@
-package org.unitedlands.alcohol.commands;
+package org.unitedlands.brands.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -14,10 +14,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.alcohol.InviteRequest;
-import org.unitedlands.alcohol.UnitedBrands;
-import org.unitedlands.alcohol.Util;
-import org.unitedlands.alcohol.brand.Brand;
+import org.unitedlands.brands.InviteRequest;
+import org.unitedlands.brands.UnitedBrands;
+import org.unitedlands.brands.Util;
+import org.unitedlands.brands.brewery.Brewery;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,16 +26,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.unitedlands.alcohol.Util.*;
+import static org.unitedlands.brands.Util.*;
 
-public class BrandCommand implements CommandExecutor {
+public class BreweryCommand implements CommandExecutor {
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private final UnitedBrands unitedBrands;
     private Player player;
     private int page;
     Set<InviteRequest> inviteRequests = new HashSet<>();
 
-    public BrandCommand(UnitedBrands unitedBrands) {
+    public BreweryCommand(UnitedBrands unitedBrands) {
         this.unitedBrands = unitedBrands;
     }
 
@@ -56,30 +56,30 @@ public class BrandCommand implements CommandExecutor {
         }
 
         switch (args[0]) {
-            case "create" -> createBrand(args);
-            case "delete" -> deletePlayerBrand();
+            case "create" -> createBrewery(args);
+            case "delete" -> deletePlayerBrewery();
             case "invite" -> {
                 if (args.length == 1) {
                     player.sendMessage(getMessage("must-specify-invited-player"));
                     return true;
                 }
                 Player inviteReceiver = Bukkit.getPlayer(args[1]);
-                invitePlayerToBrand(inviteReceiver);
+                invitePlayerToBrewery(inviteReceiver);
             }
-            case "accept" -> acceptBrandInvite();
+            case "accept" -> acceptBreweryInvite();
             case "kick" -> {
                 if (args.length == 1) {
                     player.sendMessage(getMessage("must-specify-kicked-player"));
                     return true;
                 }
-                kickPlayerFromBrand(Bukkit.getPlayer(args[1]));
+                kickPlayerFromBrewery(Bukkit.getPlayer(args[1]));
             }
-            case "leave" -> leaveBrand();
+            case "leave" -> leaveBrewery();
             case "deny" -> denyRequest();
             case "slogan" -> {
-                Brand brand = Util.getPlayerBrand(player);
+                Brewery brewery = Util.getPlayerBrewery(player);
                 String slogan = extractMultiWordString(args);
-                changeBrandSlogan(brand, slogan);
+                changeBrewerySlogan(brewery, slogan);
             }
             case "list" -> {
                 page = 0;
@@ -90,19 +90,19 @@ public class BrandCommand implements CommandExecutor {
                 if (page < 0) {
                     page = 0;
                 }
-                sendBrandsList();
+                sendBrewerysList();
             }
             case "info" -> {
-                Brand brand = getBrandFromName(extractMultiWordString(args));
-                // /brand info. Returns the info for your brand
+                Brewery brewery = getBreweryFromName(extractMultiWordString(args));
+                // /brewery info. Returns the info for your brewery
                 if (args.length == 1) {
-                    brand = getPlayerBrand(player);
+                    brewery = getPlayerBrewery(player);
                 }
-                if (brand == null) {
-                    player.sendMessage(getMessage("brand-does-not-exist"));
+                if (brewery == null) {
+                    player.sendMessage(getMessage("brewery-does-not-exist"));
                     return true;
                 }
-                sendBrandInfo(brand);
+                sendBreweryInfo(brewery);
             }
             default -> sendHelpMessage();
         }
@@ -110,52 +110,52 @@ public class BrandCommand implements CommandExecutor {
         return true;
     }
 
-    private void sendBrandInfo(Brand brand) {
+    private void sendBreweryInfo(Brewery brewery) {
 
-        if (brand == null) {
-            player.sendMessage(getMessage("brand-does-not-exist"));
+        if (brewery == null) {
+            player.sendMessage(getMessage("brewery-does-not-exist"));
             return;
         }
 
         player.sendMessage(getMessage("info-header"));
-        sendOwnerComponent(brand);
-        sendBrandNameComponent(brand);
-        sendSloganComponent(brand);
-        sendMembersComponent(brand);
+        sendOwnerComponent(brewery);
+        sendBreweryNameComponent(brewery);
+        sendSloganComponent(brewery);
+        sendMembersComponent(brewery);
         player.sendMessage(getMessage("footer"));
     }
-    private void sendOwnerComponent(Brand brand) {
+    private void sendOwnerComponent(Brewery brewery) {
         player.sendMessage(Component
                 .text("Owner: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text(brand.getBrandOwner().getName(), NamedTextColor.GRAY)
+                .append(Component.text(brewery.getBreweryOwner().getName(), NamedTextColor.GRAY)
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
-    private void sendSloganComponent(Brand brand) {
+    private void sendSloganComponent(Brewery brewery) {
         player.sendMessage(Component
                 .text("Slogan: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text('"' + brand.getBrandSlogan() + '"', NamedTextColor.GRAY, TextDecoration.UNDERLINED)
+                .append(Component.text('"' + brewery.getBrewerySlogan() + '"', NamedTextColor.GRAY, TextDecoration.UNDERLINED)
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
-    private void sendBrandNameComponent(Brand brand) {
+    private void sendBreweryNameComponent(Brewery brewery) {
         player.sendMessage(Component
                 .text("Name: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text(brand.getBrandName(), NamedTextColor.GRAY)
+                .append(Component.text(brewery.getBreweryName(), NamedTextColor.GRAY)
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
-    private void sendMembersComponent(Brand brand) {
+    private void sendMembersComponent(Brewery brewery) {
         Component membersPrefix = Component.text("Members: ", NamedTextColor.RED, TextDecoration.BOLD);
         ArrayList<String> memberNames = new ArrayList<>();
-        for (String playerUUIDString : brand.getMembers()) {
+        for (String playerUUIDString : brewery.getBreweryMembers()) {
             UUID uuid = UUID.fromString(playerUUIDString);
             memberNames.add(Bukkit.getOfflinePlayer(uuid).getName());
         }
-        if (!brand.getMembers().isEmpty()) {
-            String brandMembers = String.join("&7, &e", memberNames);
+        if (!brewery.getBreweryMembers().isEmpty()) {
+            String BreweryMembers = String.join("&7, &e", memberNames);
             Component membersList = LegacyComponentSerializer.legacyAmpersand()
-                    .deserialize(brandMembers).decoration(TextDecoration.BOLD, false);
+                    .deserialize(BreweryMembers).decoration(TextDecoration.BOLD, false);
             player.sendMessage(membersPrefix
                     .append(membersList));
             return;
@@ -165,19 +165,19 @@ public class BrandCommand implements CommandExecutor {
                 .decoration(TextDecoration.BOLD, false)));
     }
 
-    private void sendBrandsList() {
-        ArrayList<Brand> brands = Util.getAllBrands();
+    private void sendBrewerysList() {
+        ArrayList<Brewery> breweries = Util.getAllBreweries();
         player.sendMessage(getMessage("list-header"));
         for (int i = 0; i < 10; i++) {
             int index = i + (9 * page);
-            if (index >= brands.size()) {
+            if (index >= breweries.size()) {
                 player.sendMessage(getPreviousPageComponent().append(getPageComponent()));
                 player.sendMessage(getMessage("footer"));
                 return;
             }
-            Brand brand = brands.get(index);
+            Brewery brewery = breweries.get(index);
             player.sendMessage(Component.text((index + 1) + ". ", NamedTextColor.RED)
-                    .append(getBrandComponent(brand)));
+                    .append(getBreweryComponent(brewery)));
         }
 
         player.sendMessage(
@@ -194,17 +194,17 @@ public class BrandCommand implements CommandExecutor {
             return Component.text("                               ");
         }
 
-        return miniMessage.deserialize("                        <click:run_command:'/brand list "
+        return miniMessage.deserialize("                        <click:run_command:'/Brewery list "
                 + (page - 1) +"'><b><gray><hover:show_text:'Previous Page'>« </hover></gray><b></click>   ");
     }
     private Component getNextPageComponent() {
-        return miniMessage.deserialize("   <click:run_command:'/brand list " + page +"'><b><gray><hover:show_text:'Next Page'>»</hover></gray><b></click>");
+        return miniMessage.deserialize("   <click:run_command:'/Brewery list " + page +"'><b><gray><hover:show_text:'Next Page'>»</hover></gray><b></click>");
     }
-    private Component getBrandComponent(Brand brand) {
-        String brandName = brand.getBrandName();
+    private Component getBreweryComponent(Brewery brewery) {
+        String BreweryName = brewery.getBreweryName();
         return miniMessage.deserialize("<hover:show_text:'Click for more info!'><gold>"+
-                brandName +" - " + brand.getMembers().size() +
-                "</gold></hover>").clickEvent(ClickEvent.runCommand("/brand info " + brandName));
+                BreweryName +" - " + brewery.getBreweryMembers().size() +
+                "</gold></hover>").clickEvent(ClickEvent.runCommand("/brewery info " + BreweryName));
     }
 
     private void sendHelpMessage() {
@@ -214,80 +214,80 @@ public class BrandCommand implements CommandExecutor {
         }
     }
 
-    private void createBrand(String[] args) {
+    private void createBrewery(String[] args) {
         if (args.length == 1) {
-            player.sendMessage(getMessage("must-specify-brand-name", ""));
+            player.sendMessage(getMessage("must-specify-brewery-name", ""));
             return;
         }
 
-        String brandName = String.join(" ", extractMultiWordString(args));
-        Brand brand = new Brand(unitedBrands, brandName, player, null);
+        String BreweryName = String.join(" ", extractMultiWordString(args));
+        Brewery brewery = new Brewery(unitedBrands, BreweryName, player, null);
 
-        if (Util.hasBrand(player)) {
-            player.sendMessage(getMessage("in-a-brand", Util.getPlayerBrand(player).getBrandName()));
+        if (Util.hasBrewery(player)) {
+            player.sendMessage(getMessage("in-a-brewery", Util.getPlayerBrewery(player).getBreweryName()));
             return;
         }
 
-        if (Util.brandExists(brand)) {
-            player.sendMessage(getMessage("brand-already-exists", brandName));
+        if (Util.breweryExists(brewery)) {
+            player.sendMessage(getMessage("brewery-already-exists", BreweryName));
             return;
         }
-        brand.createBrand();
+        brewery.createBrewery();
     }
 
-    private void deletePlayerBrand() {
-        Brand brand = Util.getPlayerBrand(player);
+    private void deletePlayerBrewery() {
+        Brewery brewery = Util.getPlayerBrewery(player);
 
-        if (brand == null) {
-            player.sendMessage(getMessage("must-own-brand"));
+        if (brewery == null) {
+            player.sendMessage(getMessage("must-own-brewery"));
             return;
         }
 
-        String brandName = brand.getBrandName();
+        String BreweryName = brewery.getBreweryName();
 
-        if (Util.hasBrand(player) && isBrandOwner(brand)) {
-            brand.deleteBrand();
-            player.sendMessage(getMessage("brand-deleted", brandName));
+        if (Util.hasBrewery(player) && isBreweryOwner(brewery)) {
+            brewery.deleteBrewery();
+            player.sendMessage(getMessage("brewery-deleted", BreweryName));
             return;
         }
 
-        player.sendMessage(getMessage("brand-cannot-be-deleted", brandName));
+        player.sendMessage(getMessage("brewery-cannot-be-deleted", BreweryName));
     }
 
-    private void invitePlayerToBrand(Player inviteReceiver) {
+    private void invitePlayerToBrewery(Player inviteReceiver) {
 
         if (inviteReceiver == null) {
             player.sendMessage(getMessage("invalid-player"));
             return;
         }
 
-        Brand brand = Util.getPlayerBrand(player);
+        Brewery brewery = Util.getPlayerBrewery(player);
 
-        if (brand == null) {
-            player.sendMessage(getMessage("must-own-brand"));
+        if (brewery == null) {
+            player.sendMessage(getMessage("must-own-brewery"));
             return;
         }
 
-        String brandName = brand.getBrandName();
+        String BreweryName = brewery.getBreweryName();
 
         if (player == inviteReceiver) {
-            player.sendMessage(getMessage("cannot-invite-self", brandName));
+            player.sendMessage(getMessage("cannot-invite-self", BreweryName));
             return;
         }
 
-        if (isBrandOwner(brand)) {
+        if (isBreweryOwner(brewery)) {
             InviteRequest inviteRequest = new InviteRequest(player, inviteReceiver);
             inviteRequests.add(inviteRequest);
-            player.sendMessage(getMessage("player-invited", brandName));
-            inviteReceiver.sendMessage(getMessage("brand-invite", brandName));
+            player.sendMessage(getMessage("player-invited", BreweryName));
+            inviteReceiver.sendMessage(getMessage("brewery-invite", BreweryName));
             return;
         }
 
-        player.sendMessage(getMessage("must-own-brand"));
+        player.sendMessage(getMessage("must-own-brewery"));
 
     }
 
-    private void acceptBrandInvite() {
+    private void acceptBreweryInvite() {
         InviteRequest request = getRequest(player);
 
         if (request == null) {
@@ -298,66 +298,66 @@ public class BrandCommand implements CommandExecutor {
         Player receiver = request.getReceiver();
         Player sender = request.getSender();
 
-        if (Util.getPlayerBrand(receiver) != null) {
-            player.sendMessage(getMessage("already-in-a-brand"));
+        if (Util.getPlayerBrewery(receiver) != null) {
+            player.sendMessage(getMessage("already-in-a-brewery"));
             return;
         }
 
-        Brand brand = Util.getPlayerBrand(sender);
-        String brandName = brand.getBrandName();
-        brand.addMember(player);
+        Brewery brewery = Util.getPlayerBrewery(sender);
+        String BreweryName = brewery.getBreweryName();
+        brewery.addMemberToBrewery(player);
 
-        sender.sendMessage(getMessage("brand-join-sender", player));
-        receiver.sendMessage(getMessage("brand-join", brandName));
+        sender.sendMessage(getMessage("brewery-join-sender", player));
+        receiver.sendMessage(getMessage("brewery-join", BreweryName));
 
         inviteRequests.remove(request);
     }
 
-    private void kickPlayerFromBrand(Player kickedPlayer) {
+    private void kickPlayerFromBrewery(Player kickedPlayer) {
 
         if (kickedPlayer == null) {
             player.sendMessage(getMessage("must-specify-kicked-player", ""));
             return;
         }
 
-        Brand brand = Util.getPlayerBrand(player);
-        String brandName = brand.getBrandName();
+        Brewery brewery = Util.getPlayerBrewery(player);
+        String BreweryName = brewery.getBreweryName();
 
-        if (!isBrandOwner(brand)) {
-            player.sendMessage(getMessage("must-own-brand", brandName));
+        if (!isBreweryOwner(brewery)) {
+            player.sendMessage(getMessage("must-own-brewery", BreweryName));
             return;
         }
 
         if (kickedPlayer == player) {
-            player.sendMessage(getMessage("cannot-kick-self", brandName));
+            player.sendMessage(getMessage("cannot-kick-self", BreweryName));
             return;
         }
 
-        brand.removeMember(kickedPlayer);
-        kickedPlayer.sendMessage(getMessage("kicked-from-brand", brandName));
-        player.sendMessage(getMessage("player-kicked", brandName));
+        brewery.removeMemberFromBrewery(kickedPlayer);
+        kickedPlayer.sendMessage(getMessage("kicked-from-brewery", BreweryName));
+        player.sendMessage(getMessage("player-kicked", BreweryName));
     }
 
-    private void leaveBrand() {
-        Brand brand = Util.getPlayerBrand(player);
-        if (brand == null) {
-            player.sendMessage(getMessage("must-have-brand", ""));
+    private void leaveBrewery() {
+        Brewery brewery = Util.getPlayerBrewery(player);
+        if (brewery == null) {
+            player.sendMessage(getMessage("must-have-brewery", ""));
             return;
         }
 
-        String brandName = brand.getBrandName();
+        String BreweryName = brewery.getBreweryName();
 
-        if (isBrandOwner(brand)) {
-            player.sendMessage(getMessage("must-delete-brand", brandName));
+        if (isBreweryOwner(brewery)) {
+            player.sendMessage(getMessage("must-delete-brewery", BreweryName));
             return;
         }
 
-        if (Util.hasBrand(player)) {
-            OfflinePlayer brandOwner = brand.getBrandOwner();
-            brand.removeMember(player);
-            player.sendMessage(getMessage("brand-leave", brandName));
-            if (brandOwner.isOnline()) {
-                brandOwner.getPlayer().sendMessage(getMessage("player-left-brand", brandName, player));
+        if (Util.hasBrewery(player)) {
+            OfflinePlayer BreweryOwner = brewery.getBreweryOwner();
+            brewery.removeMemberFromBrewery(player);
+            player.sendMessage(getMessage("brewery-leave", BreweryName));
+            if (BreweryOwner.isOnline()) {
+                BreweryOwner.getPlayer().sendMessage(getMessage("player-left-brewery", BreweryName, player));
             }
         }
 
@@ -365,25 +365,25 @@ public class BrandCommand implements CommandExecutor {
 
     private void denyRequest() {
         InviteRequest request = getRequest(player);
-        String brandName = Util.getPlayerBrand(player).getBrandName();
+        String BreweryName = Util.getPlayerBrewery(player).getBreweryName();
 
         if (request != null) {
-            request.getSender().sendMessage(getMessage("brand-deny-sender", player));
-            request.getReceiver().sendMessage(getMessage("brand-deny", brandName));
+            request.getSender().sendMessage(getMessage("Brewery-deny-sender", player));
+            request.getReceiver().sendMessage(getMessage("Brewery-deny", BreweryName));
             inviteRequests.remove(request);
             return;
         }
         player.sendMessage(getMessage("no-requests", ""));
     }
 
-    private void changeBrandSlogan(Brand brand, String slogan) {
-        if (brand == null) {
-            player.sendMessage(getMessage("must-have-brand"));
+    private void changeBrewerySlogan(Brewery brewery, String slogan) {
+        if (brewery == null) {
+            player.sendMessage(getMessage("must-have-brewery"));
             return;
         }
 
-        if (!isBrandOwner(brand)) {
-            player.sendMessage(getMessage("must-own-brand"));
+        if (!isBreweryOwner(brewery)) {
+            player.sendMessage(getMessage("must-own-brewery"));
             return;
         }
 
@@ -391,13 +391,13 @@ public class BrandCommand implements CommandExecutor {
             player.sendMessage(getMessage("must-specify-slogan"));
         }
 
-        brand.setSlogan(slogan);
-        player.sendMessage(getMessage("slogan-changed", brand.getBrandName()));
+        brewery.setSlogan(slogan);
+        player.sendMessage(getMessage("slogan-changed", brewery.getBreweryName()));
     }
 
-    private boolean isBrandOwner(Brand brand) {
-        if (Util.hasBrand(player)) {
-            return brand.getBrandOwner().equals(player);
+    private boolean isBreweryOwner(Brewery brewery) {
+        if (Util.hasBrewery(player)) {
+            return brewery.getBreweryOwner().equals(player);
         }
         return false;
     }

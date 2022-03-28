@@ -1,4 +1,4 @@
-package org.unitedlands.alcohol;
+package org.unitedlands.brands;
 
 import org.bukkit.entity.Player;
 
