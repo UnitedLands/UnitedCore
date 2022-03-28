@@ -1,6 +1,8 @@
 package org.unitedlands.brands.listeners;
 
+import com.dre.brewery.Brew;
 import com.dre.brewery.api.events.PlayerFillBottleEvent;
+import com.dre.brewery.utility.BUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -14,6 +16,7 @@ import org.unitedlands.brands.Util;
 import org.unitedlands.brands.brewery.Brewery;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerListener implements Listener {
 
@@ -27,17 +30,22 @@ public class PlayerListener implements Listener {
     public void onPlayerFillBottle(PlayerFillBottleEvent event) {
         Player player = event.getPlayer();
         ItemStack bottle = event.getBottle();
-        brandFilledBottle(player, bottle);
+        addBrandToFilledBottle(player, bottle);
     }
 
-    private void brandFilledBottle(Player player, ItemStack bottle) {
+    private void addBrandToFilledBottle(Player player, ItemStack bottle) {
         ItemMeta bottleMeta = bottle.getItemMeta();
-        var bottleLore = new ArrayList<Component>();
+        List<Component> bottleLore = bottle.lore();
 
         Brewery brewery = Util.getPlayerBrewery(player);
 
-        bottleLore.add(getBrewedByComponent(player));
-        bottleLore.add(getSloganComponent(brewery, player));
+        if (bottleLore == null) {
+            bottleLore = new ArrayList<>();
+        }
+
+        bottleLore.add(0, getBrewedByComponent(player));
+        bottleLore.add(1, getSloganComponent(brewery, player));
+        bottleLore.add(2, Component.text(""));
         bottleMeta.lore(bottleLore);
         bottle.setItemMeta(bottleMeta);
     }
