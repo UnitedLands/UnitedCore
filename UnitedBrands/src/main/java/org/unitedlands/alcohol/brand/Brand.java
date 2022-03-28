@@ -1,5 +1,6 @@
 package org.unitedlands.alcohol.brand;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -14,17 +15,17 @@ public class Brand {
 
     private final UnitedBrands ub;
     private final String name;
-    private final Player owner;
+    private final OfflinePlayer owner;
     private final List<String> members;
 
-    public Brand(UnitedBrands ub, String name, Player owner, List<String> members) {
+    public Brand(UnitedBrands ub, String name, OfflinePlayer owner, List<String> members) {
         this.ub = ub;
         this.name = name;
         this.owner = owner;
         this.members = members;
     }
 
-    public Player getBrandOwner() {
+    public OfflinePlayer getBrandOwner() {
         return owner;
     }
 
@@ -52,7 +53,7 @@ public class Brand {
         brandSection.set("members", new ArrayList<String>());
         getBrandsFile().saveConfig(brandsConfig);
 
-        owner.sendMessage(Util.getMessage("brand-created", name));
+        owner.getPlayer().sendMessage(Util.getMessage("brand-created", name));
     }
 
     public void addMember(Player player) {

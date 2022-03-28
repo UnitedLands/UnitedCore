@@ -1,4 +1,7 @@
 messages:
+  info-header: '&r&7&m+|✦&r&7=============&r&7&l[ &c&lBrand Info&7&l ]=============&m✦|+&r'
+  list-header: '&r&7&m+|✦&r&7=============&r&7&l[ &c&lAll Brands&7&l ]=============&m✦|+&r'
+  footer: '&r&7&m+|✦&r&7==================&m+✦+&r&7==================&m✦|+'
   help-command:
     - '&c&lUnited&f&lBrands'
     - '/brand help: shows a list of all commands'

@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.unitedlands.alcohol.brand.Brand;
 import org.unitedlands.alcohol.brand.BrandsFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -40,8 +41,7 @@ public class Util {
     }
 
     public static Brand getPlayerBrand(Player player) {
-        BrandsFile brandsFile = getBrandsFile();
-        FileConfiguration brandsConfig = brandsFile.getBrandsConfig();
+        FileConfiguration brandsConfig = getBrandsConfig();
         String uuid = player.getUniqueId().toString();
         Set<String> keys = brandsConfig.getConfigurationSection("brands").getKeys(true);
 
@@ -52,8 +52,9 @@ public class Util {
                     // MyBrand.owner-uuid -> [MyBrand, owner-uuid] -> MyBrand. Fuck this
                     String brandName = key.split("\\.")[0];
                     UUID ownerUUID = UUID.fromString(brandsConfig.getString("brands." + brandName + ".owner-uuid"));
+                    List<String> members = brandsConfig.getStringList("brands." + brandName + ".members");
                     try {
-                        return new Brand(getUnitedBrands(), brandName, Bukkit.getPlayer(ownerUUID), null);
+                        return new Brand(getUnitedBrands(), brandName, Bukkit.getOfflinePlayer(ownerUUID), members);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -64,25 +65,22 @@ public class Util {
     }
 
     public static Brand getBrandFromName(String name) {
-        BrandsFile brandsFile = getBrandsFile();
-        FileConfiguration brandsConfig = brandsFile.getBrandsConfig();
+        FileConfiguration brandsConfig = getBrandsConfig();
         ConfigurationSection brandsSection = brandsConfig.getConfigurationSection("brands");
-        Set<String> brands = brandsSection.getKeys(false);
+        Set<String> brands = getBrandNames();
 
         for (String brandName : brands) {
             if (name.equals(brandName)) {
                 UUID ownerUUID = UUID.fromString(brandsSection.getString(brandName + ".owner-uuid"));
                 List<String> members = brandsSection.getStringList(brandName + ".members");
-                return new Brand(getUnitedBrands(), brandName, Bukkit.getPlayer(ownerUUID), members);
+                return new Brand(getUnitedBrands(), brandName, Bukkit.getOfflinePlayer(ownerUUID), members);
             }
         }
         return null;
     }
 
     public static boolean brandExists(Brand brand) {
-        BrandsFile brandsFile = getBrandsFile();
-        FileConfiguration brandsConfig = brandsFile.getBrandsConfig();
-        Set<String> brandNames = brandsConfig.getConfigurationSection("brands").getKeys(false);
+        Set<String> brandNames = getBrandNames();
         for (String brandName : brandNames) {
             if (brand.getBrandName().equals(brandName)) {
                 return true;
@@ -92,8 +90,24 @@ public class Util {
     }
 
     @NotNull
-    private static BrandsFile getBrandsFile() {
-        return new BrandsFile(getUnitedBrands());
+    public static Set<String> getBrandNames() {
+        FileConfiguration brandsConfig = getBrandsConfig();
+        return brandsConfig.getConfigurationSection("brands").getKeys(false);
+    }
+
+    private static FileConfiguration getBrandsConfig() {
+        BrandsFile brandsFile = new BrandsFile(getUnitedBrands());;
+        return brandsFile.getBrandsConfig();
+    }
+
+    public static ArrayList<Brand> getAllBrands() {
+        Set<String> brandNames = Util.getBrandNames();
+        ArrayList<Brand> brands = new ArrayList<>();
+        for (String brandName : brandNames) {
+            Brand brand = Util.getBrandFromName(brandName);
+            brands.add(brand);
+        }
+        return brands;
     }
 
     public static boolean hasBrand(Player player) {
