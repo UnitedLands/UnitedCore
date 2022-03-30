@@ -3,6 +3,7 @@ package org.unitedlands.unitedchat.player;
 import com.palmergames.bukkit.TownyChat.events.AsyncChatHookEvent;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -69,9 +70,8 @@ public class PlayerListener implements Listener {
             event.setMessage(formatter.gradientMessage(finalizedMessage, gradient));
             return;
         }
-
+        finalizedMessage = LegacyComponentSerializer.legacyAmpersand().serialize(miniMessage.deserialize(finalizedMessage));
         event.setMessage(finalizedMessage);
     }
-
 
 }

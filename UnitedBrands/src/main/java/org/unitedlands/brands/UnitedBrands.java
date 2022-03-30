@@ -11,7 +11,7 @@ public final class UnitedBrands extends JavaPlugin {
     @Override
     public void onEnable() {
         BreweriesFile breweriesFile = new BreweriesFile(this);
-        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         breweriesFile.createBreweriesFile();
         saveDefaultConfig();
         getCommand("brewery").setExecutor(new BreweryCommand(this));
