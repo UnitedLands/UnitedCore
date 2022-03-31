@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -55,7 +56,7 @@ public class BreweryCommand implements CommandExecutor {
             return true;
         }
 
-        switch (args[0]) {
+        switch (args[0].toLowerCase()) {
             case "create" -> createBrewery(args);
             case "delete" -> deletePlayerBrewery();
             case "invite" -> {
@@ -124,6 +125,7 @@ public class BreweryCommand implements CommandExecutor {
         player.sendMessage(getMessage("info-header"));
         sendOwnerComponent(brewery);
         sendBreweryNameComponent(brewery);
+        sendLevelComponent(brewery);
         sendSloganComponent(brewery);
         sendMembersComponent(brewery);
         player.sendMessage(getMessage("footer"));
@@ -135,10 +137,21 @@ public class BreweryCommand implements CommandExecutor {
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
+    private void sendLevelComponent(Brewery brewery) {
+        player.sendMessage(Component
+                .text("Level: ", NamedTextColor.RED, TextDecoration.BOLD)
+                .append(Component.text(brewery.getBreweryLevel(), NamedTextColor.GRAY)
+                        .decoration(TextDecoration.BOLD, false))
+                .append(Component.newline()));
+    }
     private void sendSloganComponent(Brewery brewery) {
+        String slogan = brewery.getBrewerySlogan();
+        if (slogan == null) {
+            slogan = "None";
+        }
         player.sendMessage(Component
                 .text("Slogan: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text('"' + brewery.getBrewerySlogan() + '"', NamedTextColor.GRAY, TextDecoration.UNDERLINED)
+                .append(Component.text('"' + slogan + '"', NamedTextColor.GRAY, TextDecoration.UNDERLINED)
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
@@ -223,6 +236,11 @@ public class BreweryCommand implements CommandExecutor {
             player.sendMessage(getMessage("must-own-brewery"));
             return;
         }
+        if (!player.hasPermission("united.brewery.upgrade")) {
+            player.sendMessage(Component.text("You do not have permission to execute this command!", NamedTextColor.RED));
+            return;
+        }
+
         int level = brewery.getBreweryLevel();
         if (level == 5) {
             player.sendMessage(getMessage("max-brewery-level"));

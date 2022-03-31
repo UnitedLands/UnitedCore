@@ -70,7 +70,7 @@ public class Util {
         Set<String> breweryNames = getBreweryNames();
 
         for (String breweryName : breweryNames) {
-            if (name.equals(breweryName)) {
+            if (name.equalsIgnoreCase(breweryName)) {
                 UUID ownerUUID = UUID.fromString(brewerySection.getString(breweryName + ".owner-uuid"));
                 List<String> members = brewerySection.getStringList(breweryName + ".members");
                 return new Brewery(getUnitedBrands(), breweryName, Bukkit.getOfflinePlayer(ownerUUID), members);
@@ -82,7 +82,7 @@ public class Util {
     public static boolean breweryExists(Brewery brewery) {
         Set<String> breweryNames = getBreweryNames();
         for (String breweryName : breweryNames) {
-            if (brewery.getBreweryName().equals(breweryName)) {
+            if (brewery.getBreweryName().equalsIgnoreCase(breweryName)) {
                 return true;
             }
         }
