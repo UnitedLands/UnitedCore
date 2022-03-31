@@ -94,6 +94,21 @@ public class Brewery {
         getBreweriesFile().saveConfig(breweriesConfig);
     }
 
+    public int getBreweryLevel() {
+        return getBreweriesConfig().getInt("breweries." + name + ".level");
+    }
+
+    public void increaseLevel() {
+        FileConfiguration breweriesConfig = getBreweriesConfig();
+        String levelPath = "breweries." + name + ".level";
+        if (breweriesConfig.get(levelPath) == null) {
+            breweriesConfig.set(levelPath, 0);
+        }
+        int currentLevel = breweriesConfig.getInt(levelPath);
+        breweriesConfig.set(levelPath, currentLevel + 1);
+        getBreweriesFile().saveConfig(breweriesConfig);
+    }
+
     private FileConfiguration getBreweriesConfig() {
         return getBreweriesFile().getBreweriesConfig();
     }

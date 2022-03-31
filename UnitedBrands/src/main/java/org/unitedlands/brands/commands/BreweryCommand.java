@@ -74,6 +74,10 @@ public class BreweryCommand implements CommandExecutor {
                 }
                 kickPlayerFromBrewery(Bukkit.getPlayer(args[1]));
             }
+            case "upgrade" -> {
+                Brewery brewery = Util.getPlayerBrewery(player);
+                upgradeBrewery(brewery);
+            }
             case "leave" -> leaveBrewery();
             case "deny" -> denyRequest();
             case "slogan" -> {
@@ -90,7 +94,7 @@ public class BreweryCommand implements CommandExecutor {
                 if (page < 0) {
                     page = 0;
                 }
-                sendBrewerysList();
+                sendBreweriesList();
             }
             case "info" -> {
                 Brewery brewery = getBreweryFromName(extractMultiWordString(args));
@@ -165,7 +169,7 @@ public class BreweryCommand implements CommandExecutor {
                 .decoration(TextDecoration.BOLD, false)));
     }
 
-    private void sendBrewerysList() {
+    private void sendBreweriesList() {
         ArrayList<Brewery> breweries = Util.getAllBreweries();
         player.sendMessage(getMessage("list-header"));
         for (int i = 0; i < 10; i++) {
@@ -212,6 +216,21 @@ public class BreweryCommand implements CommandExecutor {
         for (String message : helpMessage) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
         }
+    }
+
+    private void upgradeBrewery(Brewery brewery) {
+        if (brewery == null || !isBreweryOwner(brewery)) {
+            player.sendMessage(getMessage("must-own-brewery"));
+            return;
+        }
+        int level = brewery.getBreweryLevel();
+        if (level == 5) {
+            player.sendMessage(getMessage("max-brewery-level"));
+            return;
+        }
+        brewery.increaseLevel();
+        player.sendMessage(getMessage("brewery-upgraded", brewery.getBreweryName())
+                .replace("<level>", Integer.toString(level)));
     }
 
     private void createBrewery(String[] args) {

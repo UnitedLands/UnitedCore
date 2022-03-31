@@ -47,5 +47,7 @@ messages:
   must-specify-invited-player: 'Player argument missing! Please use /brewery invite <player-name>!'
   must-specify-brewery-name: 'Brewery name required! Please use /brewery create <brewery name>, or /brewery delete <brewery name>'
   must-specify-slogan: 'You must specify the new slogan!'
+  max-brewery-level: 'Your brewery has reached the max level!'
   player-left-brewery: '<player> left your brewery!'
   invalid-player: 'A player with that name does not exist!'
+  brewery-upgraded: '<brewery> has been upgraded to level <level>!'
