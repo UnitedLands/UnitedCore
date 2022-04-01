@@ -11,21 +11,24 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.brands.UnitedBrands;
 import org.unitedlands.brands.Util;
-import org.unitedlands.brands.brewery.Brewery;
 import org.unitedlands.brands.brewery.BreweriesFile;
+import org.unitedlands.brands.brewery.Brewery;
+import org.unitedlands.brands.stats.PlayerStatsFile;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class BreweryAdminCommand implements CommandExecutor {
-    private CommandSender sender;
     private final UnitedBrands unitedBrands;
     private final BreweriesFile breweriesFile;
+    private final PlayerStatsFile playerStatsFile;
+    private CommandSender sender;
     private Brewery brewery;
 
-    public BreweryAdminCommand(UnitedBrands unitedBrands, BreweriesFile breweriesFile) {
+    public BreweryAdminCommand(UnitedBrands unitedBrands, BreweriesFile breweriesFile, PlayerStatsFile playerStatsFile) {
         this.unitedBrands = unitedBrands;
         this.breweriesFile = breweriesFile;
+        this.playerStatsFile = playerStatsFile;
     }
 
     @Override
@@ -106,6 +109,7 @@ public class BreweryAdminCommand implements CommandExecutor {
     private void reloadPlugin() {
         unitedBrands.reloadConfig();
         breweriesFile.reloadConfig();
+        playerStatsFile.reloadConfig();
         sender.sendMessage(Component.text("All configurations and data reloaded!", NamedTextColor.GREEN));
     }
 

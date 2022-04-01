@@ -6,7 +6,7 @@
 
     <groupId>org.unitedlands.brands</groupId>
     <artifactId>UnitedBrands</artifactId>
-    <version>2.6</version>
+    <version>3.0</version>
     <packaging>jar</packaging>
 
     <name>UnitedBrands</name>
@@ -52,7 +52,6 @@
             </resource>
         </resources>
     </build>
-
     <repositories>
         <repository>
             <id>jitpack.io</id>
@@ -65,6 +64,10 @@
         <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
     </repositories>
 
@@ -79,6 +82,12 @@
             <groupId>com.github.UnitedLands</groupId>
             <artifactId>UnitedBrewery</artifactId>
             <version>090b090b34</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.10.10</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

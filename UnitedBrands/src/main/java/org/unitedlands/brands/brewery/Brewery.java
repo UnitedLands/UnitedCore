@@ -25,87 +25,84 @@ public class Brewery {
         this.members = members;
     }
 
+    @NotNull
     public OfflinePlayer getBreweryOwner() {
         return owner;
     }
 
+    @NotNull
     public String getBreweryName() {
         return name;
     }
 
     public String getBrewerySlogan() {
         FileConfiguration breweriesConfig = getBreweriesConfig();
-        return breweriesConfig.getString("breweries." + name + ".slogan");
+        return breweriesConfig.getString(name + ".slogan");
     }
 
     public void setSlogan(String slogan) {
         FileConfiguration breweriesConfig = getBreweriesConfig();
-        breweriesConfig.set("breweries." + name + ".slogan", slogan);
+        breweriesConfig.set(name + ".slogan", slogan);
         getBreweriesFile().saveConfig(breweriesConfig);
     }
 
     public void createBrewery() {
         FileConfiguration breweriesConfig = getBreweriesConfig();
-        breweriesConfig.createSection("breweries." + name);
-        ConfigurationSection breweriesection = breweriesConfig.getConfigurationSection("breweries." + name);
-        breweriesection.set("name", name);
-        breweriesection.set("owner-uuid", owner.getUniqueId().toString());
-        breweriesection.set("members", new ArrayList<String>());
+        breweriesConfig.createSection(name);
+        ConfigurationSection brewerySection = breweriesConfig.getConfigurationSection(name);
+        brewerySection.set("name", name);
+        brewerySection.set("owner-uuid", owner.getUniqueId().toString());
+        brewerySection.set("level", 0);
+        brewerySection.set("brews-made", 0);
+        brewerySection.set("brews-drunk", 0);
+        brewerySection.set("total-stars", 0);
+        brewerySection.set("average-stars", 0);
+        brewerySection.set("members", new ArrayList<String>());
         getBreweriesFile().saveConfig(breweriesConfig);
-
         owner.getPlayer().sendMessage(Util.getMessage("brewery-created", name));
+    }
+
+    public void updateAverageStars() {
+        FileConfiguration breweriesConfig = getBreweriesConfig();
+        int totalStars = getBreweryStat("total-stars");
+        int brewsDrunk = getBreweryStat("brews-drunk");
+        double newAverage = (double) totalStars / brewsDrunk;
+        breweriesConfig.set(name + ".average-stars", Math.round(newAverage));
+        getBreweriesFile().saveConfig(breweriesConfig);
     }
 
     public void addMemberToBrewery(Player player) {
         FileConfiguration breweriesConfig = getBreweriesConfig();
         @NotNull List<String> members = getBreweryMembers();
-        if (members == null) {
-            members = breweriesConfig.getStringList("breweries." + name + ".members");
-        }
-        try {
-            members.add(player.getUniqueId().toString());
-            breweriesConfig.set("breweries." + name + ".members", members);
-            getBreweriesFile().saveConfig(breweriesConfig);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        members.add(player.getUniqueId().toString());
+        breweriesConfig.set(name + ".members", members);
+        getBreweriesFile().saveConfig(breweriesConfig);
     }
 
     public void removeMemberFromBrewery(Player player) {
         FileConfiguration breweriesConfig = getBreweriesConfig();
         @NotNull List<String> members = getBreweryMembers();
-        if (members == null) {
-            members = breweriesConfig.getStringList("breweries." + name + ".members");
-        }
-        try {
-            members.remove(player.getUniqueId().toString());
-            breweriesConfig.set("breweries." + name + ".members", members);
-            getBreweriesFile().saveConfig(breweriesConfig);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        members.remove(player.getUniqueId().toString());
+        breweriesConfig.set(name + ".members", members);
+        getBreweriesFile().saveConfig(breweriesConfig);
     }
 
     public void deleteBrewery() {
         FileConfiguration breweriesConfig = getBreweriesConfig();
-        breweriesConfig.set("breweries." + name, null);
+        breweriesConfig.set(name, null);
         getBreweriesFile().saveConfig(breweriesConfig);
     }
 
-    public int getBreweryLevel() {
-        return getBreweriesConfig().getInt("breweries." + name + ".level");
+    public int getBreweryStat(String statName) {
+        return getBreweriesConfig().getInt(name + "." + statName);
     }
 
-    public void increaseLevel() {
+    public void increaseStat(String statName, int increment) {
         FileConfiguration breweriesConfig = getBreweriesConfig();
-        String levelPath = "breweries." + name + ".level";
-        if (breweriesConfig.get(levelPath) == null) {
-            breweriesConfig.set(levelPath, 0);
-        }
-        int currentLevel = breweriesConfig.getInt(levelPath);
-        breweriesConfig.set(levelPath, currentLevel + 1);
+        String statPath = name + "." + statName;
+        int currentAmount = breweriesConfig.getInt(statPath);
+        breweriesConfig.set(statPath, currentAmount + increment);
         getBreweriesFile().saveConfig(breweriesConfig);
     }
 
@@ -116,7 +113,6 @@ public class Brewery {
     private BreweriesFile getBreweriesFile() {
         return new BreweriesFile(ub);
     }
-
 
     public List<String> getBreweryMembers() {
         return members;

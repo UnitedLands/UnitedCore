@@ -5,6 +5,8 @@ api-version: 1.18
 depend: [ Brewery ]
 authors: [ Maroon28 ]
 description: Item branding feature for UnitedLands
+softdepend:
+  - PlaceholderAPI
 commands:
   brewery:
     description: main brewery command

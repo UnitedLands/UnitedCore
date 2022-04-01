@@ -2,12 +2,12 @@ package org.unitedlands.brands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.brands.brewery.Brewery;
 import org.unitedlands.brands.brewery.BreweriesFile;
+import org.unitedlands.brands.brewery.Brewery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,19 +40,19 @@ public class Util {
         return (UnitedBrands) Bukkit.getPluginManager().getPlugin("UnitedBrands");
     }
 
-    public static Brewery getPlayerBrewery(Player player) {
+    public static Brewery getPlayerBrewery(OfflinePlayer player) {
         FileConfiguration breweriesConfig = getBreweriesConfig();
         String uuid = player.getUniqueId().toString();
-        Set<String> keys = breweriesConfig.getConfigurationSection("breweries").getKeys(true);
+        Set<String> keys = breweriesConfig.getKeys(true);
 
         for (String key : keys) {
             if (key.contains("owner-uuid") || key.contains("members")) {
-                if (uuid.equals(breweriesConfig.getString("breweries." + key)) ||
-                        breweriesConfig.getStringList("breweries." + key).contains(uuid)) {
+                if (uuid.equals(breweriesConfig.getString(key)) ||
+                        breweriesConfig.getStringList(key).contains(uuid)) {
                     // MyBrand.owner-uuid -> [MyBrand, owner-uuid] -> MyBrand. Fuck this
                     String breweryName = key.split("\\.")[0];
-                    UUID ownerUUID = UUID.fromString(breweriesConfig.getString("breweries." + breweryName + ".owner-uuid"));
-                    List<String> members = breweriesConfig.getStringList("breweries." + breweryName + ".members");
+                    UUID ownerUUID = UUID.fromString(breweriesConfig.getString(breweryName + ".owner-uuid"));
+                    List<String> members = breweriesConfig.getStringList(breweryName + ".members");
                     try {
                         return new Brewery(getUnitedBrands(), breweryName, Bukkit.getOfflinePlayer(ownerUUID), members);
                     } catch (Exception e) {
@@ -66,13 +66,12 @@ public class Util {
 
     public static Brewery getBreweryFromName(String name) {
         FileConfiguration breweriesConfig = getBreweriesConfig();
-        ConfigurationSection brewerySection = breweriesConfig.getConfigurationSection("breweries");
         Set<String> breweryNames = getBreweryNames();
 
         for (String breweryName : breweryNames) {
             if (name.equalsIgnoreCase(breweryName)) {
-                UUID ownerUUID = UUID.fromString(brewerySection.getString(breweryName + ".owner-uuid"));
-                List<String> members = brewerySection.getStringList(breweryName + ".members");
+                UUID ownerUUID = UUID.fromString(breweriesConfig.getString(breweryName + ".owner-uuid"));
+                List<String> members = breweriesConfig.getStringList(breweryName + ".members");
                 return new Brewery(getUnitedBrands(), breweryName, Bukkit.getOfflinePlayer(ownerUUID), members);
             }
         }
@@ -92,11 +91,11 @@ public class Util {
     @NotNull
     public static Set<String> getBreweryNames() {
         FileConfiguration breweriesConfig = getBreweriesConfig();
-        return breweriesConfig.getConfigurationSection("breweries").getKeys(false);
+        return breweriesConfig.getKeys(false);
     }
 
     private static FileConfiguration getBreweriesConfig() {
-        BreweriesFile breweriesFile = new BreweriesFile(getUnitedBrands());;
+        BreweriesFile breweriesFile = new BreweriesFile(getUnitedBrands());
         return breweriesFile.getBreweriesConfig();
     }
 
@@ -110,7 +109,7 @@ public class Util {
         return breweries;
     }
 
-    public static boolean hasBrewery(Player player) {
+    public static boolean hasBrewery(OfflinePlayer player) {
         return getPlayerBrewery(player) != null;
     }
 }

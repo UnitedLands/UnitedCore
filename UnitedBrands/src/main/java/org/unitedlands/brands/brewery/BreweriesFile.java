@@ -13,8 +13,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class BreweriesFile {
-    private FileConfiguration breweryConfig;
     private final UnitedBrands ub;
+    private FileConfiguration breweryConfig;
 
     public BreweriesFile(UnitedBrands ub) {
         this.ub = ub;
@@ -29,7 +29,6 @@ public class BreweriesFile {
         breweryConfig = new YamlConfiguration();
         try {
             breweryConfig.load(breweryDataFile);
-            breweryConfig.createSection("breweries");
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }

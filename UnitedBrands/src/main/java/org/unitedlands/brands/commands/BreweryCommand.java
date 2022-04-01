@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,9 +31,10 @@ import static org.unitedlands.brands.Util.*;
 public class BreweryCommand implements CommandExecutor {
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private final UnitedBrands unitedBrands;
+    Set<InviteRequest> inviteRequests = new HashSet<>();
+    private Brewery brewery;
     private Player player;
     private int page;
-    Set<InviteRequest> inviteRequests = new HashSet<>();
 
     public BreweryCommand(UnitedBrands unitedBrands) {
         this.unitedBrands = unitedBrands;
@@ -76,15 +76,15 @@ public class BreweryCommand implements CommandExecutor {
                 kickPlayerFromBrewery(Bukkit.getPlayer(args[1]));
             }
             case "upgrade" -> {
-                Brewery brewery = Util.getPlayerBrewery(player);
-                upgradeBrewery(brewery);
+                brewery = Util.getPlayerBrewery(player);
+                upgradeBrewery();
             }
             case "leave" -> leaveBrewery();
             case "deny" -> denyRequest();
             case "slogan" -> {
-                Brewery brewery = Util.getPlayerBrewery(player);
+                brewery = Util.getPlayerBrewery(player);
                 String slogan = extractMultiWordString(args);
-                changeBrewerySlogan(brewery, slogan);
+                changeBrewerySlogan(slogan);
             }
             case "list" -> {
                 page = 0;
@@ -98,7 +98,7 @@ public class BreweryCommand implements CommandExecutor {
                 sendBreweriesList();
             }
             case "info" -> {
-                Brewery brewery = getBreweryFromName(extractMultiWordString(args));
+                brewery = getBreweryFromName(extractMultiWordString(args));
                 // /brewery info. Returns the info for your brewery
                 if (args.length == 1) {
                     brewery = getPlayerBrewery(player);
@@ -107,7 +107,7 @@ public class BreweryCommand implements CommandExecutor {
                     player.sendMessage(getMessage("brewery-does-not-exist"));
                     return true;
                 }
-                sendBreweryInfo(brewery);
+                sendBreweryInfo();
             }
             default -> sendHelpMessage();
         }
@@ -115,36 +115,71 @@ public class BreweryCommand implements CommandExecutor {
         return true;
     }
 
-    private void sendBreweryInfo(Brewery brewery) {
+    private void sendHelpMessage() {
+        List<String> helpMessage = unitedBrands.getConfig().getStringList("messages.help-command");
+        for (String message : helpMessage) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+        }
+    }
 
+    private void sendBreweryInfo() {
         if (brewery == null) {
             player.sendMessage(getMessage("brewery-does-not-exist"));
             return;
         }
-
         player.sendMessage(getMessage("info-header"));
-        sendOwnerComponent(brewery);
-        sendBreweryNameComponent(brewery);
-        sendLevelComponent(brewery);
-        sendSloganComponent(brewery);
-        sendMembersComponent(brewery);
+        sendOwnerComponent();
+        sendBreweryNameComponent();
+        sendSloganComponent();
+        sendLevelComponent();
+        sendAverageStarsComponent();
+        sendBrewsMadeComponent();
+        sendBrewsDrunkComponent();
+        sendMembersComponent();
         player.sendMessage(getMessage("footer"));
     }
-    private void sendOwnerComponent(Brewery brewery) {
+
+    private void sendOwnerComponent() {
         player.sendMessage(Component
                 .text("Owner: ", NamedTextColor.RED, TextDecoration.BOLD)
                 .append(Component.text(brewery.getBreweryOwner().getName(), NamedTextColor.GRAY)
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
-    private void sendLevelComponent(Brewery brewery) {
+
+    private void sendLevelComponent() {
         player.sendMessage(Component
                 .text("Level: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text(brewery.getBreweryLevel(), NamedTextColor.GRAY)
+                .append(Component.text(brewery.getBreweryStat("level"), NamedTextColor.GRAY)
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
-    private void sendSloganComponent(Brewery brewery) {
+
+    private void sendBrewsMadeComponent() {
+        player.sendMessage(Component
+                .text("Brews Made: ", NamedTextColor.RED, TextDecoration.BOLD)
+                .append(Component.text(brewery.getBreweryStat("brews-made"), NamedTextColor.GRAY)
+                        .decoration(TextDecoration.BOLD, false))
+                .append(Component.newline()));
+    }
+
+    private void sendAverageStarsComponent() {
+        player.sendMessage(Component
+                .text("Average Stars: ", NamedTextColor.RED, TextDecoration.BOLD)
+                .append(Component.text(brewery.getBreweryStat("average-stars"), NamedTextColor.GRAY)
+                        .decoration(TextDecoration.BOLD, false))
+                .append(Component.newline()));
+    }
+
+    private void sendBrewsDrunkComponent() {
+        player.sendMessage(Component
+                .text("Brews Drunk: ", NamedTextColor.RED, TextDecoration.BOLD)
+                .append(Component.text(brewery.getBreweryStat("brews-drunk"), NamedTextColor.GRAY)
+                        .decoration(TextDecoration.BOLD, false))
+                .append(Component.newline()));
+    }
+
+    private void sendSloganComponent() {
         String slogan = brewery.getBrewerySlogan();
         if (slogan == null) {
             slogan = "None";
@@ -155,14 +190,16 @@ public class BreweryCommand implements CommandExecutor {
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
-    private void sendBreweryNameComponent(Brewery brewery) {
+
+    private void sendBreweryNameComponent() {
         player.sendMessage(Component
                 .text("Name: ", NamedTextColor.RED, TextDecoration.BOLD)
                 .append(Component.text(brewery.getBreweryName(), NamedTextColor.GRAY)
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
-    private void sendMembersComponent(Brewery brewery) {
+
+    private void sendMembersComponent() {
         Component membersPrefix = Component.text("Members: ", NamedTextColor.RED, TextDecoration.BOLD);
         ArrayList<String> memberNames = new ArrayList<>();
         for (String playerUUIDString : brewery.getBreweryMembers()) {
@@ -179,7 +216,7 @@ public class BreweryCommand implements CommandExecutor {
         }
         player.sendMessage(membersPrefix
                 .append(Component.text("None", NamedTextColor.GRAY)
-                .decoration(TextDecoration.BOLD, false)));
+                        .decoration(TextDecoration.BOLD, false)));
     }
 
     private void sendBreweriesList() {
@@ -192,47 +229,44 @@ public class BreweryCommand implements CommandExecutor {
                 player.sendMessage(getMessage("footer"));
                 return;
             }
-            Brewery brewery = breweries.get(index);
+            brewery = breweries.get(index);
             player.sendMessage(Component.text((index + 1) + ". ", NamedTextColor.RED)
-                    .append(getBreweryComponent(brewery)));
+                    .append(getBreweryComponent()));
         }
 
         player.sendMessage(
                 getPreviousPageComponent()
-                .append(getPageComponent())
-                .append(getNextPageComponent()));
+                        .append(getPageComponent())
+                        .append(getNextPageComponent()));
         player.sendMessage(getMessage("footer"));
     }
+
     private @NotNull Component getPageComponent() {
-       return miniMessage.deserialize("<red>Page " + page);
+        return miniMessage.deserialize("<red>Page " + page);
     }
+
     private Component getPreviousPageComponent() {
         if (page == 0) {
             return Component.text("                               ");
         }
 
         return miniMessage.deserialize("                        <click:run_command:'/Brewery list "
-                + (page - 1) +"'><b><gray><hover:show_text:'Previous Page'>« </hover></gray><b></click>   ");
+                + (page - 1) + "'><b><gray><hover:show_text:'Previous Page'>« </hover></gray><b></click>   ");
     }
+
     private Component getNextPageComponent() {
-        return miniMessage.deserialize("   <click:run_command:'/Brewery list " + page +"'><b><gray><hover:show_text:'Next Page'>»</hover></gray><b></click>");
+        return miniMessage.deserialize("   <click:run_command:'/Brewery list " + page + "'><b><gray><hover:show_text:'Next Page'>»</hover></gray><b></click>");
     }
-    private Component getBreweryComponent(Brewery brewery) {
+
+    private Component getBreweryComponent() {
         String BreweryName = brewery.getBreweryName();
-        return miniMessage.deserialize("<hover:show_text:'Click for more info!'><gold>"+
-                BreweryName +" - " + brewery.getBreweryMembers().size() +
+        return miniMessage.deserialize("<hover:show_text:'Click for more info!'><gold>" +
+                BreweryName + " - " + brewery.getBreweryMembers().size() +
                 "</gold></hover>").clickEvent(ClickEvent.runCommand("/brewery info " + BreweryName));
     }
 
-    private void sendHelpMessage() {
-        List<String> helpMessage = unitedBrands.getConfig().getStringList("messages.help-command");
-        for (String message : helpMessage) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-        }
-    }
-
-    private void upgradeBrewery(Brewery brewery) {
-        if (brewery == null || !isBreweryOwner(brewery)) {
+    private void upgradeBrewery() {
+        if (brewery == null || !isBreweryOwner()) {
             player.sendMessage(getMessage("must-own-brewery"));
             return;
         }
@@ -241,12 +275,12 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        int level = brewery.getBreweryLevel();
+        int level = brewery.getBreweryStat("level");
         if (level == 5) {
             player.sendMessage(getMessage("max-brewery-level"));
             return;
         }
-        brewery.increaseLevel();
+        brewery.increaseStat("level", 1);
         player.sendMessage(getMessage("brewery-upgraded", brewery.getBreweryName())
                 .replace("<level>", Integer.toString(level)));
     }
@@ -282,7 +316,7 @@ public class BreweryCommand implements CommandExecutor {
 
         String BreweryName = brewery.getBreweryName();
 
-        if (Util.hasBrewery(player) && isBreweryOwner(brewery)) {
+        if (Util.hasBrewery(player) && isBreweryOwner()) {
             brewery.deleteBrewery();
             player.sendMessage(getMessage("brewery-deleted", BreweryName));
             return;
@@ -312,7 +346,7 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        if (isBreweryOwner(brewery)) {
+        if (isBreweryOwner()) {
             InviteRequest inviteRequest = new InviteRequest(player, inviteReceiver);
             inviteRequests.add(inviteRequest);
             player.sendMessage(getMessage("player-invited", BreweryName));
@@ -351,7 +385,6 @@ public class BreweryCommand implements CommandExecutor {
     }
 
     private void kickPlayerFromBrewery(Player kickedPlayer) {
-
         if (kickedPlayer == null) {
             player.sendMessage(getMessage("must-specify-kicked-player", ""));
             return;
@@ -360,7 +393,7 @@ public class BreweryCommand implements CommandExecutor {
         Brewery brewery = Util.getPlayerBrewery(player);
         String BreweryName = brewery.getBreweryName();
 
-        if (!isBreweryOwner(brewery)) {
+        if (!isBreweryOwner()) {
             player.sendMessage(getMessage("must-own-brewery", BreweryName));
             return;
         }
@@ -376,7 +409,7 @@ public class BreweryCommand implements CommandExecutor {
     }
 
     private void leaveBrewery() {
-        Brewery brewery = Util.getPlayerBrewery(player);
+        brewery = Util.getPlayerBrewery(player);
         if (brewery == null) {
             player.sendMessage(getMessage("must-have-brewery", ""));
             return;
@@ -384,7 +417,7 @@ public class BreweryCommand implements CommandExecutor {
 
         String BreweryName = brewery.getBreweryName();
 
-        if (isBreweryOwner(brewery)) {
+        if (isBreweryOwner()) {
             player.sendMessage(getMessage("must-delete-brewery", BreweryName));
             return;
         }
@@ -413,13 +446,13 @@ public class BreweryCommand implements CommandExecutor {
         player.sendMessage(getMessage("no-requests", ""));
     }
 
-    private void changeBrewerySlogan(Brewery brewery, String slogan) {
+    private void changeBrewerySlogan(String slogan) {
         if (brewery == null) {
             player.sendMessage(getMessage("must-have-brewery"));
             return;
         }
 
-        if (!isBreweryOwner(brewery)) {
+        if (!isBreweryOwner()) {
             player.sendMessage(getMessage("must-own-brewery"));
             return;
         }
@@ -432,7 +465,7 @@ public class BreweryCommand implements CommandExecutor {
         player.sendMessage(getMessage("slogan-changed", brewery.getBreweryName()));
     }
 
-    private boolean isBreweryOwner(Brewery brewery) {
+    private boolean isBreweryOwner() {
         if (Util.hasBrewery(player)) {
             return brewery.getBreweryOwner().equals(player);
         }
