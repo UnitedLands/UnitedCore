@@ -3,16 +3,18 @@ package org.unitedlands.brands.hooks;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
+import org.unitedlands.brands.UnitedBrands;
 import org.unitedlands.brands.Util;
 import org.unitedlands.brands.brewery.Brewery;
 import org.unitedlands.brands.stats.PlayerStatsFile;
 
 public class Placeholders extends PlaceholderExpansion {
 
-    private final PlayerStatsFile playerStatsFile;
+    private PlayerStatsFile playerStatsFile;
+    private final UnitedBrands unitedBrands;
 
-    public Placeholders(PlayerStatsFile playerStatsFile) {
-        this.playerStatsFile = playerStatsFile;
+    public Placeholders(UnitedBrands unitedBrands) {
+        this.unitedBrands = unitedBrands;
     }
 
     @Override
@@ -63,8 +65,8 @@ public class Placeholders extends PlaceholderExpansion {
 
     @NotNull
     private String getPlayerStat(OfflinePlayer player, String stat) {
-        final String playerUUID = player.getUniqueId().toString();
-        return String.valueOf(playerStatsFile.getStatsConfig().getInt("players." + playerUUID + "." + stat));
+        playerStatsFile = new PlayerStatsFile(unitedBrands, player.getPlayer());
+        return String.valueOf(playerStatsFile.getStatsConfig().getInt(stat));
     }
 
     private String getBreweryStat(OfflinePlayer player, String stat) {

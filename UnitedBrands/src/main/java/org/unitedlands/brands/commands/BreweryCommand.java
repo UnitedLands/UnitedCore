@@ -291,8 +291,8 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        String BreweryName = String.join(" ", extractMultiWordString(args));
-        Brewery brewery = new Brewery(unitedBrands, BreweryName, player, null);
+        String breweryName = String.join(" ", extractMultiWordString(args));
+        brewery = new Brewery(unitedBrands, breweryName, player, null);
 
         if (Util.hasBrewery(player)) {
             player.sendMessage(getMessage("in-a-brewery", Util.getPlayerBrewery(player).getBreweryName()));
@@ -300,14 +300,14 @@ public class BreweryCommand implements CommandExecutor {
         }
 
         if (Util.breweryExists(brewery)) {
-            player.sendMessage(getMessage("brewery-already-exists", BreweryName));
+            player.sendMessage(getMessage("brewery-already-exists", breweryName));
             return;
         }
         brewery.createBrewery();
     }
 
     private void deletePlayerBrewery() {
-        Brewery brewery = Util.getPlayerBrewery(player);
+        brewery = Util.getPlayerBrewery(player);
 
         if (brewery == null) {
             player.sendMessage(getMessage("must-own-brewery"));
@@ -332,7 +332,7 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        Brewery brewery = Util.getPlayerBrewery(player);
+        brewery = Util.getPlayerBrewery(player);
 
         if (brewery == null) {
             player.sendMessage(getMessage("must-own-brewery"));
@@ -374,7 +374,7 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        Brewery brewery = Util.getPlayerBrewery(sender);
+        brewery = Util.getPlayerBrewery(sender);
         String BreweryName = brewery.getBreweryName();
         brewery.addMemberToBrewery(player);
 
@@ -390,7 +390,7 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        Brewery brewery = Util.getPlayerBrewery(player);
+        brewery = Util.getPlayerBrewery(player);
         String BreweryName = brewery.getBreweryName();
 
         if (!isBreweryOwner()) {

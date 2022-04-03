@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.unitedlands.brands.UnitedBrands;
 import org.unitedlands.brands.Util;
 import org.unitedlands.brands.brewery.Brewery;
 import org.unitedlands.brands.stats.PlayerStatsFile;
@@ -21,17 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerListener implements Listener {
-    private final PlayerStatsFile playerStatsFile;
+    private PlayerStatsFile playerStatsFile;
+    private final UnitedBrands unitedBrands;
     private Player player;
     private Brewery brewery;
 
-    public PlayerListener(PlayerStatsFile playerStatsFile) {
-        this.playerStatsFile = playerStatsFile;
+    public PlayerListener(UnitedBrands unitedBrands) {
+        this.unitedBrands = unitedBrands;
     }
 
     @EventHandler
     public void onPlayerFillBottle(PlayerFillBottleEvent event) {
         player = event.getPlayer();
+        playerStatsFile = new PlayerStatsFile(unitedBrands, player);
         ItemStack bottle = event.getBottle();
         addBrandToFilledBottle(bottle);
     }
@@ -46,9 +49,10 @@ public class PlayerListener implements Listener {
         if (player.equals(getPlayerFromItemMeta(itemMeta))) {
             return;
         } else {
-            playerStatsFile.increaseStat(player, "total-stars", starAmount);
-            playerStatsFile.increaseStat(player, "brews-drunk", 1);
-            playerStatsFile.updateAverageStars(player);
+            playerStatsFile = new PlayerStatsFile(unitedBrands, player);
+            playerStatsFile.increaseStat( "total-stars", starAmount);
+            playerStatsFile.increaseStat("brews-drunk", 1);
+            playerStatsFile.updateAverageStars();
         }
 
         brewery = getBreweryFromItemMeta(itemMeta);
@@ -89,7 +93,7 @@ public class PlayerListener implements Listener {
             bottleLore.add(0, getBrewedByComponent());
         }
 
-        playerStatsFile.increaseStat(player, "brews-made", 1);
+        playerStatsFile.increaseStat( "brews-made", 1);
         bottleMeta.lore(bottleLore);
         bottle.setItemMeta(bottleMeta);
     }

@@ -6,7 +6,7 @@
 
     <groupId>org.unitedlands.brands</groupId>
     <artifactId>UnitedBrands</artifactId>
-    <version>3.0</version>
+    <version>3.1</version>
     <packaging>jar</packaging>
 
     <name>UnitedBrands</name>
