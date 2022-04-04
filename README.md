@@ -3,7 +3,10 @@
 **UnitedCore** is a custom-made plugin for UnitedLands, which has most of our custom made features spread out over multiple 'nodes'. Info detailing each node is provided below. The current working nodes are:
   1. UnitedPvP
   2. UnitedChat
-  3. UnitedItems 
+  3. UnitedItems
+  4. UnitedUpkeep
+  5. UnitedBrands
+  6. UnitedProtection
 
 ## UnitedPvP
 A custom-made pvp manager that handles the pvp status of players. It also has a few additions, such as force-enabling pvp for outlaws when they enter an outlawed town. 
@@ -59,3 +62,50 @@ A custom-made pvp manager that handles the pvp status of players. It also has a 
   
   ### Permissions
   - `united.custom.admin` - Gives access to all commands above 
+
+  ## UnitedUpkeep
+  It's the sole plugin handling our custom upkeep system. This plugin calculates the upkeep needed per-town through a sophisticated formula to help ensure balance. As of now there are no commands or permissions needed to set this plugin up, and it simply just works out of the box. 
+  
+  ## UnitedProtection
+  This plugin is built to protect the Earth world in UnitedLands. This is mainly to perserve the value of ores, since the Earth world is way too rich in ores. Its essentially just a simple listener that checks for placing/breaking blocks. If you're in the Earth world, below y45 (configurable), and not in a town of yours, then you're not allowed to break or place anything. There's also a blacklist for specific blocks (found in config.yml) which bypass these protections. 
+  
+  Currently there are no commands, but there's 1 permission. 
+  
+  ### Permissions
+  - `united.protection.bypass` - Bypasses Earth protection rules everywhere. 
+  
+  ## UnitedBrands
+  This is perhaps one of the more sophisticated plugins in the list, coming in right behind UnitedItems. This plugin allows you to create Brands, which are pretty similar to towns in the sense that you can invite and manage players in your brand. Brands are currently only limited to one type — Breweries. 
+  
+  Creating a brewery allows you to add a custom branding on any alcohol that you brew, as well as a custom slogan. Breweries also grant the ability to create 'abnormal' star levels for any drinks you make via buying brewery upgrades. You can get drinks with up to 10 stars (also known as Master Brews) if you properly upgrade your brewery. 
+  
+  ### Commands
+  **Player Commands** 
+  Intended to be used by your average player. 
+  - `/brewery help` - shows a list of all commands
+  - `/brewery create <name>` - Creates a new brewery with the specified name (can have multiple words)
+  - `/brewery slogan <slogan>` - Sets your brewery''s slogan to a new slogan (multiple words supported)
+  - `/brewery delete` - Deletes your current brewery, if it exists
+  - `/brewery invite <player>` - Invites a player to your brewery
+  - `/brewery kick <player>` - Kicks a player from your brewery
+  - `/brewery accept` - Accepts any incoming brewery join requests
+  - `/brewery deny` - Denies any incoming brewery join requests
+  - `/brewery leave` - Makes you leave from your current brewery
+  - `/brewery info [name]` - Shows stats and info of your current brewery. If a name is specified, it shows info for that brewery if it exists.
+  - `/brewery list [page]` - Shows a list of all breweries. The list supports pages so you can go back and forth between them just by clicking arrows in chat!
+  - `/brewery upgrade` - Upgrades your brewery to the next level. This command is not intended for usage, but is there more of a utility command. it is locked behind a permission specified below. 
+  
+  **Admin Commands**
+  Used by administrators and mods to help manage any issues that come with breweries. 
+  - `/breweryadmin help` - shows a list of all commands
+  - `/breweryadmin reload` - reloads the plugin configuration
+  - `/breweryadmin clearslogan <brewery>` - clears a brewery''s slogan
+  - `/breweryadmin delete <brewery>` - Deletes specified brewery completely
+  - `/breweryadmin addmember <member> <brewery>` - adds a member to a brewery
+  - `/breweryadmin removemember <member> <brewery>` - removes a member from a brewery
+  
+  ### Permissions
+  - `united.brands.admin` - Grants access to the `/breweryadmin` command
+  - `united.brewery.upgrade` - Grants access to the `/brewery upgrade` command.
+  
+  
