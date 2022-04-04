@@ -1,6 +1,7 @@
 package org.unitedlands.brands.commands;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -282,12 +283,16 @@ public class BreweryCommand implements CommandExecutor {
         }
         brewery.increaseStat("level", 1);
         player.sendMessage(getMessage("brewery-upgraded", brewery.getBreweryName())
-                .replace("<level>", Integer.toString(level)));
+                .replaceText(TextReplacementConfig
+                        .builder()
+                        .match("<level>")
+                        .replacement(String.valueOf(level))
+                        .build()));
     }
 
     private void createBrewery(String[] args) {
         if (args.length == 1) {
-            player.sendMessage(getMessage("must-specify-brewery-name", ""));
+            player.sendMessage(getMessage("must-specify-brewery-name"));
             return;
         }
 
@@ -314,15 +319,15 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        String BreweryName = brewery.getBreweryName();
+        String breweryName = brewery.getBreweryName();
 
         if (Util.hasBrewery(player) && isBreweryOwner()) {
             brewery.deleteBrewery();
-            player.sendMessage(getMessage("brewery-deleted", BreweryName));
+            player.sendMessage(getMessage("brewery-deleted", breweryName));
             return;
         }
 
-        player.sendMessage(getMessage("brewery-cannot-be-deleted", BreweryName));
+        player.sendMessage(getMessage("brewery-cannot-be-deleted", breweryName));
     }
 
     private void invitePlayerToBrewery(Player inviteReceiver) {
@@ -339,18 +344,18 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        String BreweryName = brewery.getBreweryName();
+        String breweryName = brewery.getBreweryName();
 
         if (player == inviteReceiver) {
-            player.sendMessage(getMessage("cannot-invite-self", BreweryName));
+            player.sendMessage(getMessage("cannot-invite-self", breweryName));
             return;
         }
 
         if (isBreweryOwner()) {
             InviteRequest inviteRequest = new InviteRequest(player, inviteReceiver);
             inviteRequests.add(inviteRequest);
-            player.sendMessage(getMessage("player-invited", BreweryName));
-            inviteReceiver.sendMessage(getMessage("brewery-invite", BreweryName));
+            player.sendMessage(getMessage("player-invited", breweryName));
+            inviteReceiver.sendMessage(getMessage("brewery-invite", breweryName));
             return;
         }
 
@@ -375,11 +380,11 @@ public class BreweryCommand implements CommandExecutor {
         }
 
         brewery = Util.getPlayerBrewery(sender);
-        String BreweryName = brewery.getBreweryName();
+        String breweryName = brewery.getBreweryName();
         brewery.addMemberToBrewery(player);
 
         sender.sendMessage(getMessage("brewery-join-sender", player));
-        receiver.sendMessage(getMessage("brewery-join", BreweryName));
+        receiver.sendMessage(getMessage("brewery-join", breweryName));
 
         inviteRequests.remove(request);
     }
@@ -391,21 +396,21 @@ public class BreweryCommand implements CommandExecutor {
         }
 
         brewery = Util.getPlayerBrewery(player);
-        String BreweryName = brewery.getBreweryName();
+        String breweryName = brewery.getBreweryName();
 
         if (!isBreweryOwner()) {
-            player.sendMessage(getMessage("must-own-brewery", BreweryName));
+            player.sendMessage(getMessage("must-own-brewery", breweryName));
             return;
         }
 
         if (kickedPlayer == player) {
-            player.sendMessage(getMessage("cannot-kick-self", BreweryName));
+            player.sendMessage(getMessage("cannot-kick-self", breweryName));
             return;
         }
 
         brewery.removeMemberFromBrewery(kickedPlayer);
-        kickedPlayer.sendMessage(getMessage("kicked-from-brewery", BreweryName));
-        player.sendMessage(getMessage("player-kicked", BreweryName));
+        kickedPlayer.sendMessage(getMessage("kicked-from-brewery", breweryName));
+        player.sendMessage(getMessage("player-kicked", breweryName));
     }
 
     private void leaveBrewery() {
@@ -415,19 +420,19 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        String BreweryName = brewery.getBreweryName();
+        String breweryName = brewery.getBreweryName();
 
         if (isBreweryOwner()) {
-            player.sendMessage(getMessage("must-delete-brewery", BreweryName));
+            player.sendMessage(getMessage("must-delete-brewery", breweryName));
             return;
         }
 
         if (Util.hasBrewery(player)) {
             OfflinePlayer BreweryOwner = brewery.getBreweryOwner();
             brewery.removeMemberFromBrewery(player);
-            player.sendMessage(getMessage("brewery-leave", BreweryName));
+            player.sendMessage(getMessage("brewery-leave", breweryName));
             if (BreweryOwner.isOnline()) {
-                BreweryOwner.getPlayer().sendMessage(getMessage("player-left-brewery", BreweryName, player));
+                BreweryOwner.getPlayer().sendMessage(getMessage("player-left-brewery", breweryName, player));
             }
         }
 
@@ -435,11 +440,11 @@ public class BreweryCommand implements CommandExecutor {
 
     private void denyRequest() {
         InviteRequest request = getRequest(player);
-        String BreweryName = Util.getPlayerBrewery(player).getBreweryName();
+        String breweryName = Util.getPlayerBrewery(player).getBreweryName();
 
         if (request != null) {
             request.getSender().sendMessage(getMessage("Brewery-deny-sender", player));
-            request.getReceiver().sendMessage(getMessage("Brewery-deny", BreweryName));
+            request.getReceiver().sendMessage(getMessage("Brewery-deny", breweryName));
             inviteRequests.remove(request);
             return;
         }

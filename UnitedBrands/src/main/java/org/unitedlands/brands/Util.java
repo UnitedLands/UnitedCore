@@ -1,5 +1,10 @@
 package org.unitedlands.brands;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -15,26 +20,37 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Util {
+    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-    public static String getMessage(String message) {
-        return color(getUnitedBrands().getConfig().getString("messages." + message));
+    public static Component getMessage(String message) {
+        message = getUnitedBrands().getConfig().getString("messages." + message);
+        return miniMessage.deserialize(message);
     }
 
-    public static String getMessage(String message, String breweryName) {
-        return getMessage(message).replace("<brewery>", breweryName);
+    public static Component getMessage(String message, String breweryName) {
+        TextReplacementConfig breweryReplacer = TextReplacementConfig.builder()
+                .match("<brewery>")
+                .replacement(breweryName)
+                .build();
+        return getMessage(message).replaceText(breweryReplacer);
     }
 
-    public static String getMessage(String message, Player player) {
-        return getMessage(message).replace("<player>", player.getName());
+    public static Component getMessage(String message, Player player) {
+        TextReplacementConfig playerReplacer = TextReplacementConfig.builder()
+                .match("<player>")
+                .replacement(player.getName())
+                .build();
+        return getMessage(message).replaceText(playerReplacer);
     }
 
-    public static String getMessage(String message, String breweryName, Player player) {
-        return getMessage(message, breweryName).replace("<player>", player.getName());
+    public static Component getMessage(String message, String breweryName, Player player) {
+        TextReplacementConfig playerReplacer = TextReplacementConfig.builder()
+                .match("<player>")
+                .replacement(player.getName())
+                .build();
+        return getMessage(message, breweryName).replaceText(playerReplacer);
     }
 
-    private static String color(String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
-    }
 
     private static UnitedBrands getUnitedBrands() {
         return (UnitedBrands) Bukkit.getPluginManager().getPlugin("UnitedBrands");
