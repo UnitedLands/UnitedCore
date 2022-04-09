@@ -1,0 +1,68 @@
+potions:
+  NIGHT_VISION:
+    default: 180
+    extended: 480
+    upgraded: 180
+    max_amplifier: 0
+  INVISIBILITY:
+    default: 180
+    extended: 480
+    upgraded: 180
+    max_amplifier: 0
+  JUMP:
+    default: 180
+    extended: 480
+    upgraded: 90
+    max_amplifier: 1
+  FIRE_RESISTANCE:
+    default: 180
+    extended: 480
+    upgraded: 180
+    max_amplifier: 0
+  SPEED:
+    default: 180
+    extended: 480
+    upgraded: 90
+    max_amplifier: 1
+  SLOW:
+    default: 90
+    extended: 240
+    upgraded: 20
+    max_amplifier: 3
+  WATER_BREATHING:
+    default: 180
+    extended: 480
+    upgraded: 180
+    max_amplifier: 0
+  POISON:
+    default: 45
+    extended: 90
+    upgraded: 21
+    max_amplifier: 1
+  REGENERATION:
+    default: 45
+    extended: 90
+    upgraded: 22
+    max_amplifier: 1
+  STRENGTH:
+    default: 180
+    extended: 480
+    upgraded: 90
+    max_amplifier: 1
+  WEAKNESS:
+    default: 90
+    extended: 240
+    upgraded: 90
+    max_amplifier: 0
+  LUCK:
+    default: 300
+    extended: 300
+    upgraded: 300
+    max_amplifier: 0
+  SLOW_FALLING:
+    default: 90
+    extended: 240
+    upgraded: 90
+    max_amplifier: 0
+messages:
+  no-permission: "You do not have permission to execute this command!"

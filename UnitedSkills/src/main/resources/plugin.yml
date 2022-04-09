@@ -1,0 +1,11 @@
+name: UnitedSkills
+version: '${project.version}'
+main: org.unitedlands.skills.UnitedSkills
+api-version: 1.18
+depend: [ Jobs ]
+authors: [ Maroon28 ]
+description: A plugin built to manage job skills for UnitedLands
+website: unitedlands.org
+commands:
+  blend:
+    description: Opens the blending GUI;
