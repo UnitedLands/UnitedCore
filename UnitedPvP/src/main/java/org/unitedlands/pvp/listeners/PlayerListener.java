@@ -40,7 +40,6 @@ public class PlayerListener implements Listener {
         this.utils = utils;
     }
 
-
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -69,12 +68,12 @@ public class PlayerListener implements Listener {
 
             if (!pvpTarget) {
                 event.setCancelled(true);
-                damager.sendMessage(utils.getMessage("TargetPvPDisabled"));
+                damager.sendMessage(Utils.getMessage("TargetPvPDisabled"));
             }
 
             if (!pvpDamager) {
                 event.setCancelled(true);
-                damager.sendMessage(utils.getMessage("OwnPvPDisabled"));
+                damager.sendMessage(Utils.getMessage("OwnPvPDisabled"));
             }
         }
     }

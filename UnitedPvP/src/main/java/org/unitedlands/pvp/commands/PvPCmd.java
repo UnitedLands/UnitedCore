@@ -9,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.unitedlands.pvp.util.Utils;
 
+import static org.unitedlands.pvp.util.Utils.getMessage;
+
 public class PvPCmd implements CommandExecutor {
 
     private final Utils utils;
@@ -27,7 +29,7 @@ public class PvPCmd implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (args.length > 2) {
-            sender.sendMessage(utils.getMessage("PvPCmd"));
+            sender.sendMessage(getMessage("PvPCmd"));
             return true;
         }
 
@@ -35,24 +37,24 @@ public class PvPCmd implements CommandExecutor {
 
         if (args.length == 2) {
             if (!sender.hasPermission("united.pvp.force")) {
-                sender.sendMessage(utils.getMessage("NoPermission"));
+                sender.sendMessage(getMessage("NoPermission"));
                 return true;
             }
             player = Bukkit.getPlayer(args[1]);
             if (player == null) {
-                sender.sendMessage(utils.getMessage("PlayerNotRecognized"));
+                sender.sendMessage(getMessage("PlayerNotRecognized"));
                 return true;
             }
         }
 
         if (isInCombat(player)) {
-            player.sendMessage("InCombat");
+            player.sendMessage(getMessage("InCombat"));
             return true;
         }
 
         if (args[0].equals("on")) {
             if (player != sender) {
-                sender.sendMessage("PvPEnabledOP");
+                sender.sendMessage(getMessage("PvPEnabledOP"));
             }
             enablePvP(player);
             return true;
@@ -60,7 +62,7 @@ public class PvPCmd implements CommandExecutor {
 
         if (args[0].equals("off")) {
             if (player != sender) {
-                sender.sendMessage("PvPDisabledOP");
+                sender.sendMessage(getMessage("PvPDisabledOP"));
             }
             disablePvP(player);
             return true;
@@ -76,27 +78,27 @@ public class PvPCmd implements CommandExecutor {
 
     private void enablePvP(Player player) {
         if (utils.getPvPStatus(player)) {
-            player.sendMessage(utils.getMessage("PvPAlreadyOn"));
+            player.sendMessage(getMessage("PvPAlreadyOn"));
             return;
         }
         utils.setPvPStatus(player, true);
-        player.sendMessage(utils.getMessage("PvPEnabled"));
+        player.sendMessage(getMessage("PvPEnabled"));
     }
 
     private void disablePvP(Player player) {
         if (!utils.getPvPStatus(player)) {
-            player.sendMessage(utils.getMessage("PvPAlreadyOff"));
+            player.sendMessage(getMessage("PvPAlreadyOff"));
             return;
         }
         utils.setPvPStatus(player, false);
-        player.sendMessage(utils.getMessage("PvPDisabled"));
+        player.sendMessage(getMessage("PvPDisabled"));
     }
 
     private void returnPvPStatus(Player player) {
         if (utils.getPvPStatus(player)) {
-            player.sendMessage(utils.getMessage("PvPStatusOn"));
+            player.sendMessage(getMessage("PvPStatusOn"));
         }
-        player.sendMessage(utils.getMessage("PvPStatusOff"));
+        player.sendMessage(getMessage("PvPStatusOff"));
     }
 }
 

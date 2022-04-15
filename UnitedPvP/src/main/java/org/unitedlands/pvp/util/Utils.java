@@ -1,5 +1,6 @@
 package org.unitedlands.pvp.util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -19,7 +20,6 @@ public class Utils {
     public Utils(UnitedPvP unitedPVP) {
         this.unitedPVP = unitedPVP;
     }
-
 
     public void setPvPStatus(Player player, boolean status) {
         FileConfiguration playerConfig = unitedPVP.getPlayerConfig(player);
@@ -42,12 +42,16 @@ public class Utils {
        return unitedPVP.getPlayerConfig(player).getBoolean("PvP");
     }
 
-    private String color(String message) {
+    private static String color(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    public String getMessage(String s) {
-        return color(unitedPVP.getConfig().getString("messages." + s));
+    private static UnitedPvP getUnitedPvP() {
+        return (UnitedPvP) Bukkit.getPluginManager().getPlugin("UnitedPvP");
+    }
+
+    public static String getMessage(String s) {
+        return color(getUnitedPvP().getConfig().getString("messages." + s));
     }
 
     public boolean isPvP(final EntityDamageByEntityEvent event) {
