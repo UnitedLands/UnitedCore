@@ -1,3 +1,6 @@
+base-chances:
+  exposure-therapy: 10
+  assisted-healing: 10
 potions:
   NIGHT_VISION:
     default: 180

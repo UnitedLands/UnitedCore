@@ -8,8 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.brewer.BlendingGui;
 
-
-import static org.unitedlands.skills.Utils.*;
+import static org.unitedlands.skills.Utils.getMessage;
 
 public class BlendCommand implements CommandExecutor {
     private final BlendingGui blendingGui;
@@ -28,7 +27,7 @@ public class BlendCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         if (!player.hasPermission("united.skills.blend")) {
-            getMessage("no-permission");
+            player.sendMessage(getMessage("no-permission"));
             return true;
         }
         Gui gui = blendingGui.createGui(player);

@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -26,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlendingGui {
+    private final UnitedSkills unitedSkills;
     private Gui gui;
     private Player player;
     private ItemStack potion;
     private ItemStack otherPotion;
-    private final UnitedSkills unitedSkills;
 
     public BlendingGui(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
@@ -44,7 +45,18 @@ public class BlendingGui {
                 .rows(4)
                 .create();
         gui.setOpenGuiAction(event -> {
-            player.playSound(player.getLocation(), Sound.BLOCK_BREWING_STAND_BREW, 1.0f, 1.0f);
+            playBrewingSound();
+        });
+        gui.setCloseGuiAction(event -> {
+            Inventory gui = event.getInventory();
+            ItemStack firstItem = gui.getItem(11);
+            ItemStack secondItem = gui.getItem(15);
+            if (firstItem != null) {
+                player.getInventory().addItem(firstItem);
+            }
+            if (secondItem != null) {
+                player.getInventory().addItem(secondItem);
+            }
         });
         addGuiPattern();
         setBlendButton();
@@ -86,13 +98,18 @@ public class BlendingGui {
                 return;
             }
             giveBlendedPotion(blendedPotion);
+            playBrewingSound();
             gui.update();
         });
     }
 
+    private void playBrewingSound() {
+        player.playSound(player, Sound.BLOCK_BREWING_STAND_BREW, 1f, 1f);
+    }
+
     private void giveBlendedPotion(ItemStack blendedPotion) {
         player.getInventory().addItem(blendedPotion);
-        player.playSound(player.getLocation(), Sound.BLOCK_BREWING_STAND_BREW, 1.0f, 1.0f);
+        playBrewingSound();
         gui.removeItem(11);
         gui.removeItem(15);
     }
@@ -257,7 +274,7 @@ public class BlendingGui {
     }
 
     private boolean hasCustomEffects() {
-        return getPotionMeta(potion).hasCustomEffects() ||  getPotionMeta(otherPotion).hasCustomEffects();
+        return getPotionMeta(potion).hasCustomEffects() || getPotionMeta(otherPotion).hasCustomEffects();
     }
 
     private int getExtraEffects() {
