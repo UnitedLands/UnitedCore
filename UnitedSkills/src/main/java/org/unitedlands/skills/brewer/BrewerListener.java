@@ -241,11 +241,9 @@ public class BrewerListener implements Listener {
 
             if (skillLevel > 0) {
                 if (potionType.equals(PotionEffectType.HEAL)) {
-                    if (isSuccessful(player, "assisted-healing")) {
-                        event.setIntensity(player, 0);
-                        increaseHealingEffect(potionMeta);
-                        return;
-                    }
+                    event.setIntensity(player, 0);
+                    increaseHealingEffect(potionMeta);
+                    return;
                 }
             }
         }

@@ -29,14 +29,14 @@ public class Utils {
     }
 
     public static boolean isSuccessful(Player player, String skillName) {
-        int chanceModifier = getSkillLevel(player, skillName);
-        if (chanceModifier == 0) {
+        int level = getSkillLevel(player, skillName);
+        if (level == 0) {
             return false;
         }
         FileConfiguration configuration = getUnitedSkills().getConfig();
-        int baseChance = configuration.getInt("base-chances." + skillName);
+        int baseChance = configuration.getInt("base-chances." + skillName + "." + level);
         double randomPercentage = Math.random() * 100;
-        return randomPercentage < baseChance * chanceModifier;
+        return randomPercentage < baseChance;
     }
 
     public static int getSkillLevel(Player player, String skillName) {
