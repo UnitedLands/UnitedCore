@@ -3,6 +3,48 @@ base-chances:
     1: 10
     2: 20
     3: 30
+  expert-harvester:
+    1: 10
+    2: 20
+    3: 30
+  fertiliser:
+    1: 10
+    2: 15
+    3: 20
+  green-thumb:
+    1: 40
+    2: 50
+    3: 60
+cooldowns:
+  green-thumb:
+    1: 300
+    2: 270
+    3: 240
+plant-foods:
+  - APPLE
+  - MUSHROOM_STEW
+  - BREAD
+  - GOLDEN_APPLE
+  - ENCHANTED_GOLDEN_APPLE
+  - DRIED_KELP
+  - MELON_SLICE
+  - CARROT
+  - POTATO
+  - BAKED_POTATO
+  - POISONOUS_POTATO
+  - PUMPKIN_PIE
+  - BEETROOT
+  - BEETROOT_SOUP
+  - SWEET_BERRIES
+  - GLOW_BERRIES
+crop-names:
+  - WHEAT
+  - CARROTS
+  - BEETROOTS
+  - POTATOES
+  - MELON
+  - PUMPKIN
+  - NETHER_WART
 potions:
   NIGHT_VISION:
     default: 180
