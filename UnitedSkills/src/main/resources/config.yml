@@ -20,6 +20,11 @@ cooldowns:
     1: 300
     2: 270
     3: 240
+durations:
+  green-thumb:
+    1: 40
+    2: 50
+    3: 60
 plant-foods:
   - APPLE
   - MUSHROOM_STEW
