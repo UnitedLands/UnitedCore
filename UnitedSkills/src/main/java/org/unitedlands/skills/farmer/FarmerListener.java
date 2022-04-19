@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.Skill;
 import org.unitedlands.skills.SkillType;
 import org.unitedlands.skills.UnitedSkills;
+import org.unitedlands.skills.Utils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +56,7 @@ public class FarmerListener implements Listener {
         if (!isFarmer()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.GREEN_THUMB);
+        Skill skill = new Skill(player, SkillType.GREEN_THUMB, cooldowns, durations);
         if (skill.getLevel() == 0) {
             return;
         }
@@ -65,7 +66,7 @@ public class FarmerListener implements Listener {
         if (!player.isSneaking()) {
             return;
         }
-        skill.activate(cooldowns, durations);
+        skill.activate();
     }
 
     @EventHandler
@@ -211,7 +212,7 @@ public class FarmerListener implements Listener {
         if (!isFarmer()) {
             return;
         }
-        Skill skill  = new Skill(player, SkillType.GREEN_THUMB);
+        Skill skill  = new Skill(player, SkillType.GREEN_THUMB, cooldowns, durations);
         int level = skill.getLevel();
         if (level == 0) {
             return;
@@ -222,8 +223,8 @@ public class FarmerListener implements Listener {
             return;
         }
         Ageable plant = (Ageable) dataPlant;
-        if (skill.isSuccessful() && skill.isActive(durations)) {
-            if (takeSeeds(player, material)) {
+        if (skill.isSuccessful() && skill.isActive()) {
+            if (Utils.takeItem(player, getCropSeeds(material))) {
                 unitedSkills.getServer().getScheduler().runTask(unitedSkills, () -> {
                     block.setType(plant.getMaterial());
                     plant.setAge(0);
@@ -243,19 +244,6 @@ public class FarmerListener implements Listener {
         return material;
     }
 
-    private boolean takeSeeds(@NotNull Player player, @NotNull Material material) {
-        material = getCropSeeds(material);
-
-        int slot = player.getInventory().first(material);
-        if (slot < 0) return false;
-
-        ItemStack seed = player.getInventory().getItem(slot);
-        if (seed == null || seed.getType().isAir()) return false;
-
-        seed.setAmount(seed.getAmount() - 1);
-        return true;
-    }
-
     @EventHandler
     public void onCropDrop(BlockDropItemEvent event) {
         @NotNull Material material = event.getBlockState().getType();
@@ -267,11 +255,10 @@ public class FarmerListener implements Listener {
             return;
         }
         Skill skill;
-        skill = new Skill(player, SkillType.GREEN_THUMB);
-        if (skill.isSuccessful() && skill.isActive(durations)) {
+        skill = new Skill(player, SkillType.GREEN_THUMB, cooldowns, durations);
+        if (skill.isSuccessful() && skill.isActive()) {
             for (Item item : event.getItems()) {
-                player.getInventory().addItem(item.getItemStack());
-                player.getInventory().addItem(item.getItemStack());
+                Utils.multiplyItem(player, item.getItemStack(), 2);
             }
         }
 
@@ -281,7 +268,7 @@ public class FarmerListener implements Listener {
                 if (item.getName().contains("Seeds")) {
                     return;
                 }
-                player.getInventory().addItem(item.getItemStack());
+                Utils.multiplyItem(player, item.getItemStack(), 1);
             }
         }
     }

@@ -16,6 +16,14 @@ import java.util.UUID;
 public class Skill {
     private final Player player;
     private final SkillType type;
+    private HashMap<UUID, Long> cooldowns = null;
+    private HashMap<UUID, Long> activeDurations = null;
+
+    public Skill(Player player, SkillType type, HashMap<UUID, Long> cooldowns, HashMap<UUID, Long> activeDurations) {
+        this(player, type);
+        this.cooldowns = cooldowns;
+        this.activeDurations = activeDurations;
+    }
 
     public Skill(Player player, SkillType type) {
         this.player = player;
@@ -42,47 +50,63 @@ public class Skill {
         return type;
     }
 
+    /**
+     * Attempts to activate a skill with a cooldown and duration
+     * @return true if the skill is activated successfully, false if its already active or is on a cooldown.
+     */
+    public boolean activate() {
+        int cooldownTime = getConfig().getInt("cooldowns." + "." + getName() + "." + getLevel());
+        int durationTime = getConfig().getInt("durations." + "." + getName() + "." + getLevel());
+        if (isActive()) {
+            player.sendActionBar(Component
+                    .text("Skill is active for " + getSecondsLeft() + "s", NamedTextColor.RED));
+            player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1f, 1f);
+            return false;
+        }
+        if (isOnCooldown()) {
+            notifyOnCooldown();
+            return false;
+        }
+        notifyActivation();
+        addTime(durationTime, activeDurations);
+        addTime(cooldownTime, cooldowns);
+        return true;
+    }
+
     public void notifyActivation() {
         player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
         player.sendActionBar(Component.text(getFormattedName() + " Skill Activated!", NamedTextColor.GREEN)
                 .decoration(TextDecoration.BOLD, true));
     }
 
-    public void activate(HashMap<UUID, Long> cooldowns, HashMap<UUID, Long> activeDurations) {
-        final UUID uuid = player.getUniqueId();
-        int cooldownTime = getConfig().getInt("cooldowns." + "." + getName() + "." + getLevel());
-        int durationTime = getConfig().getInt("durations." + "." + getName() + "." + getLevel());
-        if (isActive(activeDurations)) {
-            long secondsLeft = (activeDurations.get(uuid) - System.currentTimeMillis()) / 1000;
-            player.sendActionBar(Component
-                    .text("Skill is active for " + secondsLeft, NamedTextColor.RED));
-            player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1f, 1f);
-            return;
-        }
-        if (isOnCooldown(cooldowns)) {
-            long secondsLeft = (cooldowns.get(uuid) - System.currentTimeMillis()) / 1000;
-            player.sendActionBar(Component
-                    .text("You can activate this skill in "
-                            + secondsLeft + "s", NamedTextColor.RED));
-            player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1f, 1f);
-            return;
-        }
-        notifyActivation();
-        addTime(durationTime, activeDurations);
-        addTime(cooldownTime, cooldowns);
+    private void notifyOnCooldown() {
+        player.sendActionBar(Component
+                .text(getFormattedName() + " can be re-activated in " +
+                        + getRemainingCooldownTime() + "s", NamedTextColor.RED));
+        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1f, 1f);
     }
 
-    private void addTime(int cooldownTime, HashMap<UUID, Long> map) {
+    private void addTime(int time, HashMap<UUID, Long> map) {
         @NotNull UUID uuid = player.getUniqueId();
-        map.put(uuid, System.currentTimeMillis() + (cooldownTime * 1000L));
+        map.put(uuid, System.currentTimeMillis() + (time * 1000L));
     }
 
-    public boolean isOnCooldown(HashMap<UUID, Long> cooldowns) {
+    private long getRemainingCooldownTime() {
+        UUID uuid = player.getUniqueId();
+        return (cooldowns.get(uuid) - System.currentTimeMillis()) / 1000;
+    }
+
+    public long getSecondsLeft() {
+        UUID uuid = player.getUniqueId();
+        return (activeDurations.get(uuid) - System.currentTimeMillis()) / 1000;
+    }
+
+    public boolean isOnCooldown() {
         UUID uuid = player.getUniqueId();
         return cooldowns.containsKey(uuid) && cooldowns.get(uuid) > System.currentTimeMillis();
     }
 
-    public boolean isActive(HashMap<UUID, Long> activeDurations) {
+    public boolean isActive() {
         UUID uuid = player.getUniqueId();
         return activeDurations.containsKey(uuid) && activeDurations.get(uuid) > System.currentTimeMillis();
     }
