@@ -28,27 +28,4 @@ public class Utils {
         return (Jobs) Bukkit.getPluginManager().getPlugin("Jobs");
     }
 
-    public static boolean isSuccessful(Player player, String skillName) {
-        int level = getSkillLevel(player, skillName);
-        if (level == 0) {
-            return false;
-        }
-        FileConfiguration configuration = getUnitedSkills().getConfig();
-        int baseChance = configuration.getInt("base-chances." + skillName + "." + level);
-        double randomPercentage = Math.random() * 100;
-        return randomPercentage < baseChance;
-    }
-
-    public static int getSkillLevel(Player player, String skillName) {
-        if (player.hasPermission("united.skills." + skillName + ".2")) {
-            return 3;
-        }
-        if (player.hasPermission("united.skills." + skillName + ".1")) {
-            return 2;
-        }
-        if (player.hasPermission("united.skills." + skillName)) {
-            return 1;
-        }
-        return 0;
-    }
 }
