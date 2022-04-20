@@ -3,7 +3,11 @@ package org.unitedlands.skills.farmer;
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.container.JobProgression;
 import com.gamingmesh.jobs.container.JobsPlayer;
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
@@ -31,17 +35,17 @@ import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.Skill;
 import org.unitedlands.skills.SkillType;
 import org.unitedlands.skills.UnitedSkills;
+import org.unitedlands.skills.Utils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-
 public class FarmerListener implements Listener {
 
     private final UnitedSkills unitedSkills;
     private Player player;
-
+    TownyAPI towny = TownyAPI.getInstance();
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
 
@@ -55,7 +59,7 @@ public class FarmerListener implements Listener {
         if (!isFarmer()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.GREEN_THUMB);
+        Skill skill = new Skill(player, SkillType.GREEN_THUMB, cooldowns, durations);
         if (skill.getLevel() == 0) {
             return;
         }
@@ -65,7 +69,10 @@ public class FarmerListener implements Listener {
         if (!player.isSneaking()) {
             return;
         }
-        skill.activate(cooldowns, durations);
+        if (skill.isActive()) {
+            return;
+        }
+        skill.activate();
     }
 
     @EventHandler
@@ -84,8 +91,12 @@ public class FarmerListener implements Listener {
         }
         Ageable crop = (Ageable) block.getBlockData();
         if (skill.isSuccessful()) {
-            int currentAge = crop.getAge();
-            crop.setAge(currentAge + skill.getLevel() * 2 + 1);
+            int newAge = Math.min(skill.getLevel() + 1, crop.getMaximumAge());
+
+            if (block.getType() == Material.COCOA) {
+                newAge = 1;
+            }
+            crop.setAge(newAge);
             block.setBlockData(crop);
             skill.notifyActivation();
         }
@@ -112,7 +123,7 @@ public class FarmerListener implements Listener {
         ItemStack offhandItem = player.getInventory().getItemInOffHand();
         ItemStack handItem = player.getInventory().getItemInMainHand();
 
-        if (isHoldingMushrooms(handItem, offhandItem)) {
+        if (isHoldingMushrooms(handItem, offhandItem) && isInOwnTownOrWilderness()) {
             Location location = entity.getLocation();
             entity.remove();
             entity.getWorld().spawnEntity(location, EntityType.MUSHROOM_COW);
@@ -140,7 +151,7 @@ public class FarmerListener implements Listener {
         ItemStack offhandItem = player.getInventory().getItemInOffHand();
         ItemStack handItem = player.getInventory().getItemInMainHand();
         if (block.getType().equals(Material.GRASS_BLOCK) || block.getType().equals(Material.DIRT)) {
-            if (isHoldingMushrooms(handItem, offhandItem)) {
+            if (isHoldingMushrooms(handItem, offhandItem) && isInOwnTownOrWilderness()) {
                 event.setCancelled(true);
                 block.setType(Material.MYCELIUM);
                 runFungalSkill(offhandItem, handItem);
@@ -180,6 +191,26 @@ public class FarmerListener implements Listener {
         return false;
     }
 
+    private boolean isInOwnTownOrWilderness() {
+        Resident resident = towny.getResident(player);
+        Location location = player.getLocation();
+        if (towny.isWilderness(location)) {
+            return true;
+        }
+        Town town = towny.getTownBlock(location).getTownOrNull();
+        TextComponent canOnlyUseInTown = Component.text("You can only use this skill in your town!", NamedTextColor.RED);
+
+        if (resident.getTownOrNull() == null) {
+            player.sendActionBar(canOnlyUseInTown);
+            return false;
+        }
+        boolean isInTown = resident.getTownOrNull().equals(town);
+        if (!isInTown) {
+            player.sendActionBar(canOnlyUseInTown);
+        }
+        return isInTown;
+    }
+
     @EventHandler
     public void onItemConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
@@ -211,7 +242,7 @@ public class FarmerListener implements Listener {
         if (!isFarmer()) {
             return;
         }
-        Skill skill  = new Skill(player, SkillType.GREEN_THUMB);
+        Skill skill  = new Skill(player, SkillType.GREEN_THUMB, cooldowns, durations);
         int level = skill.getLevel();
         if (level == 0) {
             return;
@@ -222,8 +253,8 @@ public class FarmerListener implements Listener {
             return;
         }
         Ageable plant = (Ageable) dataPlant;
-        if (skill.isSuccessful() && skill.isActive(durations)) {
-            if (takeSeeds(player, material)) {
+        if (skill.isActive()) {
+            if (Utils.takeItem(player, getCropSeeds(material))) {
                 unitedSkills.getServer().getScheduler().runTask(unitedSkills, () -> {
                     block.setType(plant.getMaterial());
                     plant.setAge(0);
@@ -243,19 +274,6 @@ public class FarmerListener implements Listener {
         return material;
     }
 
-    private boolean takeSeeds(@NotNull Player player, @NotNull Material material) {
-        material = getCropSeeds(material);
-
-        int slot = player.getInventory().first(material);
-        if (slot < 0) return false;
-
-        ItemStack seed = player.getInventory().getItem(slot);
-        if (seed == null || seed.getType().isAir()) return false;
-
-        seed.setAmount(seed.getAmount() - 1);
-        return true;
-    }
-
     @EventHandler
     public void onCropDrop(BlockDropItemEvent event) {
         @NotNull Material material = event.getBlockState().getType();
@@ -266,12 +284,15 @@ public class FarmerListener implements Listener {
         if (!isFarmer()) {
             return;
         }
-        Skill skill;
-        skill = new Skill(player, SkillType.GREEN_THUMB);
-        if (skill.isSuccessful() && skill.isActive(durations)) {
+
+        Skill skill = new Skill(player, SkillType.GREEN_THUMB, cooldowns, durations);
+
+        if (skill.isSuccessful() && skill.isActive()) {
+            if (!isMaxAge(event.getBlock())) {
+                return;
+            }
             for (Item item : event.getItems()) {
-                player.getInventory().addItem(item.getItemStack());
-                player.getInventory().addItem(item.getItemStack());
+                Utils.multiplyItem(player, item.getItemStack(), 2);
             }
         }
 
@@ -281,9 +302,24 @@ public class FarmerListener implements Listener {
                 if (item.getName().contains("Seeds")) {
                     return;
                 }
-                player.getInventory().addItem(item.getItemStack());
+                if (!isMaxAge(event.getBlock())) {
+                    return;
+                }
+                Utils.multiplyItem(player, item.getItemStack(), 1);
             }
         }
+    }
+
+    private boolean isMaxAge(@NotNull Block block) {
+        BlockData dataPlant = block.getBlockData();
+        if (!(dataPlant instanceof Ageable))  {
+            return false;
+        }
+        if (!isCrop(block.getType())) {
+            return false;
+        }
+        Ageable plant = (Ageable) dataPlant;
+        return plant.getAge() == plant.getMaximumAge();
     }
 
     private boolean isCrop(@NotNull Material material) {

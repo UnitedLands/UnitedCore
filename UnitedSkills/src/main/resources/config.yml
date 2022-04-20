@@ -15,8 +15,20 @@ base-chances:
     1: 40
     2: 50
     3: 60
+  fortunate:
+    1: 10
+    2: 20
+    3: 30
 cooldowns:
   green-thumb:
+    1: 300
+    2: 270
+    3: 240
+  frenzy:
+    1: 300
+    2: 270
+    3: 240
+  blast-mining:
     1: 300
     2: 270
     3: 240
@@ -25,10 +37,19 @@ durations:
     1: 40
     2: 50
     3: 60
+  frenzy:
+    1: 10
+    2: 15
+    3: 20
+  blast-mining:
+    1: 10
+    2: 15
+    3: 20
 plant-foods:
   - APPLE
   - MUSHROOM_STEW
   - BREAD
+  - COOKIE
   - GOLDEN_APPLE
   - ENCHANTED_GOLDEN_APPLE
   - DRIED_KELP
@@ -45,6 +66,7 @@ plant-foods:
 crop-names:
   - WHEAT
   - CARROTS
+  - COCOA
   - BEETROOTS
   - POTATOES
   - MELON
