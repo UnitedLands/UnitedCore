@@ -55,11 +55,11 @@ public class Skill {
      * @return true if the skill is activated successfully, false if its already active or is on a cooldown.
      */
     public boolean activate() {
-        int cooldownTime = getConfig().getInt("cooldowns." + "." + getName() + "." + getLevel());
-        int durationTime = getConfig().getInt("durations." + "." + getName() + "." + getLevel());
+        int cooldownTime = getCooldown();
+        int durationTime = getDuration();
         if (isActive()) {
             player.sendActionBar(Component
-                    .text("Skill is active for " + getSecondsLeft() + "s", NamedTextColor.RED));
+                    .text(getFormattedName() + " is active for" + getSecondsLeft() + "s", NamedTextColor.RED));
             player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1f, 1f);
             return false;
         }
@@ -70,12 +70,27 @@ public class Skill {
         notifyActivation();
         addTime(durationTime, activeDurations);
         addTime(cooldownTime, cooldowns);
+        Bukkit.getScheduler().runTaskLater(getUnitedSkills(), this::notifyEnded, durationTime);
         return true;
+    }
+
+    private void notifyEnded() {
+        player.sendActionBar(Component
+                .text(getFormattedName() + " deactivated!", NamedTextColor.RED)
+                .decorate(TextDecoration.BOLD));
+        player.playSound(player, Sound.BLOCK_ENDER_CHEST_CLOSE, 2f, 0.7f);
+    }
+    public int getCooldown() {
+        return getConfig().getInt("cooldowns." + "." + getName() + "." + getLevel());
+    }
+
+    public int getDuration() {
+        return getConfig().getInt("durations." + "." + getName() + "." + getLevel());
     }
 
     public void notifyActivation() {
         player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
-        player.sendActionBar(Component.text(getFormattedName() + " Skill Activated!", NamedTextColor.GREEN)
+        player.sendActionBar(Component.text(getFormattedName() + " activated!", NamedTextColor.GOLD)
                 .decoration(TextDecoration.BOLD, true));
     }
 

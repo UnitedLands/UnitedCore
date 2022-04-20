@@ -49,6 +49,7 @@ plant-foods:
   - APPLE
   - MUSHROOM_STEW
   - BREAD
+  - COOKIE
   - GOLDEN_APPLE
   - ENCHANTED_GOLDEN_APPLE
   - DRIED_KELP
@@ -65,6 +66,7 @@ plant-foods:
 crop-names:
   - WHEAT
   - CARROTS
+  - COCOA
   - BEETROOTS
   - POTATOES
   - MELON

@@ -106,6 +106,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.TownyAdvanced</groupId>
+            <artifactId>Towny</artifactId>
+            <version>0.97.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>dev.triumphteam</groupId>
             <artifactId>triumph-gui</artifactId>
             <version>3.1.1</version>
