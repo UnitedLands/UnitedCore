@@ -176,11 +176,10 @@ public class MinerListener implements Listener {
 
         Skill skill = new Skill(player, SkillType.BLAST_MINING, cooldowns, durations);
         if (skill.isActive() && !frenzyIsActive) {
-            if (inventory.contains(Material.TNT)) {
+            if (Utils.takeItemFromMaterial(player, Material.TNT)) {
                 int power = Math.min(skill.getLevel() * 2, 5);
                 block.getWorld().createExplosion(block.getLocation(), power, false, true, player);
                 damagePickaxe(mainHand, 15 + (skill.getLevel()) * 3);
-                Utils.takeItem(player, Material.TNT);
             } else {
                 player.sendActionBar(Component.text("You must have tnt to use Blast Mining!", NamedTextColor.RED));
                 player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1, 1);

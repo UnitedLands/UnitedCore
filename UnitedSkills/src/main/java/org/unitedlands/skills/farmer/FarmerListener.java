@@ -6,13 +6,14 @@ import com.gamingmesh.jobs.container.JobsPlayer;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import dev.lone.itemsadder.api.CustomCrop;
+import dev.lone.itemsadder.api.CustomStack;
+import dev.lone.itemsadder.api.ItemsAdder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
@@ -90,11 +91,20 @@ public class FarmerListener implements Listener {
             return;
         }
         Ageable crop = (Ageable) block.getBlockData();
-        if (skill.isSuccessful()) {
-            int newAge = Math.min(skill.getLevel() + 1, crop.getMaximumAge());
+        CustomStack customStack = CustomStack.byItemStack(event.getItemInHand());
 
-            if (block.getType() == Material.COCOA) {
-                newAge = 1;
+        if (skill.isSuccessful()) {
+            int newAge = Math.min(skill.getLevel() + 1, crop.getMaximumAge() - 1);
+            if (customStack != null) {
+                unitedSkills.getServer().getScheduler().runTask(unitedSkills, () -> {
+                    CustomCrop customCrop = CustomCrop.byAlreadyPlaced(block);
+                    if (customCrop != null) {
+                        final int age = Math.min(skill.getLevel() + 1, customCrop.getMaxAge() - 1);
+                        customCrop.setAge(age);
+                    }
+                    skill.notifyActivation();
+                });
+                return;
             }
             crop.setAge(newAge);
             block.setBlockData(crop);
@@ -171,13 +181,8 @@ public class FarmerListener implements Listener {
         } else {
             player.getInventory().remove(handItem);
         }
-        notifySkillActivation("Fungal");
-    }
-
-    private void notifySkillActivation(String name) {
-        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
-        player.sendActionBar(Component.text(name + " Skill Activated!", NamedTextColor.GREEN)
-                .decoration(TextDecoration.BOLD, true));
+        Skill skill = new Skill(player, SkillType.FUNGAL);
+        skill.notifyActivation();
     }
 
     private boolean isHoldingMushrooms(ItemStack handItem, ItemStack offhandItem ) {
@@ -249,12 +254,24 @@ public class FarmerListener implements Listener {
         }
         Block block = event.getBlock();
         BlockData dataPlant = block.getBlockData();
-        if (!(dataPlant instanceof Ageable))  {
+        if (!(dataPlant instanceof Ageable plant))  {
             return;
         }
-        Ageable plant = (Ageable) dataPlant;
+        CustomCrop customCrop = CustomCrop.byAlreadyPlaced(block);
         if (skill.isActive()) {
-            if (Utils.takeItem(player, getCropSeeds(material))) {
+            if (customCrop != null) {
+                unitedSkills.getServer().getScheduler().runTask(unitedSkills, () -> {
+                    CustomStack customCropSeed = customCrop.getSeed();
+                    ItemStack item = customCropSeed.getItemStack();
+                    if (Utils.takeItem(player, item)) {
+                        CustomCrop.place(customCropSeed.getNamespacedID(), block.getLocation());
+                        player.getInventory().addItem(item);
+                        }
+                });
+                return;
+            }
+            ItemStack item = new ItemStack(getCropSeeds(material));
+            if (Utils.takeItem(player, item)) {
                 unitedSkills.getServer().getScheduler().runTask(unitedSkills, () -> {
                     block.setType(plant.getMaterial());
                     plant.setAge(0);

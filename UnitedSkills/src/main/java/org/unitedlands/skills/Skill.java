@@ -6,8 +6,10 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -70,16 +72,23 @@ public class Skill {
         notifyActivation();
         addTime(durationTime, activeDurations);
         addTime(cooldownTime, cooldowns);
-        Bukkit.getScheduler().runTaskLater(getUnitedSkills(), this::notifyEnded, durationTime);
+        sendBossBar();
         return true;
     }
-
-    private void notifyEnded() {
-        player.sendActionBar(Component
-                .text(getFormattedName() + " deactivated!", NamedTextColor.RED)
-                .decorate(TextDecoration.BOLD));
-        player.playSound(player, Sound.BLOCK_ENDER_CHEST_CLOSE, 2f, 0.7f);
+    private void sendBossBar() {
+        final Component name = Component.text(getFormattedName(), NamedTextColor.YELLOW);
+        BossBar bossBar = BossBar.bossBar(name, 1, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
+        player.showBossBar(bossBar);
+        Bukkit.getScheduler().runTaskTimer(getUnitedSkills(), task -> {
+            if (bossBar.progress() == 0.0) {
+                task.cancel();
+                player.hideBossBar(bossBar);
+                return;
+            }
+            bossBar.progress((float) getSecondsLeft() / getDuration());
+        }, 0, 20L);
     }
+
     public int getCooldown() {
         return getConfig().getInt("cooldowns." + "." + getName() + "." + getLevel());
     }

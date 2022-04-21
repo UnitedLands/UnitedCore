@@ -5,6 +5,9 @@ api-version: 1.18
 depend:
   - Jobs
   - CoreProtect
+  - Towny
+softdepend:
+  - ItemsAdder
 authors: [ Maroon28 ]
 description: A plugin built to manage job skills for UnitedLands
 website: unitedlands.org
