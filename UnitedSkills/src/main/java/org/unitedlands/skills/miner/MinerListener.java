@@ -26,8 +26,9 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.unitedlands.skills.Skill;
-import org.unitedlands.skills.SkillType;
+import org.unitedlands.skills.skill.ActiveSkill;
+import org.unitedlands.skills.skill.Skill;
+import org.unitedlands.skills.skill.SkillType;
 import org.unitedlands.skills.UnitedSkills;
 import org.unitedlands.skills.Utils;
 
@@ -55,7 +56,7 @@ public class MinerListener implements Listener {
         if (!isMiner()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.BLAST_MINING, cooldowns, durations);
+        ActiveSkill skill = new ActiveSkill(player, SkillType.BLAST_MINING, cooldowns, durations);
         if (skill.getLevel() == 0) {
             return;
         }
@@ -83,7 +84,7 @@ public class MinerListener implements Listener {
         if (!isMiner()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.FRENZY, cooldowns, durations);
+        ActiveSkill skill = new ActiveSkill(player, SkillType.FRENZY, cooldowns, durations);
         if (skill.getLevel() == 0) {
             return;
         }
@@ -133,7 +134,7 @@ public class MinerListener implements Listener {
             }
         }
 
-        Skill frenzy = new Skill(player, SkillType.FRENZY, cooldowns, durations);
+        ActiveSkill frenzy = new ActiveSkill(player, SkillType.FRENZY, cooldowns, durations);
         if (frenzy.isActive()) {
             for (Item item : items) {
                 Utils.multiplyItem(player, item.getItemStack(), 3);
@@ -156,12 +157,12 @@ public class MinerListener implements Listener {
         }
 
         if (frenzyIsActive) {
-            Skill frenzy = new Skill(player, SkillType.FRENZY, cooldowns, durations);
+            ActiveSkill frenzy = new ActiveSkill(player, SkillType.FRENZY, cooldowns, durations);
             event.setExpToDrop(event.getExpToDrop() * (frenzy.getLevel() + 2));
             return;
         }
 
-        Skill blastMining = new Skill(player, SkillType.BLAST_MINING, cooldowns, durations);
+        ActiveSkill blastMining = new ActiveSkill(player, SkillType.BLAST_MINING, cooldowns, durations);
         if (blastMining.isActive()) {
             if (Utils.takeItemFromMaterial(player, Material.TNT)) {
                 int power = Math.min(blastMining.getLevel() * 2, 5);

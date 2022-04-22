@@ -19,12 +19,10 @@ public class BlendCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("You must be a player to use this command!");
             return true;
         }
-
-        Player player = (Player) sender;
 
         if (!player.hasPermission("united.skills.blend")) {
             player.sendMessage(getMessage("no-permission"));

@@ -1,4 +1,4 @@
-package org.unitedlands.skills;
+package org.unitedlands.skills.skill;
 
 public enum SkillType {
     EXPOSURE_THERAPY("exposure-therapy", 3),

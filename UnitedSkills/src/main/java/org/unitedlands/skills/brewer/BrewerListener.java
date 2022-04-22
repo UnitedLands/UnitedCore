@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BrewingStand;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,10 +19,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.inventory.BrewEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.metadata.MetadataValue;
@@ -30,15 +32,15 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.skills.Skill;
-import org.unitedlands.skills.SkillType;
 import org.unitedlands.skills.UnitedSkills;
+import org.unitedlands.skills.skill.Skill;
+import org.unitedlands.skills.skill.SkillType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.unitedlands.skills.Utils.*;
+import static org.unitedlands.skills.Utils.getJobs;
+import static org.unitedlands.skills.Utils.getMessage;
 
 public class BrewerListener implements Listener {
     private final UnitedSkills unitedSkills;
@@ -131,35 +133,76 @@ public class BrewerListener implements Listener {
             brewingStand.update();
         }
     }
-
     @EventHandler
-    // TODO- Fix this ability
-    public void onBrewingStandInteract(PlayerInteractEvent event) {
-        Block block = event.getClickedBlock();
-
-        if (block == null) {
+    public void onBrewingStart(InventoryClickEvent event) {
+        Inventory inventory = event.getInventory();
+        if (!inventory.getType().equals(InventoryType.BREWING)) {
             return;
         }
-
-        if (!block.getType().equals(Material.BREWING_STAND)) {
-            return;
-        }
-        player = event.getPlayer();
-        // They'd be opening the blending GUI if that's the case
-        if (player.isSneaking()) {
-            return;
-        }
+        player = (Player) event.getWhoClicked();
         if (!isBrewer()) {
             return;
         }
-
-        BrewingStand brewingStand = (BrewingStand) block.getState();
-        if (!ownsBrewingStand(block)) {
+        Skill skill = new Skill(player, SkillType.MODIFIED_HARDWARE);
+        if (skill.getLevel() == 0) {
             return;
         }
+        Block brewingStandBlock = inventory.getLocation().getBlock();
+        BrewingStand brewingStand = (BrewingStand) brewingStandBlock.getState(false);
+        if (!ownsBrewingStand(brewingStandBlock)) {
+            return;
+        }
+        if (!canStartBrewing(brewingStand)) return;
 
-        // TODO: 4/18/2022
+        unitedSkills.getServer().getScheduler().runTaskLater(unitedSkills, task -> {
+            if (!(brewingStand instanceof BrewingStand)) {
+                return;
+            }
+            if (!canStartBrewing(brewingStand)) {
+                return;
+            }
+            if (brewingStand.getBrewingTime() == 0) {
+                return;
+            }
+            int defaultTime = 20;
+            int brewingTime = (int) (defaultTime * (1 - (skill.getLevel() * 0.10)));
+            brewingStand.setBrewingTime(brewingTime * 20);
+            brewingStand.update();
+        }, 2);
+    }
 
+    private boolean canStartBrewing(BrewingStand brewingStand) {
+        if (hasBottleOrPotion(brewingStand.getInventory())) return true;
+        if (hasBrewingItem(brewingStand.getInventory())) return true;
+        if (hasBlazePowder(brewingStand)) return true;
+        return false;
+    }
+
+    private boolean hasBottleOrPotion(Inventory inventory) {
+        for (ItemStack item : inventory.getContents()) {
+            if (item == null) {
+                continue;
+            }
+            if (item.getType().equals(Material.POTION) || item.getType().equals(Material.SPLASH_POTION)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasBrewingItem(Inventory inventory) {
+        FileConfiguration config = unitedSkills.getConfig();
+        @NotNull List<String> brewingItems = config.getStringList("brewing-items");
+        ItemStack item = inventory.getItem(3);
+        if (item == null) {
+            return false;
+        }
+        return brewingItems.contains(item.getType().toString());
+    }
+
+    private boolean hasBlazePowder(BrewingStand brewingStand) {
+        return brewingStand.getFuelLevel() > 0
+                || brewingStand.getInventory().getItem(3).getType().equals(Material.BLAZE_POWDER);
     }
 
     private Player getBrewingStandOwner(Block block) {

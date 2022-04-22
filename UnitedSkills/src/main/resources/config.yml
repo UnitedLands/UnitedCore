@@ -45,6 +45,18 @@ durations:
     1: 10
     2: 15
     3: 20
+brewing-items:
+  - FERMENTED_SPIDER_EYE
+  - RABBIT_FOOT
+  - BLAZE_POWDER
+  - MAGMA_CREAM
+  - GHAST_TEAR
+  - NETHER_WART
+  - GLOWSTONE_DUST
+  - SPIDER_EYE
+  - GOLDEN_CARROT
+  - GLISTERING_MELON
+  - PUFFERFISH
 plant-foods:
   - APPLE
   - MUSHROOM_STEW

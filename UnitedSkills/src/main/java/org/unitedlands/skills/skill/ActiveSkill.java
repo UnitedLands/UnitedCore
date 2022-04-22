@@ -1,54 +1,29 @@
-package org.unitedlands.skills;
+package org.unitedlands.skills.skill;
 
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import net.kyori.adventure.bossbar.BossBar;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class Skill {
-    private final Player player;
-    private final SkillType type;
+public class ActiveSkill extends Skill {
     private HashMap<UUID, Long> cooldowns = null;
     private HashMap<UUID, Long> activeDurations = null;
+    Player player = getPlayer();
 
-    public Skill(Player player, SkillType type, HashMap<UUID, Long> cooldowns, HashMap<UUID, Long> activeDurations) {
+    public ActiveSkill(Player player, SkillType type) {
+        super(player, type);
+    }
+
+    public ActiveSkill(Player player, SkillType type, HashMap<UUID, Long> cooldowns, HashMap<UUID, Long> activeDurations) {
         this(player, type);
         this.cooldowns = cooldowns;
         this.activeDurations = activeDurations;
-    }
-
-    public Skill(Player player, SkillType type) {
-        this.player = player;
-        this.type = type;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public String getName() {
-        return type.getName();
-    }
-
-    public String getFormattedName() {
-        return WordUtils.capitalize(getName().replace("-", " "));
-    }
-
-    public boolean isMaxLevel() {
-        return type.getMaxLevel() == getLevel();
-    }
-    public SkillType getType() {
-        return type;
     }
 
     /**
@@ -96,12 +71,6 @@ public class Skill {
         return getConfig().getInt("durations." + "." + getName() + "." + getLevel());
     }
 
-    public void notifyActivation() {
-        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
-        player.sendActionBar(Component.text(getFormattedName() + " activated!", NamedTextColor.GOLD)
-                .decoration(TextDecoration.BOLD, true));
-    }
-
     private void notifyOnCooldown() {
         player.sendActionBar(Component
                 .text(getFormattedName() + " can be re-activated in " +
@@ -113,7 +82,6 @@ public class Skill {
         @NotNull UUID uuid = player.getUniqueId();
         map.put(uuid, System.currentTimeMillis() + (time * 1000L));
     }
-
     private long getRemainingCooldownTime() {
         UUID uuid = player.getUniqueId();
         return (cooldowns.get(uuid) - System.currentTimeMillis()) / 1000;
@@ -134,36 +102,4 @@ public class Skill {
         return activeDurations.containsKey(uuid) && activeDurations.get(uuid) > System.currentTimeMillis();
     }
 
-    public boolean isSuccessful() {
-        int level = getLevel();
-        if (level == 0) {
-            return false;
-        }
-        FileConfiguration configuration = getUnitedSkills().getConfig();
-        int baseChance = configuration.getInt("base-chances." + getName() + "." + level);
-        double randomPercentage = Math.random() * 100;
-        return randomPercentage < baseChance;
-    }
-
-    public int getLevel() {
-        String name = getName();
-        if (player.hasPermission("united.skills." + name + ".2") && type.getMaxLevel() == 3) {
-            return 3;
-        }
-        if (player.hasPermission("united.skills." + name + ".1")) {
-            return 2;
-        }
-        if (player.hasPermission("united.skills." + name)) {
-            return 1;
-        }
-        return 0;
-    }
-
-    private static UnitedSkills getUnitedSkills() {
-        return (UnitedSkills) Bukkit.getPluginManager().getPlugin("UnitedSkills");
-    }
-
-    private static FileConfiguration getConfig() {
-        return  getUnitedSkills().getConfig();
-    }
 }

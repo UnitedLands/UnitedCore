@@ -8,7 +8,6 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import dev.lone.itemsadder.api.CustomCrop;
 import dev.lone.itemsadder.api.CustomStack;
-import dev.lone.itemsadder.api.ItemsAdder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -33,8 +32,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.skills.Skill;
-import org.unitedlands.skills.SkillType;
+import org.unitedlands.skills.skill.ActiveSkill;
+import org.unitedlands.skills.skill.Skill;
+import org.unitedlands.skills.skill.SkillType;
 import org.unitedlands.skills.UnitedSkills;
 import org.unitedlands.skills.Utils;
 
@@ -60,7 +60,7 @@ public class FarmerListener implements Listener {
         if (!isFarmer()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.GREEN_THUMB, cooldowns, durations);
+        ActiveSkill skill = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
         if (skill.getLevel() == 0) {
             return;
         }
@@ -247,7 +247,7 @@ public class FarmerListener implements Listener {
         if (!isFarmer()) {
             return;
         }
-        Skill skill  = new Skill(player, SkillType.GREEN_THUMB, cooldowns, durations);
+        ActiveSkill skill  = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
         int level = skill.getLevel();
         if (level == 0) {
             return;
@@ -302,7 +302,7 @@ public class FarmerListener implements Listener {
             return;
         }
 
-        Skill skill = new Skill(player, SkillType.GREEN_THUMB, cooldowns, durations);
+        ActiveSkill skill = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
 
         if (skill.isSuccessful() && skill.isActive()) {
             if (!isMaxAge(event.getBlock())) {
@@ -313,8 +313,8 @@ public class FarmerListener implements Listener {
             }
         }
 
-        skill = new Skill(player, SkillType.EXPERT_HARVESTER);
-        if (skill.isSuccessful()) {
+        Skill expertHarvester = new Skill(player, SkillType.EXPERT_HARVESTER);
+        if (expertHarvester.isSuccessful()) {
             for (Item item : event.getItems()) {
                 if (item.getName().contains("Seeds")) {
                     return;
@@ -329,13 +329,12 @@ public class FarmerListener implements Listener {
 
     private boolean isMaxAge(@NotNull Block block) {
         BlockData dataPlant = block.getBlockData();
-        if (!(dataPlant instanceof Ageable))  {
+        if (!(dataPlant instanceof Ageable plant))  {
             return false;
         }
         if (!isCrop(block.getType())) {
             return false;
         }
-        Ageable plant = (Ageable) dataPlant;
         return plant.getAge() == plant.getMaximumAge();
     }
 
