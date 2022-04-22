@@ -47,7 +47,6 @@ public class Skill {
     public boolean isMaxLevel() {
         return type.getMaxLevel() == getLevel();
     }
-
     public SkillType getType() {
         return type;
     }

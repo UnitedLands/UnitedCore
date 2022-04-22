@@ -18,13 +18,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.unitedlands.skills.Skill;
 import org.unitedlands.skills.SkillType;
 import org.unitedlands.skills.UnitedSkills;
@@ -102,8 +103,7 @@ public class MinerListener implements Listener {
         }
 
         if (skill.activate()) {
-            unboostPickaxeLater(pickaxe, skill);
-            boostPickaxe(pickaxe);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, skill.getDuration() * 20, 3));
             frenzyIsActive = true;
             unitedSkills.getServer().getScheduler().runTaskLater(unitedSkills, () -> frenzyIsActive = false, skill.getDuration() * 20L);
         }
@@ -129,7 +129,7 @@ public class MinerListener implements Listener {
         List<Item> items = event.getItems();
         if (fortunate.isSuccessful()) {
             for (Item item : items) {
-                Utils.multiplyItem(player, item.getItemStack(), 2);
+                Utils.multiplyItem(player, item.getItemStack(), 1);
             }
         }
 
@@ -139,25 +139,6 @@ public class MinerListener implements Listener {
                 Utils.multiplyItem(player, item.getItemStack(), 3);
             }
         }
-    }
-
-    private void boostPickaxe(ItemStack pickaxe) {
-        int currentEfficiencyLevel = pickaxe.getEnchantmentLevel(Enchantment.DIG_SPEED);
-
-        ItemMeta itemMeta = pickaxe.getItemMeta();
-        itemMeta.addEnchant(Enchantment.DIG_SPEED, currentEfficiencyLevel + 5, true);
-        pickaxe.setItemMeta(itemMeta);
-    }
-
-    private void unboostPickaxeLater(ItemStack pickaxe, Skill skill) {
-        int currentEfficiencyLevel = pickaxe.getEnchantmentLevel(Enchantment.DIG_SPEED);
-        ItemMeta itemMeta = pickaxe.getItemMeta();
-
-        unitedSkills.getServer().getScheduler().runTaskLater(unitedSkills, () -> {
-            itemMeta.removeEnchant(Enchantment.DIG_SPEED);
-            itemMeta.addEnchant(Enchantment.DIG_SPEED, currentEfficiencyLevel, false);
-            pickaxe.setItemMeta(itemMeta);
-        }, skill.getSecondsLeft() * 20L);
     }
 
     @EventHandler
@@ -174,12 +155,18 @@ public class MinerListener implements Listener {
             return;
         }
 
-        Skill skill = new Skill(player, SkillType.BLAST_MINING, cooldowns, durations);
-        if (skill.isActive() && !frenzyIsActive) {
+        if (frenzyIsActive) {
+            Skill frenzy = new Skill(player, SkillType.FRENZY, cooldowns, durations);
+            event.setExpToDrop(event.getExpToDrop() * (frenzy.getLevel() + 2));
+            return;
+        }
+
+        Skill blastMining = new Skill(player, SkillType.BLAST_MINING, cooldowns, durations);
+        if (blastMining.isActive()) {
             if (Utils.takeItemFromMaterial(player, Material.TNT)) {
-                int power = Math.min(skill.getLevel() * 2, 5);
+                int power = Math.min(blastMining.getLevel() * 2, 5);
                 block.getWorld().createExplosion(block.getLocation(), power, false, true, player);
-                damagePickaxe(mainHand, 15 + (skill.getLevel()) * 3);
+                damagePickaxe(mainHand, 10 + (blastMining.getLevel()) * 3);
             } else {
                 player.sendActionBar(Component.text("You must have tnt to use Blast Mining!", NamedTextColor.RED));
                 player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1, 1);
@@ -189,14 +176,19 @@ public class MinerListener implements Listener {
 
     private void damagePickaxe(ItemStack pickaxe, int damage) {
         Damageable meta = (Damageable) pickaxe.getItemMeta();
+        if (pickaxe.containsEnchantment(Enchantment.DURABILITY)) {
+            int level = pickaxe.getEnchantmentLevel(Enchantment.DURABILITY);
+            damage = (int) (damage * (1 - (0.2 * level)));
+        }
         meta.setDamage(meta.getDamage() + damage);
         pickaxe.setItemMeta(meta);
     }
 
     @EventHandler
-    public void onExplosionDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof TNTPrimed)) return;
-        if (!(event.getEntity() instanceof  Player)) return;
+    public void onExplosionDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player)) return;
+        if (!event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)) return;
+        if (!event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)) return;
         player = (Player) event.getEntity();
         if (!isMiner()) {
             return;
@@ -206,16 +198,15 @@ public class MinerListener implements Listener {
         if (level == 0) {
             return;
         }
-        double damage = event.getDamage() - (event.getDamage() * (level * 0.1));
+        double damage = event.getFinalDamage() - (event.getFinalDamage() * (level * 0.1));
         event.setDamage(damage);
     }
 
     @EventHandler
     public void onExplosion(EntityExplodeEvent event) {
-        if (!(event.getEntity() instanceof TNTPrimed)) {
+        if (!(event.getEntity() instanceof TNTPrimed tnt)) {
             return;
         }
-        TNTPrimed tnt = (TNTPrimed) event.getEntity();
         if (tnt.getSource() == null) {
             return;
         }
