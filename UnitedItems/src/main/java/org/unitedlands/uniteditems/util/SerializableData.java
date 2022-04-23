@@ -3,9 +3,7 @@ package org.unitedlands.uniteditems.util;
 import java.io.*;
 
 public enum SerializableData {
-    Players("plugins/UnitedCore/players"),
-    Wars("plugins/UnitedCore/wars"),
-	Farming("plugins/UnitedCore/farming");
+	Farming("plugins/UnitedItems/farming");
     
     private String fileName;
 

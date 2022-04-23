@@ -1,14 +1,14 @@
 package org.unitedlands.uniteditems.util;
 
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.unitedlands.uniteditems.listeners.ItemListener;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import org.unitedlands.uniteditems.listeners.ItemListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ public class CustomItem extends ItemListener {
     private ItemStack item;
     private Class clazz;
 
-    public CustomItem(Class c, int ModelData, Material material, String name, boolean glow, String... lore) {
+    public CustomItem(Class c, int ModelData, Material material, @NotNull String name, boolean glow, String... lore) {
         super();
         this.clazz = c;
         this.item = new ItemStack(material);
@@ -73,10 +73,10 @@ public class CustomItem extends ItemListener {
         if(i != null)
             if(i.hasItemMeta()) {
                 if(i.getItemMeta().hasCustomModelData()) {
-                    return String.format("%s:%d", i.getType().toString(), i.getItemMeta().getCustomModelData());
+                    return String.format("%s:%d", i.getType(), i.getItemMeta().getCustomModelData());
                 }
             } else {
-                return String.format("%s:0", i.getType().toString());
+                return String.format("%s:0", i.getType());
             }
         return null;
     }
@@ -105,13 +105,18 @@ public class CustomItem extends ItemListener {
     }
 
     public static ItemStack getItemByName(String string) {
-        return getCustomItemByName(string).getItem();
+        CustomItem item = getCustomItemByName(string);
+        if (item == null) {
+            return new ItemStack(Material.AIR);
+        }
+        return item.getItem();
     }
 
     public static ItemStack getItemBySimilarName(String name) {
         for (Map.Entry<String, CustomItem> e : customItems.entrySet()) {
-            String itemName = e.getValue().getItem().getItemMeta().getDisplayName().replaceAll(" ", "_");
-            if(StringUtils.getLevenshteinDistance(itemName, name) <= 5) {
+            String displayName = e.getValue().getItem().getItemMeta().getDisplayName();
+            String itemName = ChatColor.stripColor(displayName.replaceAll(" ", "_").toLowerCase());
+            if(itemName.equals(name.toLowerCase())) {
                 return e.getValue().getItem();
             }
         }

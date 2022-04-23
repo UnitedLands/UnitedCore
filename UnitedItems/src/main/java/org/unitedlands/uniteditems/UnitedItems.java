@@ -3,7 +3,6 @@ package org.unitedlands.uniteditems;
 import org.unitedlands.uniteditems.commands.CustomItemCmd;
 import org.unitedlands.uniteditems.commands.TreeCmd;
 import org.unitedlands.uniteditems.listeners.EdibleListener;
-import org.unitedlands.uniteditems.listeners.GUIListener;
 import org.unitedlands.uniteditems.listeners.ItemListener;
 import org.unitedlands.uniteditems.trees.Tree;
 import org.unitedlands.uniteditems.util.SerializableData;
@@ -26,9 +25,6 @@ import java.io.File;
 
 public class UnitedItems extends JavaPlugin {
 
-    File customConfigFile;
-    YamlConfiguration customConfig;
-
     @Override
     public void onEnable() {
 
@@ -37,24 +33,8 @@ public class UnitedItems extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EdibleListener(),this);
         getServer().getPluginManager().registerEvents(new ItemListener(), this);
         getServer().getPluginManager().registerEvents(new EdibleListener(), this);
-        getServer().getPluginManager().registerEvents(new GUIListener(), this);
         getServer().getPluginManager().registerEvents(new Tree(),this);
-
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("UnitedCore").getDataFolder(), "messages.yml");
-        if (!customConfigFile.exists()) {
-            customConfigFile.getParentFile().mkdirs();
-
-            try {
-
-                customConfigFile.createNewFile();
-                customConfig = new YamlConfiguration();
-                customConfig.load(customConfigFile);
-
-            } catch (Exception e1){
-                System.out.println("EXCEPTION: CANT CREATE NEW FILE OR LOAD IT");
-            }
-        }
-
+        saveDefaultConfig();
 
         new Mango();
         new Croissant();
@@ -73,8 +53,8 @@ public class UnitedItems extends JavaPlugin {
 
     public static String getMsg(String s){
         File customConfigFile;
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("UnitedCore").getDataFolder(),
-                "messages.yml");
+        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("UnitedItems").getDataFolder(),
+                "config.yml");
         FileConfiguration customConfig;
         customConfig = new YamlConfiguration();
         try{
@@ -89,8 +69,8 @@ public class UnitedItems extends JavaPlugin {
 
     public static String getGlobalMsg(String s){
         File customConfigFile;
-        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("UnitedCore").getDataFolder(),
-                "messages.yml");
+        customConfigFile = new File(Bukkit.getPluginManager().getPlugin("UnitedItems").getDataFolder(),
+                "config.yml");
         FileConfiguration customConfig;
         customConfig = new YamlConfiguration();
         try{

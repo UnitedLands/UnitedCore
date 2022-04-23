@@ -6,13 +6,13 @@
 
     <groupId>org.unitedlands</groupId>
     <artifactId>UnitedCore</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>2.0</version>
     <packaging>jar</packaging>
 
     <name>UnitedCore</name>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>16</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

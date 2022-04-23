@@ -49,17 +49,9 @@ public enum TreeType implements Serializable {
 			Material.ACACIA_LEAVES,
 			Material.ACACIA_LEAVES,
 			CustomItem.getItemByName("&fMimosa Flower"),
-			CustomItem.getItemByName("&fFlowering Acacia Sapling")),
-	SAUSAGE(Material.BIRCH_SAPLING,
-			Material.BIRCH_LOG,
-			Material.BROWN_MUSHROOM_BLOCK,
-			Material.BROWN_MUSHROOM_BLOCK,
-			Material.BIRCH_LEAVES,
-			CustomItem.getItemByName("&fSausage"),
-			CustomItem.getItemByName("&fSausage"),
-			CustomItem.getItemByName("&fSausage"));
+			CustomItem.getItemByName("&fFlowering Acacia Sapling"));
 	
-	private transient static HashMap<String, TreeType> validSeed = new HashMap<String, TreeType>();
+	private static HashMap<String, TreeType> validSeed = new HashMap<String, TreeType>();
 	
 	static {
 		for(TreeType t : TreeType.values()) {
@@ -73,14 +65,14 @@ public enum TreeType implements Serializable {
 		
 	}
 	
-	private Material vanillaSapling;
-	private Material stemBlock;
-	private Material stemReplaceBlock;
-	private Material fruitBlock;
-	private Material fruitReplaceBlock;
-	private ItemStack fruitDrop;
-	private ItemStack fruitSeed;
-	private ItemStack logDrop;
+	private final Material vanillaSapling;
+	private final Material stemBlock;
+	private final Material stemReplaceBlock;
+	private final Material fruitBlock;
+	private final Material fruitReplaceBlock;
+	private final ItemStack fruitDrop;
+	private final ItemStack fruitSeed;
+	private final ItemStack logDrop;
 	
 	TreeType(Material vanillaSapling, Material stemBlock, Material stemReplaceBlock, Material fruitBlock, Material fruitReplaceBlock, ItemStack fruitDrop, ItemStack fruitSeed, ItemStack logDrop) {
 		this.vanillaSapling = vanillaSapling;
