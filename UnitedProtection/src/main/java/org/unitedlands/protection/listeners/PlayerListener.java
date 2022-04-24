@@ -31,9 +31,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
 
-        if (canModifyBlock(player, block)) {
-            event.setCancelled(false);
-        } else {
+        if (!canModifyBlock(player, block)) {
             player.sendMessage(getMessage("break-deny-message"));
             event.setCancelled(true);
         }
@@ -44,9 +42,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
 
-        if (canModifyBlock(player, block)) {
-            event.setCancelled(false);
-        } else {
+        if (!canModifyBlock(player, block)) {
             player.sendMessage(getMessage("place-deny-message"));
             event.setCancelled(true);
         }
