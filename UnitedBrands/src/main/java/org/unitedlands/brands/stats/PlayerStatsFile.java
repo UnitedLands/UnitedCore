@@ -1,6 +1,5 @@
 package org.unitedlands.brands.stats;
 
-import com.google.common.base.Charsets;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -10,8 +9,6 @@ import org.unitedlands.brands.UnitedBrands;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class PlayerStatsFile {
     private final UnitedBrands ub;

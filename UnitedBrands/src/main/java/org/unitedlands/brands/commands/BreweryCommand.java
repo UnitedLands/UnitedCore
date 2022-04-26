@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -132,10 +133,10 @@ public class BreweryCommand implements CommandExecutor {
         sendOwnerComponent();
         sendBreweryNameComponent();
         sendSloganComponent();
-        sendLevelComponent();
-        sendAverageStarsComponent();
-        sendBrewsMadeComponent();
-        sendBrewsDrunkComponent();
+        sendStatComponent("level");
+        sendStatComponent("average-stars");
+        sendStatComponent("brews-made");
+        sendStatComponent("brews-drunk");
         sendMembersComponent();
         player.sendMessage(getMessage("footer"));
     }
@@ -148,34 +149,11 @@ public class BreweryCommand implements CommandExecutor {
                 .append(Component.newline()));
     }
 
-    private void sendLevelComponent() {
+    private void sendStatComponent(String statName) {
+        String title = WordUtils.capitalize(statName.replace("-", " ")) + ": ";
         player.sendMessage(Component
-                .text("Level: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text(brewery.getBreweryStat("level"), NamedTextColor.GRAY)
-                        .decoration(TextDecoration.BOLD, false))
-                .append(Component.newline()));
-    }
-
-    private void sendBrewsMadeComponent() {
-        player.sendMessage(Component
-                .text("Brews Made: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text(brewery.getBreweryStat("brews-made"), NamedTextColor.GRAY)
-                        .decoration(TextDecoration.BOLD, false))
-                .append(Component.newline()));
-    }
-
-    private void sendAverageStarsComponent() {
-        player.sendMessage(Component
-                .text("Average Stars: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text(brewery.getBreweryStat("average-stars"), NamedTextColor.GRAY)
-                        .decoration(TextDecoration.BOLD, false))
-                .append(Component.newline()));
-    }
-
-    private void sendBrewsDrunkComponent() {
-        player.sendMessage(Component
-                .text("Brews Drunk: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text(brewery.getBreweryStat("brews-drunk"), NamedTextColor.GRAY)
+                .text(title, NamedTextColor.RED, TextDecoration.BOLD)
+                .append(Component.text(brewery.getBreweryStat(statName), NamedTextColor.GRAY)
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
@@ -211,8 +189,7 @@ public class BreweryCommand implements CommandExecutor {
             String BreweryMembers = String.join("&7, &e", memberNames);
             Component membersList = LegacyComponentSerializer.legacyAmpersand()
                     .deserialize(BreweryMembers).decoration(TextDecoration.BOLD, false);
-            player.sendMessage(membersPrefix
-                    .append(membersList));
+            player.sendMessage(membersPrefix.append(membersList));
             return;
         }
         player.sendMessage(membersPrefix
@@ -237,8 +214,8 @@ public class BreweryCommand implements CommandExecutor {
 
         player.sendMessage(
                 getPreviousPageComponent()
-                        .append(getPageComponent())
-                        .append(getNextPageComponent()));
+                .append(getPageComponent())
+                .append(getNextPageComponent()));
         player.sendMessage(getMessage("footer"));
     }
 
@@ -371,8 +348,8 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        Player receiver = request.getReceiver();
-        Player sender = request.getSender();
+        Player receiver = request.receiver();
+        Player sender = request.sender();
 
         if (Util.getPlayerBrewery(receiver) != null) {
             player.sendMessage(getMessage("already-in-a-brewery"));
@@ -443,8 +420,8 @@ public class BreweryCommand implements CommandExecutor {
         String breweryName = Util.getPlayerBrewery(player).getBreweryName();
 
         if (request != null) {
-            request.getSender().sendMessage(getMessage("Brewery-deny-sender", player));
-            request.getReceiver().sendMessage(getMessage("Brewery-deny", breweryName));
+            request.sender().sendMessage(getMessage("Brewery-deny-sender", player));
+            request.receiver().sendMessage(getMessage("Brewery-deny", breweryName));
             inviteRequests.remove(request);
             return;
         }
@@ -479,7 +456,7 @@ public class BreweryCommand implements CommandExecutor {
 
     private InviteRequest getRequest(Player receiver) {
         for (InviteRequest request : inviteRequests) {
-            if (request.getReceiver().equals(receiver)) {
+            if (request.receiver().equals(receiver)) {
                 return request;
             }
         }
