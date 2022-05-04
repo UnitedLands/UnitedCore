@@ -28,6 +28,10 @@ cooldowns:
     1: 300
     2: 270
     3: 240
+  fortification:
+    1: 300
+    2: 270
+    3: 240
   blast-mining:
     1: 300
     2: 270
@@ -45,6 +49,24 @@ durations:
     1: 10
     2: 15
     3: 20
+  fortification:
+    1: 10
+    2: 20
+    3: 30
+fortification-effects:
+  1:
+  - HUNGER
+  - LUCK
+  - JUMP
+  2:
+  - SPEED
+  - SLOW
+  - INSTANT_DAMAGE
+  3:
+  - POISON
+  - SLOW_DIGGING
+  - FAST_DIGGING
+  - ABSORPTION
 brewing-items:
   - FERMENTED_SPIDER_EYE
   - RABBIT_FOOT

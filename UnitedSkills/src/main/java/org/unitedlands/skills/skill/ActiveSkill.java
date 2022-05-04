@@ -35,7 +35,7 @@ public class ActiveSkill extends Skill {
         int durationTime = getDuration();
         if (isActive()) {
             player.sendActionBar(Component
-                    .text(getFormattedName() + " is active for" + getSecondsLeft() + "s", NamedTextColor.RED));
+                    .text(getFormattedName() + " is active for " + getSecondsLeft() + "s", NamedTextColor.RED));
             player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1f, 1f);
             return false;
         }

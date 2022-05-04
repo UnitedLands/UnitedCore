@@ -6,15 +6,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.unitedlands.skills.UnitedSkills;
 import org.unitedlands.skills.brewer.BlendingGui;
 
 import static org.unitedlands.skills.Utils.getMessage;
 
 public class BlendCommand implements CommandExecutor {
-    private final BlendingGui blendingGui;
+    private final UnitedSkills unitedSkills;
 
-    public BlendCommand(BlendingGui blendingGui) {
-        this.blendingGui = blendingGui;
+    public BlendCommand(UnitedSkills unitedSkills) {
+        this.unitedSkills = unitedSkills;
     }
 
     @Override
@@ -28,6 +29,7 @@ public class BlendCommand implements CommandExecutor {
             player.sendMessage(getMessage("no-permission"));
             return true;
         }
+        BlendingGui blendingGui = new BlendingGui(unitedSkills);
         Gui gui = blendingGui.createGui(player);
         gui.open(player);
         return true;

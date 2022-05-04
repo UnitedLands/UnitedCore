@@ -5,6 +5,8 @@ public enum SkillType {
     ASSISTED_HEALING("assisted-healing", 2),
     MODIFIED_HARDWARE("modified-hardware", 3),
     BLEND("blend", 3),
+    SPLASH_BOOST("splash-boost", 3),
+    FORTIFICATION("fortification", 3),
     QUALITY_INGREDIENTS("quality-ingredients", 1),
     GREEN_THUMB("green-thumb", 3),
     FERTILISER("fertiliser", 3),

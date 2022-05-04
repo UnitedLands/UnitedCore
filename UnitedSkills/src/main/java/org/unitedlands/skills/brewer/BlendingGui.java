@@ -22,6 +22,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.UnitedSkills;
+import org.unitedlands.skills.skill.Skill;
+import org.unitedlands.skills.skill.SkillType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +119,9 @@ public class BlendingGui {
     private boolean slotsArePotions() {
         Material slotOneType = potion.getType();
         Material slotTwoType = otherPotion.getType();
+        if (slotOneType.equals(Material.LINGERING_POTION)) {
+            return slotOneType.equals(slotTwoType);
+        }
         if (slotOneType.equals(Material.SPLASH_POTION)) {
             return slotOneType.equals(slotTwoType);
         }
@@ -143,6 +148,10 @@ public class BlendingGui {
         if (hasSplashPotions()) {
             blendedPotion = new ItemStack(Material.SPLASH_POTION);
         }
+        if (hasLingeringPotions()) {
+            blendedPotion = new ItemStack(Material.LINGERING_POTION);
+        }
+
         PotionMeta blendedPotionMeta = getPotionMeta(blendedPotion);
 
         if (hasCustomEffects()) {
@@ -162,6 +171,10 @@ public class BlendingGui {
         return gui.getInventory().getItem(11).getType().equals(Material.SPLASH_POTION);
     }
 
+    private boolean hasLingeringPotions() {
+        return gui.getInventory().getItem(11).getType().equals(Material.LINGERING_POTION);
+    }
+
     private void doubleBlendPotion(PotionMeta potionMeta, PotionMeta otherPotionMeta, PotionMeta blendedPotionMeta) {
         PotionMeta doublePotionMeta;
         PotionData extraPotionData;
@@ -176,7 +189,7 @@ public class BlendingGui {
         }
         for (PotionEffect effect : doublePotionMeta.getCustomEffects()) {
             addEffect(blendedPotionMeta, effect);
-            blendedPotionMeta.addCustomEffect(getBlendedEffect(extraPotionData), false);
+            addEffect(blendedPotionMeta, getBlendedEffect(extraPotionData));
             blendedPotionMeta.displayName(getDoubleBlendedName());
         }
     }
@@ -280,7 +293,8 @@ public class BlendingGui {
     private int getExtraEffects() {
         PotionMeta potionMeta = getPotionMeta(potion);
         PotionMeta otherMeta = getPotionMeta(otherPotion);
-        final boolean canDoubleBlend = player.hasPermission("united.skills.blend.2");
+        Skill blend = new Skill(player, SkillType.BLEND);
+        final boolean canDoubleBlend = blend.getLevel() == 3;
         if (!hasCustomEffects()) {
             if (canDoubleBlend) {
                 return 3;

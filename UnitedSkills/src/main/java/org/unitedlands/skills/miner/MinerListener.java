@@ -26,11 +26,11 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.unitedlands.skills.UnitedSkills;
+import org.unitedlands.skills.Utils;
 import org.unitedlands.skills.skill.ActiveSkill;
 import org.unitedlands.skills.skill.Skill;
 import org.unitedlands.skills.skill.SkillType;
-import org.unitedlands.skills.UnitedSkills;
-import org.unitedlands.skills.Utils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -188,8 +188,8 @@ public class MinerListener implements Listener {
     @EventHandler
     public void onExplosionDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
-        if (!event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)) return;
-        if (!event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)) return;
+        if (!(event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)
+                || event.getCause().equals(EntityDamageEvent.DamageCause.BLOCK_EXPLOSION))) return;
         player = (Player) event.getEntity();
         if (!isMiner()) {
             return;
@@ -199,7 +199,7 @@ public class MinerListener implements Listener {
         if (level == 0) {
             return;
         }
-        double damage = event.getFinalDamage() - (event.getFinalDamage() * (level * 0.1));
+        double damage = event.getDamage() - (event.getDamage() * (level * 0.1));
         event.setDamage(damage);
     }
 
