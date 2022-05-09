@@ -19,6 +19,30 @@ base-chances:
     1: 10
     2: 20
     3: 30
+  self-reflection:
+    1: 10
+    2: 20
+    3: 30
+  counter-attack:
+    1: 5
+    2: 10
+    3: 15
+  retriever:
+    1: 20
+    2: 40
+    3: 60
+  piercing:
+    1: 20
+    2: 40
+    3: 60
+  stun:
+    1: 5
+    2: 10
+    3: 15
+  critical-hit:
+    1: 5
+    2: 10
+    3: 15
 cooldowns:
   green-thumb:
     1: 300
@@ -33,6 +57,14 @@ cooldowns:
     2: 270
     3: 240
   blast-mining:
+    1: 300
+    2: 270
+    3: 240
+  precision-strike:
+    1: 60
+    2: 50
+    3: 40
+  focus:
     1: 300
     2: 270
     3: 240
@@ -53,6 +85,14 @@ durations:
     1: 10
     2: 20
     3: 30
+  precision-strike:
+    1: 3
+    2: 5
+    3: 8
+  focus:
+    1: 5
+    2: 10
+    3: 15
 fortification-effects:
   1:
   - HUNGER
