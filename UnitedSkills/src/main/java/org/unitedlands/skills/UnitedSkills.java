@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.skills.brewer.BrewerListener;
 import org.unitedlands.skills.commands.BlendCommand;
 import org.unitedlands.skills.farmer.FarmerListener;
+import org.unitedlands.skills.fisherman.FishermanListener;
 import org.unitedlands.skills.hunter.HunterListener;
 import org.unitedlands.skills.miner.MinerListener;
 
@@ -23,12 +24,14 @@ public final class UnitedSkills extends JavaPlugin {
         final BrewerListener brewerListener = new BrewerListener(this);
         final FarmerListener farmerListener = new FarmerListener(this);
         final HunterListener hunterListener = new HunterListener(this);
+        final FishermanListener fishermanListener = new FishermanListener(this);
         final MinerListener minerListener = new MinerListener(this, getCoreProtect());
         final PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(brewerListener, this);
         pluginManager.registerEvents(farmerListener, this);
         pluginManager.registerEvents(minerListener, this);
         pluginManager.registerEvents(hunterListener, this);
+        pluginManager.registerEvents(fishermanListener, this);
         hunterListener.damageBleedingEntities();
     }
 

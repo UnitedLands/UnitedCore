@@ -43,6 +43,17 @@ base-chances:
     1: 5
     2: 10
     3: 15
+  lucky-catch:
+    1: 20
+    2: 30
+    3: 40
+  pescatarian:
+    1: 100
+    2: 100
+  hooked:
+    1: 100
+    2: 100
+    3: 100
 cooldowns:
   green-thumb:
     1: 300
@@ -68,6 +79,10 @@ cooldowns:
     1: 300
     2: 270
     3: 240
+  grapple:
+    1: 300
+    2: 270
+    3: 1
 durations:
   green-thumb:
     1: 40
@@ -90,6 +105,10 @@ durations:
     2: 5
     3: 8
   focus:
+    1: 5
+    2: 10
+    3: 15
+  grapple:
     1: 5
     2: 10
     3: 15
