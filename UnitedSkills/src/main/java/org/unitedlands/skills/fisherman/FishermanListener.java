@@ -3,6 +3,7 @@ package org.unitedlands.skills.fisherman;
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.container.JobProgression;
 import com.gamingmesh.jobs.container.JobsPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -15,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -37,6 +39,26 @@ public class FishermanListener implements Listener {
 
     public FishermanListener(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        if (!event.hasChangedBlock()) {
+            return;
+        }
+        player = event.getPlayer();
+        if (!player.isSwimming()) {
+            return;
+        }
+        if (!isFisherman()) {
+            return;
+        }
+        Skill skill = new Skill(player, SkillType.SWIFT_SWIMMER);
+        int level = skill.getLevel();
+        if (level == 0) {
+            return;
+        }
+        player.setVelocity(player.getLocation().getDirection().multiply(0.2 * level));
     }
 
     @EventHandler
