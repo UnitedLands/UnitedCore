@@ -54,6 +54,14 @@ base-chances:
     1: 100
     2: 100
     3: 100
+  reforestation:
+    1: 35
+    2: 65
+    3: 100
+  precision-cutting:
+    1: 10
+    2: 20
+    3: 30
 cooldowns:
   green-thumb:
     1: 300
@@ -80,6 +88,10 @@ cooldowns:
     2: 270
     3: 240
   grapple:
+    1: 300
+    2: 270
+    3: 1
+  tree-feller:
     1: 300
     2: 270
     3: 1
@@ -112,6 +124,10 @@ durations:
     1: 5
     2: 10
     3: 15
+  tree-feller:
+    1: 10
+    2: 20
+    3: 30
 fortification-effects:
   1:
   - HUNGER

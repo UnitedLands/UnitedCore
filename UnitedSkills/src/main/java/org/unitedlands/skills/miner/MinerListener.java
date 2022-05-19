@@ -122,7 +122,7 @@ public class MinerListener implements Listener {
         }
 
         Block block = event.getBlock();
-        if (isPlaced(block)) {
+        if (Utils.isPlaced(coreProtect, block)) {
             return;
         }
 
@@ -237,18 +237,4 @@ public class MinerListener implements Listener {
         return false;
     }
 
-    public boolean isPlaced(Block block) {
-        boolean match = false;
-
-        List<String[]> check = coreProtect.blockLookup(block, 0);
-
-        for (String[] value : check) {
-            CoreProtectAPI.ParseResult result = coreProtect.parseResult(value);
-            if (result.getActionId() == 1) {
-                match = true;
-                break;
-            }
-        }
-        return match;
-    }
 }

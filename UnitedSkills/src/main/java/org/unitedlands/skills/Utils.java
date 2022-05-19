@@ -2,18 +2,23 @@ package org.unitedlands.skills;
 
 import com.gamingmesh.jobs.Jobs;
 import dev.lone.itemsadder.api.CustomStack;
+import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.unitedlands.skills.skill.ActiveSkill;
+
+import java.util.List;
 
 public class Utils {
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
-
     @NotNull
     public static Component getMessage(String message) {
         String configMessage = getUnitedSkills().getConfig().getString("messages." + message);
@@ -58,6 +63,30 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    public static boolean isPlaced(CoreProtectAPI coreProtect, Block block) {
+        boolean match = false;
+
+        List<String[]> check = coreProtect.blockLookup(block, 0);
+
+        for (String[] value : check) {
+            CoreProtectAPI.ParseResult result = coreProtect.parseResult(value);
+            if (result.getActionId() == 1) {
+                match = true;
+                break;
+            }
+        }
+        return match;
+    }
+
+    public static boolean canActivate(PlayerInteractEvent event, Material material) {
+        if (material.isAir()) return false;
+        if (!event.getAction().isRightClick()) return false;
+        Player player = event.getPlayer();
+        if (!player.isSneaking()) return false;
+        if (event.getItem().getType() != material) return false;
+        return true;
     }
 
     public static Jobs getJobs() {

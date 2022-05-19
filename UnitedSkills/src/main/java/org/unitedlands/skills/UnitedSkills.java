@@ -11,6 +11,7 @@ import org.unitedlands.skills.farmer.FarmerListener;
 import org.unitedlands.skills.fisherman.FishermanListener;
 import org.unitedlands.skills.hunter.HunterListener;
 import org.unitedlands.skills.miner.MinerListener;
+import org.unitedlands.skills.woodcutter.WoodcutterListener;
 
 public final class UnitedSkills extends JavaPlugin {
     @Override
@@ -24,6 +25,7 @@ public final class UnitedSkills extends JavaPlugin {
         final BrewerListener brewerListener = new BrewerListener(this);
         final FarmerListener farmerListener = new FarmerListener(this);
         final HunterListener hunterListener = new HunterListener(this);
+        final WoodcutterListener woodcutterListener = new WoodcutterListener(this, getCoreProtect());
         final FishermanListener fishermanListener = new FishermanListener(this);
         final MinerListener minerListener = new MinerListener(this, getCoreProtect());
         final PluginManager pluginManager = getServer().getPluginManager();
@@ -32,6 +34,7 @@ public final class UnitedSkills extends JavaPlugin {
         pluginManager.registerEvents(minerListener, this);
         pluginManager.registerEvents(hunterListener, this);
         pluginManager.registerEvents(fishermanListener, this);
+        pluginManager.registerEvents(woodcutterListener, this);
         hunterListener.damageBleedingEntities();
     }
 
