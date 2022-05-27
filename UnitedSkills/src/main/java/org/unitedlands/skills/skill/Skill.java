@@ -57,13 +57,13 @@ public class Skill {
 
     public int getLevel() {
         String name = getName();
-        if (player.hasPermission("united.skills." + name + ".2") && type.getMaxLevel() == 3) {
+        if (player.hasPermission("united.skills." + name + ".3") && type.getMaxLevel() == 3) {
             return 3;
         }
-        if (player.hasPermission("united.skills." + name + ".1")) {
+        if (player.hasPermission("united.skills." + name + ".2")) {
             return 2;
         }
-        if (player.hasPermission("united.skills." + name)) {
+        if (player.hasPermission("united.skills." + name + ".1")) {
             return 1;
         }
         return 0;
