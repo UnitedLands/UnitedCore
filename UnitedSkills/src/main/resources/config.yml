@@ -227,7 +227,7 @@ potions:
     extended: 480
     upgraded: 90
     max_amplifier: 1
-  SLOW:
+  SLOWNESS:
     default: 90
     extended: 240
     upgraded: 20
@@ -242,7 +242,7 @@ potions:
     extended: 90
     upgraded: 21
     max_amplifier: 1
-  REGENERATION:
+  REGEN:
     default: 45
     extended: 90
     upgraded: 22
@@ -267,6 +267,16 @@ potions:
     extended: 240
     upgraded: 90
     max_amplifier: 0
+  INSTANT_HEAL:
+    default: 0
+    extended: 0
+    upgraded: 0
+    max_amplifier: 1
+  INSTANT_DAMAGE:
+    default: 0
+    extended: 0
+    upgraded: 0
+    max_amplifier: 1
 archaeologist-loot:
   nether_star: # name can be whatever here.
     material: NETHER_STAR
@@ -278,5 +288,12 @@ archaeologist-loot:
       - SOUL_SAND
       - SOUL_SOIL
       - DIRT
+treasure-hunter-loot:
+  nether_star: # name can be whatever here.
+    material: NETHER_STAR
+    chance: 1.0
+    amount-range: 1-5
+    required-level: 1
+    level-modifier: 0.05 # increases the chance by 5% for each level.
 messages:
   no-permission: "You do not have permission to execute this command!"

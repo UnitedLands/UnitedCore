@@ -54,7 +54,7 @@ public class ActiveSkill extends Skill {
         BossBar bossBar = BossBar.bossBar(name, 1, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
         player.showBossBar(bossBar);
         Bukkit.getScheduler().runTaskTimer(getUnitedSkills(), task -> {
-            if (bossBar.progress() == 0.0) {
+            if (bossBar.progress() <= 0.0) {
                 task.cancel();
                 player.hideBossBar(bossBar);
                 return;

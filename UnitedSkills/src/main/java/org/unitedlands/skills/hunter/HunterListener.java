@@ -261,26 +261,6 @@ public class HunterListener implements Listener {
     }
 
     @EventHandler
-    public void onBowFire(EntityShootBowEvent event) {
-        if (!(event.getEntity() instanceof Player)) {
-            return;
-        }
-        player = (Player) event.getEntity();
-        if (!isHunter()) {
-            return;
-        }
-        ActiveSkill skill = new ActiveSkill(player, SkillType.FOCUS, cooldowns, durations);
-        if (skill.getLevel() == 0) {
-            return;
-        }
-        if (skill.isActive() && event.getForce() == 1F) {
-            Arrow arrow = (Arrow) event.getProjectile();
-            arrow.setDamage(arrow.getDamage() * (1 + (skill.getLevel() * 0.2)));
-        }
-
-    }
-
-    @EventHandler
     public void onMobDamage(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player damager)) {
             return;
@@ -306,6 +286,10 @@ public class HunterListener implements Listener {
         if (criticalHit.isSuccessful()) {
             criticalHit.notifyActivation();
             event.setDamage(event.getDamage() * 2);
+        }
+        ActiveSkill focus = new ActiveSkill(player, SkillType.FOCUS, cooldowns, durations);
+        if (focus.isActive()) {
+            event.setDamage(event.getDamage() * (1 + (focus.getLevel() * 0.2)));
         }
     }
 

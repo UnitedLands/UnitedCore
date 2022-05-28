@@ -21,6 +21,7 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.unitedlands.skills.LootTable;
 import org.unitedlands.skills.UnitedSkills;
 import org.unitedlands.skills.skill.ActiveSkill;
 import org.unitedlands.skills.skill.Skill;
@@ -39,6 +40,39 @@ public class FishermanListener implements Listener {
 
     public FishermanListener(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
+    }
+
+    @EventHandler
+    public void onTreasureHunterFish(PlayerFishEvent event) {
+        player = event.getPlayer();
+        if (!isFisherman()) {
+            return;
+        }
+        Skill treasureHunter = new Skill(player, SkillType.TREASURE_HUNTER);
+        if (treasureHunter.getLevel() == 0) {
+            return;
+        }
+        event.getHook().setWaitTime(20);
+        if (event.getCaught() != null) {
+            if (event.getCaught() instanceof Item caughtFish) {
+                LootTable treasureHunterLootTable = new LootTable("treasure-hunter-loot", treasureHunter);
+                ItemStack item = treasureHunterLootTable.getRandomItem();
+                if (item == null) {
+                    return;
+                }
+                caughtFish.getWorld().dropItem(caughtFish.getLocation(), item);
+                List<Entity> entities = caughtFish.getNearbyEntities(1, 1, 1);
+                for (Entity entity : entities) {
+                    if (entity.equals(caughtFish)) {
+                        continue;
+                    }
+                    Bukkit.getScheduler().runTaskLater(unitedSkills, () -> {
+                        entity.setVelocity(caughtFish.getVelocity());
+                    }, 2);
+                }
+                caughtFish.remove();
+            }
+        }
     }
 
     @EventHandler

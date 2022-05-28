@@ -28,7 +28,7 @@ public class Utils {
         return miniMessage.deserialize(configMessage);
     }
 
-    private static UnitedSkills getUnitedSkills() {
+    public static UnitedSkills getUnitedSkills() {
         return (UnitedSkills) Bukkit.getPluginManager().getPlugin("UnitedSkills");
     }
 

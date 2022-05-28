@@ -11,9 +11,6 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -23,6 +20,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.unitedlands.skills.LootTable;
 import org.unitedlands.skills.UnitedSkills;
 import org.unitedlands.skills.Utils;
 import org.unitedlands.skills.skill.ActiveSkill;
@@ -31,7 +29,6 @@ import org.unitedlands.skills.skill.SkillType;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class DiggerListener implements Listener {
@@ -49,7 +46,7 @@ public class DiggerListener implements Listener {
     }
 
     @EventHandler
-    public void onArchaeologistBlockBreak(BlockDropItemEvent event) {
+    public void onArchaeologistBlockBreak(BlockBreakEvent event) {
         player = event.getPlayer();
         if (!isDigger()) {
             return;
@@ -59,41 +56,15 @@ public class DiggerListener implements Listener {
             return;
         }
 
-        FileConfiguration config = unitedSkills.getConfig();
-        ConfigurationSection lootSection = config.getConfigurationSection("archaeologist-loot");
-        Set<String> itemIDS = lootSection.getKeys(false);
-        for (String itemID : itemIDS) {
-            BlockState blockState = event.getBlockState();
-            if (Utils.isPlaced(coreProtect, blockState.getBlock())) {
-                return;
-            }
-            ConfigurationSection itemSection = lootSection.getConfigurationSection(itemID);
-            if (!itemSection.getStringList( "blocks").contains(blockState.getType().toString())) {
-                return;
-            }
-            double randomPercentage = Math.random() * 100;
-            double finalDropChance = getFinalDropChance(archaeologist, itemSection);
-            if (randomPercentage < finalDropChance) {
-                String[] amountRange = itemSection.getString( "amount-range").split("-");
-                int amount = getAmount(amountRange);
-                Material itemMaterial = Material.getMaterial(itemSection.getString("material"));
-                blockState.getWorld().dropItem(blockState.getLocation(), new ItemStack(itemMaterial, amount));
-                event.setCancelled(true);
-            }
+        LootTable archaeologistLootTable = new LootTable("archaeologist-loot", archaeologist);
+        Block block = event.getBlock();
+        if (Utils.isPlaced(coreProtect, block)) return;
+
+        ItemStack randomItem = archaeologistLootTable.getRandomItem(block);
+        if (randomItem != null) {
+            block.getWorld().dropItem(block.getLocation(), randomItem);
+            archaeologist.notifyActivation();
         }
-    }
-
-    private int getAmount(String[] amountRange) {
-        int minAmount = Integer.parseInt(amountRange[0]);
-        int maxAmount = Integer.parseInt(amountRange[1]);
-        return minAmount + (int)(Math.random() * ((maxAmount - minAmount) + 1));
-    }
-
-    private double getFinalDropChance(Skill archaeologist, ConfigurationSection itemSection) {
-        double baseChance = itemSection.getDouble( "chance");
-        double chanceModifier = itemSection.getDouble( "level-modifier") * archaeologist.getLevel();
-        double finalDropChance = (baseChance + chanceModifier) * 100;
-        return finalDropChance;
     }
 
     @EventHandler
@@ -153,7 +124,7 @@ public class DiggerListener implements Listener {
         Block block = event.getBlockState().getBlock();
         Material blockType = event.getBlockState().getType();
         if (blockType.equals(Material.CLAY) && level == 3) {
-            block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.BRICK));
+            block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.BRICK, 4));
             event.setCancelled(true);
         }
         else if (blockType.toString().contains("CONCRETE_POWDER") && level >= 2) {
@@ -180,41 +151,6 @@ public class DiggerListener implements Listener {
         }
         Block block = event.getBlock();
         createTunnel(block);
-    }
-
-    @EventHandler
-    public void onTunnelInteract(PlayerInteractEvent event) {
-        player = event.getPlayer();
-        if (!isDigger()) {
-            return;
-        }
-        Block clickedBlock = event.getClickedBlock();
-        if (clickedBlock == null) {
-            return;
-        }
-        ActiveSkill tunneller = new ActiveSkill(player, SkillType.TUNNELLER, cooldowns, durations);
-        if (!tunneller.isActive()) {
-            return;
-        }
-        if (tunneller.getLevel() == 1) {
-            return;
-        }
-        if (isStoneVariant(clickedBlock.getType())) {
-            Bukkit.getScheduler().runTaskLater(unitedSkills, () -> {
-                clickedBlock.breakNaturally();
-                player.playSound(player, Sound.BLOCK_STONE_BREAK, 1F, 1F);
-                createTunnel(clickedBlock);
-            }, 5);
-        }
-
-    }
-
-    private boolean isStoneVariant(Material material) {
-        return material.toString().contains("STONE")
-                || material.equals(Material.DIORITE)
-                || material.equals(Material.GRANITE)
-                || material.equals(Material.ANDESITE)
-                || material.equals(Material.DEEPSLATE);
     }
 
     private void createTunnel(Block block) {
@@ -246,7 +182,7 @@ public class DiggerListener implements Listener {
             // Skip blocks that should not be mined
             if (blockAdd.equals(block)) continue;
             // Skip any stuff that shovels wouldn't drop, and make sure the level is 1 (i.e can't break stone)
-            if (blockAdd.getDrops(item).isEmpty() && level == 1) continue;
+            if (blockAdd.getDrops(item).isEmpty()) continue;
             if (blockAdd.isLiquid()) continue;
 
             Material addType = blockAdd.getType();
