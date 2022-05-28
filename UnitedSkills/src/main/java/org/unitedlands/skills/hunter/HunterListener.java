@@ -103,7 +103,7 @@ public class HunterListener implements Listener {
                 return;
             }
             if (entity instanceof LivingEntity) {
-                spawnBleedingParticles(entity);
+                spawnBleedingParticles(entity, 100);
                 ((LivingEntity) entity).damage(damage);
                 counterAttack.notifyActivation();
             }
@@ -150,7 +150,7 @@ public class HunterListener implements Listener {
                     bleedingDurations.remove(entity);
                     continue;
                 }
-                spawnBleedingParticles(entity);
+                spawnBleedingParticles(entity, 50);
                 entity.damage(2);
             }
         },0, 20);
@@ -199,21 +199,25 @@ public class HunterListener implements Listener {
         if (!(event.getEntity() instanceof Arrow arrow)) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.RETRIEVER);
-        if (skill.getLevel() == 0) {
-            return;
-        }
-        ItemStack bow = player.getInventory().getItemInMainHand();
-        if (bow.containsEnchantment(Enchantment.ARROW_INFINITE)) {
-            if (arrow.getBasePotionData().getType() != PotionType.UNCRAFTABLE){
-                if (skill.isSuccessful()) {
+        Skill retriever = new Skill(player, SkillType.RETRIEVER);
+        if (retriever.getLevel() != 0) {
+            ItemStack bow = player.getInventory().getItemInMainHand();
+            if (bow.containsEnchantment(Enchantment.ARROW_INFINITE)) {
+                if (arrow.getBasePotionData().getType() != PotionType.UNCRAFTABLE) {
+                    if (retriever.isSuccessful()) {
+                        arrow.setMetadata("retrieved", new FixedMetadataValue(unitedSkills, true));
+                    }
+                }
+            } else {
+                if (retriever.isSuccessful()) {
                     arrow.setMetadata("retrieved", new FixedMetadataValue(unitedSkills, true));
                 }
             }
-        } else {
-            if (skill.isSuccessful()) {
-                arrow.setMetadata("retrieved", new FixedMetadataValue(unitedSkills, true));
-            }
+        }
+        Skill piercing = new Skill(player, SkillType.PIERCING);
+        if (piercing.isSuccessful()) {
+            arrow.setMetadata("piercing", new FixedMetadataValue(unitedSkills, true));
+            spawnArrowTrail(arrow, Material.RED_WOOL);
         }
     }
 
@@ -223,6 +227,8 @@ public class HunterListener implements Listener {
             if (event.getEntity().hasMetadata("retrieved")) {
                 Arrow arrow = (Arrow) event.getEntity();
                 if (arrow.getShooter() instanceof Player shooter) {
+                    Skill retriever = new Skill(player, SkillType.RETRIEVER);
+                    retriever.sendActivationActionBar();
                     shooter.getInventory().addItem(arrow.getItemStack().asOne());
                 }
                 event.getEntity().remove();
@@ -245,8 +251,8 @@ public class HunterListener implements Listener {
             return;
         }
         Skill piercing = new Skill(player, SkillType.PIERCING);
-        if (piercing.isSuccessful()) {
-            piercing.notifyActivation();
+        if (arrow.hasMetadata("piercing")) {
+            piercing.sendActivationActionBar();
             int modifier = 1;
             if (piercing.getLevel() == 3) {
                 modifier = 2;
@@ -255,7 +261,8 @@ public class HunterListener implements Listener {
         }
         Skill criticalHit = new Skill(player, SkillType.CRITICAL_HIT);
         if (criticalHit.isSuccessful()) {
-            criticalHit.notifyActivation();
+            criticalHit.sendActivationSound();
+            spawnBleedingParticles(event.getEntity(), 100);
             arrow.setDamage(arrow.getDamage() * 2);
         }
     }
@@ -289,15 +296,53 @@ public class HunterListener implements Listener {
         }
         ActiveSkill focus = new ActiveSkill(player, SkillType.FOCUS, cooldowns, durations);
         if (focus.isActive()) {
-            event.setDamage(event.getDamage() * (1 + (focus.getLevel() * 0.2)));
+            if (event.getDamager() instanceof Arrow arrow) {
+                if (arrow.hasMetadata("focused")) {
+                    event.setDamage(event.getDamage() * (1 + (focus.getLevel() * 0.2)));
+                }
+            }
         }
     }
 
-    private void spawnBleedingParticles(Entity entity) {
+    @EventHandler
+    public void onFocusedArrowShoot(EntityShootBowEvent event) {
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+        player = (Player) event.getEntity();
+        if (!isHunter()) {
+            return;
+        }
+        ActiveSkill skill = new ActiveSkill(player, SkillType.FOCUS, cooldowns, durations);
+        if (skill.getLevel() == 0) {
+            return;
+        }
+        if (skill.isActive() && event.getForce() == 1F) {
+            Arrow arrow = (Arrow) event.getProjectile();
+            arrow.setMetadata("focused", new FixedMetadataValue(unitedSkills, true));
+            spawnArrowTrail(arrow, Material.YELLOW_WOOL);
+        }
+    }
+
+    private void spawnArrowTrail(Arrow arrow, Material material) {
+        ParticleBuilder particle = new ParticleBuilder(Particle.BLOCK_CRACK);
+        BlockData blockData = material.createBlockData();
+        Bukkit.getScheduler().runTaskTimer(unitedSkills, task -> {
+            if (arrow.isDead()) {
+                task.cancel();
+            }
+            particle.data(blockData)
+                    .count(5)
+                    .location(arrow.getLocation())
+                    .spawn();
+        }, 0, 1);
+    }
+
+    private void spawnBleedingParticles(Entity entity, int amount) {
         ParticleBuilder particle = new ParticleBuilder(Particle.BLOCK_CRACK);
         BlockData redWoolData = Material.RED_WOOL.createBlockData();
         particle.data(redWoolData);
-        particle.count(50);
+        particle.count(amount);
         particle.location(entity.getLocation());
         particle.spawn();
     }

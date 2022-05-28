@@ -49,9 +49,11 @@ public class ActiveSkill extends Skill {
         sendBossBar();
         return true;
     }
+
     private void sendBossBar() {
-        final Component name = Component.text(getFormattedName(), NamedTextColor.YELLOW);
-        BossBar bossBar = BossBar.bossBar(name, 1, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
+        final Component name = Component.text(getFormattedName() + ": ", NamedTextColor.YELLOW);
+        Component time = Component.text( getSecondsLeft() + "s", NamedTextColor.GOLD);
+        BossBar bossBar = BossBar.bossBar(name.append(time), 1, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
         player.showBossBar(bossBar);
         Bukkit.getScheduler().runTaskTimer(getUnitedSkills(), task -> {
             if (bossBar.progress() <= 0.0) {
@@ -59,6 +61,7 @@ public class ActiveSkill extends Skill {
                 player.hideBossBar(bossBar);
                 return;
             }
+            bossBar.name(name.append(Component.text( getSecondsLeft() + "s", NamedTextColor.GOLD)));
             bossBar.progress((float) getSecondsLeft() / getDuration());
         }, 0, 20L);
     }

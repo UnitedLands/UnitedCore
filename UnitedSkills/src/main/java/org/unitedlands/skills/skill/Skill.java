@@ -50,9 +50,21 @@ public class Skill {
     }
 
     public void notifyActivation() {
-        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
-        player.sendActionBar(Component.text(getFormattedName() + " activated!", NamedTextColor.GOLD)
+        sendActivationSound();
+        sendActivationActionBar();
+    }
+
+    public void sendActivationActionBar() {
+        String activationMessage = type.getActivationMessage();
+        if (activationMessage == null) {
+            activationMessage = getFormattedName() + " activated!";
+        }
+        player.sendActionBar(Component.text(activationMessage, NamedTextColor.GOLD)
                 .decoration(TextDecoration.BOLD, true));
+    }
+
+    public void sendActivationSound() {
+        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
     }
 
     public int getLevel() {

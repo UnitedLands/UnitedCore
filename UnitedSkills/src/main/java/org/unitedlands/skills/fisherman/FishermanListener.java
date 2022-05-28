@@ -6,6 +6,7 @@ import com.gamingmesh.jobs.container.JobsPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Item;
@@ -161,8 +162,8 @@ public class FishermanListener implements Listener {
         }
         Entity hook = event.getHook();
         Location hookLocation = hook.getLocation();
-        Material bottomBlock = hookLocation.getBlock().getRelative(0, -1, 0).getType();
-        if (bottomBlock == Material.WATER || bottomBlock == Material.AIR) {
+        Block bottomBlock = hookLocation.getBlock().getRelative(0, -1, 0);
+        if (!bottomBlock.getType().isSolid() || player.getLocation().getBlock().equals(bottomBlock)) {
             return;
         }
 

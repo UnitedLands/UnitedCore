@@ -1,5 +1,6 @@
 package org.unitedlands.skills.woodcutter;
 
+import com.destroystokyo.paper.ParticleBuilder;
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.container.JobProgression;
 import com.gamingmesh.jobs.container.JobsPlayer;
@@ -12,6 +13,7 @@ import com.songoda.ultimatetimber.tree.TreeDefinition;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -91,9 +93,10 @@ public class WoodcutterListener implements Listener {
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     throw new RuntimeException(e);
                 }
-                if (reforestation.getLevel() != 3) {
-                    reforestation.notifyActivation();
-                }
+                ParticleBuilder greenParticle = new ParticleBuilder(Particle.VILLAGER_HAPPY);
+                greenParticle.count(25)
+                        .location(tree.getDetectedTreeBlocks().getInitialLogBlock().getLocation())
+                        .spawn();
             });
         }
     }

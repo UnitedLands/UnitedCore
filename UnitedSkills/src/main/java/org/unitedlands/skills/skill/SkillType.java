@@ -1,8 +1,5 @@
 package org.unitedlands.skills.skill;
 
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 public enum SkillType {
     // Brewer
     EXPOSURE_THERAPY("exposure-therapy", 3),
@@ -26,12 +23,12 @@ public enum SkillType {
     SHELL_SHOCKED("shell-shocked", 3),
     // Hunter
     SELF_REFLECTION("self-reflection", 3),
-    RETRIEVER("retriever", 3),
-    PIERCING("piercing", 3),
-    CRITICAL_HIT("critical-hit", 3),
+    RETRIEVER("retriever", 3, "Arrow Retrieved!"),
+    PIERCING("piercing", 3, "Piercing Strike!"),
+    CRITICAL_HIT("critical-hit", 3, "Critical Hit!"),
     PRECISION_STRIKE("precision-strike", 3),
-    COUNTER_ATTACK("counter-attack", 3),
-    STUN("stun", 3),
+    COUNTER_ATTACK("counter-attack", 3, "Attack Parried!"),
+    STUN("stun", 3, "Enemy Stunned!"),
     FOCUS("focus", 3),
     // Fisher
     TREASURE_HUNTER("treasure-hunter", 3),
@@ -53,9 +50,16 @@ public enum SkillType {
     private final String name;
 
     private final int maxLevel;
+    private final String activationMessage;
     SkillType(String name, int maxLevel) {
         this.name = name;
         this.maxLevel = maxLevel;
+        activationMessage = null;
+    }
+    SkillType(String name, int maxLevel, String activationMessage) {
+        this.name = name;
+        this.maxLevel = maxLevel;
+        this.activationMessage = activationMessage;
     }
     public String getName() {
         return name;
@@ -63,5 +67,9 @@ public enum SkillType {
 
     public int getMaxLevel() {
         return maxLevel;
+    }
+
+    public String getActivationMessage() {
+        return activationMessage;
     }
 }

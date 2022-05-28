@@ -1,5 +1,6 @@
 package org.unitedlands.skills.farmer;
 
+import com.destroystokyo.paper.ParticleBuilder;
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.container.JobProgression;
 import com.gamingmesh.jobs.container.JobsPlayer;
@@ -13,6 +14,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
@@ -93,6 +95,9 @@ public class FarmerListener implements Listener {
         Ageable crop = (Ageable) block.getBlockData();
         CustomStack customStack = CustomStack.byItemStack(event.getItemInHand());
 
+        ParticleBuilder greenParticle = new ParticleBuilder(Particle.VILLAGER_HAPPY);
+        greenParticle.count(25).location(block.getLocation());
+
         if (skill.isSuccessful()) {
             int newAge = Math.min(skill.getLevel() + 1, crop.getMaximumAge() - 1);
             if (customStack != null) {
@@ -102,13 +107,13 @@ public class FarmerListener implements Listener {
                         final int age = Math.min(skill.getLevel() + 1, customCrop.getMaxAge() - 1);
                         customCrop.setAge(age);
                     }
-                    skill.notifyActivation();
+                    greenParticle.spawn();
                 });
                 return;
             }
             crop.setAge(newAge);
             block.setBlockData(crop);
-            skill.notifyActivation();
+            greenParticle.spawn();
         }
 
     }
@@ -136,6 +141,7 @@ public class FarmerListener implements Listener {
         if (isHoldingMushrooms(handItem, offhandItem) && isInOwnTownOrWilderness()) {
             Location location = entity.getLocation();
             entity.remove();
+            sendMushroomParticles(entity.getLocation());
             entity.getWorld().spawnEntity(location, EntityType.MUSHROOM_COW);
             runFungalSkill(offhandItem, handItem);
         }
@@ -165,6 +171,7 @@ public class FarmerListener implements Listener {
                 event.setCancelled(true);
                 block.setType(Material.MYCELIUM);
                 runFungalSkill(offhandItem, handItem);
+                sendMushroomParticles(block.getLocation());
             }
         }
     }
@@ -181,8 +188,16 @@ public class FarmerListener implements Listener {
         } else {
             player.getInventory().remove(handItem);
         }
-        Skill skill = new Skill(player, SkillType.FUNGAL);
-        skill.notifyActivation();
+    }
+
+    private void sendMushroomParticles(Location location) {
+        ParticleBuilder mushroomParticles = new ParticleBuilder(Particle.BLOCK_CRACK);
+        BlockData mushroomData = Material.RED_MUSHROOM_BLOCK.createBlockData();
+        mushroomParticles
+                .count(25)
+                .data(mushroomData)
+                .location(location)
+                .spawn();
     }
 
     private boolean isHoldingMushrooms(ItemStack handItem, ItemStack offhandItem ) {

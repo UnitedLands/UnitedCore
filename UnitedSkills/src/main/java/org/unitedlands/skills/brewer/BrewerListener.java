@@ -100,8 +100,8 @@ public class BrewerListener implements Listener {
         if (skill.getLevel() == 0) {
             return;
         }
-        ParticleBuilder particle = new ParticleBuilder(Particle.CLOUD);
-        particle.count(skill.getLevel() * 10);
+        ParticleBuilder particle = new ParticleBuilder(Particle.CAMPFIRE_COSY_SMOKE);
+        particle.count(skill.getLevel() * 2);
         particle.force();
         particle.location(event.getEntity().getLocation());
 
