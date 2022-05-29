@@ -37,6 +37,7 @@ import org.unitedlands.skills.skill.SkillType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 
 public class HunterListener implements Listener {
@@ -144,8 +145,10 @@ public class HunterListener implements Listener {
             if (bleedingEntities.isEmpty()) {
                 return;
             }
-            for (LivingEntity entity : bleedingEntities) {
-                if (((bleedingDurations.get(entity) - System.currentTimeMillis()) / 1000L) <= 0) {
+            for (Iterator<LivingEntity> iterator = bleedingEntities.iterator(); iterator.hasNext(); ) {
+                LivingEntity entity = iterator.next();
+                boolean hasStoppedBleeding = ((bleedingDurations.get(entity) - System.currentTimeMillis()) / 1000L) <= 0;
+                if (hasStoppedBleeding) {
                     bleedingEntities.remove(entity);
                     bleedingDurations.remove(entity);
                     continue;

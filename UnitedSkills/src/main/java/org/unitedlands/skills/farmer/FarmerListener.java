@@ -96,7 +96,7 @@ public class FarmerListener implements Listener {
         CustomStack customStack = CustomStack.byItemStack(event.getItemInHand());
 
         ParticleBuilder greenParticle = new ParticleBuilder(Particle.VILLAGER_HAPPY);
-        greenParticle.count(25).location(block.getLocation());
+        greenParticle.count(25).location(block.getLocation().toCenterLocation());
 
         if (skill.isSuccessful()) {
             int newAge = Math.min(skill.getLevel() + 1, crop.getMaximumAge() - 1);
@@ -140,8 +140,8 @@ public class FarmerListener implements Listener {
 
         if (isHoldingMushrooms(handItem, offhandItem) && isInOwnTownOrWilderness()) {
             Location location = entity.getLocation();
-            entity.remove();
             sendMushroomParticles(entity.getLocation());
+            entity.remove();
             entity.getWorld().spawnEntity(location, EntityType.MUSHROOM_COW);
             runFungalSkill(offhandItem, handItem);
         }
@@ -169,9 +169,9 @@ public class FarmerListener implements Listener {
         if (block.getType().equals(Material.GRASS_BLOCK) || block.getType().equals(Material.DIRT)) {
             if (isHoldingMushrooms(handItem, offhandItem) && isInOwnTownOrWilderness()) {
                 event.setCancelled(true);
+                sendMushroomParticles(block.getLocation());
                 block.setType(Material.MYCELIUM);
                 runFungalSkill(offhandItem, handItem);
-                sendMushroomParticles(block.getLocation());
             }
         }
     }
@@ -192,10 +192,11 @@ public class FarmerListener implements Listener {
 
     private void sendMushroomParticles(Location location) {
         ParticleBuilder mushroomParticles = new ParticleBuilder(Particle.BLOCK_CRACK);
-        BlockData mushroomData = Material.RED_MUSHROOM_BLOCK.createBlockData();
+        BlockData mushroomData = Material.RED_MUSHROOM.createBlockData();
         mushroomParticles
-                .count(25)
                 .data(mushroomData)
+                .count(100)
+                .offset(0, 1, 0)
                 .location(location)
                 .spawn();
     }

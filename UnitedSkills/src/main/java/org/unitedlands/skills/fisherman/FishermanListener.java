@@ -53,7 +53,6 @@ public class FishermanListener implements Listener {
         if (treasureHunter.getLevel() == 0) {
             return;
         }
-        event.getHook().setWaitTime(20);
         if (event.getCaught() != null) {
             if (event.getCaught() instanceof Item caughtFish) {
                 LootTable treasureHunterLootTable = new LootTable("treasure-hunter-loot", treasureHunter);

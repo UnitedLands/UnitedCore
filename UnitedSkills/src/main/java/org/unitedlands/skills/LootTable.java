@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.unitedlands.skills.skill.Skill;
 
 import java.util.ArrayList;
@@ -86,13 +87,17 @@ public class LootTable {
         for (String line : lore) {
             deserializedLore.add(miniMessage.deserialize(line));
         }
-        item.getItemMeta().lore(deserializedLore);
+        ItemMeta meta = item.getItemMeta();
+        meta.lore(deserializedLore);
+        item.setItemMeta(meta);
     }
 
     private void addModelData(ConfigurationSection itemSection, ItemStack item) {
         int customModelData = itemSection.getInt("custom-model-data");
         if (customModelData != 0) {
-            item.getItemMeta().setCustomModelData(customModelData);
+            ItemMeta meta = item.getItemMeta();
+            meta.setCustomModelData(customModelData);
+            item.setItemMeta(meta);
         }
     }
 
@@ -100,7 +105,9 @@ public class LootTable {
         String configuredName = itemSection.getString("name");
         if (configuredName != null) {
             Component name = miniMessage.deserialize(configuredName);
-            item.getItemMeta().displayName(name);
+            ItemMeta meta = item.getItemMeta();
+            meta.displayName(name);
+            item.setItemMeta(meta);
         }
     }
 

@@ -95,7 +95,7 @@ public class WoodcutterListener implements Listener {
                 }
                 ParticleBuilder greenParticle = new ParticleBuilder(Particle.VILLAGER_HAPPY);
                 greenParticle.count(25)
-                        .location(tree.getDetectedTreeBlocks().getInitialLogBlock().getLocation())
+                        .location(tree.getDetectedTreeBlocks().getInitialLogBlock().getLocation().toCenterLocation())
                         .spawn();
             });
         }
