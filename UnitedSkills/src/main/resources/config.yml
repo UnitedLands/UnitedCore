@@ -277,6 +277,16 @@ potions:
     extended: 0
     upgraded: 0
     max_amplifier: 1
+wrangler-mobs:
+  - PIG
+  - COW
+  - CHICKEN
+  - HORSE
+trafficker-mobs:
+  - ZOMBIE
+  - SKELETON
+  - SPIDER
+  - CREEPER
 archaeologist-loot:
   nether_star: # name can be whatever here.
     material: NETHER_STAR

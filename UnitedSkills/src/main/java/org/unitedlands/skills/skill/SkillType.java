@@ -14,6 +14,7 @@ public enum SkillType {
     FERTILISER("fertiliser", 3),
     VEGETARIAN("vegetarian", 2),
     FUNGAL("fungal", 2),
+    WRANGLER("wrangler", 3),
     EXPERT_HARVESTER("expert-harvester", 3),
     // Miner
     FRENZY("frenzy", 3),
@@ -30,6 +31,7 @@ public enum SkillType {
     COUNTER_ATTACK("counter-attack", 3, "Attack Parried!"),
     STUN("stun", 3, "Enemy Stunned!"),
     FOCUS("focus", 3),
+    TRAFFICKER("trafficker", 3),
     // Fisher
     TREASURE_HUNTER("treasure-hunter", 3),
     ANGLER("angler", 3),

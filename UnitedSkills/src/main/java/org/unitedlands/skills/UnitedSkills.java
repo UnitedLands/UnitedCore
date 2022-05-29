@@ -1,5 +1,6 @@
 package org.unitedlands.skills;
 
+import de.Linus122.SafariNet.API.SafariNet;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.plugin.Plugin;
@@ -12,6 +13,8 @@ import org.unitedlands.skills.farmer.FarmerListener;
 import org.unitedlands.skills.fisherman.FishermanListener;
 import org.unitedlands.skills.hunter.HunterListener;
 import org.unitedlands.skills.miner.MinerListener;
+import org.unitedlands.skills.safarinets.TraffickerListener;
+import org.unitedlands.skills.safarinets.WranglerListener;
 import org.unitedlands.skills.woodcutter.WoodcutterListener;
 
 public final class UnitedSkills extends JavaPlugin {
@@ -39,6 +42,8 @@ public final class UnitedSkills extends JavaPlugin {
         pluginManager.registerEvents(fishermanListener, this);
         pluginManager.registerEvents(woodcutterListener, this);
         pluginManager.registerEvents(diggerListener, this);
+        SafariNet.addListener(new WranglerListener());
+        SafariNet.addListener(new TraffickerListener());
 
         hunterListener.damageBleedingEntities();
     }
