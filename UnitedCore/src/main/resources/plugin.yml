@@ -1,7 +1,0 @@
-name: UnitedCore
-version: '${project.version}'
-main: org.unitedlands.unitedcore.UnitedCore
-api-version: 1.17
-authors: [ Obito17 ]
-commands:
-  unitecore:
