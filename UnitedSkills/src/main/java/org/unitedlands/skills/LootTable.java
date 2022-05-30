@@ -2,11 +2,14 @@ package org.unitedlands.skills;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.skill.Skill;
 
 import java.util.ArrayList;
@@ -41,6 +44,27 @@ public class LootTable {
     }
 
     /**
+     * @param biome The biome to check
+     * @return a random item from a biome-based loot table.
+     */
+    public ItemStack getRandomItem(Biome biome) {
+        ConfigurationSection lootSection = unitedSkills.getConfig().getConfigurationSection(name);
+        Set<String> itemIDS = lootSection.getKeys(false);
+        for (String itemID : itemIDS) {
+            ConfigurationSection itemSection = lootSection.getConfigurationSection(itemID);
+            @NotNull List<String> itemBiomes = itemSection.getStringList("biomes");
+            if (!itemBiomes.contains(biome.name())) {
+                continue;
+            }
+            if (isSuccessful(itemSection)) {
+                return generateItem(itemSection);
+            }
+        }
+        return null;
+    }
+
+
+    /**
      * @param block The block which the item should be checked against. This is used for any loot tables which drop items from blocks.
      * @return true if the item is dropped successfully
      */
@@ -50,17 +74,14 @@ public class LootTable {
         for (String itemID : itemIDS) {
             ConfigurationSection itemSection = lootSection.getConfigurationSection(itemID);
             if (!itemSection.getStringList( "blocks").contains(block.getType().toString())) {
-                return null;
+                continue;
             }
             if (isSuccessful(itemSection)) {
                 return generateItem(itemSection);
-            } else {
-                return null;
             }
         }
         return null;
     }
-
     private boolean isSuccessful(ConfigurationSection itemSection) {
         double randomPercentage = Math.random() * 100;
         double finalDropChance = getFinalDropChance(requiredSkill, itemSection);
@@ -68,8 +89,7 @@ public class LootTable {
     }
 
     private ItemStack generateItem(ConfigurationSection itemSection) {
-        String[] amountRange = itemSection.getString( "amount-range").split("-");
-        int amount = getAmount(amountRange);
+        int amount = getAmount(itemSection);
 
         Material itemMaterial = Material.getMaterial(itemSection.getString("material"));
         ItemStack item = new ItemStack(itemMaterial, amount);
@@ -111,9 +131,12 @@ public class LootTable {
         }
     }
 
-    private int getAmount(String[] amountRange) {
-        int minAmount = Integer.parseInt(amountRange[0]);
-        int maxAmount = Integer.parseInt(amountRange[1]);
+    private int getAmount(ConfigurationSection itemSection) {
+        int minAmount = itemSection.getInt("min");
+        int maxAmount = itemSection.getInt("max");
+        if (minAmount == maxAmount) {
+            return minAmount;
+        }
         return minAmount + (int)(Math.random() * ((maxAmount - minAmount) + 1));
     }
 

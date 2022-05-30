@@ -291,18 +291,105 @@ archaeologist-loot:
   nether_star: # name can be whatever here.
     material: NETHER_STAR
     chance: 0.01 # 1%
-    amount-range: 1-5
+    min: 1
+    max: 1
     required-level: 1
     level-modifier: 0.05 # increases the chance by 5% for each level.
     blocks:
       - SOUL_SAND
       - SOUL_SOIL
       - DIRT
+mineral-finder-loot:
+  maronine: # name can be whatever here.
+    material: GOLD_NUGGET
+    name: "<color:#800000>Maronine Nugget"
+    min: 1
+    max: 1
+    lore:
+      - "<white>"
+      - "<grey>Can be used to craft <color:#800000>Maronine Ingots"
+    chance: 0.005
+    amount-range: 1
+    required-level: 1
+    level-modifier: 0.0
+    custom-model-data: 1
+    blocks:
+      - SOUL_SAND
+      - SOUL_SOIL
+  litnium:
+    material: GOLD_NUGGET
+    chance: 0.005
+    min: 1
+    max: 1
+    amount-range: 1
+    required-level: 2
+    custom-model-data: 2
+    name: "<color:#14C183>Litnium Nugget"
+    lore:
+      - "<white>"
+      - "<grey>Can be used to craft <color:#14C183>Litnium Ingots"
+    level-modifier: 0.0
+    blocks:
+      - DIRT
+      - ROOTED_DIRT
+      - GRASS
+      - PODZOL
+      - COARSE_DIRT
+      - FARMLAND
+  cinnarite: # name can be whatever here.
+    material: GOLD_NUGGET
+    chance: 0.005
+    min: 1
+    max: 1
+    required-level: 3
+    custom-model-data: 3
+    name: "<color:#F3F29E>Cinnarite Nugget"
+    lore:
+      - "<white>"
+      - "<grey>Can be used to craft <color:#F3F29E>Cinnarite Ingots"
+    level-modifier: 0.0
+    blocks:
+      - SAND
+      - RED_SAND
+rare-catch-loot:
+  riverfish:
+    material: COD
+    chance: 0.05
+    min: 1
+    max: 1
+    required-level: 1
+    level-modifier: 0.0
+    custom-model-data: 1
+    biomes:
+      - RIVER
+  shimmerfish:
+    material: COD
+    chance: 0.05
+    min: 1
+    max: 1
+    required-level: 2
+    level-modifier: 0.0
+    custom-model-data: 2
+    biomes:
+      - WARM_OCEAN
+  icefish:
+    material: COD
+    chance: 0.05
+    min: 1
+    max: 1
+    required-level: 3
+    level-modifier: 0.0
+    custom-model-data: 3
+    biomes:
+      - FROZEN_OCEAN
+      - FROZEN_RIVER
+      - DEEP_FROZEN_OCEAN
 treasure-hunter-loot:
   nether_star: # name can be whatever here.
     material: NETHER_STAR
     chance: 1.0
-    amount-range: 1-5
+    min: 1
+    max: 1
     required-level: 1
     level-modifier: 0.05 # increases the chance by 5% for each level.
 messages:

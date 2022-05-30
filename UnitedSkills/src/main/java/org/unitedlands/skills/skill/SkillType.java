@@ -39,15 +39,18 @@ public enum SkillType {
     HOOKED("hooked", 3),
     PESCATARIAN("pescatarian", 2),
     GRAPPLE("grapple", 3),
+    RARE_CATCH("rare-catch", 3, "Rare fish caught!"),
     SWIFT_SWIMMER("swift-swimmer", 3),
     // Woodcutter
     TREE_FELLER("tree-feller", 3),
     PRECISION_CUTTING("precision-cutting", 3),
     REFORESTATION("reforestation", 3),
+    // Digger
     EXCAVATOR("excavator", 3),
     TUNNELLER("tunneller", 3),
     REFINER("refiner", 3),
-    ARCHAEOLOGIST("archaeologist", 3);
+    ARCHAEOLOGIST("archaeologist", 3),
+    MINERAL_FINDER("mineral-finder", 3, "Rare mineral found!");
 
     private final String name;
 

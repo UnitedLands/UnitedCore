@@ -46,6 +46,28 @@ public class DiggerListener implements Listener {
     }
 
     @EventHandler
+    public void onMineralFinderBreak(BlockBreakEvent event) {
+        player = event.getPlayer();
+        if (!isDigger()) {
+            return;
+        }
+        Skill mineralFinder = new Skill(player, SkillType.MINERAL_FINDER);
+        if (mineralFinder.getLevel() == 0) {
+            return;
+        }
+
+        LootTable mineralFinderLootTable = new LootTable("mineral-finder-loot", mineralFinder);
+        Block block = event.getBlock();
+        if (Utils.isPlaced(coreProtect, block)) return;
+
+        ItemStack randomItem = mineralFinderLootTable.getRandomItem(block);
+        if (randomItem != null) {
+            block.getWorld().dropItem(block.getLocation(), randomItem);
+            mineralFinder.notifyActivation();
+        }
+    }
+
+    @EventHandler
     public void onArchaeologistBlockBreak(BlockBreakEvent event) {
         player = event.getPlayer();
         if (!isDigger()) {

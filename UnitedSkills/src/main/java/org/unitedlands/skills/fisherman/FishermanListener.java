@@ -6,6 +6,7 @@ import com.gamingmesh.jobs.container.JobsPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
@@ -44,6 +45,24 @@ public class FishermanListener implements Listener {
     }
 
     @EventHandler
+    public void onRareCatchFish(PlayerFishEvent event) {
+        player = event.getPlayer();
+        if (!isFisherman()) {
+            return;
+        }
+        Skill rareCatch = new Skill(player, SkillType.RARE_CATCH);
+        if (rareCatch.getLevel() == 0) {
+            return;
+        }
+        event.getHook().setWaitTime(1);
+        if (event.getCaught() != null) {
+            LootTable rareCatchLoot = new LootTable("rare-catch-loot", rareCatch);
+            Biome biome = event.getHook().getLocation().getBlock().getBiome();
+            replaceCaughtFish(event.getCaught(), rareCatchLoot.getRandomItem(biome));
+        }
+    }
+
+    @EventHandler
     public void onTreasureHunterFish(PlayerFishEvent event) {
         player = event.getPlayer();
         if (!isFisherman()) {
@@ -54,24 +73,28 @@ public class FishermanListener implements Listener {
             return;
         }
         if (event.getCaught() != null) {
-            if (event.getCaught() instanceof Item caughtFish) {
-                LootTable treasureHunterLootTable = new LootTable("treasure-hunter-loot", treasureHunter);
-                ItemStack item = treasureHunterLootTable.getRandomItem();
-                if (item == null) {
-                    return;
-                }
-                caughtFish.getWorld().dropItem(caughtFish.getLocation(), item);
-                List<Entity> entities = caughtFish.getNearbyEntities(1, 1, 1);
-                for (Entity entity : entities) {
-                    if (entity.equals(caughtFish)) {
-                        continue;
-                    }
-                    Bukkit.getScheduler().runTaskLater(unitedSkills, () -> {
-                        entity.setVelocity(caughtFish.getVelocity());
-                    }, 2);
-                }
-                caughtFish.remove();
+            LootTable treasureHunterTable = new LootTable("treasure-hunter-loot", treasureHunter);
+            replaceCaughtFish(event.getCaught(), treasureHunterTable.getRandomItem());
+        }
+    }
+
+    private void replaceCaughtFish(Entity caught, ItemStack item) {
+        if (caught instanceof Item caughtFish) {
+
+            if (item == null) {
+                return;
             }
+            caughtFish.getWorld().dropItem(caughtFish.getLocation(), item);
+            List<Entity> entities = caughtFish.getNearbyEntities(1, 1, 1);
+            for (Entity entity : entities) {
+                if (entity.equals(caughtFish)) {
+                    continue;
+                }
+                Bukkit.getScheduler().runTaskLater(unitedSkills, () -> {
+                    entity.setVelocity(caughtFish.getVelocity());
+                }, 2);
+            }
+            caughtFish.remove();
         }
     }
 
