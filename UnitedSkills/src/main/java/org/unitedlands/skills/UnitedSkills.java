@@ -8,6 +8,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.skills.brewer.BrewerListener;
 import org.unitedlands.skills.commands.BlendCommand;
+import org.unitedlands.skills.commands.ReloadCommand;
 import org.unitedlands.skills.digger.DiggerListener;
 import org.unitedlands.skills.farmer.FarmerListener;
 import org.unitedlands.skills.fisherman.FishermanListener;
@@ -20,9 +21,14 @@ import org.unitedlands.skills.woodcutter.WoodcutterListener;
 public final class UnitedSkills extends JavaPlugin {
     @Override
     public void onEnable() {
-        getCommand("blend").setExecutor(new BlendCommand(this));
+        registerCommands();
         registerListeners();
         saveDefaultConfig();
+    }
+
+    private void registerCommands() {
+        getCommand("blend").setExecutor(new BlendCommand(this));
+        getCommand("reload").setExecutor(new ReloadCommand(this));
     }
 
     private void registerListeners() {
@@ -42,8 +48,9 @@ public final class UnitedSkills extends JavaPlugin {
         pluginManager.registerEvents(fishermanListener, this);
         pluginManager.registerEvents(woodcutterListener, this);
         pluginManager.registerEvents(diggerListener, this);
-        SafariNet.addListener(new WranglerListener());
-        SafariNet.addListener(new TraffickerListener());
+
+        SafariNet.addListener(new WranglerListener(this));
+        SafariNet.addListener(new TraffickerListener(this));
 
         hunterListener.damageBleedingEntities();
     }

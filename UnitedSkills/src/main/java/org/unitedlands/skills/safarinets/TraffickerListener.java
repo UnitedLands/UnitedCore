@@ -8,6 +8,7 @@ import de.Linus122.SafariNet.API.Status;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.unitedlands.skills.UnitedSkills;
 import org.unitedlands.skills.Utils;
 import org.unitedlands.skills.skill.Skill;
 import org.unitedlands.skills.skill.SkillType;
@@ -15,6 +16,11 @@ import org.unitedlands.skills.skill.SkillType;
 import java.util.List;
 
 public class TraffickerListener implements Listener {
+    private final UnitedSkills unitedskills;
+
+    public TraffickerListener(UnitedSkills unitedSkills) {
+        this.unitedskills = unitedSkills;
+    }
     @Override
     public void playerCatchEntity(Player player, Entity entity, Status status) {
         status.setCancelled(!canUse(player, entity));
@@ -22,20 +28,23 @@ public class TraffickerListener implements Listener {
 
     @Override
     public void playerReleaseEntity(Player player, Entity entity, Status status) {
-        status.setCancelled(!canUse(player, entity));
+
     }
 
     private boolean canUse(Player player, Entity entity) {
+        Skill trafficker = new Skill(player, SkillType.TRAFFICKER);
+        if (trafficker.getLevel() == 0 || !isHostile(entity)) {
+            return false;
+        }
         if (!isHunter(player)) {
             player.sendMessage(Utils.getMessage("must-be-hunter"));
             return false;
         }
-        Skill trafficker = new Skill(player, SkillType.TRAFFICKER);
-        return trafficker.getLevel() != 0 && isHostile(entity);
+        return true;
     }
 
     private boolean isHostile(Entity entity) {
-        FileConfiguration config = Utils.getUnitedSkills().getConfig();
+        FileConfiguration config = unitedskills.getConfig();
         List<String> hostileEntities = config.getStringList("trafficker-mobs");
         for (String entityType : hostileEntities) {
             if (entity.getType().toString().equals(entityType)) {

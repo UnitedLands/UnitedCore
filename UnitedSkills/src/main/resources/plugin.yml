@@ -15,4 +15,8 @@ description: A plugin built to manage job skills for UnitedLands
 website: unitedlands.org
 commands:
   blend:
-    description: Opens the blending GUI;
+    description: Opens the blending GUI
+    permission: united.skills.blendcommand
+  reload:
+    description: reloads the plugin
+    permission: united.skills.admin

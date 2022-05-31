@@ -8,10 +8,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.skill.ActiveSkill;
 
@@ -23,7 +25,7 @@ public class Utils {
     public static Component getMessage(String message) {
         String configMessage = getUnitedSkills().getConfig().getString("messages." + message);
         if (configMessage == null) {
-            return miniMessage.deserialize("<red>Message " + message + "could not be found in the config file!");
+            return miniMessage.deserialize("<red>Message <yellow>" + message + "<red> could not be found in the config file!");
         }
         return miniMessage.deserialize(configMessage);
     }

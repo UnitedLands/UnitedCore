@@ -6,7 +6,7 @@
 
     <groupId>org.unitedlands</groupId>
     <artifactId>UnitedSkills</artifactId>
-    <version>2.13</version>
+    <version>2.14</version>
     <packaging>jar</packaging>
 
     <name>UnitedSkills</name>
@@ -88,9 +88,10 @@
 
     <dependencies>
         <dependency>
-            <groupId>de.Linus112.SafariNet</groupId>
+            <groupId>de.Linus122.SafariNet</groupId>
             <artifactId>safari-net</artifactId>
-            <version>1.15.36</version>
+            <version>1.15.36-b9-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.Zrips</groupId>

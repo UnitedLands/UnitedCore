@@ -282,11 +282,55 @@ wrangler-mobs:
   - COW
   - CHICKEN
   - HORSE
+  - SHEEP
+  - AXOLOTL
+  - BAT
+  - BEE
+  - CAT
+  - DOLPHIN
+  - DONKEY
+  - FOX
+  - GLOW_SQUID
+  - GOAT
+  - LLAMA
+  - MOOSHROOM
+  - MULE
+  - OCELOT
+  - PANDA
+  - PARROT
+  - POLAR_BEAR
+  - RABBIT
+  - SQUID
+  - STRIDER
+  - TRADER_LLAMA
+  - TURTLE
+  - WOLF
 trafficker-mobs:
-  - ZOMBIE
-  - SKELETON
-  - SPIDER
+  - BLAZE
+  - CAVE_SPIDER
   - CREEPER
+  - SPIDER
+  - ENDERMAN
+  - ENDERMITE
+  - GHAST
+  - GUARDIAN
+  - HOGLIN
+  - HUSK
+  - MAGMA_CUBE
+  - PHANTOM
+  - PIGLIN
+  - PIGLIN_BRUTE
+  - SILVERFISH
+  - SKELETON
+  - SLIME
+  - SPIDER
+  - STRAY
+  - VEX
+  - WITCH
+  - WITHER
+  - ZOGLIN
+  - ZOMBIE
+  - ZOMBIFIED_PIGLIN
 archaeologist-loot:
   nether_star: # name can be whatever here.
     material: NETHER_STAR
@@ -394,3 +438,5 @@ treasure-hunter-loot:
     level-modifier: 0.05 # increases the chance by 5% for each level.
 messages:
   no-permission: "You do not have permission to execute this command!"
+  must-be-hunter: "<red>You must be a hunter with the <yellow>Trafficker Skill<red> to use this safari net on this entity!"
+  must-be-farmer: "<red>You must be a farmer with the <yellow>Wrangler Skill<red> to use this safari net on this entity!"
