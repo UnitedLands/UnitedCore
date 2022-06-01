@@ -875,3 +875,6 @@ messages:
   no-permission: "You do not have permission to execute this command!"
   must-be-hunter: "<red>You must be a hunter with the <yellow>Trafficker Skill<red> to use this safari net on this entity!"
   must-be-farmer: "<red>You must be a farmer with the <yellow>Wrangler Skill<red> to use this safari net on this entity!"
+  points-usage: "<red>/points add/remove <player> <job name> <amount>"
+  points-added: "<green>Successfully added points to player!"
+  points-removed: "<green>Successfully removed points from player!"

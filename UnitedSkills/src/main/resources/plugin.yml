@@ -20,3 +20,6 @@ commands:
   reload:
     description: reloads the plugin
     permission: united.skills.admin
+  points:
+    description: Main command for managing points
+    permission: united.skills.admin

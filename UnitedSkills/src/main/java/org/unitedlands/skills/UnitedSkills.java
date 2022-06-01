@@ -3,17 +3,20 @@ package org.unitedlands.skills;
 import de.Linus122.SafariNet.API.SafariNet;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.skills.brewer.BrewerListener;
 import org.unitedlands.skills.commands.BlendCommand;
+import org.unitedlands.skills.commands.PointsCommand;
 import org.unitedlands.skills.commands.ReloadCommand;
 import org.unitedlands.skills.digger.DiggerListener;
 import org.unitedlands.skills.farmer.FarmerListener;
 import org.unitedlands.skills.fisherman.FishermanListener;
 import org.unitedlands.skills.hunter.HunterListener;
 import org.unitedlands.skills.miner.MinerListener;
+import org.unitedlands.skills.points.JobsListener;
 import org.unitedlands.skills.safarinets.TraffickerListener;
 import org.unitedlands.skills.safarinets.WranglerListener;
 import org.unitedlands.skills.woodcutter.WoodcutterListener;
@@ -29,9 +32,11 @@ public final class UnitedSkills extends JavaPlugin {
     private void registerCommands() {
         getCommand("blend").setExecutor(new BlendCommand(this));
         getCommand("reload").setExecutor(new ReloadCommand(this));
+        getCommand("points").setExecutor(new PointsCommand(this));
     }
 
     private void registerListeners() {
+        final JobsListener jobsListener = new JobsListener(this);
         final BrewerListener brewerListener = new BrewerListener(this);
         final FarmerListener farmerListener = new FarmerListener(this);
         final HunterListener hunterListener = new HunterListener(this);
@@ -40,19 +45,20 @@ public final class UnitedSkills extends JavaPlugin {
         final FishermanListener fishermanListener = new FishermanListener(this);
         final MinerListener minerListener = new MinerListener(this, getCoreProtect());
 
-        final PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(brewerListener, this);
-        pluginManager.registerEvents(farmerListener, this);
-        pluginManager.registerEvents(minerListener, this);
-        pluginManager.registerEvents(hunterListener, this);
-        pluginManager.registerEvents(fishermanListener, this);
-        pluginManager.registerEvents(woodcutterListener, this);
-        pluginManager.registerEvents(diggerListener, this);
+        registerEvents(jobsListener, brewerListener, farmerListener, hunterListener,
+                diggerListener, woodcutterListener, fishermanListener, minerListener);
 
         SafariNet.addListener(new WranglerListener(this));
         SafariNet.addListener(new TraffickerListener(this));
 
         hunterListener.damageBleedingEntities();
+    }
+
+    private void registerEvents(Listener... listeners) {
+        final PluginManager pluginManager = getServer().getPluginManager();
+        for (Listener listener : listeners) {
+            pluginManager.registerEvents(listener, this);
+        }
     }
 
     public CoreProtectAPI getCoreProtect() {
