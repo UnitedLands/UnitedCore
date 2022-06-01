@@ -332,28 +332,296 @@ trafficker-mobs:
   - ZOMBIE
   - ZOMBIFIED_PIGLIN
 archaeologist-loot:
-  nether_star: # name can be whatever here.
-    material: NETHER_STAR
-    chance: 0.01 # 1%
+  diamond:
+    material: DIAMOND
+    chance: 0.005
     min: 1
     max: 1
-    required-level: 1
-    level-modifier: 0.05 # increases the chance by 5% for each level.
+    required-level: 3
+    level-modifier: 0.0
+    blocks:
+      - DIRT
+      - ROOTED_DIRT
+      - GRASS_BLOCK
+      - PODZOL
+      - COARSE_DIRT
+      - FARMLAND
+  emerald:
+    material: EMERALD
+    chance: 0.005
+    min: 1
+    max: 1
+    required-level: 3
+    level-modifier: 0.0
+    blocks:
+      - DIRT
+      - ROOTED_DIRT
+      - GRASS_BLOCK
+      - PODZOL
+      - COARSE_DIRT
+      - FARMLAND
+  turtle_egg:
+    material: TURTLE_EGG
+    chance: 0.01
+    min: 1
+    max: 1
+    required-level: 3
+    level-modifier: 0.0
+    blocks:
+      - SAND
+  raw_gold:
+    material: RAW_GOLD
+    chance: 0.03
+    min: 1
+    max: 4
+    required-level: 3
+    level-modifier: 0.0
+    blocks:
+      - RED_SAND
+  raw_gold2:
+    material: RAW_GOLD
+    chance: 0.03
+    min: 1
+    max: 4
+    required-level: 3
+    level-modifier: 0.0
+    blocks:
+      - GRAVEL
+  gunpowder:
+    material: GUNPOWDER
+    chance: 0.01
+    min: 2
+    max: 6
+    required-level: 3
+    level-modifier: 0.0
+    blocks:
+      - GRAVEL
+  nautilus_shell:
+    material: NAUTILUS_SHELL
+    chance: 0.03
+    min: 1
+    max: 1
+    required-level: 3
+    level-modifier: 0.0
+    blocks:
+      - CLAY
+  wither_skull:
+    material: WITHER_SKELETON_SKULL
+    chance: 0.001
+    min: 1
+    max: 1
+    required-level: 3
+    level-modifier: 0.0
     blocks:
       - SOUL_SAND
       - SOUL_SOIL
+  corals:
+    materials:
+      - TUBE_CORAL
+      - BRAIN_CORAL
+      - BUBBLE_CORAL
+      - FIRE_CORAL
+      - HORN_CORAL
+    chance: 0.01
+    min: 1
+    max: 3
+    required-level: 2
+    level-modifier: 0.0
+    blocks:
+      - SAND
+  magma_cream:
+    material: MAGMA_CREAM
+    chance: 0.01
+    min: 1
+    max: 3
+    required-level: 3
+    level-modifier: 0.0
+    blocks:
+      - SOUL_SAND
+      - SOUL_SOIL
+  lapis:
+    material: LAPIS_LAZULI
+    chance: 0.01
+    min: 1
+    max: 2
+    required-level: 2
+    level-modifier: 0.01
+    blocks:
       - DIRT
-mineral-finder-loot:
-  maronine: # name can be whatever here.
+      - ROOTED_DIRT
+      - GRASS_BLOCK
+      - PODZOL
+      - COARSE_DIRT
+      - FARMLAND
+  scute:
+    material: SCUTE
+    chance: 0.01
+    min: 1
+    max: 1
+    required-level: 2
+    level-modifier: 0.01
+    blocks:
+      - SAND
+  gold_ingot:
+    material: GOLD_INGOT
+    chance: 0.01
+    min: 1
+    max: 2
+    required-level: 2
+    level-modifier: 0.0
+    blocks:
+      - RED_SAND
+  raw_copper:
+    material: RAW_COPPER
+    chance: 0.03
+    min: 1
+    max: 2
+    required-level: 2
+    level-modifier: 0.0
+    blocks:
+      - GRAVEL
+  brick:
+    material: BRICK
+    chance: 0.03
+    min: 1
+    max: 2
+    required-level: 2
+    level-modifier: 0.0
+    blocks:
+      - GRAVEL
+  prismarine_crystal:
+    material: PRISMARINE_CRYSTAL
+    chance: 0.05
+    min: 1
+    max: 2
+    required-level: 2
+    level-modifier: 0.0
+    blocks:
+      - CLAY
+  gold_nugget2:
     material: GOLD_NUGGET
-    name: "<color:#800000>Maronine Nugget"
+    chance: 0.05
+    min: 1
+    max: 4
+    required-level: 2
+    level-modifier: 0.0
+    blocks:
+      - SOUL_SAND
+      - SOUL_SOIL
+  blaze_rod:
+    material: BLAZE_ROD
+    chance: 0.03
+    min: 1
+    max: 2
+    required-level: 2
+    level-modifier: 0.0
+    blocks:
+      - SOUL_SAND
+      - SOUL_SOIL
+  coal:
+    material: COAL
+    chance: 0.01 # 1%
+    min: 1
+    max: 3
+    required-level: 1
+    level-modifier: 0.01
+    blocks:
+      - DIRT
+      - ROOTED_DIRT
+      - GRASS_BLOCK
+      - PODZOL
+      - COARSE_DIRT
+      - FARMLAND
+  charcoal:
+    material: CHARCOAL
+    chance: 0.01 # 1%
+    min: 1
+    max: 3
+    required-level: 1
+    level-modifier: 0.01
+    blocks:
+      - DIRT
+      - ROOTED_DIRT
+      - GRASS_BLOCK
+      - PODZOL
+      - COARSE_DIRT
+      - FARMLAND
+  gold_nuggets:
+    material: GOLD_NUGGET
+    chance: 0.03
+    min: 1
+    max: 3
+    required-level: 1
+    level-modifier: 0.0
+    blocks:
+      - RED_SAND
+  raw_iron:
+    material: RAW_IRON
+    chance: 0.03
+    min: 1
+    max: 2
+    required-level: 1
+    level-modifier: 0.0
+    blocks:
+      - GRAVEL
+  prismarine_shard:
+    material: PRISMARINE_SHARD
+    chance: 0.05
+    min: 1
+    max: 1
+    required-level: 1
+    level-modifier: 0.0
+    blocks:
+      - CLAY
+  quartz:
+    material: QUARTZ
+    chance: 0.05
+    min: 1
+    max: 3
+    required-level: 1
+    level-modifier: 0.0
+    blocks:
+      - SOUL_SAND
+      - SOUL_SOIL
+  glowstone_dust:
+    material: GLOWSTONE_DUST
+    chance: 0.05
+    min: 1
+    max: 3
+    required-level: 1
+    level-modifier: 0.0
+    blocks:
+      - SOUL_SAND
+      - SOUL_SOIL
+  red_mushroom:
+    material: RED_MUSHROOM
+    chance: 0.05
+    min: 1
+    max: 2
+    required-level: 1
+    level-modifier: 0.0
+    blocks:
+      - MYCELIUM
+  brown_mushroom:
+    material: BROWN_MUSHROOM
+    chance: 0.05
+    min: 1
+    max: 2
+    required-level: 1
+    level-modifier: 0.0
+    blocks:
+      - MYCELIUM
+mineral-finder-loot:
+  maronine:
+    material: GOLD_NUGGET
+    name: "<!i><color:#800000>Maronine Nugget"
     min: 1
     max: 1
     lore:
       - "<white>"
-      - "<grey>Can be used to craft <color:#800000>Maronine Ingots"
+      - "<!i><grey>Can be used to craft <color:#800000>Maronine Ingots"
+      - "<white>"
     chance: 0.005
-    amount-range: 1
     required-level: 1
     level-modifier: 0.0
     custom-model-data: 1
@@ -364,14 +632,14 @@ mineral-finder-loot:
     material: GOLD_NUGGET
     chance: 0.005
     min: 1
-    max: 1
-    amount-range: 1
+    max: 2
     required-level: 2
     custom-model-data: 2
-    name: "<color:#14C183>Litnium Nugget"
+    name: "<!i><color:#14C183>Litnium Nugget"
     lore:
       - "<white>"
-      - "<grey>Can be used to craft <color:#14C183>Litnium Ingots"
+      - "<!i><grey>Can be used to craft <color:#14C183>Litnium Ingots"
+      - "<white>"
     level-modifier: 0.0
     blocks:
       - DIRT
@@ -380,23 +648,29 @@ mineral-finder-loot:
       - PODZOL
       - COARSE_DIRT
       - FARMLAND
-  cinnarite: # name can be whatever here.
+  cinnarite:
     material: GOLD_NUGGET
     chance: 0.005
     min: 1
     max: 1
     required-level: 3
     custom-model-data: 3
-    name: "<color:#F3F29E>Cinnarite Nugget"
+    name: "<!i><color:#F3F29E>Cinnarite Nugget"
     lore:
       - "<white>"
-      - "<grey>Can be used to craft <color:#F3F29E>Cinnarite Ingots"
+      - "<!i><grey>Can be used to craft <color:#F3F29E>Cinnarite Ingots"
+      - "<white>"
     level-modifier: 0.0
     blocks:
       - SAND
       - RED_SAND
 rare-catch-loot:
   riverfish:
+    name: "<!i><color:#2DB5D0>River Fish"
+    lore:
+      - "<white>"
+      - "<!i><white>Can be used to extract <color:#2DB5D0>rare oils"
+      - "<white>"
     material: COD
     chance: 0.05
     min: 1
@@ -407,6 +681,11 @@ rare-catch-loot:
     biomes:
       - RIVER
   shimmerfish:
+    name: "<!i><color:#F0B32A>Shimmer Fish"
+    lore:
+      - "<white>"
+      - "<!i><white>Can be used to extract <color:#F0B32A>rare oils"
+      - "<white>"
     material: COD
     chance: 0.05
     min: 1
@@ -417,6 +696,11 @@ rare-catch-loot:
     biomes:
       - WARM_OCEAN
   icefish:
+    name: "<!i><color:#2761C8>Ice Fish"
+    lore:
+      - "<white>"
+      - "<!i><white>Can be used to extract <color:#2761C8>rare oils"
+      - "<white>"
     material: COD
     chance: 0.05
     min: 1
@@ -429,13 +713,164 @@ rare-catch-loot:
       - FROZEN_RIVER
       - DEEP_FROZEN_OCEAN
 treasure-hunter-loot:
-  nether_star: # name can be whatever here.
-    material: NETHER_STAR
-    chance: 1.0
+  prismarine_crystal:
+    material: PRISMARINE_CRYSTAL
+    chance: 0.02
+    min: 1
+    max: 2
+    required-level: 3
+    level-modifier: 0.0
+  quartz:
+    material: QUARTZ
+    chance: 0.01
+    min: 1
+    max: 4
+    required-level: 3
+    level-modifier: 0.0
+  diamond:
+    material: DIAMOND
+    chance: 0.01
+    min: 1
+    max: 2
+    required-level: 3
+    level-modifier: 0.0
+  emerald:
+    material: EMERALD
+    chance: 0.02
+    min: 1
+    max: 2
+    required-level: 3
+    level-modifier: 0.0
+  ender_pearl:
+    material: ENDER_PEARL
+    chance: 0.02
+    min: 1
+    max: 2
+    required-level: 3
+    level-modifier: 0.0
+  netherite_stuff:
+    materials:
+      - NETHERITE_HELMET
+      - NETHERITE_CHESTPLATE
+      - NETHERITE_BOOTS
+      - NETHERITE_LEGGINGS
+      - NETHERITE_SWORD
+      - NETHERITE_AXE
+      - NETHERITE_HOE
+      - NETHERITE_SHOVEL
+      - NETHERITE_PICKAXE
+    chance: 0.005
+    min: 1
+    max: 1
+    required-level: 3
+    level-modifier: 0.0
+    random-damage: true
+  gold_ingot:
+    material: GOLD_INGOT
+    chance: 0.03
+    min: 1
+    max: 3
+    required-level: 2
+    level-modifier: 0.0
+  prismarine_shard:
+    material: PRISMARINE_SHARD
+    chance: 0.03
+    min: 1
+    max: 3
+    required-level: 2
+    level-modifier: 0.0
+  corals:
+    materials:
+      - TUBE_CORAL
+      - BRAIN_CORAL
+      - BUBBLE_CORAL
+      - FIRE_CORAL
+      - HORN_CORAL
+    chance: 0.03
+    min: 1
+    max: 3
+    required-level: 2
+    level-modifier: 0.0
+  heart_of_the_sea:
+    material: HEART_OF_THE_SEA
+    chance: 0.01
+    min: 1
+    max: 1
+    required-level: 2
+    level-modifier: 0.0
+  diamond_stuff:
+    materials:
+      - DIAMOND_HELMET
+      - DIAMOND_CHESTPLATE
+      - DIAMOND_BOOTS
+      - DIAMOND_LEGGINGS
+      - DIAMOND_SWORD
+      - DIAMOND_AXE
+      - DIAMOND_HOE
+      - DIAMOND_SHOVEL
+      - DIAMOND_PICKAXE
+    chance: 0.01
+    min: 1
+    max: 1
+    required-level: 2
+    level-modifier: 0.0
+    random-damage: true
+  lapis:
+    material: LAPIS_LAZULI
+    chance: 0.03
+    min: 1
+    max: 3
+    required-level: 1
+    level-modifier: 0.01
+  iron_ingot:
+    material: IRON_INGOT
+    chance: 0.03
+    min: 1
+    max: 3
+    required-level: 1
+    level-modifier: 0.0
+  copper_ingot:
+    material: COPPER_INGOT
+    chance: 0.03
+    min: 1
+    max: 3
+    required-level: 1
+    level-modifier: 0.0
+  coal:
+    material: COAL
+    chance: 0.03
+    min: 1
+    max: 3
+    required-level: 1
+    level-modifier: 0.0
+  nautilus_shell:
+    material: NAUTILUS_SHELL
+    chance: 0.04
     min: 1
     max: 1
     required-level: 1
-    level-modifier: 0.05 # increases the chance by 5% for each level.
+    level-modifier: 0.01
+  disks:
+    chance: 0.01
+    materials:
+      - MUSIC_DISK_13
+      - MUSIC_DISK_CAT
+      - MUSIC_DISK_BLOCKS
+      - MUSIC_DISK_CHIRP
+      - MUSIC_DISK_FAR
+      - MUSIC_DISK_MALL
+      - MUSIC_DISK_MELLOHI
+      - MUSIC_DISK_STAL
+      - MUSIC_DISK_STRAD
+      - MUSIC_DISK_WARD
+      - MUSIC_DISK_11
+      - MUSIC_DISK_WAIT
+      - MUSIC_DISK_OTHERSIDE
+      - MUSIC_DISK_PIGSTEP
+    min: 1
+    max: 1
+    required-level: 1
+    level-modifier: 0.0
 messages:
   no-permission: "You do not have permission to execute this command!"
   must-be-hunter: "<red>You must be a hunter with the <yellow>Trafficker Skill<red> to use this safari net on this entity!"

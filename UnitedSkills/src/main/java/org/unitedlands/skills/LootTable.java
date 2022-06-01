@@ -8,12 +8,14 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.skill.Skill;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class LootTable {
@@ -92,13 +94,39 @@ public class LootTable {
         int amount = getAmount(itemSection);
 
         Material itemMaterial = Material.getMaterial(itemSection.getString("material"));
+        if (!itemSection.getStringList("materials").isEmpty()) {
+            itemMaterial = getRandomMaterial(itemSection);
+        }
+        if (itemMaterial == null) {
+            return null;
+        }
         ItemStack item = new ItemStack(itemMaterial, amount);
 
         addName(itemSection, item);
         addModelData(itemSection, item);
         addLore(itemSection, item);
+        addDamage(itemSection, item);
 
         return item;
+    }
+
+    private Material getRandomMaterial(ConfigurationSection itemSection) {
+        List<String> materialNames = itemSection.getStringList("materials");
+        Random rand = new Random();
+        String randomMaterialName = materialNames.get(rand.nextInt(materialNames.size()));
+        return Material.valueOf(randomMaterialName);
+    }
+
+    private void addDamage(ConfigurationSection itemSection, ItemStack item) {
+        boolean canDamage = itemSection.getBoolean("random-damage");
+        if (canDamage) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta instanceof Damageable damageableItemMeta) {
+                int damageAmount = getRandomAmount(50, item.getType().getMaxDurability() - 50);
+                damageableItemMeta.setDamage(damageAmount);
+                item.setItemMeta(damageableItemMeta);
+            }
+        }
     }
 
     private void addLore(ConfigurationSection itemSection, ItemStack item) {
@@ -137,7 +165,11 @@ public class LootTable {
         if (minAmount == maxAmount) {
             return minAmount;
         }
-        return minAmount + (int)(Math.random() * ((maxAmount - minAmount) + 1));
+        return getRandomAmount(minAmount, maxAmount);
+    }
+
+    private int getRandomAmount(int minAmount, int maxAmount) {
+        return minAmount + (int) (Math.random() * ((maxAmount - minAmount) + 1));
     }
 
     private double getFinalDropChance(Skill requiredSkill, ConfigurationSection itemSection) {

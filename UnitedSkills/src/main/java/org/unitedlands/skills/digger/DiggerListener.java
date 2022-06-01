@@ -85,7 +85,7 @@ public class DiggerListener implements Listener {
         ItemStack randomItem = archaeologistLootTable.getRandomItem(block);
         if (randomItem != null) {
             block.getWorld().dropItem(block.getLocation(), randomItem);
-            archaeologist.notifyActivation();
+            archaeologist.sendActivationActionBar();
         }
     }
 
