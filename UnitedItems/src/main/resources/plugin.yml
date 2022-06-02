@@ -1,9 +1,9 @@
 name: UnitedItems
 version: '${project.version}'
-main: org.unitedlands.uniteditems.UnitedItems
+main: org.unitedlands.items.UnitedItems
 api-version: 1.17
-authors: [ Obito17 ]
+authors: [ Maroon28 ]
 depend: [NBTAPI, Towny]
 commands:
-  customitem:
   tree:
+    description: Main tree command

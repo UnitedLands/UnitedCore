@@ -1,4 +1,4 @@
-package org.unitedlands.uniteditems.util;
+package org.unitedlands.items.util;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

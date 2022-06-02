@@ -1,4 +1,4 @@
-package org.unitedlands.uniteditems.util;
+package org.unitedlands.items.util;
 
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;

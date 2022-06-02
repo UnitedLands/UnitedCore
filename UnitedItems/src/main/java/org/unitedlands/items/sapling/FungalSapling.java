@@ -1,6 +1,6 @@
-package org.unitedlands.uniteditems.sapling;
+package org.unitedlands.items.sapling;
 
-import org.unitedlands.uniteditems.util.CustomItem;
+import org.unitedlands.items.util.CustomItem;
 import org.bukkit.Material;
 
 public class FungalSapling extends CustomItem {
