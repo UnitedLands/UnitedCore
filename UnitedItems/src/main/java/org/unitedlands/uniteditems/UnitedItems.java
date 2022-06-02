@@ -5,7 +5,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.uniteditems.commands.TreeCmd;
-import org.unitedlands.uniteditems.sapling.AncientSeed;
+import org.unitedlands.uniteditems.sapling.AncientOak;
+import org.unitedlands.uniteditems.sapling.MidasJungle;
+import org.unitedlands.uniteditems.sapling.MidasOak;
 import org.unitedlands.uniteditems.sapling.FloweringAcacia;
 import org.unitedlands.uniteditems.sapling.FungalSapling;
 import org.unitedlands.uniteditems.sapling.MangoSapling;
@@ -24,10 +26,12 @@ public class UnitedItems extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new Tree(this),this);
         saveDefaultConfig();
 
+        new AncientOak();
         new FungalSapling();
         new MangoSapling();
         new PineSapling();
-        new AncientSeed();
+        new MidasOak();
+        new MidasJungle();
         new FloweringAcacia();
         Tree.loadSaplings();
 
