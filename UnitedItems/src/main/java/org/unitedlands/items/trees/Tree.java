@@ -1,6 +1,8 @@
 package org.unitedlands.items.trees;
 
 import dev.lone.itemsadder.api.CustomBlock;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.unitedlands.items.UnitedItems;
 import org.unitedlands.items.util.GenericLocation;
@@ -18,6 +20,8 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
+import org.unitedlands.skills.skill.Skill;
+import org.unitedlands.skills.skill.SkillType;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -70,6 +74,14 @@ public class Tree implements Listener, Serializable {
 			if(b.getType().equals(Material.GRASS_BLOCK) || b.getType().equals(Material.DIRT)) {
 				Block above = b.getWorld().getBlockAt(b.getLocation().add(0, 1, 0));
 				if(above.getType().equals(Material.AIR)) {
+					if (tree.name().equals("ANCIENT_OAK")) {
+						Skill ancientOak = new Skill(e.getPlayer(), SkillType.ANCIENT_OAK);
+						if (ancientOak.getLevel() == 0) {
+							e.getPlayer().sendActionBar(Component.text("You must unlock the Ancient Oak Planting skill!", NamedTextColor.RED));
+							e.setCancelled(true);
+							return;
+						}
+					}
 					above.setType(tree.getVanillaSapling());
 					e.getItem().setAmount(e.getItem().getAmount()-1);
 					sapling.put(above.getLocation(), tree);
