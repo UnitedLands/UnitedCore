@@ -16,6 +16,7 @@ public enum SkillType {
     FUNGAL("fungal", 2),
     WRANGLER("wrangler", 3),
     EXPERT_HARVESTER("expert-harvester", 3),
+    ANCIENT_OAK("ancient-oak", 1),
     // Miner
     FRENZY("frenzy", 3),
     FORTUNATE("fortunate", 3),
