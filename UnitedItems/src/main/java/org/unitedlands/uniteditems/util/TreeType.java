@@ -9,49 +9,36 @@ import java.util.HashMap;
 public enum TreeType implements Serializable {
 	MANGO(Material.JUNGLE_SAPLING,
 			Material.JUNGLE_LOG,
-			Material.STRIPPED_JUNGLE_LOG,
+			"mango_tree_log",
 			Material.JUNGLE_LEAVES,
-			Material.JUNGLE_LEAVES,
-			CustomItem.getItemByName("&fMango"),
+			"mango_tree_leaves",
 			CustomItem.getItemByName("&fMango Sapling")),
-	APPLE(Material.OAK_SAPLING,
-			Material.OAK_LOG,
-			Material.STRIPPED_OAK_LOG,
-			Material.OAK_LEAVES,
-			Material.OAK_LEAVES,
-			new ItemStack(Material.APPLE),
-			new ItemStack(Material.APPLE)),
 	GOLDEN_APPLE(Material.OAK_SAPLING,
 			Material.OAK_LOG,
-			Material.STRIPPED_OAK_LOG,
+			"orange_tree_log",
 			Material.OAK_LEAVES,
-			Material.OAK_LEAVES,
-			new ItemStack(Material.ENCHANTED_GOLDEN_APPLE),
+			"orange_tree_leaves",
 			CustomItem.getItemByName("&fAncient Seed")),
 	FUNGAL_BIRCH(Material.BIRCH_SAPLING,
 			Material.BIRCH_LOG,
-			Material.STRIPPED_BIRCH_LOG,
+			"decaying_tree_log",
 			Material.BIRCH_LEAVES,
-			Material.BIRCH_LEAVES,
-			CustomItem.getItemByName("&fFungal Sapling"),
-			CustomItem.getItemByName("&fFungal Sapling"),
+			"decaying_tree_leaves",
 			CustomItem.getItemByName("&fBracket Mushroom")),
 	PINE(Material.SPRUCE_SAPLING,
 			Material.SPRUCE_LOG,
-			Material.STRIPPED_SPRUCE_LOG,
+			"maple_tree_log",
 			Material.SPRUCE_LEAVES,
-			Material.SPRUCE_LEAVES,
-			CustomItem.getItemByName("&fPinecone"),
+			"maple_tree_leaves",
 			CustomItem.getItemByName("&fPine Sapling")),
 	FLOWERING_ACACIA(Material.ACACIA_SAPLING,
 			Material.ACACIA_LOG,
-			Material.STRIPPED_ACACIA_LOG,
+			"lime_tree_log",
 			Material.ACACIA_LEAVES,
-			Material.ACACIA_LEAVES,
-			CustomItem.getItemByName("&fMimosa Flower"),
+			"lime_tree_leaves",
 			CustomItem.getItemByName("&fFlowering Acacia Sapling"));
-	
-	private static HashMap<String, TreeType> validSeed = new HashMap<String, TreeType>();
+
+	private static final HashMap<String, TreeType> validSeed = new HashMap<>();
 	
 	static {
 		for(TreeType t : TreeType.values()) {
@@ -67,60 +54,45 @@ public enum TreeType implements Serializable {
 	
 	private final Material vanillaSapling;
 	private final Material stemBlock;
-	private final Material stemReplaceBlock;
+	private final String stemReplaceBlockName;
 	private final Material fruitBlock;
-	private final Material fruitReplaceBlock;
-	private final ItemStack fruitDrop;
+	private final String fruitReplaceBlockName;
 	private final ItemStack fruitSeed;
-	private final ItemStack logDrop;
-	
-	TreeType(Material vanillaSapling, Material stemBlock, Material stemReplaceBlock, Material fruitBlock, Material fruitReplaceBlock, ItemStack fruitDrop, ItemStack fruitSeed, ItemStack logDrop) {
+
+	TreeType(Material vanillaSapling, Material stemBlock, String stemReplaceBlockName, Material fruitBlock, String fruitReplaceBlockName,ItemStack fruitSeed) {
 		this.vanillaSapling = vanillaSapling;
 		this.stemBlock = stemBlock;
-		this.stemReplaceBlock = stemReplaceBlock;
+		this.stemReplaceBlockName = stemReplaceBlockName;
 		this.fruitBlock = fruitBlock;
-		this.fruitReplaceBlock = fruitReplaceBlock;
-		this.fruitDrop = fruitDrop;
+		this.fruitReplaceBlockName = fruitReplaceBlockName;
 		this.fruitSeed = fruitSeed;
-		this.logDrop = logDrop;
 	}
-	
-	TreeType(Material vanillaSapling, Material stemBlock, Material stemReplaceBlock, Material fruitBlock, Material fruitReplaceBlock, ItemStack fruitDrop, ItemStack fruitSeed) {
-		this(vanillaSapling, stemBlock, stemReplaceBlock, fruitBlock, fruitReplaceBlock, fruitDrop, fruitSeed, new ItemStack(Material.AIR));
-	}
-	
+
 	public Material getStemBlock() {
 		return stemBlock;
 	}
 	
-	public ItemStack getLogDrop() {
-		return logDrop;
-	}
-	
-	public Material getStemReplaceBlock(){
-		return stemReplaceBlock;
+	public String getStemReplaceBlockName(){
+		return stemReplaceBlockName;
 	}
 	
 	public Material getVanillaSapling() {
 		return vanillaSapling;
 	}
 	
-	public Material getFruitReplaceBlock() {
-		return fruitReplaceBlock;
+	public String getFruitReplaceBlockName() {
+		return fruitReplaceBlockName;
 	}
-	
-	public ItemStack getDrop() {
-		return fruitDrop;
-	}
+
 	
 	public Material getFruitBlock() {
 		return fruitBlock;
 	}
-	
+
 	public ItemStack getSeed() {
 		return fruitSeed;
 	}
-	
+
 	public static TreeType isValidSeed(ItemStack seed) {
 		return validSeed.get(CustomItem.getKey(seed));
 	}

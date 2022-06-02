@@ -7,10 +7,10 @@ import java.io.Serializable;
 
 public class GenericLocation implements Serializable {
 	
-	private int x;
-	private int y;
-	private int z;
-	private String worldName;
+	private final int x;
+	private final int y;
+	private final int z;
+	private final String worldName;
 	
 	public GenericLocation(int x, int y, int z, String worldName) {
 		this.x = x;

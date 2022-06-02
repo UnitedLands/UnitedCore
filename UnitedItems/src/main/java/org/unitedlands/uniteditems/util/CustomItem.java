@@ -1,21 +1,19 @@
 package org.unitedlands.uniteditems.util;
 
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.uniteditems.listeners.ItemListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CustomItem extends ItemListener {
+public class CustomItem {
 
     private static HashMap<String, CustomItem> customItems = new HashMap<String, CustomItem>();
 
@@ -49,24 +47,6 @@ public class CustomItem extends ItemListener {
 
         customItems.put(getKey(item), this);
 
-       //Logger.log(String.format("&aCreated new item &6[&e%d&6] &6{&e%s&6} &a: %s", customItems.size(), getKey(item), name));
-    }
-
-    public CustomItem(Class c, Material material, String name, boolean glow, String... lore) {
-        this(c, 0, material, name, glow, lore);
-    }
-
-    public CustomItem(Class c, Material material, String name, String... lore) {
-        this(c, material, name, false, lore);
-    }
-
-    public CustomItem(Class c, Material material, String name) {
-        this(c, material, name, "");
-    }
-
-    //Only for listeners
-    public CustomItem() {
-        super();
     }
 
     public static String getKey(ItemStack i) {
