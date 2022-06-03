@@ -1,4 +1,4 @@
-package org.unitedlands.skills.hunter;
+package org.unitedlands.skills.jobs;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import com.gamingmesh.jobs.Jobs;
@@ -30,6 +30,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.unitedlands.skills.UnitedSkills;
+import org.unitedlands.skills.Utils;
 import org.unitedlands.skills.skill.ActiveSkill;
 import org.unitedlands.skills.skill.Skill;
 import org.unitedlands.skills.skill.SkillType;
@@ -40,7 +41,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
 
-public class HunterListener implements Listener {
+import static org.unitedlands.skills.Utils.canActivate;
+
+public class HunterAbilities implements Listener {
     private final UnitedSkills unitedSkills;
     private Player player;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
@@ -48,7 +51,7 @@ public class HunterListener implements Listener {
     private final Collection<LivingEntity> bleedingEntities = new ArrayList<>();
     private final HashMap<LivingEntity, Long> bleedingDurations = new HashMap<>();
 
-    public HunterListener(UnitedSkills unitedSkills) {
+    public HunterAbilities(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
     }
 
@@ -160,34 +163,28 @@ public class HunterListener implements Listener {
     }
 
     @EventHandler
-    public void onPrecisionActivation(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
-        }
-        if (event.getItem() == null) {
-            return;
-        }
-        Material material = event.getItem().getType();
-        SkillType skillType;
-        if (material.toString().contains("SWORD") || material.toString().contains("AXE")) {
-            skillType = SkillType.PRECISION_STRIKE;
-        } else if (material.equals(Material.BOW)) {
-            skillType = SkillType.FOCUS;
-        } else {
-            return;
-        }
+    public void onPrecisionStrikeActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
         if (!isHunter()) {
             return;
         }
-        ActiveSkill skill = new ActiveSkill(player, skillType, cooldowns, durations);
-        if (skill.getLevel() == 0) {
+        ActiveSkill precisionStrike = new ActiveSkill(player, SkillType.PRECISION_STRIKE, cooldowns, durations);
+        // The skill should either activate with an axe or a sword.
+        if (canActivate(event, "AXE", precisionStrike) || canActivate(event, "SWORD", precisionStrike)) {
+            precisionStrike.activate();
+        }
+    }
+
+    @EventHandler
+    public void onFocusActivate(PlayerInteractEvent event) {
+        player = event.getPlayer();
+        if (!isHunter()) {
             return;
         }
-        if (!player.isSneaking()) {
-            return;
+        ActiveSkill focus = new ActiveSkill(player, SkillType.FOCUS, cooldowns, durations);
+        if (canActivate(event, "BOW", focus)) {
+            focus.activate();
         }
-        skill.activate();
     }
 
     @EventHandler
@@ -316,11 +313,11 @@ public class HunterListener implements Listener {
         if (!isHunter()) {
             return;
         }
-        ActiveSkill skill = new ActiveSkill(player, SkillType.FOCUS, cooldowns, durations);
-        if (skill.getLevel() == 0) {
+        ActiveSkill focus = new ActiveSkill(player, SkillType.FOCUS, cooldowns, durations);
+        if (focus.getLevel() == 0) {
             return;
         }
-        if (skill.isActive() && event.getForce() == 1F) {
+        if (focus.isActive() && event.getForce() == 1F) {
             Arrow arrow = (Arrow) event.getProjectile();
             arrow.setMetadata("focused", new FixedMetadataValue(unitedSkills, true));
             spawnArrowTrail(arrow, Material.YELLOW_WOOL);
@@ -360,10 +357,6 @@ public class HunterListener implements Listener {
         return entity.hasMetadata("spawner-mob");
     }
     private boolean isHunter() {
-        JobsPlayer jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player);
-        for (JobProgression job : jobsPlayer.getJobProgression()) {
-            return job.getJob().getName().equals("Hunter");
-        }
-        return false;
+        return Utils.isInJob(player, "Hunter");
     }
 }

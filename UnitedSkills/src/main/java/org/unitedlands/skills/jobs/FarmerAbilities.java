@@ -1,19 +1,14 @@
-package org.unitedlands.skills.farmer;
+package org.unitedlands.skills.jobs;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import com.gamingmesh.jobs.Jobs;
-import com.gamingmesh.jobs.container.JobProgression;
-import com.gamingmesh.jobs.container.JobsPlayer;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import de.Linus122.SafariNet.Main;
 import dev.lone.itemsadder.api.CustomCrop;
 import dev.lone.itemsadder.api.CustomStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -27,7 +22,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
@@ -47,7 +41,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class FarmerListener implements Listener {
+import static org.unitedlands.skills.Utils.canActivate;
+
+public class FarmerAbilities implements Listener {
 
     private final UnitedSkills unitedSkills;
     private Player player;
@@ -55,30 +51,20 @@ public class FarmerListener implements Listener {
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
 
-    public FarmerListener(UnitedSkills unitedSkills) {
+    public FarmerAbilities(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
     }
 
     @EventHandler
-    public void onInteractWithHoe(PlayerInteractEvent event) {
+    public void onGreenThumbActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
         if (!isFarmer()) {
             return;
         }
         ActiveSkill skill = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
-        if (skill.getLevel() == 0) {
-            return;
+        if (canActivate(event, "HOE", skill)) {
+            skill.activate();
         }
-        if (!player.getInventory().getItemInMainHand().getType().toString().contains("HOE")) {
-            return;
-        }
-        if (!player.isSneaking()) {
-            return;
-        }
-        if (skill.isActive()) {
-            return;
-        }
-        skill.activate();
     }
 
     @EventHandler
@@ -87,8 +73,8 @@ public class FarmerListener implements Listener {
         if (!isFarmer()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.FERTILISER);
-        if (skill.getLevel() == 0) {
+        Skill fertiliser = new Skill(player, SkillType.FERTILISER);
+        if (fertiliser.getLevel() == 0) {
             return;
         }
         Block block = event.getBlock();
@@ -101,13 +87,13 @@ public class FarmerListener implements Listener {
         ParticleBuilder greenParticle = new ParticleBuilder(Particle.VILLAGER_HAPPY);
         greenParticle.count(25).location(block.getLocation().toCenterLocation());
 
-        if (skill.isSuccessful()) {
-            int newAge = Math.min(skill.getLevel() + 1, crop.getMaximumAge() - 1);
+        if (fertiliser.isSuccessful()) {
+            int newAge = Math.min(fertiliser.getLevel() + 1, crop.getMaximumAge() - 1);
             if (customStack != null) {
                 unitedSkills.getServer().getScheduler().runTask(unitedSkills, () -> {
                     CustomCrop customCrop = CustomCrop.byAlreadyPlaced(block);
                     if (customCrop != null) {
-                        final int age = Math.min(skill.getLevel() + 1, customCrop.getMaxAge() - 1);
+                        final int age = Math.min(fertiliser.getLevel() + 1, customCrop.getMaxAge() - 1);
                         customCrop.setAge(age);
                     }
                     greenParticle.spawn();
@@ -156,8 +142,8 @@ public class FarmerListener implements Listener {
         if (!isFarmer()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.FUNGAL);
-        if (skill.getLevel() == 0) {
+        Skill fungal = new Skill(player, SkillType.FUNGAL);
+        if (fungal.getLevel() == 0) {
             return;
         }
         if (!player.isSneaking()) {
@@ -245,8 +231,8 @@ public class FarmerListener implements Listener {
         if (!isFarmer()) {
             return;
         }
-        Skill skill  = new Skill(player, SkillType.VEGETARIAN);
-        int level = skill.getLevel();
+        Skill vegetarian  = new Skill(player, SkillType.VEGETARIAN);
+        int level = vegetarian.getLevel();
         if (level == 0) {
             return;
         }
@@ -266,8 +252,8 @@ public class FarmerListener implements Listener {
         if (!isFarmer()) {
             return;
         }
-        ActiveSkill skill  = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
-        int level = skill.getLevel();
+        ActiveSkill greenThumb  = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
+        int level = greenThumb.getLevel();
         if (level == 0) {
             return;
         }
@@ -277,7 +263,7 @@ public class FarmerListener implements Listener {
             return;
         }
         CustomCrop customCrop = CustomCrop.byAlreadyPlaced(block);
-        if (skill.isActive()) {
+        if (greenThumb.isActive()) {
             if (customCrop != null) {
                 unitedSkills.getServer().getScheduler().runTask(unitedSkills, () -> {
                     CustomStack customCropSeed = customCrop.getSeed();
@@ -321,9 +307,9 @@ public class FarmerListener implements Listener {
             return;
         }
 
-        ActiveSkill skill = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
+        ActiveSkill greenThumb = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
 
-        if (skill.isSuccessful() && skill.isActive()) {
+        if (greenThumb.isSuccessful() && greenThumb.isActive()) {
             if (!isMaxAge(event.getBlock())) {
                 return;
             }
@@ -369,11 +355,7 @@ public class FarmerListener implements Listener {
     }
 
     private boolean isFarmer() {
-        JobsPlayer jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player);
-        for (JobProgression job : jobsPlayer.getJobProgression()) {
-            return job.getJob().getName().equals("Farmer");
-        }
-        return false;
+        return Utils.isInJob(player, "Farmer");
     }
     @NotNull
     private FileConfiguration getConfig() {

@@ -1,4 +1,4 @@
-package org.unitedlands.skills.fisherman;
+package org.unitedlands.skills.jobs;
 
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.container.JobProgression;
@@ -25,6 +25,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.LootTable;
 import org.unitedlands.skills.UnitedSkills;
+import org.unitedlands.skills.Utils;
 import org.unitedlands.skills.skill.ActiveSkill;
 import org.unitedlands.skills.skill.Skill;
 import org.unitedlands.skills.skill.SkillType;
@@ -34,13 +35,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class FishermanListener implements Listener {
+import static org.unitedlands.skills.Utils.canActivate;
+
+public class FishermanAbilities implements Listener {
     private final UnitedSkills unitedSkills;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
     private Player player;
 
-    public FishermanListener(UnitedSkills unitedSkills) {
+    public FishermanAbilities(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
     }
 
@@ -110,8 +113,8 @@ public class FishermanListener implements Listener {
         if (!isFisherman()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.SWIFT_SWIMMER);
-        int level = skill.getLevel();
+        Skill swiftSwimmer = new Skill(player, SkillType.SWIFT_SWIMMER);
+        int level = swiftSwimmer.getLevel();
         if (level == 0) {
             return;
         }
@@ -142,22 +145,9 @@ public class FishermanListener implements Listener {
             return;
         }
         ActiveSkill grapple = new ActiveSkill(player, SkillType.GRAPPLE, cooldowns, durations);
-        if (grapple.getLevel() == 0) {
-            return;
+        if (canActivate(event, "FISHING_ROD", grapple)) {
+            grapple.activate();
         }
-        if (!event.getAction().isRightClick()) {
-            return;
-        }
-        if (!player.isSneaking()) {
-            return;
-        }
-        if (event.getItem() == null) {
-            return;
-        }
-        if (event.getItem().getType() != Material.FISHING_ROD) {
-            return;
-        }
-        grapple.activate();
     }
 
     @EventHandler
@@ -309,10 +299,6 @@ public class FishermanListener implements Listener {
     }
 
     private boolean isFisherman() {
-        JobsPlayer jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player);
-        for (JobProgression job : jobsPlayer.getJobProgression()) {
-            return job.getJob().getName().equals("Fisherman");
-        }
-        return false;
+        return Utils.isInJob(player, "Fisherman");
     }
 }

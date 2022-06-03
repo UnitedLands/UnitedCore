@@ -1,9 +1,6 @@
-package org.unitedlands.skills.woodcutter;
+package org.unitedlands.skills.jobs;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import com.gamingmesh.jobs.Jobs;
-import com.gamingmesh.jobs.container.JobProgression;
-import com.gamingmesh.jobs.container.JobsPlayer;
 import com.songoda.ultimatetimber.UltimateTimber;
 import com.songoda.ultimatetimber.events.TreeFallEvent;
 import com.songoda.ultimatetimber.manager.SaplingManager;
@@ -21,7 +18,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.unitedlands.skills.UnitedSkills;
-import org.unitedlands.skills.Utils;
 import org.unitedlands.skills.skill.ActiveSkill;
 import org.unitedlands.skills.skill.Skill;
 import org.unitedlands.skills.skill.SkillType;
@@ -31,15 +27,17 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static org.unitedlands.skills.Utils.*;
 
-public class WoodcutterListener implements Listener {
+
+public class WoodcutterAbilities implements Listener {
 
     private final UnitedSkills unitedSkills;
     private final CoreProtectAPI coreProtect;
     private Player player;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
-    public WoodcutterListener(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
+    public WoodcutterAbilities(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
         this.unitedSkills = unitedSkills;
         this.coreProtect = coreProtect;
     }
@@ -50,20 +48,10 @@ public class WoodcutterListener implements Listener {
         if (!isWoodCutter()) {
             return;
         }
-        if (event.getItem() == null) {
-            return;
+        ActiveSkill treeFeller = new ActiveSkill(player, SkillType.TREE_FELLER, cooldowns, durations);
+        if (canActivate(event, "AXE", treeFeller)) {
+            treeFeller.activate();
         }
-        if (!event.getItem().getType().toString().contains("AXE")) {
-            return;
-        }
-        if (!player.isSneaking()) {
-            return;
-        }
-        if (!event.getAction().isRightClick()) {
-            return;
-        }
-        ActiveSkill skill = new ActiveSkill(player, SkillType.TREE_FELLER, cooldowns, durations);
-        skill.activate();
     }
 
     @EventHandler
@@ -107,16 +95,16 @@ public class WoodcutterListener implements Listener {
         if (!isWoodCutter()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.PRECISION_CUTTING);
+        Skill precisionCutting = new Skill(player, SkillType.PRECISION_CUTTING);
         Material material = event.getBlock().getType();
         if (!material.toString().contains("LOG")) {
             return;
         }
-        if (!Utils.isPlaced(coreProtect, event.getBlock())) {
+        if (!isPlaced(coreProtect, event.getBlock())) {
             return;
         }
-        if (skill.isSuccessful()) {
-            Utils.multiplyItem(player, new ItemStack(material), 1);
+        if (precisionCutting.isSuccessful()) {
+            multiplyItem(player, new ItemStack(material), 1);
         }
     }
 
@@ -124,11 +112,7 @@ public class WoodcutterListener implements Listener {
         return (UltimateTimber) Bukkit.getPluginManager().getPlugin("UltimateTimber");
     }
     private boolean isWoodCutter() {
-        JobsPlayer jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player);
-        for (JobProgression job : jobsPlayer.getJobProgression()) {
-            return job.getJob().getName().equals("Lumberjack");
-        }
-        return false;
+        return isInJob(player, "Woodcutter");
     }
 
 }

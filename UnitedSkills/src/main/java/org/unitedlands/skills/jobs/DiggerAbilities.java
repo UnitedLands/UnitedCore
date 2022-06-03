@@ -1,14 +1,9 @@
-package org.unitedlands.skills.digger;
+package org.unitedlands.skills.jobs;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import com.gamingmesh.jobs.Jobs;
-import com.gamingmesh.jobs.container.JobProgression;
-import com.gamingmesh.jobs.container.JobsPlayer;
 import net.coreprotect.CoreProtectAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
@@ -31,7 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class DiggerListener implements Listener {
+import static org.unitedlands.skills.Utils.canActivate;
+
+public class DiggerAbilities implements Listener {
     private Player player;
     private final UnitedSkills unitedSkills;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
@@ -40,7 +37,7 @@ public class DiggerListener implements Listener {
     private static final int[][] MINING_COORD_OFFSETS = new int[][]{{0, 0}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1},};
 
 
-    public DiggerListener(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
+    public DiggerAbilities(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
         this.unitedSkills = unitedSkills;
         this.coreProtect = coreProtect;
     }
@@ -108,26 +105,25 @@ public class DiggerListener implements Listener {
     }
 
     @EventHandler
-    public void onShovelInteract(PlayerInteractEvent event) {
+    public void onTunnellerActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
         if (!isDigger()) {
             return;
         }
-        if (!event.getAction().isRightClick()) {
-            return;
-        }
-        if (!player.isSneaking()) {
-            return;
-        }
-        ItemStack item = player.getInventory().getItemInMainHand();
-        if (!item.getType().toString().contains("SHOVEL")) {
-            return;
-        }
         ActiveSkill tunneller = new ActiveSkill(player, SkillType.TUNNELLER, cooldowns, durations);
-        ActiveSkill refiner = new ActiveSkill(player, SkillType.REFINER, cooldowns, durations);
-        if (tunneller.getLevel() != 0) {
+        if (canActivate(event, "SHOVEL", tunneller)) {
             tunneller.activate();
-        } else if (refiner.getLevel() != 0) {
+        }
+    }
+
+    @EventHandler
+    public void onRefinerActivate(PlayerInteractEvent event) {
+        player = event.getPlayer();
+        if (!isDigger()) {
+            return;
+        }
+        ActiveSkill refiner = new ActiveSkill(player, SkillType.REFINER, cooldowns, durations);
+        if (canActivate(event, "SHOVEL", refiner)) {
             refiner.activate();
         }
     }
@@ -246,10 +242,6 @@ public class DiggerListener implements Listener {
         return null;
     }
     private boolean isDigger() {
-        JobsPlayer jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player);
-        for (JobProgression job : jobsPlayer.getJobProgression()) {
-            return job.getJob().getName().equals("Digger");
-        }
-        return false;
+        return Utils.isInJob(player, "Digger");
     }
 }

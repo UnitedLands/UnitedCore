@@ -1,4 +1,4 @@
-package org.unitedlands.skills.brewer;
+package org.unitedlands.skills.guis;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;

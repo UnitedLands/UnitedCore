@@ -1,6 +1,8 @@
 package org.unitedlands.skills;
 
 import com.gamingmesh.jobs.Jobs;
+import com.gamingmesh.jobs.container.JobProgression;
+import com.gamingmesh.jobs.container.JobsPlayer;
 import dev.lone.itemsadder.api.CustomStack;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.Component;
@@ -16,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.skill.ActiveSkill;
+import org.unitedlands.skills.skill.Skill;
 
 import java.util.List;
 
@@ -82,13 +85,23 @@ public class Utils {
         return match;
     }
 
-    public static boolean canActivate(PlayerInteractEvent event, Material material) {
-        if (material.isAir()) return false;
+    public static boolean canActivate(PlayerInteractEvent event, String materialKeyword, ActiveSkill skill) {
+        if (event.getItem() == null) return false;
         if (!event.getAction().isRightClick()) return false;
+
         Player player = event.getPlayer();
         if (!player.isSneaking()) return false;
-        if (event.getItem().getType() != material) return false;
+        if (event.getItem().getType().toString().contains(materialKeyword)) return false;
+        if (skill.getLevel() == 0) return false;
         return true;
+    }
+
+    public static boolean isInJob(Player player, String jobName) {
+        JobsPlayer jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player);
+        for (JobProgression job : jobsPlayer.getJobProgression()) {
+            return job.getJob().getName().equals(jobName);
+        }
+        return false;
     }
 
     public static Jobs getJobs() {

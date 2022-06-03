@@ -1,4 +1,4 @@
-package org.unitedlands.skills.miner;
+package org.unitedlands.skills.jobs;
 
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.container.JobProgression;
@@ -36,8 +36,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import static org.unitedlands.skills.Utils.canActivate;
 
-public class MinerListener implements Listener {
+
+public class MinerAbilities implements Listener {
     private Player player;
     private final UnitedSkills unitedSkills;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
@@ -45,68 +47,35 @@ public class MinerListener implements Listener {
     private boolean frenzyIsActive;
     private final CoreProtectAPI coreProtect;
 
-    public MinerListener(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
+    public MinerAbilities(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
         this.unitedSkills = unitedSkills;
         this.coreProtect = coreProtect;
     }
 
     @EventHandler
-    public void onInteractWithFlint(PlayerInteractEvent event) {
+    public void onBlastMiningActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
         if (!isMiner()) {
             return;
         }
-        ActiveSkill skill = new ActiveSkill(player, SkillType.BLAST_MINING, cooldowns, durations);
-        if (skill.getLevel() == 0) {
-            return;
+        ActiveSkill blastMining = new ActiveSkill(player, SkillType.BLAST_MINING, cooldowns, durations);
+        if (canActivate(event, "FLINT_AND_STEEL", blastMining)) {
+            blastMining.activate();
         }
-        final ItemStack flintAndSteel = player.getInventory().getItemInMainHand();
-        if (!flintAndSteel.getType().toString().equals("FLINT_AND_STEEL")) {
-            return;
-        }
-        if (!player.isSneaking()) {
-            return;
-        }
-
-        if (!isRightClick(event.getAction())) {
-            return;
-        }
-
-        if (skill.isActive()) {
-            return;
-        }
-        skill.activate();
     }
 
     @EventHandler
-    public void onInteractWithPickaxe(PlayerInteractEvent event) {
+    public void onFrenzyActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
         if (!isMiner()) {
             return;
         }
-        ActiveSkill skill = new ActiveSkill(player, SkillType.FRENZY, cooldowns, durations);
-        if (skill.getLevel() == 0) {
-            return;
-        }
-        final ItemStack pickaxe = player.getInventory().getItemInMainHand();
-        if (!pickaxe.getType().toString().contains("PICKAXE")) {
-            return;
-        }
-        if (!player.isSneaking()) {
-            return;
-        }
-        if (!isRightClick(event.getAction())) {
-            return;
-        }
-
-        if (skill.isActive()) {
-            return;
-        }
-
-        if (skill.activate()) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, skill.getDuration() * 20, 3));
+        ActiveSkill frenzy = new ActiveSkill(player, SkillType.FRENZY, cooldowns, durations);
+        if (canActivate(event, "PICKAXE", frenzy)) {
+            frenzy.activate();
+            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, frenzy.getDuration() * 20, 3));
             frenzyIsActive = true;
-            unitedSkills.getServer().getScheduler().runTaskLater(unitedSkills, () -> frenzyIsActive = false, skill.getDuration() * 20L);
+            unitedSkills.getServer().getScheduler().runTaskLater(unitedSkills, () -> frenzyIsActive = false, frenzy.getDuration() * 20L);
         }
     }
 
@@ -194,8 +163,8 @@ public class MinerListener implements Listener {
         if (!isMiner()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.SHELL_SHOCKED);
-        int level = skill.getLevel();
+        Skill shellShocked = new Skill(player, SkillType.SHELL_SHOCKED);
+        int level = shellShocked.getLevel();
         if (level == 0) {
             return;
         }
@@ -230,11 +199,7 @@ public class MinerListener implements Listener {
     }
 
     private boolean isMiner() {
-        JobsPlayer jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player);
-        for (JobProgression job : jobsPlayer.getJobProgression()) {
-            return job.getJob().getName().equals("Miner");
-        }
-        return false;
+        return Utils.isInJob(player, "Miner");
     }
 
 }

@@ -1,8 +1,7 @@
-package org.unitedlands.skills.brewer;
+package org.unitedlands.skills.jobs;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import com.gamingmesh.jobs.Jobs;
-import com.gamingmesh.jobs.container.JobProgression;
 import com.gamingmesh.jobs.container.JobsPlayer;
 import com.gamingmesh.jobs.container.blockOwnerShip.BlockOwnerShip;
 import com.gamingmesh.jobs.container.blockOwnerShip.BlockTypes;
@@ -20,7 +19,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -41,6 +39,8 @@ import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.unitedlands.skills.UnitedSkills;
+import org.unitedlands.skills.Utils;
+import org.unitedlands.skills.guis.BlendingGui;
 import org.unitedlands.skills.skill.ActiveSkill;
 import org.unitedlands.skills.skill.Skill;
 import org.unitedlands.skills.skill.SkillType;
@@ -49,17 +49,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static org.unitedlands.skills.Utils.getJobs;
-import static org.unitedlands.skills.Utils.getMessage;
+import static org.unitedlands.skills.Utils.*;
 
-public class BrewerListener implements Listener {
+public class BrewerAbilities implements Listener {
     private final UnitedSkills unitedSkills;
     private Player player;
 
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
 
-    public BrewerListener(UnitedSkills unitedSkills) {
+    public BrewerAbilities(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
     }
 
@@ -96,16 +95,16 @@ public class BrewerListener implements Listener {
         if (!isBrewer()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.SPLASH_BOOST);
-        if (skill.getLevel() == 0) {
+        Skill splashBoost = new Skill(player, SkillType.SPLASH_BOOST);
+        if (splashBoost.getLevel() == 0) {
             return;
         }
         ParticleBuilder particle = new ParticleBuilder(Particle.CAMPFIRE_COSY_SMOKE);
-        particle.count(skill.getLevel() * 2);
+        particle.count(splashBoost.getLevel() * 2);
         particle.force();
         particle.location(event.getEntity().getLocation());
 
-        float radius = (float) (4.25 * (1 + (skill.getLevel() * 0.1)));
+        float radius = (float) (4.25 * (1 + (splashBoost.getLevel() * 0.1)));
         PotionMeta potionMeta = event.getPotion().getPotionMeta();
         PotionData potionData = potionMeta.getBasePotionData();
 
@@ -148,8 +147,8 @@ public class BrewerListener implements Listener {
         if (!isHarmfulEffect(effect)) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.EXPOSURE_THERAPY);
-        if (skill.isSuccessful()) {
+        Skill exposureTherapy = new Skill(player, SkillType.EXPOSURE_THERAPY);
+        if (exposureTherapy.isSuccessful()) {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 2f, 1f);
             event.setCancelled(true);
         }
@@ -157,31 +156,15 @@ public class BrewerListener implements Listener {
     }
 
     @EventHandler
-    public void onPotionBottleInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
-        }
-        if (event.getItem() == null) {
-            return;
-        }
-        Material material = event.getItem().getType();
-        if (!(material.equals(Material.POTION)
-                || material.equals(Material.SPLASH_POTION)
-                || material.equals(Material.LINGERING_POTION))) {
-            return;
-        }
+    public void onFortificationActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
         if (!isBrewer()) {
             return;
         }
-        ActiveSkill skill = new ActiveSkill(player, SkillType.FORTIFICATION, cooldowns, durations);
-        if (skill.getLevel() == 0) {
-            return;
+        ActiveSkill fortification = new ActiveSkill(player, SkillType.FORTIFICATION, cooldowns, durations);
+        if (canActivate(event, "POTION", fortification)) {
+            fortification.activate();
         }
-        if (!player.isSneaking()) {
-            return;
-        }
-        skill.activate();
     }
 
     @EventHandler
@@ -248,8 +231,8 @@ public class BrewerListener implements Listener {
         if (player == null) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.QUALITY_INGREDIENTS);
-        if (skill.getLevel() > 0) {
+        Skill qualityIngredients = new Skill(player, SkillType.QUALITY_INGREDIENTS);
+        if (qualityIngredients.getLevel() > 0) {
             return;
         }
         for (ItemStack item : event.getContents()) {
@@ -276,8 +259,8 @@ public class BrewerListener implements Listener {
         if (!isBrewer()) {
             return;
         }
-        Skill skill = new Skill(player, SkillType.MODIFIED_HARDWARE);
-        if (skill.getLevel() == 0) {
+        Skill modifiedHardware = new Skill(player, SkillType.MODIFIED_HARDWARE);
+        if (modifiedHardware.getLevel() == 0) {
             return;
         }
         Block brewingStandBlock = inventory.getLocation().getBlock();
@@ -300,7 +283,7 @@ public class BrewerListener implements Listener {
                 return;
             }
             int defaultTime = 20;
-            int brewingTime = (int) (defaultTime * (1 - (skill.getLevel() * 0.10)));
+            int brewingTime = (int) (defaultTime * (1 - (modifiedHardware.getLevel() * 0.10)));
             brewingStand.setBrewingTime(brewingTime * 20);
             brewingStand.update();
         }, 2);
@@ -534,10 +517,6 @@ public class BrewerListener implements Listener {
     }
 
     private boolean isBrewer() {
-        JobsPlayer jobsPlayer = getJobsPlayer();
-        for (JobProgression job : jobsPlayer.getJobProgression()) {
-            return job.getJob().getName().equals("Brewer");
-        }
-        return false;
+        return Utils.isInJob(player, "Brewer");
     }
 }
