@@ -9,6 +9,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang.WordUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -19,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.UnitedSkills;
@@ -136,9 +138,6 @@ public class BlendingGui {
         final PotionMeta potionMeta = getPotionMeta(potion);
         final PotionMeta otherPotionMeta = getPotionMeta(otherPotion);
 
-        PotionData potionData = potionMeta.getBasePotionData();
-        PotionData otherPotionData = otherPotionMeta.getBasePotionData();
-
         if (getExtraEffects() == 0) {
             player.sendMessage(Component.text("You've reached the max effects on this potion!", NamedTextColor.RED));
             return null;
@@ -154,11 +153,15 @@ public class BlendingGui {
 
         PotionMeta blendedPotionMeta = getPotionMeta(blendedPotion);
 
-        if (hasCustomEffects()) {
+        if (hasCustomEffects() && !hasBothCustomPotions()) {
+            if (potionMeta.getCustomEffects().size() + otherPotionMeta.getCustomEffects().size() >= 3) {
+                player.sendMessage(Component.text("You've reached the max effects on this potion!", NamedTextColor.RED));
+                return null;
+            }
             doubleBlendPotion(potionMeta, otherPotionMeta, blendedPotionMeta);
         } else {
-            blendedPotionMeta.addCustomEffect(getBlendedEffect(potionData), false);
-            blendedPotionMeta.addCustomEffect(getBlendedEffect(otherPotionData), false);
+            blendedPotionMeta.addCustomEffect(getBlendedEffect(potionMeta), false);
+            blendedPotionMeta.addCustomEffect(getBlendedEffect(otherPotionMeta), false);
             blendedPotionMeta.displayName(getBlendedName());
         }
 
@@ -177,19 +180,18 @@ public class BlendingGui {
 
     private void doubleBlendPotion(PotionMeta potionMeta, PotionMeta otherPotionMeta, PotionMeta blendedPotionMeta) {
         PotionMeta doublePotionMeta;
-        PotionData extraPotionData;
-        PotionData potionData = potionMeta.getBasePotionData();
-        PotionData otherPotionData = otherPotionMeta.getBasePotionData();
-        if (potionMeta.hasCustomEffects()) {
+        PotionMeta extraPotionMeta;
+        if (potionMeta.hasCustomEffects() && potionMeta.getCustomEffects().size() > 1) {
             doublePotionMeta = potionMeta;
-            extraPotionData = otherPotionData;
+            extraPotionMeta = otherPotionMeta;
+
         } else {
             doublePotionMeta = otherPotionMeta;
-            extraPotionData = potionData;
+            extraPotionMeta = potionMeta;
         }
         for (PotionEffect effect : doublePotionMeta.getCustomEffects()) {
             addEffect(blendedPotionMeta, effect);
-            addEffect(blendedPotionMeta, getBlendedEffect(extraPotionData));
+            addEffect(blendedPotionMeta, getBlendedEffect(extraPotionMeta));
             blendedPotionMeta.displayName(getDoubleBlendedName());
         }
     }
@@ -199,7 +201,13 @@ public class BlendingGui {
         blendedPotionMeta.addCustomEffect(potionEffect, false);
     }
 
-    private @NotNull PotionEffect getBlendedEffect(PotionData potionData) {
+    private @NotNull PotionEffect getBlendedEffect(PotionMeta potionMeta) {
+        PotionData potionData = potionMeta.getBasePotionData();
+        if (potionMeta.hasCustomEffects()) {
+            if (potionMeta.getCustomEffects().size() == 1) {
+                return potionMeta.getCustomEffects().get(0);
+            }
+        }
         return potionData.getType().getEffectType().createEffect(getNewDuration(potionData), getAmplifier(potionData));
     }
 
@@ -280,8 +288,13 @@ public class BlendingGui {
 
     private Color getPotionColor(ItemStack potion) {
         PotionMeta potionMeta = getPotionMeta(potion);
-        if (potionMeta.hasColor()) {
-            return potionMeta.getColor();
+        boolean isCustomPotion = potionMeta.hasCustomEffects() && potionMeta.getCustomEffects().size() == 1;
+        if (potionMeta.hasColor() || isCustomPotion) {
+            if (potionMeta.hasColor()) {
+                return potionMeta.getColor();
+            } else {
+                return Color.fromRGB(255, 255, 255);
+            }
         }
         return potionMeta.getBasePotionData().getType().getEffectType().getColor();
     }
@@ -290,12 +303,20 @@ public class BlendingGui {
         return getPotionMeta(potion).hasCustomEffects() || getPotionMeta(otherPotion).hasCustomEffects();
     }
 
+    private boolean hasOneCustomPotion() {
+        return getPotionMeta(potion).getCustomEffects().size() == 1 || getPotionMeta(otherPotion).getCustomEffects().size() == 1;
+    }
+
+    private boolean hasBothCustomPotions() {
+        return getPotionMeta(potion).getCustomEffects().size() == 1 && getPotionMeta(otherPotion).getCustomEffects().size() == 1;
+    }
+
     private int getExtraEffects() {
         PotionMeta potionMeta = getPotionMeta(potion);
         PotionMeta otherMeta = getPotionMeta(otherPotion);
         Skill blend = new Skill(player, SkillType.BLEND);
         final boolean canDoubleBlend = blend.getLevel() == 3;
-        if (!hasCustomEffects()) {
+        if (!hasCustomEffects() || hasOneCustomPotion()) {
             if (canDoubleBlend) {
                 return 3;
             }
