@@ -5,8 +5,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.UnitedSkills;
 
@@ -17,6 +15,7 @@ public class ReloadCommand implements CommandExecutor {
     public ReloadCommand(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender.hasPermission("united.skills.admin")) {

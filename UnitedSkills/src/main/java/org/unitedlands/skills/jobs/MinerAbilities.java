@@ -1,8 +1,5 @@
 package org.unitedlands.skills.jobs;
 
-import com.gamingmesh.jobs.Jobs;
-import com.gamingmesh.jobs.container.JobProgression;
-import com.gamingmesh.jobs.container.JobsPlayer;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -40,12 +37,12 @@ import static org.unitedlands.skills.Utils.canActivate;
 
 
 public class MinerAbilities implements Listener {
-    private Player player;
     private final UnitedSkills unitedSkills;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
-    private boolean frenzyIsActive;
     private final CoreProtectAPI coreProtect;
+    private Player player;
+    private boolean frenzyIsActive;
 
     public MinerAbilities(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
         this.unitedSkills = unitedSkills;

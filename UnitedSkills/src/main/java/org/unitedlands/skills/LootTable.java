@@ -2,7 +2,6 @@ package org.unitedlands.skills;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -30,7 +29,6 @@ public class LootTable {
     }
 
     /**
-     *
      * @return Returns a random item from the loot table if the chance is successful, null if otherwise
      */
     public ItemStack getRandomItem() {
@@ -75,7 +73,7 @@ public class LootTable {
         Set<String> itemIDS = lootSection.getKeys(false);
         for (String itemID : itemIDS) {
             ConfigurationSection itemSection = lootSection.getConfigurationSection(itemID);
-            if (!itemSection.getStringList( "blocks").contains(block.getType().toString())) {
+            if (!itemSection.getStringList("blocks").contains(block.getType().toString())) {
                 continue;
             }
             if (isSuccessful(itemSection)) {
@@ -84,6 +82,7 @@ public class LootTable {
         }
         return null;
     }
+
     private boolean isSuccessful(ConfigurationSection itemSection) {
         double randomPercentage = Math.random() * 100;
         double finalDropChance = getFinalDropChance(requiredSkill, itemSection);
@@ -173,8 +172,8 @@ public class LootTable {
     }
 
     private double getFinalDropChance(Skill requiredSkill, ConfigurationSection itemSection) {
-        double baseChance = itemSection.getDouble( "chance");
-        double chanceModifier = itemSection.getDouble( "level-modifier") * requiredSkill.getLevel();
+        double baseChance = itemSection.getDouble("chance");
+        double chanceModifier = itemSection.getDouble("level-modifier") * requiredSkill.getLevel();
         return (baseChance + chanceModifier) * 100;
     }
 

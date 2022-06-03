@@ -34,9 +34,10 @@ public class WoodcutterAbilities implements Listener {
 
     private final UnitedSkills unitedSkills;
     private final CoreProtectAPI coreProtect;
-    private Player player;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
+    private Player player;
+
     public WoodcutterAbilities(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
         this.unitedSkills = unitedSkills;
         this.coreProtect = coreProtect;
@@ -111,6 +112,7 @@ public class WoodcutterAbilities implements Listener {
     private UltimateTimber getUltimateTimber() {
         return (UltimateTimber) Bukkit.getPluginManager().getPlugin("UltimateTimber");
     }
+
     private boolean isWoodCutter() {
         return isInJob(player, "Woodcutter");
     }

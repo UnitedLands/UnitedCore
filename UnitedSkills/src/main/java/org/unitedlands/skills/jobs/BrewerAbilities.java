@@ -53,10 +53,9 @@ import static org.unitedlands.skills.Utils.*;
 
 public class BrewerAbilities implements Listener {
     private final UnitedSkills unitedSkills;
-    private Player player;
-
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
+    private Player player;
 
     public BrewerAbilities(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
@@ -203,7 +202,7 @@ public class BrewerAbilities implements Listener {
                     if (!canFortify(potionMeta)) {
                         return;
                     }
-                    PotionEffect potionEffect = new PotionEffect(effect.getType(), effect.getDuration() , effect.getAmplifier() + 1);
+                    PotionEffect potionEffect = new PotionEffect(effect.getType(), effect.getDuration(), effect.getAmplifier() + 1);
                     player.addPotionEffect(potionEffect);
                 });
             } else {
@@ -249,6 +248,7 @@ public class BrewerAbilities implements Listener {
             brewingStand.update();
         }
     }
+
     @EventHandler
     public void onBrewingStart(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
@@ -320,7 +320,7 @@ public class BrewerAbilities implements Listener {
 
     private boolean hasBlazePowder(BrewingStand brewingStand) {
         ItemStack blazePowderSlot = brewingStand.getInventory().getItem(3);
-        if (brewingStand.getFuelLevel() > 0 ) {
+        if (brewingStand.getFuelLevel() > 0) {
             return true;
         }
         if (blazePowderSlot == null) {
@@ -397,14 +397,14 @@ public class BrewerAbilities implements Listener {
             if (potionType == null) {
                 if (potionMeta.hasCustomEffects()) {
                     potionMeta.getCustomEffects().forEach(effect -> {
-                       if (effect.getType().equals(PotionEffectType.HARM)) {
-                           if (exposureTherapy.isSuccessful()) {
-                               player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 2f, 1f);
-                               event.setIntensity(player, 0);
-                           }
-                           return;
-                       }
-                       if (effect.getType().equals(PotionEffectType.HEAL)){
+                        if (effect.getType().equals(PotionEffectType.HARM)) {
+                            if (exposureTherapy.isSuccessful()) {
+                                player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 2f, 1f);
+                                event.setIntensity(player, 0);
+                            }
+                            return;
+                        }
+                        if (effect.getType().equals(PotionEffectType.HEAL)) {
                             if (assistedHealing.getLevel() > 0) {
                                 event.setIntensity(player, 0);
                                 increaseHealingEffect(potionMeta);
@@ -503,6 +503,7 @@ public class BrewerAbilities implements Listener {
     private double getDistance(Location loc1, Location loc2) {
         return Math.sqrt(Math.pow(loc1.getX() - loc2.getX(), 2) + Math.pow(loc1.getY() - loc2.getY(), 2) + Math.pow(loc1.getZ() - loc2.getZ(), 2));
     }
+
     private int getPotionDuration(PotionData potionData) {
         String typeName = potionData.getType().toString();
         FileConfiguration config = unitedSkills.getConfig();

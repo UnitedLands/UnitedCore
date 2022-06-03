@@ -7,19 +7,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.unitedlands.skills.jobs.BrewerAbilities;
 import org.unitedlands.skills.commands.BlendCommand;
 import org.unitedlands.skills.commands.PointsCommand;
 import org.unitedlands.skills.commands.ReloadCommand;
+import org.unitedlands.skills.jobs.BrewerAbilities;
 import org.unitedlands.skills.jobs.DiggerAbilities;
 import org.unitedlands.skills.jobs.FarmerAbilities;
 import org.unitedlands.skills.jobs.FishermanAbilities;
 import org.unitedlands.skills.jobs.HunterAbilities;
 import org.unitedlands.skills.jobs.MinerAbilities;
+import org.unitedlands.skills.jobs.WoodcutterAbilities;
 import org.unitedlands.skills.points.JobsListener;
 import org.unitedlands.skills.safarinets.TraffickerListener;
 import org.unitedlands.skills.safarinets.WranglerListener;
-import org.unitedlands.skills.jobs.WoodcutterAbilities;
 
 public final class UnitedSkills extends JavaPlugin {
     @Override

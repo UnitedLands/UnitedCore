@@ -46,10 +46,10 @@ import static org.unitedlands.skills.Utils.canActivate;
 public class FarmerAbilities implements Listener {
 
     private final UnitedSkills unitedSkills;
-    private Player player;
-    TownyAPI towny = TownyAPI.getInstance();
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
+    TownyAPI towny = TownyAPI.getInstance();
+    private Player player;
 
     public FarmerAbilities(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
@@ -190,7 +190,7 @@ public class FarmerAbilities implements Listener {
                 .spawn();
     }
 
-    private boolean isHoldingMushrooms(ItemStack handItem, ItemStack offhandItem ) {
+    private boolean isHoldingMushrooms(ItemStack handItem, ItemStack offhandItem) {
         final Material offhandItemType = offhandItem.getType();
         final Material handItemType = handItem.getType();
         if (offhandItemType.equals(Material.RED_MUSHROOM) && handItemType.equals(Material.BROWN_MUSHROOM)) {
@@ -231,7 +231,7 @@ public class FarmerAbilities implements Listener {
         if (!isFarmer()) {
             return;
         }
-        Skill vegetarian  = new Skill(player, SkillType.VEGETARIAN);
+        Skill vegetarian = new Skill(player, SkillType.VEGETARIAN);
         int level = vegetarian.getLevel();
         if (level == 0) {
             return;
@@ -252,14 +252,14 @@ public class FarmerAbilities implements Listener {
         if (!isFarmer()) {
             return;
         }
-        ActiveSkill greenThumb  = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
+        ActiveSkill greenThumb = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
         int level = greenThumb.getLevel();
         if (level == 0) {
             return;
         }
         Block block = event.getBlock();
         BlockData dataPlant = block.getBlockData();
-        if (!(dataPlant instanceof Ageable plant))  {
+        if (!(dataPlant instanceof Ageable plant)) {
             return;
         }
         CustomCrop customCrop = CustomCrop.byAlreadyPlaced(block);
@@ -271,7 +271,7 @@ public class FarmerAbilities implements Listener {
                     if (Utils.takeItem(player, item)) {
                         CustomCrop.place(customCropSeed.getNamespacedID(), block.getLocation());
                         player.getInventory().addItem(item);
-                        }
+                    }
                 });
                 return;
             }
@@ -334,7 +334,7 @@ public class FarmerAbilities implements Listener {
 
     private boolean isMaxAge(@NotNull Block block) {
         BlockData dataPlant = block.getBlockData();
-        if (!(dataPlant instanceof Ageable plant))  {
+        if (!(dataPlant instanceof Ageable plant)) {
             return false;
         }
         if (!isCrop(block.getType())) {
@@ -357,6 +357,7 @@ public class FarmerAbilities implements Listener {
     private boolean isFarmer() {
         return Utils.isInJob(player, "Farmer");
     }
+
     @NotNull
     private FileConfiguration getConfig() {
         return unitedSkills.getConfig();

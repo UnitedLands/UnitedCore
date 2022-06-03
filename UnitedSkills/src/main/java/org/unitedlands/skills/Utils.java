@@ -3,27 +3,24 @@ package org.unitedlands.skills;
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.container.JobProgression;
 import com.gamingmesh.jobs.container.JobsPlayer;
-import dev.lone.itemsadder.api.CustomStack;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.skill.ActiveSkill;
-import org.unitedlands.skills.skill.Skill;
 
 import java.util.List;
 
 public class Utils {
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
+
     @NotNull
     public static Component getMessage(String message) {
         String configMessage = getUnitedSkills().getConfig().getString("messages." + message);
@@ -42,6 +39,7 @@ public class Utils {
             player.getInventory().addItem(item);
         }
     }
+
     public static boolean takeItemFromMaterial(@NotNull Player player, @NotNull Material material) {
         int slot = player.getInventory().first(material);
         if (slot < 0) return false;

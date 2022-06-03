@@ -11,9 +11,11 @@ public class JobsListener implements Listener {
 
     private final UnitedSkills unitedSkills;
     private Player player;
+
     public JobsListener(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
     }
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         player = event.getPlayer();

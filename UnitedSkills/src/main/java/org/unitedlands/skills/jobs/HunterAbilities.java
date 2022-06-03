@@ -1,9 +1,6 @@
 package org.unitedlands.skills.jobs;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import com.gamingmesh.jobs.Jobs;
-import com.gamingmesh.jobs.container.JobProgression;
-import com.gamingmesh.jobs.container.JobsPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -15,7 +12,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -45,11 +41,11 @@ import static org.unitedlands.skills.Utils.canActivate;
 
 public class HunterAbilities implements Listener {
     private final UnitedSkills unitedSkills;
-    private Player player;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
     private final Collection<LivingEntity> bleedingEntities = new ArrayList<>();
     private final HashMap<LivingEntity, Long> bleedingDurations = new HashMap<>();
+    private Player player;
 
     public HunterAbilities(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
@@ -159,7 +155,7 @@ public class HunterAbilities implements Listener {
                 spawnBleedingParticles(entity, 50);
                 entity.damage(2);
             }
-        },0, 20);
+        }, 0, 20);
     }
 
     @EventHandler
@@ -356,6 +352,7 @@ public class HunterAbilities implements Listener {
     private boolean isSpawnerMob(Entity entity) {
         return entity.hasMetadata("spawner-mob");
     }
+
     private boolean isHunter() {
         return Utils.isInJob(player, "Hunter");
     }

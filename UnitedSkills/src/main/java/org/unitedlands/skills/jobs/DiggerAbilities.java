@@ -29,12 +29,12 @@ import java.util.UUID;
 import static org.unitedlands.skills.Utils.canActivate;
 
 public class DiggerAbilities implements Listener {
-    private Player player;
+    private static final int[][] MINING_COORD_OFFSETS = new int[][]{{0, 0}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1},};
     private final UnitedSkills unitedSkills;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
     private final CoreProtectAPI coreProtect;
-    private static final int[][] MINING_COORD_OFFSETS = new int[][]{{0, 0}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1},};
+    private Player player;
 
 
     public DiggerAbilities(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
@@ -144,13 +144,11 @@ public class DiggerAbilities implements Listener {
         if (blockType.equals(Material.CLAY) && level == 3) {
             block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.BRICK, 4));
             event.setCancelled(true);
-        }
-        else if (blockType.toString().contains("CONCRETE_POWDER") && level >= 2) {
+        } else if (blockType.toString().contains("CONCRETE_POWDER") && level >= 2) {
             Material concreteMaterial = Material.getMaterial(blockType.toString().replace("_POWDER", ""));
             block.getWorld().dropItem(block.getLocation(), new ItemStack(concreteMaterial));
             event.setCancelled(true);
-        }
-        else if (blockType.equals(Material.SAND) && level >= 1) {
+        } else if (blockType.equals(Material.SAND) && level >= 1) {
             block.getWorld().dropItem(block.getLocation(), new ItemStack(Material.GLASS));
             event.setCancelled(true);
         }
@@ -193,8 +191,7 @@ public class DiggerAbilities implements Listener {
             Block blockAdd;
             if (isY) {
                 blockAdd = block.getLocation().clone().add(isZ ? 0 : xAdd, zAdd, isZ ? xAdd : 0).getBlock();
-            }
-            else {
+            } else {
                 blockAdd = block.getLocation().clone().add(xAdd, 0, zAdd).getBlock();
             }
             // Skip blocks that should not be mined
@@ -208,7 +205,8 @@ public class DiggerAbilities implements Listener {
             // Some extra block checks.
             if (addType.isInteractable() && !(addType.equals(Material.REDSTONE_ORE)
                     || addType.equals(Material.DEEPSLATE_REDSTONE_ORE))) continue;
-            if (addType == Material.BEDROCK || addType == Material.END_PORTAL || addType == Material.END_PORTAL_FRAME) continue;
+            if (addType == Material.BEDROCK || addType == Material.END_PORTAL || addType == Material.END_PORTAL_FRAME)
+                continue;
             if (addType == Material.OBSIDIAN && addType != block.getType()) continue;
 
             spawnBlockBreakParticles(blockAdd);
@@ -241,6 +239,7 @@ public class DiggerAbilities implements Listener {
         }
         return null;
     }
+
     private boolean isDigger() {
         return Utils.isInJob(player, "Digger");
     }
