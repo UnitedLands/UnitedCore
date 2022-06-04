@@ -3,6 +3,7 @@ package org.unitedlands.skills;
 import de.Linus122.SafariNet.API.SafariNet;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -10,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.skills.commands.BlendCommand;
 import org.unitedlands.skills.commands.PointsCommand;
 import org.unitedlands.skills.commands.ReloadCommand;
+import org.unitedlands.skills.hooks.UnitedSkillsPlaceholders;
 import org.unitedlands.skills.jobs.BrewerAbilities;
 import org.unitedlands.skills.jobs.DiggerAbilities;
 import org.unitedlands.skills.jobs.FarmerAbilities;
@@ -26,6 +28,7 @@ public final class UnitedSkills extends JavaPlugin {
     public void onEnable() {
         registerCommands();
         registerListeners();
+        registerPlaceholderExpansion();
         saveDefaultConfig();
     }
 
@@ -52,6 +55,12 @@ public final class UnitedSkills extends JavaPlugin {
         SafariNet.addListener(new TraffickerListener(this));
 
         hunterAbilities.damageBleedingEntities();
+    }
+
+    private void registerPlaceholderExpansion() {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new UnitedSkillsPlaceholders(this).register();
+        }
     }
 
     private void registerEvents(Listener... listeners) {
