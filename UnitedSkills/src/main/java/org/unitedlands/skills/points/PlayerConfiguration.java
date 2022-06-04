@@ -99,6 +99,9 @@ public class PlayerConfiguration {
 
     private int getJobsLevel(String jobName) {
         JobsPlayer jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player.getPlayer());
+        if (jobsPlayer == null) {
+            return 0;
+        }
         for (JobProgression job : jobsPlayer.getJobProgression()) {
             if (job.getJob().getName().equals(jobName)) {
                 return job.getLevel();
