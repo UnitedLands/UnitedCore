@@ -7,19 +7,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.unitedlands.skills.brewer.BrewerListener;
 import org.unitedlands.skills.commands.BlendCommand;
 import org.unitedlands.skills.commands.PointsCommand;
 import org.unitedlands.skills.commands.ReloadCommand;
-import org.unitedlands.skills.digger.DiggerListener;
-import org.unitedlands.skills.farmer.FarmerListener;
-import org.unitedlands.skills.fisherman.FishermanListener;
-import org.unitedlands.skills.hunter.HunterListener;
-import org.unitedlands.skills.miner.MinerListener;
+import org.unitedlands.skills.jobs.BrewerAbilities;
+import org.unitedlands.skills.jobs.DiggerAbilities;
+import org.unitedlands.skills.jobs.FarmerAbilities;
+import org.unitedlands.skills.jobs.FishermanAbilities;
+import org.unitedlands.skills.jobs.HunterAbilities;
+import org.unitedlands.skills.jobs.MinerAbilities;
+import org.unitedlands.skills.jobs.WoodcutterAbilities;
 import org.unitedlands.skills.points.JobsListener;
 import org.unitedlands.skills.safarinets.TraffickerListener;
 import org.unitedlands.skills.safarinets.WranglerListener;
-import org.unitedlands.skills.woodcutter.WoodcutterListener;
 
 public final class UnitedSkills extends JavaPlugin {
     @Override
@@ -37,21 +37,21 @@ public final class UnitedSkills extends JavaPlugin {
 
     private void registerListeners() {
         final JobsListener jobsListener = new JobsListener(this);
-        final BrewerListener brewerListener = new BrewerListener(this);
-        final FarmerListener farmerListener = new FarmerListener(this);
-        final HunterListener hunterListener = new HunterListener(this);
-        final DiggerListener diggerListener = new DiggerListener(this, getCoreProtect());
-        final WoodcutterListener woodcutterListener = new WoodcutterListener(this, getCoreProtect());
-        final FishermanListener fishermanListener = new FishermanListener(this);
-        final MinerListener minerListener = new MinerListener(this, getCoreProtect());
+        final BrewerAbilities brewerAbilities = new BrewerAbilities(this);
+        final FarmerAbilities farmerAbilities = new FarmerAbilities(this);
+        final HunterAbilities hunterAbilities = new HunterAbilities(this);
+        final DiggerAbilities diggerAbilities = new DiggerAbilities(this, getCoreProtect());
+        final WoodcutterAbilities woodcutterAbilities = new WoodcutterAbilities(this, getCoreProtect());
+        final FishermanAbilities fishermanAbilities = new FishermanAbilities(this);
+        final MinerAbilities minerAbilities = new MinerAbilities(this, getCoreProtect());
 
-        registerEvents(jobsListener, brewerListener, farmerListener, hunterListener,
-                diggerListener, woodcutterListener, fishermanListener, minerListener);
+        registerEvents(jobsListener, brewerAbilities, farmerAbilities, hunterAbilities,
+                diggerAbilities, woodcutterAbilities, fishermanAbilities, minerAbilities);
 
         SafariNet.addListener(new WranglerListener(this));
         SafariNet.addListener(new TraffickerListener(this));
 
-        hunterListener.damageBleedingEntities();
+        hunterAbilities.damageBleedingEntities();
     }
 
     private void registerEvents(Listener... listeners) {

@@ -15,8 +15,8 @@ import java.io.IOException;
 
 public class PlayerConfiguration {
     private final UnitedSkills unitedSkills;
-    private FileConfiguration fileConfiguration;
     private final @NotNull OfflinePlayer player;
+    private FileConfiguration fileConfiguration;
 
     public PlayerConfiguration(UnitedSkills unitedSkills, @NotNull OfflinePlayer player) {
         this.unitedSkills = unitedSkills;

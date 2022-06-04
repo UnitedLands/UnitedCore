@@ -16,6 +16,7 @@ public enum SkillType {
     FUNGAL("fungal", 2),
     WRANGLER("wrangler", 3),
     EXPERT_HARVESTER("expert-harvester", 3),
+    ANCIENT_OAK("ancient-oak", 1),
     // Miner
     FRENZY("frenzy", 3),
     FORTUNATE("fortunate", 3),
@@ -56,16 +57,19 @@ public enum SkillType {
 
     private final int maxLevel;
     private final String activationMessage;
+
     SkillType(String name, int maxLevel) {
         this.name = name;
         this.maxLevel = maxLevel;
         activationMessage = null;
     }
+
     SkillType(String name, int maxLevel, String activationMessage) {
         this.name = name;
         this.maxLevel = maxLevel;
         this.activationMessage = activationMessage;
     }
+
     public String getName() {
         return name;
     }

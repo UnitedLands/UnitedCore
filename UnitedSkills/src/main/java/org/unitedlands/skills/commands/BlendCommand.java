@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.UnitedSkills;
-import org.unitedlands.skills.brewer.BlendingGui;
+import org.unitedlands.skills.guis.BlendingGui;
 
 import static org.unitedlands.skills.Utils.getMessage;
 

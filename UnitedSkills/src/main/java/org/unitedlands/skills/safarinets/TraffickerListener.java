@@ -21,6 +21,7 @@ public class TraffickerListener implements Listener {
     public TraffickerListener(UnitedSkills unitedSkills) {
         this.unitedskills = unitedSkills;
     }
+
     @Override
     public void playerCatchEntity(Player player, Entity entity, Status status) {
         status.setCancelled(!canUse(player, entity));

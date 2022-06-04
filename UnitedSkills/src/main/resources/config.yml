@@ -150,18 +150,18 @@ durations:
     3: 60
 fortification-effects:
   1:
-  - HUNGER
-  - LUCK
-  - JUMP
+    - HUNGER
+    - LUCK
+    - JUMP
   2:
-  - SPEED
-  - SLOW
-  - INSTANT_DAMAGE
+    - SPEED
+    - SLOW
+    - INSTANT_DAMAGE
   3:
-  - POISON
-  - SLOW_DIGGING
-  - FAST_DIGGING
-  - ABSORPTION
+    - POISON
+    - SLOW_DIGGING
+    - FAST_DIGGING
+    - ABSORPTION
 brewing-items:
   - FERMENTED_SPIDER_EYE
   - RABBIT_FOOT

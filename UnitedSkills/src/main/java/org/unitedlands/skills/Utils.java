@@ -1,19 +1,18 @@
 package org.unitedlands.skills;
 
 import com.gamingmesh.jobs.Jobs;
-import dev.lone.itemsadder.api.CustomStack;
+import com.gamingmesh.jobs.container.JobProgression;
+import com.gamingmesh.jobs.container.JobsPlayer;
 import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.skill.ActiveSkill;
 
@@ -21,6 +20,7 @@ import java.util.List;
 
 public class Utils {
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
+
     @NotNull
     public static Component getMessage(String message) {
         String configMessage = getUnitedSkills().getConfig().getString("messages." + message);
@@ -39,6 +39,7 @@ public class Utils {
             player.getInventory().addItem(item);
         }
     }
+
     public static boolean takeItemFromMaterial(@NotNull Player player, @NotNull Material material) {
         int slot = player.getInventory().first(material);
         if (slot < 0) return false;
@@ -82,13 +83,23 @@ public class Utils {
         return match;
     }
 
-    public static boolean canActivate(PlayerInteractEvent event, Material material) {
-        if (material.isAir()) return false;
+    public static boolean canActivate(PlayerInteractEvent event, String materialKeyword, ActiveSkill skill) {
+        if (event.getItem() == null) return false;
         if (!event.getAction().isRightClick()) return false;
+
         Player player = event.getPlayer();
         if (!player.isSneaking()) return false;
-        if (event.getItem().getType() != material) return false;
+        if (event.getItem().getType().toString().contains(materialKeyword)) return false;
+        if (skill.getLevel() == 0) return false;
         return true;
+    }
+
+    public static boolean isInJob(Player player, String jobName) {
+        JobsPlayer jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player);
+        for (JobProgression job : jobsPlayer.getJobProgression()) {
+            return job.getJob().getName().equals(jobName);
+        }
+        return false;
     }
 
     public static Jobs getJobs() {

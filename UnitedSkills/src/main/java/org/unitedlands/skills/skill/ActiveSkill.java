@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class ActiveSkill extends Skill {
+    Player player = getPlayer();
     private HashMap<UUID, Long> cooldowns = null;
     private HashMap<UUID, Long> activeDurations = null;
-    Player player = getPlayer();
 
     public ActiveSkill(Player player, SkillType type) {
         super(player, type);
@@ -28,6 +28,7 @@ public class ActiveSkill extends Skill {
 
     /**
      * Attempts to activate a skill with a cooldown and duration
+     *
      * @return true if the skill is activated successfully, false if its already active or is on a cooldown.
      */
     public boolean activate() {
@@ -52,7 +53,7 @@ public class ActiveSkill extends Skill {
 
     private void sendBossBar() {
         final Component name = Component.text(getFormattedName() + ": ", NamedTextColor.YELLOW);
-        Component time = Component.text( getSecondsLeft() + "s", NamedTextColor.GOLD);
+        Component time = Component.text(getSecondsLeft() + "s", NamedTextColor.GOLD);
         BossBar bossBar = BossBar.bossBar(name.append(time), 1, BossBar.Color.GREEN, BossBar.Overlay.PROGRESS);
         player.showBossBar(bossBar);
         Bukkit.getScheduler().runTaskTimer(getUnitedSkills(), task -> {
@@ -61,7 +62,7 @@ public class ActiveSkill extends Skill {
                 player.hideBossBar(bossBar);
                 return;
             }
-            bossBar.name(name.append(Component.text( getSecondsLeft() + "s", NamedTextColor.GOLD)));
+            bossBar.name(name.append(Component.text(getSecondsLeft() + "s", NamedTextColor.GOLD)));
             bossBar.progress((float) getSecondsLeft() / getDuration());
         }, 0, 20L);
     }
@@ -77,7 +78,7 @@ public class ActiveSkill extends Skill {
     private void notifyOnCooldown() {
         player.sendActionBar(Component
                 .text(getFormattedName() + " can be re-activated in " +
-                        + getRemainingCooldownTime() + "s", NamedTextColor.RED));
+                        +getRemainingCooldownTime() + "s", NamedTextColor.RED));
         player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1f, 1f);
     }
 
@@ -85,6 +86,7 @@ public class ActiveSkill extends Skill {
         @NotNull UUID uuid = player.getUniqueId();
         map.put(uuid, System.currentTimeMillis() + (time * 1000L));
     }
+
     private long getRemainingCooldownTime() {
         UUID uuid = player.getUniqueId();
         return (cooldowns.get(uuid) - System.currentTimeMillis()) / 1000;

@@ -19,6 +19,14 @@ public class Skill {
         this.type = type;
     }
 
+    static UnitedSkills getUnitedSkills() {
+        return (UnitedSkills) Bukkit.getPluginManager().getPlugin("UnitedSkills");
+    }
+
+    static FileConfiguration getConfig() {
+        return getUnitedSkills().getConfig();
+    }
+
     public Player getPlayer() {
         return player;
     }
@@ -34,6 +42,7 @@ public class Skill {
     public boolean isMaxLevel() {
         return type.getMaxLevel() == getLevel();
     }
+
     public SkillType getType() {
         return type;
     }
@@ -79,13 +88,5 @@ public class Skill {
             return 1;
         }
         return 0;
-    }
-
-    static UnitedSkills getUnitedSkills() {
-        return (UnitedSkills) Bukkit.getPluginManager().getPlugin("UnitedSkills");
-    }
-
-    static FileConfiguration getConfig() {
-        return getUnitedSkills().getConfig();
     }
 }

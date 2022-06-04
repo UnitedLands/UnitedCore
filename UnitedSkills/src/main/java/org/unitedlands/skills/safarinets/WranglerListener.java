@@ -21,6 +21,7 @@ public class WranglerListener implements Listener {
     public WranglerListener(UnitedSkills unitedSkills) {
         this.unitedskills = unitedSkills;
     }
+
     @Override
     public void playerCatchEntity(Player player, Entity entity, Status status) {
         status.setCancelled(!canUse(player, entity));
