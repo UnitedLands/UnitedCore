@@ -5,6 +5,7 @@ import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.container.JobsPlayer;
 import com.gamingmesh.jobs.container.blockOwnerShip.BlockOwnerShip;
 import com.gamingmesh.jobs.container.blockOwnerShip.BlockTypes;
+import dev.lone.itemsadder.api.CustomStack;
 import dev.triumphteam.gui.guis.Gui;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,13 +16,16 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -287,6 +291,69 @@ public class BrewerAbilities implements Listener {
             brewingStand.setBrewingTime(brewingTime * 20);
             brewingStand.update();
         }, 2);
+    }
+
+    @EventHandler
+    public void onMilkPotionDrink(PlayerItemConsumeEvent event) {
+        ItemStack item = event.getItem();
+        Bukkit.broadcastMessage("1");
+        if (isMilkPotion(item, "milk_potion")) {
+            Bukkit.broadcastMessage("2");
+            Player player = event.getPlayer();
+            removeAllEffects(player);
+        }
+    }
+    @EventHandler
+    public void onMilkPotionSplash(PotionSplashEvent event) {
+        ItemStack item = event.getPotion().getItem();
+        if (isMilkPotion(item, "splash_milk_potion")) {
+            for (Entity entity : event.getPotion().getNearbyEntities(2, 2, 2)) {
+                if (entity instanceof LivingEntity livingEntity) {
+                    removeAllEffects(livingEntity);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onLingeringMilkPotionSplash(LingeringPotionSplashEvent event) {
+        ItemStack item = event.getEntity().getItem();
+        if (isMilkPotion(item, "lingering_milk_potion")) {
+            AreaEffectCloud cloud = event.getAreaEffectCloud();
+            cloud.setDuration(200);
+            Location location = event.getHitBlock().getLocation();
+            if (location == null) {
+                location = event.getHitEntity().getLocation();
+            }
+            for (Entity entity : location.getNearbyLivingEntities(2, 2, 2)) {
+                Bukkit.broadcastMessage(event.getEntity().getNearbyEntities(2, 2, 2).toString());
+                if (entity instanceof LivingEntity livingEntity) {
+                    removeAllEffects(livingEntity);
+                }
+            }
+        }
+    }
+    @EventHandler
+    public void onMilkArrowHit(ProjectileHitEvent event) {
+        if (event.getEntity() instanceof Arrow arrow) {
+            if (isMilkPotion(arrow.getItemStack(), "milk_arrow")) {
+                Entity entity = event.getHitEntity();
+                if (entity != null) {
+                    if (entity instanceof LivingEntity livingEntity) {
+                        removeAllEffects(livingEntity);
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isMilkPotion(ItemStack item, String milkPotionName) {
+        return CustomStack.getInstance("unitedlands:" +milkPotionName).getItemStack().equals(item);
+    }
+    private void removeAllEffects(LivingEntity entity) {
+        for (PotionEffect effect : entity.getActivePotionEffects()) {
+            entity.removePotionEffect(effect.getType());
+        }
     }
 
     private boolean canStartBrewing(BrewingStand brewingStand) {
