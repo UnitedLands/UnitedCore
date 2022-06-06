@@ -8,7 +8,6 @@ import org.unitedlands.items.UnitedItems;
 import org.unitedlands.items.util.GenericLocation;
 import org.unitedlands.items.util.Logger;
 import org.unitedlands.items.util.SerializableData;
-import org.unitedlands.items.util.TreeType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -102,10 +101,10 @@ public class Tree implements Listener, Serializable {
 			for(BlockState block : e.getBlocks()) {
 				if (block.getType().equals(tree.getStemBlock())) {
 					Location blockLocation = block.getLocation();
-					Bukkit.getScheduler().runTaskLater(unitedItems, () -> CustomBlock.place(tree.getStemReplaceBlockName(), blockLocation), 2);
+					Bukkit.getScheduler().runTaskLater(unitedItems, () -> CustomBlock.place(tree.getStemReplaceBlockName(), blockLocation), 1);
 				} else if (block.getType().equals(tree.getFruitBlock())) {
 					Location blockLocation = block.getLocation();
-					CustomBlock.place(tree.getFruitReplaceBlockName(), blockLocation);
+					Bukkit.getScheduler().runTaskLater(unitedItems, () -> CustomBlock.place(tree.getFruitReplaceBlockName(), blockLocation), 1);
 				}
 			}
 		}

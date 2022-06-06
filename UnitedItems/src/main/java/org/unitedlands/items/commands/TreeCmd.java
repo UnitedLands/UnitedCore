@@ -1,7 +1,7 @@
 package org.unitedlands.items.commands;
 
 import org.unitedlands.items.UnitedItems;
-import org.unitedlands.items.util.TreeType;
+import org.unitedlands.items.trees.TreeType;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

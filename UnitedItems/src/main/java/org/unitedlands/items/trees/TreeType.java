@@ -1,7 +1,9 @@
-package org.unitedlands.items.util;
+package org.unitedlands.items.trees;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.unitedlands.items.util.CustomItem;
+import org.unitedlands.items.util.Logger;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -15,39 +17,39 @@ public enum TreeType implements Serializable {
 			CustomItem.getItemByName("&fMango Sapling")),
 	MIDAS_OAK(Material.OAK_SAPLING,
 			Material.OAK_LOG,
-			"palm_stripped_log",
+			"midas_oak_log",
 			Material.OAK_LEAVES,
-			"peach_tree_leaves",
-			CustomItem.getItemByName("&eMidas' Oak Seeds")),
+			"midas_oak_leaves",
+			CustomItem.getItemByName("&eMidas' Oak Sapling")),
 	MIDAS_JUNGLE(Material.JUNGLE_SAPLING,
 			Material.JUNGLE_LOG,
-			"palm_stripped_log",
+			"midas_jungle_log",
 			Material.JUNGLE_LEAVES,
-			"peach_tree_leaves",
-			CustomItem.getItemByName("&eMidas' Jungle Seeds")),
+			"midas_jungle_leaves",
+			CustomItem.getItemByName("&eMidas' Jungle Sapling")),
 	ANCIENT_OAK(Material.OAK_SAPLING,
 			Material.OAK_LOG,
-			"palm_stripped_log",
+			"ancient_oak_log",
 			Material.OAK_LEAVES,
-			"peach_tree_leaves",
-			CustomItem.getItemByName("&6Ancient Oak Seeds")),
+			"ancient_oak_leaves",
+			CustomItem.getItemByName("&6Ancient Oak Sapling")),
 	FUNGAL_BIRCH(Material.BIRCH_SAPLING,
 			Material.BIRCH_LOG,
-			"decaying_tree_log",
+			"fungal_birch_log",
 			Material.BIRCH_LEAVES,
-			"decaying_tree_leaves",
+			"fungal_birch_leaves",
 			CustomItem.getItemByName("&fBracket Mushroom")),
 	PINE(Material.SPRUCE_SAPLING,
 			Material.SPRUCE_LOG,
-			"maple_tree_log",
+			"pine_tree_log",
 			Material.SPRUCE_LEAVES,
-			"maple_tree_leaves",
+			"pine_tree_leaves",
 			CustomItem.getItemByName("&fPine Sapling")),
 	FLOWERING_ACACIA(Material.ACACIA_SAPLING,
 			Material.ACACIA_LOG,
-			"lime_tree_log",
+			"flowering_acacia_log",
 			Material.ACACIA_LEAVES,
-			"lime_tree_leaves",
+			"flowering_acacia_leaves",
 			CustomItem.getItemByName("&fFlowering Acacia Sapling"));
 
 	private static final HashMap<String, TreeType> validSeed = new HashMap<>();
