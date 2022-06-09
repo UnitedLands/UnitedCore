@@ -1,11 +1,13 @@
 package org.unitedlands.skills.jobs;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -54,7 +56,6 @@ public class FishermanAbilities implements Listener {
         if (rareCatch.getLevel() == 0) {
             return;
         }
-        event.getHook().setWaitTime(1);
         if (event.getCaught() != null) {
             LootTable rareCatchLoot = new LootTable("rare-catch-loot", rareCatch);
             Biome biome = event.getHook().getLocation().getBlock().getBiome();
@@ -130,9 +131,14 @@ public class FishermanAbilities implements Listener {
         }
 
         FishHook hook = event.getHook();
-        // decrease wait time by 20% for every level in angler
-        int waitTime = (int) (hook.getWaitTime() * (1 - (angler.getLevel() * 0.2)));
+        // decrease wait time by 30% for every level in angler
+        int waitTime = (int) (hook.getWaitTime() * (1 - (angler.getLevel() * 0.3)));
+        if (angler.isMaxLevel()) {
+            // Decrease it by 80% for max level.
+            waitTime = (int) (hook.getWaitTime() * 0.2);
+        }
         hook.setWaitTime(waitTime);
+        player.sendActionBar(Component.text());
     }
 
     @EventHandler

@@ -315,38 +315,6 @@ public class BrewerAbilities implements Listener {
         }
     }
 
-    @EventHandler
-    public void onLingeringMilkPotionSplash(LingeringPotionSplashEvent event) {
-        ItemStack item = event.getEntity().getItem();
-        if (isMilkPotion(item, "lingering_milk_potion")) {
-            AreaEffectCloud cloud = event.getAreaEffectCloud();
-            cloud.setDuration(200);
-            Location location = event.getHitBlock().getLocation();
-            if (location == null) {
-                location = event.getHitEntity().getLocation();
-            }
-            for (Entity entity : location.getNearbyLivingEntities(2, 2, 2)) {
-                Bukkit.broadcastMessage(event.getEntity().getNearbyEntities(2, 2, 2).toString());
-                if (entity instanceof LivingEntity livingEntity) {
-                    removeAllEffects(livingEntity);
-                }
-            }
-        }
-    }
-    @EventHandler
-    public void onMilkArrowHit(ProjectileHitEvent event) {
-        if (event.getEntity() instanceof Arrow arrow) {
-            if (isMilkPotion(arrow.getItemStack(), "milk_arrow")) {
-                Entity entity = event.getHitEntity();
-                if (entity != null) {
-                    if (entity instanceof LivingEntity livingEntity) {
-                        removeAllEffects(livingEntity);
-                    }
-                }
-            }
-        }
-    }
-
     private boolean isMilkPotion(ItemStack item, String milkPotionName) {
         return CustomStack.getInstance("unitedlands:" +milkPotionName).getItemStack().equals(item);
     }

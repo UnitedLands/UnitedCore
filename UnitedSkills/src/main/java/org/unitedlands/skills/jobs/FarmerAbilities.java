@@ -262,19 +262,7 @@ public class FarmerAbilities implements Listener {
         if (!(dataPlant instanceof Ageable plant)) {
             return;
         }
-        CustomCrop customCrop = CustomCrop.byAlreadyPlaced(block);
         if (greenThumb.isActive()) {
-            if (customCrop != null) {
-                unitedSkills.getServer().getScheduler().runTask(unitedSkills, () -> {
-                    CustomStack customCropSeed = customCrop.getSeed();
-                    ItemStack item = customCropSeed.getItemStack();
-                    if (Utils.takeItem(player, item)) {
-                        CustomCrop.place(customCropSeed.getNamespacedID(), block.getLocation());
-                        player.getInventory().addItem(item);
-                    }
-                });
-                return;
-            }
             ItemStack item = new ItemStack(getCropSeeds(material));
             if (Utils.takeItem(player, item)) {
                 unitedSkills.getServer().getScheduler().runTask(unitedSkills, () -> {

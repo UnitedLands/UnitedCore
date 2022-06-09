@@ -89,7 +89,7 @@ public class Utils {
 
         Player player = event.getPlayer();
         if (!player.isSneaking()) return false;
-        if (event.getItem().getType().toString().contains(materialKeyword)) return false;
+        if (!event.getItem().getType().toString().contains(materialKeyword)) return false;
         if (skill.getLevel() == 0) return false;
         return true;
     }
