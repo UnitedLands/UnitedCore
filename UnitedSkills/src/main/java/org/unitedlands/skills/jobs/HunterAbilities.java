@@ -1,6 +1,7 @@
 package org.unitedlands.skills.jobs;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import dev.lone.itemsadder.api.CustomStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -8,6 +9,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,7 +36,6 @@ import org.unitedlands.skills.skill.SkillType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.UUID;
 
 import static org.unitedlands.skills.Utils.canActivate;
@@ -68,12 +69,19 @@ public class HunterAbilities implements Listener {
         }
 
         Skill selfReflection = new Skill(player, SkillType.SELF_REFLECTION);
-        if (selfReflection.getLevel() == 0) {
-            return;
+        if (selfReflection.getLevel() != 0) {
+            int xp = event.getDroppedExp();
+            xp = (int) (xp * (1 + (selfReflection.getLevel() * 0.1)));
+            event.setDroppedExp(xp);
         }
-        int xp = event.getDroppedExp();
-        xp = (int) (xp * (1 + (selfReflection.getLevel() * 0.1)));
-        event.setDroppedExp(xp);
+        if (entity.getType().equals(EntityType.ENDER_DRAGON)) {
+            Skill leatherworking = new Skill(player, SkillType.LEATHERWORKING);
+            if (leatherworking.isSuccessful()) {
+                CustomStack dragonScale = CustomStack.getInstance("dragon_scale");
+                player.getInventory().addItem(dragonScale.getItemStack());
+                leatherworking.notifyActivation();
+            }
+        }
     }
 
     @EventHandler
@@ -144,8 +152,7 @@ public class HunterAbilities implements Listener {
             if (bleedingEntities.isEmpty()) {
                 return;
             }
-            for (Iterator<LivingEntity> iterator = bleedingEntities.iterator(); iterator.hasNext(); ) {
-                LivingEntity entity = iterator.next();
+            for (LivingEntity entity : bleedingEntities) {
                 boolean hasStoppedBleeding = ((bleedingDurations.get(entity) - System.currentTimeMillis()) / 1000L) <= 0;
                 if (hasStoppedBleeding) {
                     bleedingEntities.remove(entity);

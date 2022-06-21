@@ -10,7 +10,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.skills.commands.BlendCommand;
 import org.unitedlands.skills.commands.PointsCommand;
-import org.unitedlands.skills.commands.ReloadCommand;
+import org.unitedlands.skills.commands.UnitedSkillsComand;
+import org.unitedlands.skills.guis.BiomeKit;
 import org.unitedlands.skills.hooks.UnitedSkillsPlaceholders;
 import org.unitedlands.skills.jobs.BrewerAbilities;
 import org.unitedlands.skills.jobs.DiggerAbilities;
@@ -22,6 +23,7 @@ import org.unitedlands.skills.jobs.WoodcutterAbilities;
 import org.unitedlands.skills.points.JobsListener;
 import org.unitedlands.skills.safarinets.TraffickerListener;
 import org.unitedlands.skills.safarinets.WranglerListener;
+import org.unitedlands.skills.skill.SkillFile;
 
 public final class UnitedSkills extends JavaPlugin {
     @Override
@@ -30,11 +32,13 @@ public final class UnitedSkills extends JavaPlugin {
         registerListeners();
         registerPlaceholderExpansion();
         saveDefaultConfig();
+        SkillFile skillFile = new SkillFile(this);
+        skillFile.createSkillsFile();
     }
 
     private void registerCommands() {
         getCommand("blend").setExecutor(new BlendCommand(this));
-        getCommand("reload").setExecutor(new ReloadCommand(this));
+        getCommand("unitedskills").setExecutor(new UnitedSkillsComand(this));
         getCommand("points").setExecutor(new PointsCommand(this));
     }
 
@@ -47,9 +51,10 @@ public final class UnitedSkills extends JavaPlugin {
         final WoodcutterAbilities woodcutterAbilities = new WoodcutterAbilities(this, getCoreProtect());
         final FishermanAbilities fishermanAbilities = new FishermanAbilities(this);
         final MinerAbilities minerAbilities = new MinerAbilities(this, getCoreProtect());
+        final BiomeKit biomeKitListener = new BiomeKit(this);
 
         registerEvents(jobsListener, brewerAbilities, farmerAbilities, hunterAbilities,
-                diggerAbilities, woodcutterAbilities, fishermanAbilities, minerAbilities);
+                diggerAbilities, woodcutterAbilities, fishermanAbilities, minerAbilities, biomeKitListener);
 
         SafariNet.addListener(new WranglerListener(this));
         SafariNet.addListener(new TraffickerListener(this));

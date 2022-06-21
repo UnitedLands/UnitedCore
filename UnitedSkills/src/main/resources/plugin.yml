@@ -8,7 +8,6 @@ depend:
   - Towny
   - UltimateTimber
   - SafariNet
-softdepend:
   - ItemsAdder
 authors: [ Maroon28 ]
 description: A plugin built to manage job skills for UnitedLands
@@ -17,8 +16,8 @@ commands:
   blend:
     description: Opens the blending GUI
     permission: united.skills.blendcommand
-  reload:
-    description: reloads the plugin
+  unitedskills:
+    description: Main command for the plugin, currently only reloads the plugin
     permission: united.skills.admin
   points:
     description: Main command for managing points

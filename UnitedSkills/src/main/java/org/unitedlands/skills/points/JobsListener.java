@@ -1,6 +1,9 @@
 package org.unitedlands.skills.points;
 
+import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.api.JobsLevelUpEvent;
+import com.gamingmesh.jobs.container.JobProgression;
+import com.gamingmesh.jobs.container.JobsPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,6 +35,24 @@ public class JobsListener implements Listener {
     public void onJobLevelUp(JobsLevelUpEvent event) {
         player = event.getPlayer().getPlayer();
         PlayerConfiguration playerConfiguration = new PlayerConfiguration(unitedSkills, player);
-        playerConfiguration.increaseJobPoints(event.getJob().getName(), 1);
+        String name = event.getJob().getName();
+        if (name.equals("Hunter") && getJobsLevel(name) % 5 == 0) {
+            playerConfiguration.increaseJobPoints(name, 2);
+            return;
+        }
+        playerConfiguration.increaseJobPoints(name, 1);
+    }
+
+    private int getJobsLevel(String jobName) {
+        JobsPlayer jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player.getPlayer());
+        if (jobsPlayer == null) {
+            return 0;
+        }
+        for (JobProgression job : jobsPlayer.getJobProgression()) {
+            if (job.getJob().getName().equals(jobName)) {
+                return job.getLevel();
+            }
+        }
+        return 0;
     }
 }

@@ -28,27 +28,24 @@ public class ActiveSkill extends Skill {
 
     /**
      * Attempts to activate a skill with a cooldown and duration
-     *
-     * @return true if the skill is activated successfully, false if its already active or is on a cooldown.
      */
-    public boolean activate() {
+    public void activate() {
         int cooldownTime = getCooldown();
         int durationTime = getDuration();
         if (isActive()) {
             player.sendActionBar(Component
                     .text(getFormattedName() + " is active for " + getSecondsLeft() + "s", NamedTextColor.RED));
             player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1f, 1f);
-            return false;
+            return;
         }
         if (isOnCooldown()) {
             notifyOnCooldown();
-            return false;
+            return;
         }
         notifyActivation();
         addTime(durationTime, activeDurations);
         addTime(cooldownTime, cooldowns);
         sendBossBar();
-        return true;
     }
 
     private void sendBossBar() {
@@ -68,11 +65,11 @@ public class ActiveSkill extends Skill {
     }
 
     public int getCooldown() {
-        return getConfig().getInt("cooldowns." + "." + getName() + "." + getLevel());
+        return getConfig().getInt("skills." + getName() + "." + getLevel() + "." + "cooldown");
     }
 
     public int getDuration() {
-        return getConfig().getInt("durations." + "." + getName() + "." + getLevel());
+        return getConfig().getInt("skills." + getName() + "." + getLevel() + "." + "duration");
     }
 
     private void notifyOnCooldown() {

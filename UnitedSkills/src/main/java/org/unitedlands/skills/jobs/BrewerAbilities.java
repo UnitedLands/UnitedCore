@@ -16,7 +16,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.AreaEffectCloud;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -25,7 +24,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -296,13 +294,12 @@ public class BrewerAbilities implements Listener {
     @EventHandler
     public void onMilkPotionDrink(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
-        Bukkit.broadcastMessage("1");
         if (isMilkPotion(item, "milk_potion")) {
-            Bukkit.broadcastMessage("2");
             Player player = event.getPlayer();
             removeAllEffects(player);
         }
     }
+
     @EventHandler
     public void onMilkPotionSplash(PotionSplashEvent event) {
         ItemStack item = event.getPotion().getItem();
@@ -316,8 +313,9 @@ public class BrewerAbilities implements Listener {
     }
 
     private boolean isMilkPotion(ItemStack item, String milkPotionName) {
-        return CustomStack.getInstance("unitedlands:" +milkPotionName).getItemStack().equals(item);
+        return CustomStack.getInstance("unitedlands:" + milkPotionName).getItemStack().equals(item);
     }
+
     private void removeAllEffects(LivingEntity entity) {
         for (PotionEffect effect : entity.getActivePotionEffects()) {
             entity.removePotionEffect(effect.getType());

@@ -104,7 +104,12 @@ public class PlayerConfiguration {
         }
         for (JobProgression job : jobsPlayer.getJobProgression()) {
             if (job.getJob().getName().equals(jobName)) {
-                return job.getLevel();
+                if (jobName.equals("Hunter")) {
+                    int modifier = (int) Math.floor(job.getLevel());
+                    return job.getLevel() + (modifier * 2);
+                } else {
+                    return job.getLevel();
+                }
             }
         }
         return 0;

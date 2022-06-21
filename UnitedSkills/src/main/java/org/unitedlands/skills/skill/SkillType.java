@@ -9,6 +9,8 @@ public enum SkillType {
     SPLASH_BOOST("splash-boost", 3),
     FORTIFICATION("fortification", 3),
     QUALITY_INGREDIENTS("quality-ingredients", 1),
+    OIL_EXTRACTION("oil-extraction", 1),
+    NEW_POTIONS("new-potions", 3),
     // Farmer
     GREEN_THUMB("green-thumb", 3),
     FERTILISER("fertiliser", 3),
@@ -17,12 +19,14 @@ public enum SkillType {
     WRANGLER("wrangler", 3),
     EXPERT_HARVESTER("expert-harvester", 3),
     ANCIENT_OAK("ancient-oak", 1),
+    CARPENTER("carpenter", 3),
     // Miner
     FRENZY("frenzy", 3),
     FORTUNATE("fortunate", 3),
     BLAST_MINING("blast-mining", 3),
     PYROTECHNICS("pyrotechnics", 3),
     SHELL_SHOCKED("shell-shocked", 3),
+    ARMOR_SMITH("armor-smith", 1),
     // Hunter
     SELF_REFLECTION("self-reflection", 3),
     RETRIEVER("retriever", 3, "Arrow Retrieved!"),
@@ -33,6 +37,7 @@ public enum SkillType {
     STUN("stun", 3, "Enemy Stunned!"),
     FOCUS("focus", 3),
     TRAFFICKER("trafficker", 3),
+    LEATHERWORKING("leatherworking", 1, "Dragon Scale collected!"),
     // Fisher
     TREASURE_HUNTER("treasure-hunter", 3),
     ANGLER("angler", 3),
@@ -46,11 +51,14 @@ public enum SkillType {
     TREE_FELLER("tree-feller", 3),
     PRECISION_CUTTING("precision-cutting", 3),
     REFORESTATION("reforestation", 3),
+    EXPERT_WHITTLING("expert-whittling", 1),
     // Digger
     EXCAVATOR("excavator", 3),
     TUNNELLER("tunneller", 3),
     REFINER("refiner", 3),
     ARCHAEOLOGIST("archaeologist", 3),
+    COMPACTOR("compactor", 3),
+    BIOME_KIT("biome-kit", 1),
     MINERAL_FINDER("mineral-finder", 3, "Rare mineral found!");
 
     private final String name;

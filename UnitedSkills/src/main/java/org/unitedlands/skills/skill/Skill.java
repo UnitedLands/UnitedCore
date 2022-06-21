@@ -24,7 +24,7 @@ public class Skill {
     }
 
     static FileConfiguration getConfig() {
-        return getUnitedSkills().getConfig();
+        return new SkillFile(getUnitedSkills()).getSkillsConfig();
     }
 
     public Player getPlayer() {
@@ -52,8 +52,8 @@ public class Skill {
         if (level == 0) {
             return false;
         }
-        FileConfiguration configuration = getUnitedSkills().getConfig();
-        int baseChance = configuration.getInt("base-chances." + getName() + "." + level);
+        FileConfiguration configuration = getConfig();
+        int baseChance = configuration.getInt("skills." + getName() + "." + level + ".chance");
         double randomPercentage = Math.random() * 100;
         return randomPercentage < baseChance;
     }

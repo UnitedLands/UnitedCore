@@ -1,0 +1,446 @@
+skills:
+  # Brewer
+  exposure-therapy:
+    1:
+      chance: 10
+      points: 1
+    2:
+      chance: 20
+      points: 2
+    3:
+      chance: 30
+      points: 3
+  assisted-healing:
+    1:
+      points: 1
+    2:
+      points: 2
+  modified-hardware:
+    1:
+      points: 1
+    2:
+      points: 2
+    3:
+      points: 3
+  blend:
+    1:
+      points: 1
+    2:
+      points: 2
+    3:
+      points: 4
+  new-potions:
+    1:
+      points: 1
+    2:
+      points: 2
+    3:
+      points: 3
+  splash-boost:
+    1:
+      points: 1
+    2:
+      points: 2
+    3:
+      points: 3
+  oil-extraction:
+    1:
+      points: 5
+  # Farmer
+  expert-harvester:
+    1:
+      chance: 10
+      points: 1
+    2:
+      chance: 20
+      points: 2
+    3:
+      chance: 30
+      points: 3
+  fertiliser:
+    1:
+      chance: 10
+      points: 1
+    2:
+      chance: 15
+      points: 2
+    3:
+      chance: 20
+      points: 3
+  vegetarian:
+    1:
+      points: 2
+    2:
+      points: 2
+  fungal:
+    1:
+      points: 1
+    2:
+      points: 2
+  animal-wrangler:
+    1:
+      points: 2
+    2:
+      points: 3
+  ancient-oak:
+    1:
+      points: 5
+  # Miner
+  fortunate:
+    1:
+      chance: 10
+      points: 3
+    2:
+      chance: 20
+      points: 4
+    3:
+      chance: 30
+      points: 5
+  pyrotechnics:
+    1:
+      points: 1
+    2:
+      points: 2
+    3:
+      points: 3
+  shell-shocked:
+    1:
+      points: 1
+    2:
+      points: 2
+    3:
+      points: 3
+  armor-smith:
+    1:
+      points: 7
+  # Hunter
+  self-reflection:
+    1:
+      chance: 10
+      points: 1
+    2:
+      chance: 20
+      points: 2
+    3:
+      chance: 30
+      points: 3
+  trafficker:
+    1:
+      points: 1
+    2:
+      points: 2
+  counter-attack:
+    1:
+      chance: 5
+      points: 1
+    2:
+      chance: 10
+      points: 2
+    3:
+      chance: 15
+      points: 3
+  retriever:
+    1:
+      chance: 20
+      points: 1
+    2:
+      chance: 40
+      points: 2
+    3:
+      chance: 60
+      points: 3
+  piercing:
+    1:
+      chance: 20
+      points: 1
+    2:
+      chance: 40
+      points: 2
+    3:
+      chance: 60
+      points: 3
+  stun:
+    1:
+      chance: 5
+      points: 1
+    2:
+      chance: 10
+      points: 2
+    3:
+      chance: 15
+      points: 3
+  critical-hit:
+    1:
+      chance: 5
+      points: 1
+    2:
+      chance: 10
+      points: 2
+    3:
+      chance: 15
+      points: 3
+  leatherworking:
+    1:
+      chance: 5
+      points: 4
+  # Fisherman
+  lucky-catch:
+    1:
+      chance: 20
+      points: 1
+    2:
+      chance: 30
+      points: 2
+    3:
+      chance: 40
+      points: 3
+  pescatarian:
+    1:
+      chance: 100
+      points: 1
+    2:
+      chance: 100
+      points: 2
+  hooked:
+    1:
+      chance: 10
+      points: 1
+    2:
+      chance: 15
+      points: 2
+    3:
+      chance: 20
+      points: 4
+  angler:
+    1:
+      points: 1
+    2:
+      points: 2
+    3:
+      points: 3
+  rare-catch:
+    1:
+      points: 5
+  # Woodcutter
+  reforestation:
+    1:
+      chance: 35
+      points: 1
+    2:
+      chance: 65
+      points: 2
+    3:
+      chance: 100
+      points: 3
+  precision-cutting:
+    1:
+      chance: 20
+      points: 1
+    2:
+      chance: 30
+      points: 2
+    3:
+      chance: 40
+      points: 3
+  carpenter:
+    1:
+      points: 2
+    2:
+      points: 3
+    3:
+      points: 4
+  expert-whittling:
+    1:
+      points: 5
+  # Digger
+  excavator:
+    1:
+      chance: 20
+      points: 1
+    2:
+      chance: 30
+      points: 2
+    3:
+      chance: 40
+      points: 3
+  archaeologist:
+    1:
+      points: 2
+    2:
+      points: 3
+    3:
+      points: 4
+  compactor:
+    1:
+      points: 1
+    2:
+      points: 2
+    3:
+      points: 3
+  mineral-finder:
+    1:
+      points: 5
+  biome-kit:
+    1:
+      points:
+  # Active skills start
+  green-thumb:
+    1:
+      chance: 100
+      cooldown: 300
+      duration: 40
+      points: 2
+    2:
+      chance: 100
+      cooldown: 270
+      duration: 50
+      points: 3
+    3:
+      chance: 100
+      cooldown: 240
+      duration: 60
+      points: 4
+  frenzy:
+    1:
+      chance: 100
+      cooldown: 300
+      duration: 10
+      points: 3
+    2:
+      chance: 100
+      cooldown: 270
+      duration: 15
+      points: 4
+    3:
+      chance: 100
+      cooldown: 240
+      duration: 20
+      points: 5
+  fortification:
+    1:
+      chance: 100
+      cooldown: 300
+      duration: 10
+      points: 1
+    2:
+      chance: 100
+      cooldown: 270
+      duration: 20
+      points: 2
+    3:
+      chance: 100
+      cooldown: 240
+      duration: 30
+      points: 3
+  blast-mining:
+    1:
+      chance: 100
+      cooldown: 300
+      duration: 10
+      points: 1
+    2:
+      chance: 100
+      cooldown: 270
+      duration: 15
+      points: 2
+    3:
+      chance: 100
+      cooldown: 240
+      duration: 20
+      points: 3
+  precision-strike:
+    1:
+      chance: 100
+      cooldown: 300
+      duration: 3
+      points: 1
+    2:
+      chance: 100
+      cooldown: 270
+      duration: 6
+      points: 2
+    3:
+      chance: 100
+      cooldown: 240
+      duration: 10
+      points: 3
+  focus:
+    1:
+      chance: 100
+      cooldown: 300
+      duration: 5
+      points: 1
+    2:
+      chance: 100
+      cooldown: 270
+      duration: 10
+      points: 2
+    3:
+      chance: 100
+      cooldown: 240
+      duration: 15
+      points: 3
+  grapple:
+    1:
+      chance: 100
+      cooldown: 300
+      duration: 5
+      points: 1
+    2:
+      chance: 100
+      cooldown: 270
+      duration: 10
+      points: 2
+    3:
+      chance: 100
+      cooldown: 240
+      duration: 15
+      points: 4
+  tree-feller:
+    1:
+      chance: 100
+      cooldown: 300
+      duration: 10
+      points: 2
+    2:
+      chance: 100
+      cooldown: 270
+      duration: 20
+      points: 3
+    3:
+      chance: 100
+      cooldown: 240
+      duration: 30
+      points: 4
+  tunneller:
+    1:
+      chance: 100
+      cooldown: 300
+      duration: 10
+      points: 2
+    2:
+      chance: 100
+      cooldown: 270
+      duration: 20
+      points: 3
+    3:
+      chance: 100
+      cooldown: 240
+      duration: 30
+      points: 4
+  refiner:
+    1:
+      chance: 100
+      cooldown: 300
+      duration: 40
+      points: 2
+    2:
+      chance: 100
+      cooldown: 270
+      duration: 50
+      points: 3
+    3:
+      chance: 100
+      cooldown: 240
+      duration: 60
+      points: 4
