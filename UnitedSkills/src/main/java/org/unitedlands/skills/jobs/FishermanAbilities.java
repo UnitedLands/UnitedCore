@@ -1,6 +1,8 @@
 package org.unitedlands.skills.jobs;
 
-import net.kyori.adventure.text.Component;
+import com.gamingmesh.jobs.Jobs;
+import com.gamingmesh.jobs.actions.ItemActionInfo;
+import com.gamingmesh.jobs.container.ActionType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -74,27 +76,23 @@ public class FishermanAbilities implements Listener {
         }
         if (event.getCaught() != null) {
             LootTable treasureHunterTable = new LootTable("treasure-hunter-loot", treasureHunter);
-            replaceCaughtFish(event.getCaught(), treasureHunterTable.getRandomItem());
+            if (event.getState().equals(PlayerFishEvent.State.CAUGHT_FISH)) {
+                replaceCaughtFish(event.getCaught(), treasureHunterTable.getRandomItem());
+            }
         }
     }
 
     private void replaceCaughtFish(Entity caught, ItemStack item) {
         if (caught instanceof Item caughtFish) {
-
             if (item == null) {
                 return;
             }
-            caughtFish.getWorld().dropItem(caughtFish.getLocation(), item);
-            List<Entity> entities = caughtFish.getNearbyEntities(1, 1, 1);
-            for (Entity entity : entities) {
-                if (entity.equals(caughtFish)) {
-                    continue;
-                }
-                Bukkit.getScheduler().runTaskLater(unitedSkills, () -> {
-                    entity.setVelocity(caughtFish.getVelocity());
-                }, 2);
-            }
-            caughtFish.remove();
+
+            Entity newItem = caughtFish.getWorld().dropItem(caughtFish.getLocation(), item);
+            Bukkit.getScheduler().runTaskLater(unitedSkills, () -> {
+                newItem.setVelocity(caughtFish.getVelocity());
+                caughtFish.remove();
+            }, 2);
         }
     }
 
@@ -129,15 +127,17 @@ public class FishermanAbilities implements Listener {
             return;
         }
 
-        FishHook hook = event.getHook();
-        // decrease wait time by 30% for every level in angler
-        int waitTime = (int) (hook.getWaitTime() * (1 - (angler.getLevel() * 0.3)));
-        if (angler.isMaxLevel()) {
-            // Decrease it by 80% for max level.
-            waitTime = (int) (hook.getWaitTime() * 0.2);
-        }
-        hook.setWaitTime(waitTime);
-        player.sendActionBar(Component.text());
+        Bukkit.getScheduler().runTaskLater(unitedSkills, () -> {
+            FishHook hook = event.getHook();
+            // decrease wait time by 30% for every level in angler
+            int waitTime = (int) (hook.getWaitTime() * (1 - (angler.getLevel() * 0.3)));
+            if (angler.getLevel() == 3) {
+                // Decrease it by 80% for level 3.
+                waitTime = (int) (hook.getWaitTime() * 0.2);
+            }
+
+            event.getHook().setWaitTime(waitTime - 20);
+        }, 20);
     }
 
     @EventHandler
@@ -148,6 +148,7 @@ public class FishermanAbilities implements Listener {
         }
         ActiveSkill grapple = new ActiveSkill(player, SkillType.GRAPPLE, cooldowns, durations);
         if (canActivate(event, "FISHING_ROD", grapple)) {
+            event.setCancelled(true);
             grapple.activate();
         }
     }
@@ -264,14 +265,17 @@ public class FishermanAbilities implements Listener {
         if (!(event.getCaught() instanceof Item item)) {
             return;
         }
-
-        ItemStack drop = item.getItemStack();
-
-        if (drop.getMaxStackSize() > 0) {
-            drop.setAmount(drop.getAmount() * 2);
-            luckyCatch.notifyActivation();
+        if (!event.getState().equals(PlayerFishEvent.State.CAUGHT_FISH)) {
+            return;
         }
 
+        ItemStack drop = item.getItemStack();
+        Entity extraItem = event.getPlayer().getWorld().dropItem(item.getLocation(), drop);
+
+        Bukkit.getScheduler().runTask(unitedSkills, () -> extraItem.setVelocity(item.getVelocity()));
+
+        Jobs.action(Jobs.getPlayerManager().getJobsPlayer(player), new ItemActionInfo(drop, ActionType.FISH));
+        luckyCatch.notifyActivation();
     }
 
     @EventHandler
@@ -297,7 +301,9 @@ public class FishermanAbilities implements Listener {
         return type.equals(Material.COOKED_COD)
                 || type.equals(Material.COOKED_SALMON)
                 || type.equals(Material.SALMON)
-                || type.equals(Material.COD);
+                || type.equals(Material.COD)
+                // Bread is the base item for the sushi custom item.
+                || type.equals(Material.BREAD);
     }
 
     private boolean isFisherman() {

@@ -57,6 +57,10 @@ public class UnitedChat extends JavaPlugin {
     public FileConfiguration getPlayerConfig(Player player) {
         File playerDataFile = new File(getDataFolder(), getFilePath(player));
         playerDataConfig = new YamlConfiguration();
+        if (!playerDataFile.exists()) {
+            createPlayerFile(player);
+            saveResource(getFilePath(player), false);
+        }
         try {
             playerDataConfig.load(playerDataFile);
         } catch (IOException | InvalidConfigurationException e) {
@@ -71,6 +75,6 @@ public class UnitedChat extends JavaPlugin {
 
 
     private String getFilePath(Player player) {
-        return File.separator + "players" + File.separator + player.getUniqueId().toString() + ".yml";
+        return "players" + File.separator + player.getUniqueId().toString() + ".yml";
     }
 }

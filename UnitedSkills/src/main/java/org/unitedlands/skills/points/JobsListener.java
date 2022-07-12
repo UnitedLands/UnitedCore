@@ -2,6 +2,7 @@ package org.unitedlands.skills.points;
 
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.api.JobsLevelUpEvent;
+import com.gamingmesh.jobs.api.JobsPrePaymentEvent;
 import com.gamingmesh.jobs.container.JobProgression;
 import com.gamingmesh.jobs.container.JobsPlayer;
 import org.bukkit.entity.Player;
@@ -41,6 +42,22 @@ public class JobsListener implements Listener {
             return;
         }
         playerConfiguration.increaseJobPoints(name, 1);
+    }
+
+    @EventHandler
+    public void onJobPayment(JobsPrePaymentEvent event) {
+        String jobName = event.getJob().getName();
+        if (!jobName.equals("Hunter")) {
+            return;
+        }
+        if (event.getEntity() == null) {
+            return;
+        }
+        if (event.getEntity().hasMetadata("spawner-mob")) {
+            event.setAmount(event.getAmount() * 0.25);
+        } else {
+            event.setAmount(event.getAmount());
+        }
     }
 
     private int getJobsLevel(String jobName) {

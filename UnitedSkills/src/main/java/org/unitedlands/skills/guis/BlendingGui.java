@@ -94,7 +94,9 @@ public class BlendingGui {
             if (!slotsArePotions()) {
                 player.sendMessage(Component.text("You can only blend potions!", NamedTextColor.RED));
             }
-
+            if (getPotionMeta(potion).equals(getPotionMeta(otherPotion))) {
+                player.sendMessage(Component.text("Cannot combine two of the same potion!", NamedTextColor.RED));
+            }
             ItemStack blendedPotion = blendPotions();
             if (blendedPotion == null) {
                 return;

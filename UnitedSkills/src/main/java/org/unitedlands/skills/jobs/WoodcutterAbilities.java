@@ -50,8 +50,9 @@ public class WoodcutterAbilities implements Listener {
             return;
         }
         ActiveSkill treeFeller = new ActiveSkill(player, SkillType.TREE_FELLER, cooldowns, durations);
-        if (canActivate(event, "AXE", treeFeller)) {
+        if (canActivate(event, "_AXE", treeFeller)) {
             treeFeller.activate();
+            event.setCancelled(true);
         }
     }
 
@@ -67,6 +68,15 @@ public class WoodcutterAbilities implements Listener {
             event.setCancelled(true);
             return;
         }
+        // int counter = 0;
+        // for (ITreeBlock<Block> treeBlock : event.getDetectedTree().getDetectedTreeBlocks().getLogBlocks()) {
+        //     if (counter > 10) {
+        //         break;
+        //     }
+        //     Block block = treeBlock.getBlock();
+        //     Jobs.action(Jobs.getPlayerManager().getJobsPlayer(player), new BlockActionInfo(block, ActionType.BREAK), block);
+        //     counter++;
+        // }
         Skill reforestation = new Skill(player, SkillType.REFORESTATION);
         if (reforestation.getLevel() == 0) {
             return;
@@ -101,11 +111,11 @@ public class WoodcutterAbilities implements Listener {
         if (!material.toString().contains("LOG")) {
             return;
         }
-        if (!isPlaced(coreProtect, event.getBlock())) {
+        if (isPlaced(coreProtect, event.getBlock())) {
             return;
         }
         if (precisionCutting.isSuccessful()) {
-            multiplyItem(player, new ItemStack(material), 1);
+            multiplyItem(player, new ItemStack(material), 2);
         }
     }
 

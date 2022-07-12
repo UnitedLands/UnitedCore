@@ -14,43 +14,43 @@ public enum TreeType implements Serializable {
 			"mango_tree_log",
 			Material.JUNGLE_LEAVES,
 			"mango_tree_leaves",
-			CustomItem.getItemByName("&fMango Sapling")),
+			CustomItem.getItemByName("&fMango Sapling"), 0.25),
 	MIDAS_OAK(Material.OAK_SAPLING,
 			Material.OAK_LOG,
 			"midas_oak_log",
 			Material.OAK_LEAVES,
 			"midas_oak_leaves",
-			CustomItem.getItemByName("&eMidas' Oak Sapling")),
+			CustomItem.getItemByName("&eMidas' Oak Sapling"), 0.1),
 	MIDAS_JUNGLE(Material.JUNGLE_SAPLING,
 			Material.JUNGLE_LOG,
 			"midas_jungle_log",
 			Material.JUNGLE_LEAVES,
 			"midas_jungle_leaves",
-			CustomItem.getItemByName("&eMidas' Jungle Sapling")),
+			CustomItem.getItemByName("&eMidas' Jungle Sapling"), 0.1),
 	ANCIENT_OAK(Material.OAK_SAPLING,
 			Material.OAK_LOG,
 			"ancient_oak_log",
 			Material.OAK_LEAVES,
 			"ancient_oak_leaves",
-			CustomItem.getItemByName("&6Ancient Oak Sapling")),
+			CustomItem.getItemByName("&6Ancient Oak Sapling"), 0.0),
 	FUNGAL_BIRCH(Material.BIRCH_SAPLING,
 			Material.BIRCH_LOG,
 			"fungal_birch_log",
 			Material.BIRCH_LEAVES,
 			"fungal_birch_leaves",
-			CustomItem.getItemByName("&fBracket Mushroom")),
+			CustomItem.getItemByName("&fFungal Sapling"), 0.25),
 	PINE(Material.SPRUCE_SAPLING,
 			Material.SPRUCE_LOG,
 			"pine_tree_log",
 			Material.SPRUCE_LEAVES,
 			"pine_tree_leaves",
-			CustomItem.getItemByName("&fPine Sapling")),
+			CustomItem.getItemByName("&fPine Sapling"), 0.25),
 	FLOWERING_ACACIA(Material.ACACIA_SAPLING,
 			Material.ACACIA_LOG,
 			"flowering_acacia_log",
 			Material.ACACIA_LEAVES,
 			"flowering_acacia_leaves",
-			CustomItem.getItemByName("&fFlowering Acacia Sapling"));
+			CustomItem.getItemByName("&fFlowering Acacia Sapling"), 0.5);
 
 	private static final HashMap<String, TreeType> validSeed = new HashMap<>();
 	
@@ -70,16 +70,23 @@ public enum TreeType implements Serializable {
 	private final Material stemBlock;
 	private final String stemReplaceBlockName;
 	private final Material fruitBlock;
-	private final String fruitReplaceBlockName;
+	private final String customLeavesName;
 	private final ItemStack fruitSeed;
+	private final double fruitedLeafChance;
 
-	TreeType(Material vanillaSapling, Material stemBlock, String stemReplaceBlockName, Material fruitBlock, String fruitReplaceBlockName,ItemStack fruitSeed) {
+	TreeType(Material vanillaSapling, Material stemBlock, String stemReplaceBlockName, Material fruitBlock, String customLeavesName, ItemStack fruitSeed, double fruitedLeafChance) {
 		this.vanillaSapling = vanillaSapling;
 		this.stemBlock = stemBlock;
 		this.stemReplaceBlockName = stemReplaceBlockName;
 		this.fruitBlock = fruitBlock;
-		this.fruitReplaceBlockName = fruitReplaceBlockName;
+		this.customLeavesName = customLeavesName;
 		this.fruitSeed = fruitSeed;
+		this.fruitedLeafChance = fruitedLeafChance;
+	}
+
+	public boolean isSuccessful() {
+		double randomPercentage = Math.random();
+		return randomPercentage < fruitedLeafChance;
 	}
 
 	public Material getStemBlock() {
@@ -94,8 +101,12 @@ public enum TreeType implements Serializable {
 		return vanillaSapling;
 	}
 	
-	public String getFruitReplaceBlockName() {
-		return fruitReplaceBlockName;
+	public String getCustomLeavesName() {
+		return customLeavesName;
+	}
+
+	public String getFruitedLeavesName() {
+		return customLeavesName + "_fruited";
 	}
 
 	

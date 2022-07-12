@@ -63,6 +63,10 @@ public class PlayerListener implements Listener {
         String message = event.getMessage();
         String finalizedMessage = formatter.finalizeMessage(player, message);
 
+        if (uc.getPlayerConfig(player) == null) {
+            uc.createPlayerFile(player);
+        }
+
         boolean gradientEnabled = uc.getPlayerConfig(player).getBoolean("GradientEnabled");
         String gradient = uc.getPlayerConfig(player).getString("Gradient");
 

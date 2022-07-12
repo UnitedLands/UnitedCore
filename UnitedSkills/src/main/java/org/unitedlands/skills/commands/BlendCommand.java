@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.UnitedSkills;
 import org.unitedlands.skills.guis.BlendingGui;
+import org.unitedlands.skills.skill.Skill;
+import org.unitedlands.skills.skill.SkillType;
 
 import static org.unitedlands.skills.Utils.getMessage;
 
@@ -25,7 +27,8 @@ public class BlendCommand implements CommandExecutor {
             return true;
         }
 
-        if (!player.hasPermission("united.skills.blend")) {
+        Skill blending = new Skill(player, SkillType.BLEND);
+        if (blending.getLevel() == 0) {
             player.sendMessage(getMessage("no-permission"));
             return true;
         }

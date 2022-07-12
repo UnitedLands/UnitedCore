@@ -18,11 +18,11 @@ import org.unitedlands.skills.jobs.DiggerAbilities;
 import org.unitedlands.skills.jobs.FarmerAbilities;
 import org.unitedlands.skills.jobs.FishermanAbilities;
 import org.unitedlands.skills.jobs.HunterAbilities;
+import org.unitedlands.skills.jobs.MasterworkAbilities;
 import org.unitedlands.skills.jobs.MinerAbilities;
 import org.unitedlands.skills.jobs.WoodcutterAbilities;
 import org.unitedlands.skills.points.JobsListener;
-import org.unitedlands.skills.safarinets.TraffickerListener;
-import org.unitedlands.skills.safarinets.WranglerListener;
+import org.unitedlands.skills.safarinets.SafariNetListener;
 import org.unitedlands.skills.skill.SkillFile;
 
 public final class UnitedSkills extends JavaPlugin {
@@ -43,23 +43,28 @@ public final class UnitedSkills extends JavaPlugin {
     }
 
     private void registerListeners() {
-        final JobsListener jobsListener = new JobsListener(this);
-        final BrewerAbilities brewerAbilities = new BrewerAbilities(this);
-        final FarmerAbilities farmerAbilities = new FarmerAbilities(this);
+        final Listener[] listeners = {
+                new JobsListener(this),
+                new BrewerAbilities(this),
+                new FarmerAbilities(this),
+                new HunterAbilities(this),
+                new DiggerAbilities(this, getCoreProtect()),
+                new WoodcutterAbilities(this, getCoreProtect()),
+                new FishermanAbilities(this),
+                new MinerAbilities(this, getCoreProtect()),
+                new BiomeKit(this),
+                new MasterworkAbilities(this)
+        };
+
+        registerEvents(listeners);
+
+        SafariNet.addListener(new SafariNetListener(this));
+
         final HunterAbilities hunterAbilities = new HunterAbilities(this);
-        final DiggerAbilities diggerAbilities = new DiggerAbilities(this, getCoreProtect());
-        final WoodcutterAbilities woodcutterAbilities = new WoodcutterAbilities(this, getCoreProtect());
-        final FishermanAbilities fishermanAbilities = new FishermanAbilities(this);
-        final MinerAbilities minerAbilities = new MinerAbilities(this, getCoreProtect());
-        final BiomeKit biomeKitListener = new BiomeKit(this);
-
-        registerEvents(jobsListener, brewerAbilities, farmerAbilities, hunterAbilities,
-                diggerAbilities, woodcutterAbilities, fishermanAbilities, minerAbilities, biomeKitListener);
-
-        SafariNet.addListener(new WranglerListener(this));
-        SafariNet.addListener(new TraffickerListener(this));
-
         hunterAbilities.damageBleedingEntities();
+
+        final MasterworkAbilities masterworkAbilities = new MasterworkAbilities(this);
+        masterworkAbilities.runHealthIncrease();
     }
 
     private void registerPlaceholderExpansion() {
@@ -68,7 +73,7 @@ public final class UnitedSkills extends JavaPlugin {
         }
     }
 
-    private void registerEvents(Listener... listeners) {
+    private void registerEvents(Listener[] listeners) {
         final PluginManager pluginManager = getServer().getPluginManager();
         for (Listener listener : listeners) {
             pluginManager.registerEvents(listener, this);

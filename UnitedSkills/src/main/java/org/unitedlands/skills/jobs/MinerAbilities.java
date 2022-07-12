@@ -55,7 +55,7 @@ public class MinerAbilities implements Listener {
             return;
         }
         ActiveSkill blastMining = new ActiveSkill(player, SkillType.BLAST_MINING, cooldowns, durations);
-        if (canActivate(event, "FLINT_AND_STEEL", blastMining)) {
+        if (canActivate(event, "PICKAXE", blastMining)) {
             blastMining.activate();
         }
     }
@@ -68,10 +68,11 @@ public class MinerAbilities implements Listener {
         }
         ActiveSkill frenzy = new ActiveSkill(player, SkillType.FRENZY, cooldowns, durations);
         if (canActivate(event, "PICKAXE", frenzy)) {
-            frenzy.activate();
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, frenzy.getDuration() * 20, 3));
-            frenzyIsActive = true;
-            unitedSkills.getServer().getScheduler().runTaskLater(unitedSkills, () -> frenzyIsActive = false, frenzy.getDuration() * 20L);
+            if (frenzy.activate()) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, frenzy.getDuration() * 20, 3));
+                frenzyIsActive = true;
+                unitedSkills.getServer().getScheduler().runTaskLater(unitedSkills, () -> frenzyIsActive = false, frenzy.getDuration() * 20L);
+            }
         }
     }
 
@@ -91,14 +92,19 @@ public class MinerAbilities implements Listener {
         List<Item> items = event.getItems();
         if (fortunate.isSuccessful()) {
             for (Item item : items) {
-                Utils.multiplyItem(player, item.getItemStack(), 1);
+                if (item.getItemStack().getType().toString().contains("ORE")) {
+                    Utils.multiplyItem(player, item.getItemStack(), 1);
+                }
             }
         }
 
         ActiveSkill frenzy = new ActiveSkill(player, SkillType.FRENZY, cooldowns, durations);
         if (frenzy.isActive()) {
+            List<String> blacklistedMaterials = unitedSkills.getConfig().getStringList("frenzy-blacklist");
             for (Item item : items) {
-                Utils.multiplyItem(player, item.getItemStack(), 3);
+                if (blacklistedMaterials.contains(item.getItemStack().getType().toString())) {
+                    Utils.multiplyItem(player, item.getItemStack(), 3);
+                }
             }
         }
     }
@@ -126,8 +132,7 @@ public class MinerAbilities implements Listener {
         ActiveSkill blastMining = new ActiveSkill(player, SkillType.BLAST_MINING, cooldowns, durations);
         if (blastMining.isActive()) {
             if (Utils.takeItemFromMaterial(player, Material.TNT)) {
-                int power = Math.min(blastMining.getLevel() * 2, 5);
-                block.getWorld().createExplosion(block.getLocation(), power, false, true, player);
+                block.getWorld().createExplosion(block.getLocation(), getPyrotechnicsPower(), false, true, player);
                 damagePickaxe(mainHand, 10 + (blastMining.getLevel()) * 3);
             } else {
                 player.sendActionBar(Component.text("You must have tnt to use Blast Mining!", NamedTextColor.RED));
@@ -179,15 +184,19 @@ public class MinerAbilities implements Listener {
         if (!isMiner()) {
             return;
         }
-        Skill pyrotechnics = new Skill(player, SkillType.PYROTECHNICS);
-        int level = pyrotechnics.getLevel();
-        if (level == 0) {
-            return;
-        }
-        float power = (float) (4 + (4 * (level * 0.2)));
+        float power = getPyrotechnicsPower();
         event.getLocation().createExplosion(player, power, false, true);
         tnt.remove();
         event.setCancelled(true);
+    }
+
+    private float getPyrotechnicsPower() {
+        Skill pyrotechnics = new Skill(player, SkillType.PYROTECHNICS);
+        int level = pyrotechnics.getLevel();
+        if (level == 0) {
+            return 4.0F;
+        }
+        return (float) (4 + (4 * (level * 0.2)));
     }
 
     private boolean isMiner() {

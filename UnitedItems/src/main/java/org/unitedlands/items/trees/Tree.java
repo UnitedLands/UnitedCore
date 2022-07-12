@@ -101,10 +101,22 @@ public class Tree implements Listener, Serializable {
 			for(BlockState block : e.getBlocks()) {
 				if (block.getType().equals(tree.getStemBlock())) {
 					Location blockLocation = block.getLocation();
-					Bukkit.getScheduler().runTaskLater(unitedItems, () -> CustomBlock.place(tree.getStemReplaceBlockName(), blockLocation), 1);
+					// Run a check for fungal birch, they're the only ones with log chances.
+					if (tree.getStemReplaceBlockName().contains("fungal")) {
+						if (tree.isSuccessful()) {
+							Bukkit.getScheduler().runTaskLater(unitedItems, () -> CustomBlock.place(tree.getStemReplaceBlockName(), blockLocation), 1);
+						}
+					} else {
+						// if its not a fungal birch, always put the custom block
+						Bukkit.getScheduler().runTaskLater(unitedItems, () -> CustomBlock.place(tree.getStemReplaceBlockName(), blockLocation), 1);
+					}
 				} else if (block.getType().equals(tree.getFruitBlock())) {
 					Location blockLocation = block.getLocation();
-					Bukkit.getScheduler().runTaskLater(unitedItems, () -> CustomBlock.place(tree.getFruitReplaceBlockName(), blockLocation), 1);
+					if (tree.isSuccessful()) {
+						Bukkit.getScheduler().runTaskLater(unitedItems, () -> CustomBlock.place(tree.getFruitedLeavesName(), blockLocation), 1);
+					} else {
+						Bukkit.getScheduler().runTaskLater(unitedItems, () -> CustomBlock.place(tree.getCustomLeavesName(), blockLocation), 1);
+					}
 				}
 			}
 		}

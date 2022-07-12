@@ -10,13 +10,12 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <modules>
-        <module>UnitedCore</module>
         <module>UnitedChat</module>
         <module>UnitedPvP</module>
         <module>UnitedItems</module>
-        <module>UnitedCore</module>
         <module>UnitedUpkeep</module>
         <module>UnitedProtection</module>
+        <module>UnitedSkills</module>
     </modules>
 
     <build>

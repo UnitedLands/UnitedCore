@@ -1,6 +1,9 @@
 package org.unitedlands.skills.jobs;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import com.gamingmesh.jobs.Jobs;
+import com.gamingmesh.jobs.actions.BlockActionInfo;
+import com.gamingmesh.jobs.container.ActionType;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -210,6 +213,7 @@ public class DiggerAbilities implements Listener {
             if (addType == Material.OBSIDIAN && addType != block.getType()) continue;
 
             spawnBlockBreakParticles(blockAdd);
+            Jobs.action(Jobs.getPlayerManager().getJobsPlayer(player), new BlockActionInfo(block, ActionType.BREAK), block);
             blockAdd.breakNaturally();
         }
     }

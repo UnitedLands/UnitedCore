@@ -97,7 +97,9 @@ public class Utils {
     public static boolean isInJob(Player player, String jobName) {
         JobsPlayer jobsPlayer = Jobs.getPlayerManager().getJobsPlayer(player);
         for (JobProgression job : jobsPlayer.getJobProgression()) {
-            return job.getJob().getName().equals(jobName);
+            if (job.getJob().getName().equals(jobName)) {
+                return true;
+            }
         }
         return false;
     }

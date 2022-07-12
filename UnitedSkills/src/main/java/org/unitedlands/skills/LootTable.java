@@ -84,9 +84,12 @@ public class LootTable {
     }
 
     private boolean isSuccessful(ConfigurationSection itemSection) {
-        double randomPercentage = Math.random() * 100;
-        double finalDropChance = getFinalDropChance(requiredSkill, itemSection);
-        return randomPercentage < finalDropChance;
+        if (itemSection.getInt("required-level") <= requiredSkill.getLevel()) {
+            double randomPercentage = Math.random() * 100;
+            double finalDropChance = getFinalDropChance(requiredSkill, itemSection);
+            return randomPercentage < finalDropChance;
+        }
+        return false;
     }
 
     private ItemStack generateItem(ConfigurationSection itemSection) {
@@ -130,6 +133,9 @@ public class LootTable {
 
     private void addLore(ConfigurationSection itemSection, ItemStack item) {
         List<String> lore = itemSection.getStringList("lore");
+        if (lore.isEmpty()) {
+            return;
+        }
         List<Component> deserializedLore = new ArrayList<>();
         for (String line : lore) {
             deserializedLore.add(miniMessage.deserialize(line));

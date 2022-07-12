@@ -20,11 +20,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
+import org.unitedlands.pvp.PlayerFile;
 import org.unitedlands.pvp.UnitedPvP;
 import org.unitedlands.pvp.util.Utils;
 
@@ -45,8 +47,14 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
 
         if (!player.hasPlayedBefore() || unitedPvP.getPlayerConfig(player) == null) {
-            unitedPvP.createPlayerFile(player);
+            PlayerFile playerFile = new PlayerFile(player);
+            playerFile.createFile();
         }
+
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
 
     }
 

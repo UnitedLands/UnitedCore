@@ -58,6 +58,7 @@ public final class UnitedPvP extends JavaPlugin {
         try {
             playerDataConfig.load(playerDataFile);
         } catch (IOException | InvalidConfigurationException e) {
+            createPlayerFile(player);
             e.printStackTrace();
         }
         return playerDataConfig;

@@ -1,14 +1,21 @@
 package org.unitedlands.skills.skill;
 
+import dev.lone.itemsadder.api.CustomStack;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 public class ActiveSkill extends Skill {
@@ -29,23 +36,24 @@ public class ActiveSkill extends Skill {
     /**
      * Attempts to activate a skill with a cooldown and duration
      */
-    public void activate() {
+    public boolean activate() {
         int cooldownTime = getCooldown();
         int durationTime = getDuration();
         if (isActive()) {
             player.sendActionBar(Component
                     .text(getFormattedName() + " is active for " + getSecondsLeft() + "s", NamedTextColor.RED));
             player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1f, 1f);
-            return;
+            return false;
         }
         if (isOnCooldown()) {
             notifyOnCooldown();
-            return;
+            return false;
         }
         notifyActivation();
         addTime(durationTime, activeDurations);
         addTime(cooldownTime, cooldowns);
         sendBossBar();
+        return true;
     }
 
     private void sendBossBar() {
@@ -65,7 +73,24 @@ public class ActiveSkill extends Skill {
     }
 
     public int getCooldown() {
-        return getConfig().getInt("skills." + getName() + "." + getLevel() + "." + "cooldown");
+        int cooldown = getConfig().getInt("skills." + getName() + "." + getLevel() + "." + "cooldown");
+        if (hasFullMasterworkSet()) {
+            // reduce by 10% if they have the full set.
+            cooldown = (int) Math.floor(cooldown * 0.9);
+        }
+        return cooldown;
+    }
+
+    private boolean hasFullMasterworkSet() {
+        ArrayList<ItemStack> masterworkSet = new ArrayList<>();
+        masterworkSet.add(CustomStack.getInstance("unitedlands:masterwork_sword").getItemStack());
+        masterworkSet.add(CustomStack.getInstance("unitedlands:masterwork_pickaxe").getItemStack());
+        masterworkSet.add(CustomStack.getInstance("unitedlands:masterwork_axe").getItemStack());
+        masterworkSet.add(CustomStack.getInstance("unitedlands:masterwork_shovel").getItemStack());
+        masterworkSet.add(CustomStack.getInstance("unitedlands:masterwork_hoe").getItemStack());
+
+        List<@Nullable ItemStack> inventoryContents = Arrays.stream(player.getInventory().getContents()).toList();
+        return new HashSet<>(inventoryContents).containsAll(masterworkSet);
     }
 
     public int getDuration() {
@@ -75,7 +100,7 @@ public class ActiveSkill extends Skill {
     private void notifyOnCooldown() {
         player.sendActionBar(Component
                 .text(getFormattedName() + " can be re-activated in " +
-                        +getRemainingCooldownTime() + "s", NamedTextColor.RED));
+                        getRemainingCooldownTime() + "s", NamedTextColor.RED));
         player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1f, 1f);
     }
 

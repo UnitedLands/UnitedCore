@@ -173,7 +173,7 @@ public class HunterAbilities implements Listener {
         }
         ActiveSkill precisionStrike = new ActiveSkill(player, SkillType.PRECISION_STRIKE, cooldowns, durations);
         // The skill should either activate with an axe or a sword.
-        if (canActivate(event, "AXE", precisionStrike) || canActivate(event, "SWORD", precisionStrike)) {
+        if (canActivate(event, "_AXE", precisionStrike) || canActivate(event, "SWORD", precisionStrike)) {
             precisionStrike.activate();
         }
     }

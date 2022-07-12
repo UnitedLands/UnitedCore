@@ -12,6 +12,24 @@ fortification-effects:
     - SLOW_DIGGING
     - FAST_DIGGING
     - ABSORPTION
+frenzy-blacklist:
+  - DIAMOND_BLOCK
+  - GOLD_BLOCK
+  - IRON_BLOCK
+  - NETHERITE_BLOCK
+  - BEACON
+  - COPPER_BLOCK
+  - BUDDING_AMETHYST
+  - SPAWNER
+  - ANCIENT_DEBRIS
+  - END_PORTAL_FRAME
+  - EMERALD_BLOCK
+  - RESPAWN_ANCHOR
+  - OAK_SAPLING
+  - JUNGLE_SAPLING
+  - SPRUCE_SAPLING
+  - ACACIA_SAPLING
+  - BIRCH_SAPLING
 brewing-items:
   - FERMENTED_SPIDER_EYE
   - RABBIT_FOOT
@@ -761,3 +779,4 @@ messages:
   biome-selected: "<green>Biome successfully selected!"
   biome-changed: "<green>Chunk biome successfully changed! <gray>You must leave the area to see changes!"
   choose-biome-first: "<red>You must choose a biome first!"
+  points-available: "<bold><red>U<white>L </bold><dark_gray>»<red> You have <white><points><red> available!"
