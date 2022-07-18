@@ -209,6 +209,18 @@ trafficker-mobs:
   - ZOGLIN
   - ZOMBIE
   - ZOMBIFIED_PIGLIN
+excavator-items:
+  - DIRT
+  - SAND
+  - GRAVEL
+  - SOUL_SAND
+  - SOUL_SOIL
+  - ROOTED_DIRT
+  - COARSE_DIRT
+  - GRASS_BLOCK
+  - RED_SAND
+  - MYCELIUM
+  - PODZOL
 archaeologist-loot:
   diamond:
     material: DIAMOND

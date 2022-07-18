@@ -7,7 +7,6 @@ import com.songoda.ultimatetimber.manager.SaplingManager;
 import com.songoda.ultimatetimber.tree.DetectedTree;
 import com.songoda.ultimatetimber.tree.ITreeBlock;
 import com.songoda.ultimatetimber.tree.TreeDefinition;
-import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -33,14 +32,12 @@ import static org.unitedlands.skills.Utils.*;
 public class WoodcutterAbilities implements Listener {
 
     private final UnitedSkills unitedSkills;
-    private final CoreProtectAPI coreProtect;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
     private Player player;
 
-    public WoodcutterAbilities(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
+    public WoodcutterAbilities(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
-        this.coreProtect = coreProtect;
     }
 
     @EventHandler
@@ -111,7 +108,7 @@ public class WoodcutterAbilities implements Listener {
         if (!material.toString().contains("LOG")) {
             return;
         }
-        if (isPlaced(coreProtect, event.getBlock())) {
+        if (isPlaced(event.getBlock())) {
             return;
         }
         if (precisionCutting.isSuccessful()) {

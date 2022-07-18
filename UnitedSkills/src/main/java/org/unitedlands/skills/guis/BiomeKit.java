@@ -236,6 +236,7 @@ public class BiomeKit implements Listener {
         }
         damageKit();
     }
+
     private void damageKit() {
         Damageable damageableKit = (Damageable) kit;
         damageableKit.setDamage(damageableKit.getDamage() + 1);

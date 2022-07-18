@@ -1,6 +1,5 @@
 package org.unitedlands.skills.jobs;
 
-import net.coreprotect.CoreProtectAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -39,13 +38,11 @@ public class MinerAbilities implements Listener {
     private final UnitedSkills unitedSkills;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
-    private final CoreProtectAPI coreProtect;
     private Player player;
     private boolean frenzyIsActive;
 
-    public MinerAbilities(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
+    public MinerAbilities(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
-        this.coreProtect = coreProtect;
     }
 
     @EventHandler
@@ -84,7 +81,7 @@ public class MinerAbilities implements Listener {
         }
 
         Block block = event.getBlock();
-        if (Utils.isPlaced(coreProtect, block)) {
+        if (Utils.isPlaced(block)) {
             return;
         }
 

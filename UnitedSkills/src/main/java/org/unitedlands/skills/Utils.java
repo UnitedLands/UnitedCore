@@ -3,7 +3,7 @@ package org.unitedlands.skills;
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.container.JobProgression;
 import com.gamingmesh.jobs.container.JobsPlayer;
-import net.coreprotect.CoreProtectAPI;
+import com.gestankbratwurst.playerblocktracker.PlayerBlockTracker;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -15,8 +15,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.skill.ActiveSkill;
-
-import java.util.List;
 
 public class Utils {
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -60,27 +58,18 @@ public class Utils {
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack itemInInventory = inventory.getItem(i);
             if (itemInInventory == null || itemInInventory.getType().isAir()) continue;
-            if (itemInInventory.getItemMeta().equals(item.getItemMeta())) {
-                itemInInventory.setAmount(itemInInventory.getAmount() - 1);
-                return true;
+            if (itemInInventory.getType().equals(item.getType())) {
+                if (itemInInventory.getItemMeta().equals(item.getItemMeta())) {
+                    itemInInventory.setAmount(itemInInventory.getAmount() - 1);
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    public static boolean isPlaced(CoreProtectAPI coreProtect, Block block) {
-        boolean match = false;
-
-        List<String[]> check = coreProtect.blockLookup(block, 0);
-
-        for (String[] value : check) {
-            CoreProtectAPI.ParseResult result = coreProtect.parseResult(value);
-            if (result.getActionId() == 1) {
-                match = true;
-                break;
-            }
-        }
-        return match;
+    public static boolean isPlaced(Block block) {
+        return PlayerBlockTracker.isTracked(block);
     }
 
     public static boolean canActivate(PlayerInteractEvent event, String materialKeyword, ActiveSkill skill) {

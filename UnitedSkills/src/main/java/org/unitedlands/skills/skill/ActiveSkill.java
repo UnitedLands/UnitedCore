@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -19,9 +20,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class ActiveSkill extends Skill {
+    private final FileConfiguration config = getConfig();
     Player player = getPlayer();
     private HashMap<UUID, Long> cooldowns = null;
     private HashMap<UUID, Long> activeDurations = null;
+
 
     public ActiveSkill(Player player, SkillType type) {
         super(player, type);
@@ -73,7 +76,7 @@ public class ActiveSkill extends Skill {
     }
 
     public int getCooldown() {
-        int cooldown = getConfig().getInt("skills." + getName() + "." + getLevel() + "." + "cooldown");
+        int cooldown = config.getInt("skills." + getName() + "." + getLevel() + "." + "cooldown");
         if (hasFullMasterworkSet()) {
             // reduce by 10% if they have the full set.
             cooldown = (int) Math.floor(cooldown * 0.9);
@@ -94,7 +97,7 @@ public class ActiveSkill extends Skill {
     }
 
     public int getDuration() {
-        return getConfig().getInt("skills." + getName() + "." + getLevel() + "." + "duration");
+        return config.getInt("skills." + getName() + "." + getLevel() + "." + "duration");
     }
 
     private void notifyOnCooldown() {

@@ -1,15 +1,12 @@
 package org.unitedlands.skills.commands;
 
-import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.UnitedSkills;
-import org.unitedlands.skills.guis.BiomeKit;
 import org.unitedlands.skills.skill.SkillFile;
 
 public class UnitedSkillsComand implements CommandExecutor {

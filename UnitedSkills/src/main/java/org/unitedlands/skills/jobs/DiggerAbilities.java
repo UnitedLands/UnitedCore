@@ -4,7 +4,6 @@ import com.destroystokyo.paper.ParticleBuilder;
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.actions.BlockActionInfo;
 import com.gamingmesh.jobs.container.ActionType;
-import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -36,13 +35,11 @@ public class DiggerAbilities implements Listener {
     private final UnitedSkills unitedSkills;
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
     private final HashMap<UUID, Long> durations = new HashMap<>();
-    private final CoreProtectAPI coreProtect;
     private Player player;
 
 
-    public DiggerAbilities(UnitedSkills unitedSkills, CoreProtectAPI coreProtect) {
+    public DiggerAbilities(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
-        this.coreProtect = coreProtect;
     }
 
     @EventHandler
@@ -58,7 +55,7 @@ public class DiggerAbilities implements Listener {
 
         LootTable mineralFinderLootTable = new LootTable("mineral-finder-loot", mineralFinder);
         Block block = event.getBlock();
-        if (Utils.isPlaced(coreProtect, block)) return;
+        if (Utils.isPlaced(block)) return;
 
         ItemStack randomItem = mineralFinderLootTable.getRandomItem(block);
         if (randomItem != null) {
@@ -80,7 +77,7 @@ public class DiggerAbilities implements Listener {
 
         LootTable archaeologistLootTable = new LootTable("archaeologist-loot", archaeologist);
         Block block = event.getBlock();
-        if (Utils.isPlaced(coreProtect, block)) return;
+        if (Utils.isPlaced(block)) return;
 
         ItemStack randomItem = archaeologistLootTable.getRandomItem(block);
         if (randomItem != null) {
@@ -96,13 +93,15 @@ public class DiggerAbilities implements Listener {
             return;
         }
         Skill excavator = new Skill(player, SkillType.EXCAVATOR);
-        if (Utils.isPlaced(coreProtect, event.getBlock())) {
+        if (Utils.isPlaced(event.getBlock())) {
             return;
         }
         if (excavator.isSuccessful()) {
             List<Item> items = event.getItems();
             for (Item item : items) {
-                Utils.multiplyItem(player, item.getItemStack(), 1);
+                if (unitedSkills.getConfig().getList("excavator-items").contains(item.getItemStack().getType().toString())) {
+                    Utils.multiplyItem(player, item.getItemStack(), 1);
+                }
             }
         }
     }

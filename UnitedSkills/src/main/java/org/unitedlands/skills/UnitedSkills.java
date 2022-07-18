@@ -1,11 +1,8 @@
 package org.unitedlands.skills;
 
 import de.Linus122.SafariNet.API.SafariNet;
-import net.coreprotect.CoreProtect;
-import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.skills.commands.BlendCommand;
@@ -48,10 +45,10 @@ public final class UnitedSkills extends JavaPlugin {
                 new BrewerAbilities(this),
                 new FarmerAbilities(this),
                 new HunterAbilities(this),
-                new DiggerAbilities(this, getCoreProtect()),
-                new WoodcutterAbilities(this, getCoreProtect()),
+                new DiggerAbilities(this),
+                new WoodcutterAbilities(this),
                 new FishermanAbilities(this),
-                new MinerAbilities(this, getCoreProtect()),
+                new MinerAbilities(this),
                 new BiomeKit(this),
                 new MasterworkAbilities(this)
         };
@@ -78,24 +75,5 @@ public final class UnitedSkills extends JavaPlugin {
         for (Listener listener : listeners) {
             pluginManager.registerEvents(listener, this);
         }
-    }
-
-    public CoreProtectAPI getCoreProtect() {
-        Plugin plugin = getServer().getPluginManager().getPlugin("CoreProtect");
-
-        if (!(plugin instanceof CoreProtect)) {
-            return null;
-        }
-
-        CoreProtectAPI CoreProtect = ((CoreProtect) plugin).getAPI();
-        if (!CoreProtect.isEnabled()) {
-            return null;
-        }
-
-        if (CoreProtect.APIVersion() < 9) {
-            return null;
-        }
-
-        return CoreProtect;
     }
 }

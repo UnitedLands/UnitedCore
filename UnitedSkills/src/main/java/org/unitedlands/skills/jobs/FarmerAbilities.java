@@ -220,7 +220,6 @@ public class FarmerAbilities implements Listener {
         }
         return isInTown;
     }
-
     @EventHandler
     public void onItemConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();

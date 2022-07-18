@@ -4,11 +4,11 @@ main: org.unitedlands.skills.UnitedSkills
 api-version: 1.18
 depend:
   - Jobs
-  - CoreProtect
   - Towny
   - UltimateTimber
   - SafariNet
   - ItemsAdder
+  - PlayerBlockTracker
 authors: [ Maroon28 ]
 description: A plugin built to manage job skills for UnitedLands
 website: unitedlands.org

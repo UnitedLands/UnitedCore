@@ -3,11 +3,13 @@ package org.unitedlands.skills.jobs;
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.actions.ItemActionInfo;
 import com.gamingmesh.jobs.container.ActionType;
+import io.lumine.mythic.bukkit.BukkitAPIHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Item;
@@ -15,12 +17,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.LootTable;
@@ -152,7 +156,6 @@ public class FishermanAbilities implements Listener {
             grapple.activate();
         }
     }
-
     @EventHandler
     public void onGrapple(PlayerFishEvent event) {
         player = event.getPlayer();
@@ -175,7 +178,14 @@ public class FishermanAbilities implements Listener {
         if (grapple.getLevel() == 1) {
             return;
         }
-        Entity hook = event.getHook();
+        FishHook hook = event.getHook();
+        if (hook.hasMetadata("stuckBlock")) {
+            hook.removeMetadata("stuckBlock", unitedSkills);
+            hook.getVehicle().remove();
+            @NotNull Vector direction = hook.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
+            player.setVelocity(direction.multiply(grapple.getLevel() * 0.8));
+            return;
+        }
         Location hookLocation = hook.getLocation();
         Block bottomBlock = hookLocation.getBlock().getRelative(0, -1, 0);
         if (!bottomBlock.getType().isSolid() || player.getLocation().getBlock().equals(bottomBlock)) {
@@ -186,6 +196,29 @@ public class FishermanAbilities implements Listener {
         player.setVelocity(direction.multiply(grapple.getLevel() * 0.8));
     }
 
+    @EventHandler
+    public void onHookStick(ProjectileHitEvent event) {
+        if (event.getEntity() instanceof FishHook fishHook && event.getEntity().getShooter() instanceof Player player) {
+            this.player = player;
+            ActiveSkill grapple = new ActiveSkill(player, SkillType.GRAPPLE, cooldowns, durations);
+            if (!grapple.isActive()) {
+                return;
+            }
+            if (event.getHitBlock() != null) {
+                Location hitblock = event.getHitBlock().getLocation().add(0.5, 0, 0.5);
+                ArmorStand armorStand = player.getWorld().spawn(hitblock, ArmorStand.class);
+                armorStand.addPassenger(fishHook);
+                armorStand.setGravity(false);
+                armorStand.setVisible(false);
+                armorStand.setSmall(true);
+                armorStand.setArms(false);
+                armorStand.setMarker(true);
+                armorStand.setBasePlate(false);
+                fishHook.setGravity(false);
+                fishHook.setMetadata("stuckBlock", new FixedMetadataValue(unitedSkills, ""));
+            }
+        }
+    }
 
     @EventHandler
     public void onHookedUse(PlayerFishEvent event) {
@@ -201,7 +234,7 @@ public class FishermanAbilities implements Listener {
         if (entity == null) {
             return;
         }
-        if (entity instanceof Item || entity instanceof Player) {
+        if (entity instanceof Item || entity instanceof Player ||  entity instanceof ArmorStand) {
             return;
         }
         if (!(entity instanceof LivingEntity livingEntity)) {
@@ -217,7 +250,10 @@ public class FishermanAbilities implements Listener {
 
         FishHook hook = event.getHook();
         ItemStack item = equipment.getItemInMainHand();
-
+        BukkitAPIHelper mythicMobsHelper = new BukkitAPIHelper();
+        if (mythicMobsHelper.isMythicMob(livingEntity)) {
+            return;
+        }
         if (item.getType() != Material.AIR) {
             equipment.setItemInMainHand(new ItemStack(Material.AIR));
             livingEntity.getWorld().dropItem(hook.getLocation(), item);

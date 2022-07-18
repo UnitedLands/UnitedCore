@@ -13,6 +13,8 @@ import org.unitedlands.skills.UnitedSkills;
 public class Skill {
     private final Player player;
     private final SkillType type;
+    private final FileConfiguration configuration = getConfig();
+
 
     public Skill(Player player, SkillType type) {
         this.player = player;
@@ -52,7 +54,6 @@ public class Skill {
         if (level == 0) {
             return false;
         }
-        FileConfiguration configuration = getConfig();
         int baseChance = configuration.getInt("skills." + getName() + "." + level + ".chance");
         double randomPercentage = Math.random() * 100;
         return randomPercentage < baseChance;
