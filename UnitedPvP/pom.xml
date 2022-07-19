@@ -24,6 +24,7 @@
                 <version>3.8.1</version>
                 <configuration>
                     <release>17</release>
+                    <target>17</target>
                 </configuration>
             </plugin>
             <plugin>

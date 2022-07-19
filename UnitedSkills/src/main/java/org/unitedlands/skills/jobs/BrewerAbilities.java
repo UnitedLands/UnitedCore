@@ -401,7 +401,7 @@ public class BrewerAbilities implements Listener {
         }
         if (player.isSneaking()) {
             event.setCancelled(true);
-            if (!player.hasPermission("united.skills.blend")) {
+            if (!player.hasPermission("united.skills.blend.1")) {
                 player.sendMessage(getMessage("no-permission"));
                 return;
             }

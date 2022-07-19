@@ -42,7 +42,7 @@ public class SkillFile {
         }
     }
 
-    public FileConfiguration getSkillsConfig() {
+    public  FileConfiguration getSkillsConfig() {
         File skillsFile = getSkillsFile();
         skillsConfig = new YamlConfiguration();
         try {

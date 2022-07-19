@@ -13,8 +13,10 @@ import org.unitedlands.skills.UnitedSkills;
 public class Skill {
     private final Player player;
     private final SkillType type;
-    private final FileConfiguration configuration = getConfig();
-
+    static FileConfiguration configuration;
+    static {
+        configuration = getConfig();
+    }
 
     public Skill(Player player, SkillType type) {
         this.player = player;

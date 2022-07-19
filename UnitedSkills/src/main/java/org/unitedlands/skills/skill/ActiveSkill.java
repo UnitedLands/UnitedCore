@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.unitedlands.skills.UnitedSkills;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,11 +21,14 @@ import java.util.List;
 import java.util.UUID;
 
 public class ActiveSkill extends Skill {
-    private final FileConfiguration config = getConfig();
+    static FileConfiguration config;
     Player player = getPlayer();
     private HashMap<UUID, Long> cooldowns = null;
     private HashMap<UUID, Long> activeDurations = null;
 
+    static {
+        config = getConfig();
+    }
 
     public ActiveSkill(Player player, SkillType type) {
         super(player, type);
