@@ -2,14 +2,24 @@ package org.unitedlands.pvp.commands;
 
 import com.SirBlobman.combatlogx.api.ICombatLogX;
 import com.SirBlobman.combatlogx.api.utility.ICombatManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.unitedlands.pvp.player.PvpPlayer;
+import org.unitedlands.pvp.player.Status;
 import org.unitedlands.pvp.util.Utils;
 
+import java.util.List;
+import java.util.Objects;
+
 import static org.unitedlands.pvp.util.Utils.getMessage;
+import static org.unitedlands.pvp.util.Utils.getUnitedPvP;
 
 public class PvPCmd implements CommandExecutor {
 
@@ -28,33 +38,60 @@ public class PvPCmd implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if (args.length > 2) {
-            sender.sendMessage(getMessage("PvPCmd"));
+        Player player = (Player) sender;
+        if (args.length == 0) {
+            sendHelpMessage(player);
             return true;
         }
 
-        Player player = (Player) sender;
+        if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("setHostility")) {
+                if (player.hasPermission("united.pvp.admin")) {
+                    PvpPlayer pvpPlayer = new PvpPlayer(player);
+                    pvpPlayer.setHostility(Integer.parseInt(args[2]));
+                    pvpPlayer.updatePlayerHostility();
+                    player.sendMessage("Hostility set to " + args[2]);
+                } else {
+                    player.sendMessage(getMessage("no-permission"));
+                }
+                return true;
+            }
+        }
+
 
         if (args.length == 2) {
+            if (args[0].equals("degrade")) {
+                PvpPlayer pvpPlayer = new PvpPlayer(player);
+                if (args[1].equals("on")) {
+                    pvpPlayer.setDegradable(true);
+                    player.sendMessage(getMessage("pvp-degrade-enabled"));
+                    return true;
+                }
+                if (args[1].equals("off")) {
+                    pvpPlayer.setDegradable(false);
+                    player.sendMessage(getMessage("pvp-degrade-disabled"));
+                    return true;
+                }
+            }
             if (!sender.hasPermission("united.pvp.force")) {
-                sender.sendMessage(getMessage("NoPermission"));
+                sender.sendMessage(getMessage("no-permission"));
                 return true;
             }
             player = Bukkit.getPlayer(args[1]);
             if (player == null) {
-                sender.sendMessage(getMessage("PlayerNotRecognized"));
+                sender.sendMessage(getMessage("player-not-found"));
                 return true;
             }
         }
 
         if (isInCombat(player)) {
-            player.sendMessage(getMessage("InCombat"));
+            player.sendMessage(getMessage("in-combat"));
             return true;
         }
 
         if (args[0].equals("on")) {
             if (player != sender) {
-                sender.sendMessage(getMessage("PvPEnabledOP"));
+                sender.sendMessage(getMessage("pvp-enabled-op"));
             }
             enablePvP(player);
             return true;
@@ -62,7 +99,7 @@ public class PvPCmd implements CommandExecutor {
 
         if (args[0].equals("off")) {
             if (player != sender) {
-                sender.sendMessage(getMessage("PvPDisabledOP"));
+                sender.sendMessage(getMessage("pvp-disabled-op"));
             }
             disablePvP(player);
             return true;
@@ -76,29 +113,50 @@ public class PvPCmd implements CommandExecutor {
         return false;
     }
 
+    private void sendHelpMessage(Player player) {
+        FileConfiguration config = getUnitedPvP().getConfig();
+        @NotNull List<String> configuredMessage = config.getStringList("messages.help-message");
+        for (String line: configuredMessage) {
+             player.sendMessage(Utils.miniMessage.deserialize(Objects.requireNonNull(line)));
+        }
+    }
+
+
     private void enablePvP(Player player) {
-        if (utils.getPvPStatus(player)) {
-            player.sendMessage(getMessage("PvPAlreadyOn"));
+        PvpPlayer pvpPlayer = new PvpPlayer(player);
+        if (pvpPlayer.isAggressive() || pvpPlayer.isHostile()) {
+            player.sendMessage(getMessage("pvp-already-enabled"));
             return;
         }
-        utils.setPvPStatus(player, true);
-        player.sendMessage(getMessage("PvPEnabled"));
+        pvpPlayer.setHostility(Status.AGGRESSIVE.getStartingValue());
+        pvpPlayer.setStatus(pvpPlayer.getStatus());
+        player.sendMessage(getMessage("pvp-enabled"));
     }
 
     private void disablePvP(Player player) {
-        if (!utils.getPvPStatus(player)) {
-            player.sendMessage(getMessage("PvPAlreadyOff"));
+        PvpPlayer pvpPlayer = new PvpPlayer(player);
+        if (pvpPlayer.isPassive()) {
+            player.sendMessage(getMessage("pvp-already-disabled"));
             return;
         }
-        utils.setPvPStatus(player, false);
-        player.sendMessage(getMessage("PvPDisabled"));
+        player.sendMessage(getMessage("cannot-disable-pvp"));
     }
 
     private void returnPvPStatus(Player player) {
-        if (utils.getPvPStatus(player)) {
-            player.sendMessage(getMessage("PvPStatusOn"));
-        }
-        player.sendMessage(getMessage("PvPStatusOff"));
+        PvpPlayer pvpPlayer = new PvpPlayer(player);
+        String status = pvpPlayer.getStatus().name().toLowerCase();
+        TextReplacementConfig statusReplacer = TextReplacementConfig.builder()
+                .match("<status>")
+                .replacement(status)
+                .build();
+        TextReplacementConfig hostilityReplacer = TextReplacementConfig.builder()
+                .match("<hostility>")
+                .replacement(String.valueOf(pvpPlayer.getHostility()))
+                .build();
+
+        player.sendMessage(getMessage("pvp-status")
+                .replaceText(statusReplacer)
+                .replaceText(hostilityReplacer));
     }
 }
 

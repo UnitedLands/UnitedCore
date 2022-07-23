@@ -1,6 +1,8 @@
 package org.unitedlands.pvp.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.entity.Player;
+import org.unitedlands.pvp.player.PvpPlayer;
 import org.unitedlands.pvp.util.Utils;
 import org.bukkit.OfflinePlayer;
 
@@ -33,19 +35,12 @@ public class Placeholders extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String params) {
         if (player.getPlayer() != null) {
-            boolean pvp = utils.getPvPStatus(player.getPlayer());
+            PvpPlayer pvpPlayer = new PvpPlayer((Player) player);
             if (params.equalsIgnoreCase("status")) {
-                if (pvp) {
-                    return "§c⚔";
-                } else {
-                    return "§a🛡";
-                }
+                int hostility = pvpPlayer.getHostility();
+                return pvpPlayer.getIconHex(hostility) + pvpPlayer.getStatus().getIcon();
             } else if (params.equalsIgnoreCase("status-string")) {
-                if (pvp) {
-                    return "enabled";
-                } else {
-                    return "disabled";
-                }
+                return String.valueOf(pvpPlayer.getStatus());
             }
         }
 

@@ -3,7 +3,7 @@ version: '${project.version}'
 main: org.unitedlands.pvp.UnitedPvP
 api-version: 1.17
 authors: [ Maroon28 ]
-depend: [ CombatLogX, Towny, TownyChat, UnitedCore ]
+depend: [ CombatLogX, Towny ]
 softdepend: [ PlaceholderAPI ]
 commands:
   pvp:

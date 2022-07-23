@@ -2,6 +2,7 @@ package org.unitedlands.pvp.listeners;
 
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.event.PlayerEnterTownEvent;
+import com.palmergames.bukkit.towny.event.player.PlayerKilledPlayerEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.text.Component;
@@ -20,14 +21,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.pvp.PlayerFile;
+import org.unitedlands.pvp.player.PvpPlayer;
 import org.unitedlands.pvp.UnitedPvP;
+import org.unitedlands.pvp.player.Status;
 import org.unitedlands.pvp.util.Utils;
 
 import java.time.Duration;
@@ -45,17 +46,42 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        PvpPlayer file = new PvpPlayer(player);
 
-        if (!player.hasPlayedBefore() || unitedPvP.getPlayerConfig(player) == null) {
-            PlayerFile playerFile = new PlayerFile(player);
-            playerFile.createFile();
+        if (!player.hasPlayedBefore() || !file.getPlayerFile().exists()) {
+            PvpPlayer pvpPlayer = new PvpPlayer(player);
+            pvpPlayer.createFile();
         }
 
     }
 
-    @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) {
 
+    @EventHandler
+    public void onPlayerKillPlayer(PlayerKilledPlayerEvent event) {
+        Player killer = event.getKiller();
+        Player victim = event.getVictim();
+        PvpPlayer killerPvP = new PvpPlayer(killer);
+        PvpPlayer victimPvP = new PvpPlayer(victim);
+
+        // If both are vulnerable, the killer is being hostile. Increase their hostility.
+        if (killerPvP.isVulnerable() && victimPvP.isVulnerable()) {
+            killerPvP.setHostility(killerPvP.getHostility() + 1);
+        }
+
+        // If the killer is vulnerable and the victim is aggressive or hostile, it was likely self-defense.
+        if (killerPvP.isVulnerable() && (victimPvP.isAggressive() || victimPvP.isHostile())) {
+            return;
+        }
+        // If the killer is already hostile/aggressive, and they kill a vulnerable player
+        // that signifies a higher level of hostility, therefore increase by 2 points.
+        if ((killerPvP.isAggressive() || killerPvP.isHostile()) && victimPvP.isVulnerable()) {
+            killerPvP.setHostility(killerPvP.getHostility() + 2);
+            return;
+        }
+        // if the victim is aggressive, and the killer is aggressive, killer becomes more aggressive.
+        if (killerPvP.isAggressive() || killerPvP.isHostile()) {
+            killerPvP.setHostility(killerPvP.getHostility() + 1);
+        }
     }
 
     @EventHandler
@@ -71,17 +97,17 @@ public class PlayerListener implements Listener {
             Player target = (Player) event.getEntity();
             Player damager = getAttacker(event.getDamager());
 
-            boolean pvpDamager = utils.getPvPStatus(damager);
-            boolean pvpTarget = utils.getPvPStatus(target);
+            PvpPlayer pvpDamager = new PvpPlayer(damager);
+            PvpPlayer pvpTarget = new PvpPlayer(target);
 
-            if (!pvpTarget) {
+            if (pvpTarget.getStatus().equals(Status.PASSIVE)) {
                 event.setCancelled(true);
-                damager.sendMessage(Utils.getMessage("TargetPvPDisabled"));
+                damager.sendMessage(Utils.getMessage("target-pvp-disabled"));
             }
 
-            if (!pvpDamager) {
+            if (pvpDamager.getStatus().equals(Status.PASSIVE)) {
                 event.setCancelled(true);
-                damager.sendMessage(Utils.getMessage("OwnPvPDisabled"));
+                damager.sendMessage(Utils.getMessage("own-pvp-disabled"));
             }
         }
     }
@@ -105,7 +131,7 @@ public class PlayerListener implements Listener {
         for (final PotionEffect effect : potion.getEffects())
             if (effect.getType().equals(PotionEffectType.POISON) || effect.getType().equals(PotionEffectType.HARM)) {
                 for (final LivingEntity e : event.getAffectedEntities())
-                    if (e instanceof Player && !utils.getPvPStatus((Player) e)) {
+                    if (e instanceof Player && utils.getPvPStatus((Player) e) == 0) {
                         event.setIntensity(e, 0);
                     }
                 return;
@@ -117,31 +143,5 @@ public class PlayerListener implements Listener {
             return (Player) ((Projectile) damager).getShooter();
         }
         return (Player) damager;
-    }
-
-
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onTownEnter(PlayerEnterTownEvent event) {
-
-        Player player = event.getPlayer();
-        Resident outlaw = TownyUniverse.getInstance().getResident(player.getUniqueId());
-        Town town = event.getEnteredtown();
-
-        if (town.hasOutlaw(outlaw)) {
-            utils.setPvPStatus(player, true);
-            player.showTitle(getOutlawWarningTitle(town));
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.4F);
-        }
-    }
-
-    public static Title getOutlawWarningTitle(Town town) {
-        Title.Times times = Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(3000), Duration.ofMillis(1000));
-
-        final Component mainTitle = Component.text("PvP Enabled!", NamedTextColor.DARK_RED, TextDecoration.BOLD);
-        final Component subtitle = Component
-                .text("You are outlawed in ", NamedTextColor.RED)
-                .append(Component.text(town.getName(), NamedTextColor.YELLOW))
-                .append(Component.text("!", NamedTextColor.RED));
-        return Title.title(mainTitle, subtitle, times);
     }
 }
