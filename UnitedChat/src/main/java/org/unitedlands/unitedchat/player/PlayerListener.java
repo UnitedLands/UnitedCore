@@ -74,8 +74,7 @@ public class PlayerListener implements Listener {
             event.setMessage(formatter.gradientMessage(finalizedMessage, gradient));
             return;
         }
-        finalizedMessage = LegacyComponentSerializer.legacyAmpersand().serialize(miniMessage.deserialize(finalizedMessage));
-        event.setMessage(finalizedMessage);
+        event.setMessage(formatter.gradientMessage(finalizedMessage, "#FFFFFF:#FFFFFF"));
     }
 
 }

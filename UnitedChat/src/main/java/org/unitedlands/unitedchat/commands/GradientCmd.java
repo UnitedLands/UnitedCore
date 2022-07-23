@@ -23,11 +23,10 @@ public class GradientCmd implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         FileConfiguration config = uc.getConfig();
 
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             return false;
         }
 
-        Player player = (Player) sender;
         ConfigurationSection presets = config.getConfigurationSection("Presets");
         String helpMessage = UnitedChat.getMsg("GradCommand", config);
         String noPermMessage = UnitedChat.getMsg("NoPerm", config);
@@ -40,6 +39,10 @@ public class GradientCmd implements CommandExecutor {
         if (args.length != 1) {
             player.sendMessage(helpMessage);
             return true;
+        }
+
+        if (uc.getPlayerConfig(player) == null) {
+            uc.createPlayerFile(player);
         }
 
         if (args[0].equalsIgnoreCase("info")) {

@@ -45,7 +45,7 @@ public class PvpPlayer {
             fileConfiguration.load(playerDataFile);
             fileConfiguration.set("name", player.getName());
             fileConfiguration.set("hostility", 1);
-            fileConfiguration.set("status", Status.PASSIVE.toString());
+            fileConfiguration.set("status", Status.AGGRESSIVE.toString());
             fileConfiguration.set("can-degrade", true);
             saveConfig(fileConfiguration);
         } catch (IOException | InvalidConfigurationException e) {
@@ -77,18 +77,16 @@ public class PvpPlayer {
     }
 
     public void updatePlayerHostility() {
-        if (isPassive() || isHostile() || isVulnerable()) {
+        if (isHostile()) {
             setStatus(getStatus());
             return;
         }
         if (isAggressive() && isDegradable()) {
-            if (getHostility() > 2) {
-                setHostility(getHostility() - 1);
-                setStatus(getStatus());
-            } else {
-                setHostility(0);
-                setStatus(Status.PASSIVE);
+            if (getHostility() == Status.AGGRESSIVE.getStartingValue()) {
+                return;
             }
+            setHostility(getHostility() - 1);
+            setStatus(getStatus());
         }
     }
     public int getHostility() {
@@ -116,19 +114,9 @@ public class PvpPlayer {
     public boolean isAggressive() {
         return getStatus().equals(Status.AGGRESSIVE);
     }
-    public boolean isPassive() {
-        return getStatus().equals(Status.PASSIVE);
-    }
-    public boolean isVulnerable() {
-        return getStatus().equals(Status.VULNERABLE);
-    }
     public Status getStatus() {
         int hostility = getHostility();
-        if (hostility == Status.PASSIVE.getStartingValue()) {
-            return Status.PASSIVE;
-        } else if (hostility == Status.VULNERABLE.getStartingValue()) {
-            return Status.VULNERABLE;
-        } else if (hostility >= Status.HOSTILE.getStartingValue()) {
+        if (hostility >= Status.HOSTILE.getStartingValue()) {
             return Status.HOSTILE;
         } else {
             return Status.AGGRESSIVE;

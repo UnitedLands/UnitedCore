@@ -64,43 +64,4 @@ public class Utils {
         return miniMessage.deserialize(Objects.requireNonNullElseGet(configuredMessage, () -> "<red>Message <yellow>" + message + "<red> could not be found in the config file!"));
     }
 
-    public boolean isPvP(final EntityDamageByEntityEvent event) {
-        final Entity damager = event.getDamager();
-        final Entity target = event.getEntity();
-
-        if (target instanceof Player && !target.hasMetadata("NPC")) {
-            if (damager instanceof Player && !damager.hasMetadata("NPC"))
-                return true;
-            if (damager instanceof Projectile) {
-                final ProjectileSource projSource = ((Projectile) damager).getShooter();
-                if (projSource instanceof Player) {
-                    final Entity shooter = (Entity) projSource;
-                    if (!shooter.equals(target) && !shooter.hasMetadata("NPC"))
-                        return !(event.getDamage() == 0);
-                }
-            }
-        }
-        return false;
-    }
-
-    public static boolean isCloseToOldRuins(WorldCoord coord, int maxDistanceBlocks) {
-        return getNearbyOldTownBlock(coord, maxDistanceBlocks) != null;
-    }
-    public static OldTownBlock getNearbyOldTownBlock(WorldCoord coord, int maxDistanceBlocks) {
-        for (OldTownBlock townBlock : getUnitedPvP().getTownBlocksList()) {
-            WorldCoord townBlockCoord = new WorldCoord(coord.getWorldName(), townBlock.getX(), townBlock.getZ());
-            if (areCoordsClose(coord, townBlockCoord, maxDistanceBlocks)) {
-                return new OldTownBlock(townBlockCoord);
-            }
-        }
-        return null;
-    }
-    private static boolean areCoordsClose(WorldCoord coord1, WorldCoord coord2, int maxDistanceBlocks) {
-        int maxDistanceTownBlocks = maxDistanceBlocks / TownySettings.getTownBlockSize();
-        if(!coord1.getWorldName().equalsIgnoreCase(coord2.getWorldName()))
-            return false;
-        double distanceTownblocks = Math.sqrt(Math.pow(coord1.getX() - coord2.getX(), 2) + Math.pow(coord1.getZ() - coord2.getZ(), 2));
-        return distanceTownblocks < maxDistanceTownBlocks;
-    }
-
 }

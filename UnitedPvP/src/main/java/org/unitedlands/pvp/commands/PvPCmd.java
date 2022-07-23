@@ -73,36 +73,6 @@ public class PvPCmd implements CommandExecutor {
                     return true;
                 }
             }
-            if (!sender.hasPermission("united.pvp.force")) {
-                sender.sendMessage(getMessage("no-permission"));
-                return true;
-            }
-            player = Bukkit.getPlayer(args[1]);
-            if (player == null) {
-                sender.sendMessage(getMessage("player-not-found"));
-                return true;
-            }
-        }
-
-        if (isInCombat(player)) {
-            player.sendMessage(getMessage("in-combat"));
-            return true;
-        }
-
-        if (args[0].equals("on")) {
-            if (player != sender) {
-                sender.sendMessage(getMessage("pvp-enabled-op"));
-            }
-            enablePvP(player);
-            return true;
-        }
-
-        if (args[0].equals("off")) {
-            if (player != sender) {
-                sender.sendMessage(getMessage("pvp-disabled-op"));
-            }
-            disablePvP(player);
-            return true;
         }
 
         if (args[0].equals("status")) {
@@ -119,27 +89,6 @@ public class PvPCmd implements CommandExecutor {
         for (String line: configuredMessage) {
              player.sendMessage(Utils.miniMessage.deserialize(Objects.requireNonNull(line)));
         }
-    }
-
-
-    private void enablePvP(Player player) {
-        PvpPlayer pvpPlayer = new PvpPlayer(player);
-        if (pvpPlayer.isAggressive() || pvpPlayer.isHostile()) {
-            player.sendMessage(getMessage("pvp-already-enabled"));
-            return;
-        }
-        pvpPlayer.setHostility(Status.AGGRESSIVE.getStartingValue());
-        pvpPlayer.setStatus(pvpPlayer.getStatus());
-        player.sendMessage(getMessage("pvp-enabled"));
-    }
-
-    private void disablePvP(Player player) {
-        PvpPlayer pvpPlayer = new PvpPlayer(player);
-        if (pvpPlayer.isPassive()) {
-            player.sendMessage(getMessage("pvp-already-disabled"));
-            return;
-        }
-        player.sendMessage(getMessage("cannot-disable-pvp"));
     }
 
     private void returnPvPStatus(Player player) {
