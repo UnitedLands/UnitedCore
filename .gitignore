@@ -1,5 +1,6 @@
 # User-specific stuff
 UnitedUpkeep/.idea/
+server/
 .idea
 
 *.iml
