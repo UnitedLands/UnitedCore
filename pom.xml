@@ -16,6 +16,8 @@
         <module>UnitedUpkeep</module>
         <module>UnitedProtection</module>
         <module>UnitedSkills</module>
+        <module>UnitedTransport</module>
+        <module>UnitedBrands</module>
     </modules>
 
     <build>
