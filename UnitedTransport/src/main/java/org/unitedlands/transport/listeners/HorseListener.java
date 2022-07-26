@@ -37,7 +37,6 @@ public class HorseListener implements Listener {
         if (event.getMount() instanceof Horse horse) {
             if (!hasSpeedKey(horse)) {
                 saveHorseSpeed(horse);
-                Bukkit.broadcastMessage("Saved horse speed as " + getBaseHorseSpeed(horse));
             }
         }
     }
