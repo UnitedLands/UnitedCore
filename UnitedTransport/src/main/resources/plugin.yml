@@ -1,0 +1,7 @@
+name: UnitedTransport
+version: '${project.version}'
+main: org.unitedlands.transport.UnitedTransport
+api-version: 1.18
+authors: [ Maroon28 ]
+description: A plugin which brings minor improvements to regular transport methods
+website: unitedlands.org
