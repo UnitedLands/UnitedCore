@@ -1,6 +1,9 @@
 package org.unitedlands.skills.jobs;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import com.gamingmesh.jobs.Jobs;
+import com.gamingmesh.jobs.actions.BlockActionInfo;
+import com.gamingmesh.jobs.container.ActionType;
 import com.songoda.ultimatetimber.UltimateTimber;
 import com.songoda.ultimatetimber.events.TreeFallEvent;
 import com.songoda.ultimatetimber.manager.SaplingManager;
@@ -10,6 +13,7 @@ import com.songoda.ultimatetimber.tree.TreeDefinition;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -65,15 +69,15 @@ public class WoodcutterAbilities implements Listener {
             event.setCancelled(true);
             return;
         }
-        // int counter = 0;
-        // for (ITreeBlock<Block> treeBlock : event.getDetectedTree().getDetectedTreeBlocks().getLogBlocks()) {
-        //     if (counter > 10) {
-        //         break;
-        //     }
-        //     Block block = treeBlock.getBlock();
-        //     Jobs.action(Jobs.getPlayerManager().getJobsPlayer(player), new BlockActionInfo(block, ActionType.BREAK), block);
-        //     counter++;
-        // }
+        int counter = 0;
+        for (ITreeBlock<Block> treeBlock : event.getDetectedTree().getDetectedTreeBlocks().getLogBlocks()) {
+            if (counter > 10) {
+                break;
+            }
+            Block block = treeBlock.getBlock();
+            Jobs.action(Jobs.getPlayerManager().getJobsPlayer(player), new BlockActionInfo(block, ActionType.BREAK), block);
+            counter++;
+        }
         Skill reforestation = new Skill(player, SkillType.REFORESTATION);
         if (reforestation.getLevel() == 0) {
             return;

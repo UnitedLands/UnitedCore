@@ -15,7 +15,6 @@ import org.unitedlands.skills.jobs.DiggerAbilities;
 import org.unitedlands.skills.jobs.FarmerAbilities;
 import org.unitedlands.skills.jobs.FishermanAbilities;
 import org.unitedlands.skills.jobs.HunterAbilities;
-import org.unitedlands.skills.jobs.MasterworkAbilities;
 import org.unitedlands.skills.jobs.MinerAbilities;
 import org.unitedlands.skills.jobs.WoodcutterAbilities;
 import org.unitedlands.skills.points.JobsListener;
@@ -50,7 +49,6 @@ public final class UnitedSkills extends JavaPlugin {
                 new FishermanAbilities(this),
                 new MinerAbilities(this),
                 new BiomeKit(this),
-                new MasterworkAbilities(this)
         };
 
         registerEvents(listeners);
@@ -59,9 +57,6 @@ public final class UnitedSkills extends JavaPlugin {
 
         final HunterAbilities hunterAbilities = new HunterAbilities(this);
         hunterAbilities.damageBleedingEntities();
-
-        final MasterworkAbilities masterworkAbilities = new MasterworkAbilities(this);
-        masterworkAbilities.runHealthIncrease();
     }
 
     private void registerPlaceholderExpansion() {
