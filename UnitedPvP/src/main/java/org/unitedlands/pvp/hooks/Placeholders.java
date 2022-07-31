@@ -1,18 +1,13 @@
 package org.unitedlands.pvp.hooks;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.unitedlands.pvp.player.PvpPlayer;
 import org.unitedlands.pvp.player.Status;
-import org.unitedlands.pvp.util.Utils;
-import org.bukkit.OfflinePlayer;
 
 public class Placeholders extends PlaceholderExpansion {
-    private final Utils utils;
 
-    public Placeholders(Utils utils) {
-        this.utils = utils;
-    }
     @Override
     public String getAuthor() {
         return "Maroon28";

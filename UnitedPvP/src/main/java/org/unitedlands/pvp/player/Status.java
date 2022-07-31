@@ -1,8 +1,8 @@
 package org.unitedlands.pvp.player;
 
 public enum Status {
-    AGGRESSIVE( 1, "⚔"),
-    HOSTILE( 12, "☠");
+    AGGRESSIVE( 7, "⚔"),
+    HOSTILE( 15, "☠");
     private final int startingValue;
     private final String icon;
 

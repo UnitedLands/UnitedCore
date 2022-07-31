@@ -1,10 +1,6 @@
 package org.unitedlands.pvp.commands;
 
-import com.SirBlobman.combatlogx.api.ICombatLogX;
-import com.SirBlobman.combatlogx.api.utility.ICombatManager;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,7 +8,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.pvp.player.PvpPlayer;
-import org.unitedlands.pvp.player.Status;
 import org.unitedlands.pvp.util.Utils;
 
 import java.util.List;
@@ -22,18 +17,6 @@ import static org.unitedlands.pvp.util.Utils.getMessage;
 import static org.unitedlands.pvp.util.Utils.getUnitedPvP;
 
 public class PvPCmd implements CommandExecutor {
-
-    private final Utils utils;
-
-    public PvPCmd(Utils utils) {
-        this.utils = utils;
-    }
-
-    public boolean isInCombat(Player player) {
-        ICombatLogX plugin = (ICombatLogX) Bukkit.getPluginManager().getPlugin("CombatLogX");
-        ICombatManager combatManager = plugin.getCombatManager();
-        return combatManager.isInCombat(player);
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
