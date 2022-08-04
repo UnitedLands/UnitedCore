@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +19,6 @@ import org.bukkit.event.Listener;
 import org.unitedlands.pvp.UnitedPvP;
 import org.unitedlands.pvp.player.PvpPlayer;
 
-import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,12 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onNewTownyDay(NewDayEvent event) {
-        updatePlayerHostilities();
+        // Save the time stamp for the towny day.
+        // Used for comparison in the future.
+        unitedPvP.getConfig().set("last-towny-day-time", System.currentTimeMillis());
+        unitedPvP.saveConfig();
+        // Force update the hostilities of any new players online.
+        unitedPvP.getServer().getScheduler().runTask(unitedPvP, this::updatePlayerHostilities);
     }
 
     @EventHandler
@@ -61,17 +66,16 @@ public class TownyListener implements Listener {
     }
 
     private void updatePlayerHostilities() {
-        List<PvpPlayer> pvpPlayers = getAllPvPPlayers();
+        List<PvpPlayer> pvpPlayers = getOnlinePvpPlayers();
         for (PvpPlayer pvpPlayer : pvpPlayers) {
             pvpPlayer.updatePlayerHostility();
         }
     }
 
-    private List<PvpPlayer> getAllPvPPlayers() {
-        File dataFolder = new File(unitedPvP.getDataFolder(), File.separator + "players" + File.separator);
+    private List<PvpPlayer> getOnlinePvpPlayers() {
         List<PvpPlayer> pvpPlayers = new ArrayList<>();
-        for (File file : dataFolder.listFiles()) {
-            PvpPlayer pvpPlayer = new PvpPlayer(file);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            PvpPlayer pvpPlayer = new PvpPlayer(player);
             pvpPlayers.add(pvpPlayer);
         }
         return pvpPlayers;

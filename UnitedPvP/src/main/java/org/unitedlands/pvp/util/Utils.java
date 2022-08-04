@@ -28,6 +28,25 @@ public class Utils {
         this.unitedPVP = unitedPVP;
     }
 
+    public static boolean isPvP(EntityDamageByEntityEvent event) {
+        final Entity damager = event.getDamager();
+        final Entity target = event.getEntity();
+
+        if (target instanceof Player && !target.hasMetadata("NPC")) {
+            if (damager instanceof Player && !damager.hasMetadata("NPC"))
+                return true;
+            if (damager instanceof Projectile) {
+                final ProjectileSource projSource = ((Projectile) damager).getShooter();
+                if (projSource instanceof Player) {
+                    final Entity shooter = (Entity) projSource;
+                    if (!shooter.equals(target) && !shooter.hasMetadata("NPC"))
+                        return !(event.getDamage() == 0);
+                }
+            }
+        }
+        return false;
+    }
+
     public void setPvPStatus(Player player, boolean status) {
         PvpPlayer file = new PvpPlayer(player);
         FileConfiguration playerConfig = file.getFileConfiguration();

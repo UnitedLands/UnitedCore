@@ -10,6 +10,7 @@ import org.unitedlands.pvp.UnitedPvP;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class PvpPlayer {
     private final UnitedPvP unitedPvP = getPlugin();
@@ -22,13 +23,6 @@ public class PvpPlayer {
         file = null;
         playerConfig = getFileConfiguration();
     }
-
-    public PvpPlayer(File file) {
-        player = Bukkit.getPlayer(file.getName().replace(".yml", ""));
-        this.file = file;
-        playerConfig = getFileConfiguration();
-    }
-
 
     public void createFile() {
         File playerDataFile = getPlayerFile();
@@ -45,8 +39,10 @@ public class PvpPlayer {
             fileConfiguration.load(playerDataFile);
             fileConfiguration.set("name", player.getName());
             fileConfiguration.set("hostility", 1);
-            fileConfiguration.set("status", Status.AGGRESSIVE.toString());
+            fileConfiguration.set("status", Status.DEFENSIVE.toString());
+            fileConfiguration.set("last-hostility-change-time", System.currentTimeMillis());
             fileConfiguration.set("can-degrade", true);
+            fileConfiguration.set("immunity-time", System.currentTimeMillis());
             saveConfig(fileConfiguration);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
@@ -79,14 +75,22 @@ public class PvpPlayer {
     public void updatePlayerHostility() {
         if (isHostile()) {
             setStatus(getStatus());
+            updateLastHostilityChangeTime();
             return;
         }
-        if (isAggressive() && isDegradable()) {
-            if (getHostility() == Status.AGGRESSIVE.getStartingValue()) {
+        if (isDegradable()) {
+            if (isAggressive()) {
+                setHostility(getHostility() - 1);
+                setStatus(getStatus());
                 return;
             }
-            setHostility(getHostility() - 1);
-            setStatus(getStatus());
+            if (isDefensive()) {
+                if (getHostility() == 1) {
+                    return;
+                }
+                setHostility(getHostility() - 1);
+                setStatus(getStatus());
+            }
         }
     }
     public int getHostility() {
@@ -99,7 +103,10 @@ public class PvpPlayer {
             saveConfig(playerConfig);
             return;
         }
-        playerConfig.set("hostility", value);
+        // Don't go lower than 1
+        playerConfig.set("hostility", Math.max(value, 1));
+        // Update the time.
+        updateLastHostilityChangeTime();
         saveConfig(playerConfig);
     }
 
@@ -107,7 +114,9 @@ public class PvpPlayer {
         playerConfig.set("status", status.toString());
         saveConfig(playerConfig);
     }
-
+    public boolean isDefensive() {
+        return getStatus().equals(Status.DEFENSIVE);
+    }
     public boolean isHostile() {
         return getStatus().equals(Status.HOSTILE);
     }
@@ -118,8 +127,10 @@ public class PvpPlayer {
         int hostility = getHostility();
         if (hostility >= Status.HOSTILE.getStartingValue()) {
             return Status.HOSTILE;
-        } else {
+        } else if (hostility >= Status.AGGRESSIVE.getStartingValue()) {
             return Status.AGGRESSIVE;
+        } else {
+            return Status.DEFENSIVE;
         }
     }
 
@@ -146,5 +157,34 @@ public class PvpPlayer {
             return file;
         }
         return new File(unitedPvP.getDataFolder(), getFilePath());
+    }
+
+    public void updateLastHostilityChangeTime() {
+        playerConfig.set("last-hostility-change-time", System.currentTimeMillis());
+        saveConfig(playerConfig);
+    }
+
+    public boolean isImmune() {
+        // If the time is 0, it was force set by the plugin
+        // so its disabled.
+        if (getImmunityTime() == 0) {
+            return false;
+        }
+        // if the time passed is bigger than 1 day (in millis)
+        // then their immunity stamp is no longer valid.
+        return getImmunityTime() < TimeUnit.DAYS.toMillis(1);
+    }
+
+    public long getImmunityTime() {
+        return System.currentTimeMillis() - playerConfig.getLong("immunity-time");
+    }
+    
+    public void expireImmunity() {
+        playerConfig.set("immunity-time", 0);
+        saveConfig(playerConfig);
+    }
+
+    public long getLastHostilityChangeTime() {
+        return playerConfig.getLong("last-hostility-change-time");
     }
 }

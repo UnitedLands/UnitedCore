@@ -12,6 +12,7 @@ import org.unitedlands.pvp.util.Utils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static org.unitedlands.pvp.util.Utils.getMessage;
 import static org.unitedlands.pvp.util.Utils.getUnitedPvP;
@@ -22,6 +23,7 @@ public class PvPCmd implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         Player player = (Player) sender;
+        PvpPlayer pvpPlayer = new PvpPlayer(player);
         if (args.length == 0) {
             sendHelpMessage(player);
             return true;
@@ -30,7 +32,6 @@ public class PvPCmd implements CommandExecutor {
         if (args.length == 3) {
             if (args[0].equalsIgnoreCase("setHostility")) {
                 if (player.hasPermission("united.pvp.admin")) {
-                    PvpPlayer pvpPlayer = new PvpPlayer(player);
                     pvpPlayer.setHostility(Integer.parseInt(args[2]));
                     pvpPlayer.updatePlayerHostility();
                     player.sendMessage("Hostility set to " + args[2]);
@@ -44,7 +45,6 @@ public class PvPCmd implements CommandExecutor {
 
         if (args.length == 2) {
             if (args[0].equals("degrade")) {
-                PvpPlayer pvpPlayer = new PvpPlayer(player);
                 if (args[1].equals("on")) {
                     pvpPlayer.setDegradable(true);
                     player.sendMessage(getMessage("pvp-degrade-enabled"));
@@ -63,6 +63,14 @@ public class PvPCmd implements CommandExecutor {
             return true;
         }
 
+        if (args[0].equals("on")) {
+            if (pvpPlayer.isImmune()) {
+                pvpPlayer.expireImmunity();
+                player.sendMessage(getMessage("immunity-removed"));
+                return true;
+            }
+            player.sendMessage(getMessage("you-are-not-immune"));
+        }
         return false;
     }
 
