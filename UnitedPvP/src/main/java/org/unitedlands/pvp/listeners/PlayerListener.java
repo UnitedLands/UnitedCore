@@ -11,12 +11,16 @@ import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.unitedlands.pvp.UnitedPvP;
@@ -80,6 +84,17 @@ public class PlayerListener implements Listener {
                         .replacement(DurationFormatUtils.formatDuration( TimeUnit.DAYS.toMillis(1) - pvpDamager.getImmunityTime(), "HH:mm:ss"))
                         .build();
                 damager.sendMessage(Utils.getMessage("you-are-immune").replaceText(timeReplacer));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerExplosionDamage(EntityDamageByEntityEvent event) {
+        if (event.getEntity() instanceof Player player
+                && event.getDamager() instanceof EnderCrystal crystal) {
+            PvpPlayer pvpPlayer = new PvpPlayer(player);
+            if (pvpPlayer.isImmune() && crystalMap.containsKey(crystal)) {
+                event.setCancelled(true);
             }
         }
     }
@@ -155,6 +170,22 @@ public class PlayerListener implements Listener {
         if (event.getEntity() instanceof EnderCrystal crystal) {
             // Remove the crystal from the map a second after it explodes, to have time to detect player deaths etc.
             unitedPvP.getServer().getScheduler().runTaskLater(unitedPvP, () -> crystalMap.remove(crystal), 20L);
+        }
+    }
+
+    @EventHandler
+    public void onLavaPlace(PlayerBucketEmptyEvent event) {
+        if (!event.getBucket().equals(Material.LAVA_BUCKET)) return;
+        Player player = event.getPlayer();
+        var nearby = event.getBlock().getLocation().getNearbyEntities(2, 2, 2);
+        for (Entity entity : nearby) {
+            if (entity instanceof Player nearbyPlayer) {
+                PvpPlayer pvpPlayer = new PvpPlayer(nearbyPlayer);
+                if (pvpPlayer.isImmune()) {
+                    event.setCancelled(true);
+                    player.sendMessage(Utils.getMessage("target-immune"));
+                }
+            }
         }
     }
 
