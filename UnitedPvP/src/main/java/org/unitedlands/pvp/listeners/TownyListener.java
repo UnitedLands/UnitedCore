@@ -3,7 +3,6 @@ package org.unitedlands.pvp.listeners;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.NewDayEvent;
 import com.palmergames.bukkit.towny.event.PlayerEnterTownEvent;
-import com.palmergames.bukkit.towny.event.PlayerLeaveTownEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.bossbar.BossBar;
@@ -26,6 +25,7 @@ import java.util.List;
 public class TownyListener implements Listener {
     private final TownyAPI towny = TownyAPI.getInstance();
     private final UnitedPvP unitedPvP;
+    Player player;
     public TownyListener(UnitedPvP unitedPvP) {
         this.unitedPvP = unitedPvP;
     }
@@ -43,26 +43,29 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onTownEnter(PlayerEnterTownEvent event) {
-        Player player = event.getPlayer();
+        player = event.getPlayer();
         Resident outlaw = towny.getResident(player);
         Town town = event.getEnteredtown();
 
         if (town.hasOutlaw(outlaw)) {
             player.showTitle(getOutlawWarningTitle(town));
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.4F);
-            player.showBossBar(getOutlawedBossbar(town));
+            BossBar outlawedBossbar = getOutlawedBossbar(town);
+            player.showBossBar(outlawedBossbar);
+            hideBossBarAfterFifteenSecs(outlawedBossbar);
         }
     }
 
-    @EventHandler
-    public void onTownLeave(PlayerLeaveTownEvent event) {
-        Player player = event.getPlayer();
-        Resident outlaw = towny.getResident(player);
-        Town town = event.getLefttown();
-
-        if (town.hasOutlaw(outlaw)) {
-            player.hideBossBar(getOutlawedBossbar(town));
-        }
+    private void hideBossBarAfterFifteenSecs(BossBar bossBar) {
+        double timeDecrease =  (double) 1 / 15;
+        unitedPvP.getServer().getScheduler().runTaskTimer(unitedPvP, task -> {
+            if (bossBar.progress() <= 0.0) {
+                task.cancel();
+                player.hideBossBar(bossBar);
+                return;
+            }
+            bossBar.progress((float) Math.max(0.0, bossBar.progress() - timeDecrease));
+        }, 0, 20L);
     }
 
     private void updatePlayerHostilities() {
