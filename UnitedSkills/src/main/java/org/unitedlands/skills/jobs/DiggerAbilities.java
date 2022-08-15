@@ -43,7 +43,7 @@ public class DiggerAbilities implements Listener {
     }
 
     @EventHandler
-    public void onMineralFinderBreak(BlockBreakEvent event) {
+    public void onMineralFinderBreak(BlockDropItemEvent event) {
         player = event.getPlayer();
         if (!isDigger()) {
             return;
@@ -65,7 +65,7 @@ public class DiggerAbilities implements Listener {
     }
 
     @EventHandler
-    public void onArchaeologistBlockBreak(BlockBreakEvent event) {
+    public void onArchaeologistBlockBreak(BlockDropItemEvent event) {
         player = event.getPlayer();
         if (!isDigger()) {
             return;
@@ -161,6 +161,9 @@ public class DiggerAbilities implements Listener {
     public void onTunnelBreak(BlockBreakEvent event) {
         player = event.getPlayer();
         if (!isDigger()) {
+            return;
+        }
+        if (event.isCancelled()) {
             return;
         }
         ActiveSkill tunneller = new ActiveSkill(player, SkillType.TUNNELLER, cooldowns, durations);
