@@ -11,7 +11,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
@@ -42,9 +44,10 @@ public class DiggerAbilities implements Listener {
         this.unitedSkills = unitedSkills;
     }
 
-    @EventHandler
-    public void onMineralFinderBreak(BlockDropItemEvent event) {
+    @EventHandler (priority = EventPriority.MONITOR)
+    public void onMineralFinderBreak(BlockBreakEvent event) {
         player = event.getPlayer();
+        if (event.isCancelled()) return;
         if (!isDigger()) {
             return;
         }
@@ -64,9 +67,10 @@ public class DiggerAbilities implements Listener {
         }
     }
 
-    @EventHandler
-    public void onArchaeologistBlockBreak(BlockDropItemEvent event) {
+    @EventHandler (priority = EventPriority.MONITOR)
+    public void onArchaeologistBlockBreak(BlockBreakEvent event) {
         player = event.getPlayer();
+        if (event.isCancelled()) return;
         if (!isDigger()) {
             return;
         }
@@ -157,7 +161,7 @@ public class DiggerAbilities implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onTunnelBreak(BlockBreakEvent event) {
         player = event.getPlayer();
         if (!isDigger()) {
