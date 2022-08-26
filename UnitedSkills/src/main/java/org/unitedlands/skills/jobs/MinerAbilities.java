@@ -99,7 +99,7 @@ public class MinerAbilities implements Listener {
         if (frenzy.isActive()) {
             List<String> blacklistedMaterials = unitedSkills.getConfig().getStringList("frenzy-blacklist");
             for (Item item : items) {
-                if (blacklistedMaterials.contains(item.getItemStack().getType().toString())) {
+                if (!blacklistedMaterials.contains(item.getItemStack().getType().toString())) {
                     Utils.multiplyItem(player, item.getItemStack(), 3);
                 }
             }
