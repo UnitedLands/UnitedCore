@@ -8,6 +8,22 @@
   5. UnitedBrands
   6. UnitedProtection
 
+# Building and Development
+Unfortunately, due to how these plugins are configured, they are very hard to replicate and use on a development server outside of UnitedLands. The code is purely available for accessibility and anyone who's curious. However, if you still want to try and build the plugin(s), you will need:
+
+- A local maven repository of SafariNet, which is used for UnitedSkills capturing skills. You may google how to set up a local maven repository from a jar file, once you have bought the plugin from [here](https://www.spigotmc.org/resources/9732/). You should then add the info of the local repo to the pom.xml of the UnitedSkills module
+
+- Access to [ItemsAdder](https://www.spigotmc.org/resources/73355/). If you have not bought the plugin and have it running on your server, UnitedSkills and UnitedItems will not enable properly.
+
+- Access to [PlayerBlockTracker](https://github.com/Flo0/PlayerBlockTracker). This is a free open source plugin that we use as a library to track blocks without pulling down our own plugins with extra code. You need to have it installed in order to run UnitedSkills. 
+
+- Access to [Towny](https://github.com/TownyAdvanced/Towny). Most of our plugins rely on towny for various reasons, so if you don't have a version of that up and running nothing will work. 
+
+Again, it is not recommended to try and use these plugins as is, since chances are they will not work as you expect or not work at all. No support will be provided or any help on how to set them up beyond the details in this section. The code is purely open-sourced for accessibility, better tracking, and if anyone wants to learn or use parts of it in their projects.
+
+
+# Plugin info
+
 ## UnitedPvP
 A custom-made pvp manager that handles the pvp status of players. It also has a few additions, such as force-enabling pvp for outlaws when they enter an outlawed town. 
 
