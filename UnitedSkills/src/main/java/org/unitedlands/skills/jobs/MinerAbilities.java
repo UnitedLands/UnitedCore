@@ -90,7 +90,7 @@ public class MinerAbilities implements Listener {
         String materialName = event.getBlockState().getType().toString();
         // Ores should not duplicate if the user has silk touch.
         ItemMeta meta = pickaxe.getItemMeta();
-        if (meta != null && meta.hasEnchant(Enchantment.SILK_TOUCH) && materialName.contains("ORE")) return;
+        if (meta.hasEnchant(Enchantment.SILK_TOUCH) && materialName.contains("ORE")) return;
 
         Skill fortunate = new Skill(player, SkillType.FORTUNATE);
         List<Item> items = event.getItems();
