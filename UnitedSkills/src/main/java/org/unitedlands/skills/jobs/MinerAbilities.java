@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.unitedlands.skills.UnitedSkills;
@@ -85,11 +86,17 @@ public class MinerAbilities implements Listener {
             return;
         }
 
+        ItemStack pickaxe = player.getInventory().getItemInMainHand();
+        String materialName = event.getBlockState().getType().toString();
+        // Ores should not duplicate if the user has silk touch.
+        ItemMeta meta = pickaxe.getItemMeta();
+        if (meta != null && meta.hasEnchant(Enchantment.SILK_TOUCH) && materialName.contains("ORE")) return;
+
         Skill fortunate = new Skill(player, SkillType.FORTUNATE);
         List<Item> items = event.getItems();
         if (fortunate.isSuccessful()) {
             for (Item item : items) {
-                if (item.getItemStack().getType().toString().contains("ORE")) {
+                if (materialName.contains("ORE")) {
                     Utils.multiplyItem(player, item.getItemStack(), 1);
                 }
             }
@@ -97,9 +104,10 @@ public class MinerAbilities implements Listener {
 
         ActiveSkill frenzy = new ActiveSkill(player, SkillType.FRENZY, cooldowns, durations);
         if (frenzy.isActive()) {
-            List<String> blacklistedMaterials = unitedSkills.getConfig().getStringList("frenzy-blacklist");
+            List<String> whitedlistedMaterials = unitedSkills.getConfig().getStringList("frenzy-whitelist");
             for (Item item : items) {
-                if (!blacklistedMaterials.contains(item.getItemStack().getType().toString())) {
+                // Only duplicate whitelisted materials.
+                if (whitedlistedMaterials.contains(materialName)) {
                     Utils.multiplyItem(player, item.getItemStack(), 3);
                 }
             }
