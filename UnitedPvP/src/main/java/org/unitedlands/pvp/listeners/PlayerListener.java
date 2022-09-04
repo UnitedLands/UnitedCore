@@ -1,6 +1,8 @@
 package org.unitedlands.pvp.listeners;
 
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.player.PlayerKilledPlayerEvent;
+import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
@@ -11,12 +13,9 @@ import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.TNTPrimed;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -35,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayerListener implements Listener {
     private final UnitedPvP unitedPvP;
+    private final TownyAPI towny = TownyAPI.getInstance();
     HashMap<EnderCrystal, UUID> crystalMap = new HashMap<>();
 
     public PlayerListener(UnitedPvP unitedPvP) {
@@ -51,6 +51,8 @@ public class PlayerListener implements Listener {
             return; // No need to run the rest of the logic here, so just move on.
         }
 
+        tryTownNeutralityRemoval(player);
+
         long lastChangeTime = pvpPlayer.getLastHostilityChangeTime();
         int dayDifference = getDaysPassed(lastChangeTime);
 
@@ -60,6 +62,29 @@ public class PlayerListener implements Listener {
         for (int i = 0; i < dayDifference; i++) {
             pvpPlayer.updatePlayerHostility();
         }
+
+    }
+
+    private void tryTownNeutralityRemoval(Player player) {
+        Town town = towny.getResident(player.getUniqueId()).getTownOrNull();
+        // Player doesn't have a town
+        if (town == null) return;
+        // The town is already non-neutral, don't do anything
+        if (!town.isNeutral()) return;
+        PvpPlayer pvpPlayer = new PvpPlayer(player);
+        // Method was called, but player in question was not hostile.
+        if (!pvpPlayer.isHostile()) return;
+
+        // Kick them out and notify them
+        town.setNeutral(false);
+        player.sendMessage(Utils.getMessage("kicked-out-of-neutrality"));
+
+        // Notify the mayor if they're online
+        Player mayor = town.getMayor().getPlayer();
+        if (mayor.isOnline()) {
+            mayor.sendMessage(Utils.getMessage("kicked-out-of-neutrality-mayor"));
+        }
+
     }
 
     @EventHandler
@@ -106,6 +131,11 @@ public class PlayerListener implements Listener {
 
         PvpPlayer killerPvP = new PvpPlayer(killer);
         PvpPlayer victimPvP = new PvpPlayer(victim);
+        // If both players are townmates, it was likely just a small quarrel or a duel
+        // No need to do anything.
+        if (areInSameTown(killer, victim))
+            return;
+
         // If both are defensive, the killer is being hostile. Increase their hostility.
         if (killerPvP.isDefensive() && victimPvP.isDefensive()) {
             killerPvP.setHostility(killerPvP.getHostility() + 1);
@@ -115,11 +145,13 @@ public class PlayerListener implements Listener {
         // that signifies a higher level of hostility, therefore increase by 2 points.
         if ((killerPvP.isAggressive() || killerPvP.isHostile()) && victimPvP.isDefensive()) {
             killerPvP.setHostility(killerPvP.getHostility() + 2);
+            tryTownNeutralityRemoval(killer);
             return;
         }
         // if the killer is aggressive or hostile, killer becomes more hostile.
         if (killerPvP.isAggressive() || killerPvP.isHostile()) {
             killerPvP.setHostility(killerPvP.getHostility() + 1);
+            tryTownNeutralityRemoval(killer);
         }
     }
 
@@ -203,6 +235,14 @@ public class PlayerListener implements Listener {
         }
         long timeDifference = System.currentTimeMillis() - playerTime;
         return Math.toIntExact(TimeUnit.MILLISECONDS.toDays(timeDifference));
+    }
+
+    private boolean areInSameTown(Player first, Player second) {
+        var firstTown = towny.getResident(first).getTownOrNull();
+        var secondTown = towny.getResident(second).getTownOrNull();
+        if (firstTown == null || secondTown == null) return false;
+
+        return firstTown.equals(secondTown);
     }
 
 }

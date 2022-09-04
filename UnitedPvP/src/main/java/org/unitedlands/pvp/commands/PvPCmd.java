@@ -1,6 +1,7 @@
 package org.unitedlands.pvp.commands;
 
 import net.kyori.adventure.text.TextReplacementConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,10 +13,8 @@ import org.unitedlands.pvp.util.Utils;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
-import static org.unitedlands.pvp.util.Utils.getMessage;
-import static org.unitedlands.pvp.util.Utils.getUnitedPvP;
+import static org.unitedlands.pvp.util.Utils.*;
 
 public class PvPCmd implements CommandExecutor {
 
@@ -25,13 +24,14 @@ public class PvPCmd implements CommandExecutor {
         Player player = (Player) sender;
         PvpPlayer pvpPlayer = new PvpPlayer(player);
         if (args.length == 0) {
-            sendHelpMessage(player);
+            sendMessageList(player, "messages.help-message");
             return true;
         }
 
         if (args.length == 3) {
             if (args[0].equalsIgnoreCase("setHostility")) {
                 if (player.hasPermission("united.pvp.admin")) {
+                    pvpPlayer = new PvpPlayer(Bukkit.getPlayer(args[1]));
                     pvpPlayer.setHostility(Integer.parseInt(args[2]));
                     pvpPlayer.updatePlayerHostility();
                     player.sendMessage("Hostility set to " + args[2]);
@@ -72,14 +72,6 @@ public class PvPCmd implements CommandExecutor {
             player.sendMessage(getMessage("you-are-not-immune"));
         }
         return false;
-    }
-
-    private void sendHelpMessage(Player player) {
-        FileConfiguration config = getUnitedPvP().getConfig();
-        @NotNull List<String> configuredMessage = config.getStringList("messages.help-message");
-        for (String line: configuredMessage) {
-             player.sendMessage(Utils.miniMessage.deserialize(Objects.requireNonNull(line)));
-        }
     }
 
     private void returnPvPStatus(Player player) {

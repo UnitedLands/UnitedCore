@@ -1,6 +1,7 @@
 package org.unitedlands.pvp.player;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PvpPlayer {
     private final UnitedPvP unitedPvP = getPlugin();
-    private final Player player;
+    private final OfflinePlayer player;
     private final File file;
     private final FileConfiguration playerConfig;
 
@@ -22,6 +23,16 @@ public class PvpPlayer {
         this.player = player;
         file = null;
         playerConfig = getFileConfiguration();
+    }
+
+    public PvpPlayer(OfflinePlayer player) {
+        this.player = player;
+        file = null;
+        playerConfig = getFileConfiguration();
+    }
+
+    public OfflinePlayer getPlayer() {
+        return player;
     }
 
     public void createFile() {

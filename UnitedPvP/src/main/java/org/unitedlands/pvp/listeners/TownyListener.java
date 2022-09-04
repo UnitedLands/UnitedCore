@@ -3,20 +3,24 @@ package org.unitedlands.pvp.listeners;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.NewDayEvent;
 import com.palmergames.bukkit.towny.event.PlayerEnterTownEvent;
+import com.palmergames.bukkit.towny.event.town.toggle.TownToggleNeutralEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.unitedlands.pvp.UnitedPvP;
 import org.unitedlands.pvp.player.PvpPlayer;
+import org.unitedlands.pvp.util.Utils;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -39,6 +43,32 @@ public class TownyListener implements Listener {
         unitedPvP.saveConfig();
         // Force update the hostilities of any new players online.
         unitedPvP.getServer().getScheduler().runTask(unitedPvP, this::updatePlayerHostilities);
+    }
+
+    @EventHandler
+    public void onTownNeutralityChange(TownToggleNeutralEvent event) {
+        List<Resident> residents = event.getTown().getResidents();
+        List<String> hostileResidents = new ArrayList<>();
+        for (var resident: residents) {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(resident.getUUID());
+            PvpPlayer pvpPlayer = new PvpPlayer(offlinePlayer);
+            if (pvpPlayer.isHostile()) {
+                hostileResidents.add(offlinePlayer.getName());
+            }
+        }
+
+        // No hostile residents in the list, so they're viable to toggle neutrality
+        if (hostileResidents.isEmpty()) return;
+
+        event.setCancelled(true);
+        event.getTown().setNeutral(false);
+        TextReplacementConfig playerReplacer = TextReplacementConfig
+                .builder()
+                .match("<players>")
+                // Join all found hostile residents in the list.
+                .replacement(String.join("<light_gray>,<yellow> ", hostileResidents))
+                .build();
+        event.getPlayer().sendMessage(Utils.getMessage("cannot-be-neutral").replaceText(playerReplacer));
     }
 
     @EventHandler

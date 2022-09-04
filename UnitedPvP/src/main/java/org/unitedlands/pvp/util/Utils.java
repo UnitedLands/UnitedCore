@@ -47,29 +47,6 @@ public class Utils {
         return false;
     }
 
-    public void setPvPStatus(Player player, boolean status) {
-        PvpPlayer file = new PvpPlayer(player);
-        FileConfiguration playerConfig = file.getFileConfiguration();
-        playerConfig.set("PvP", status);
-        try {
-            playerConfig.save(playerConfig.getCurrentPath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public int getPvPStatus(Player player) {
-        boolean isCitizensNPC = player.hasMetadata("NPC");
-
-        if (isCitizensNPC) {
-            return 0;
-        }
-        PvpPlayer file = new PvpPlayer(player);
-        FileConfiguration playerConfig = file.getFileConfiguration();
-
-       return playerConfig.getInt("status");
-    }
-
     public static UnitedPvP getUnitedPvP() {
         return (UnitedPvP) Bukkit.getPluginManager().getPlugin("UnitedPvP");
     }
@@ -81,6 +58,13 @@ public class Utils {
         String prefix = config.getString("messages.prefix");
         String configuredMessage = prefix + config.getString("messages." + message);
         return miniMessage.deserialize(Objects.requireNonNullElseGet(configuredMessage, () -> "<red>Message <yellow>" + message + "<red> could not be found in the config file!"));
+    }
+    public static void sendMessageList(Player player, String listName) {
+        FileConfiguration config = getUnitedPvP().getConfig();
+        @NotNull List<String> configuredMessage = config.getStringList(listName);
+        for (String line: configuredMessage) {
+            player.sendMessage(miniMessage.deserialize(Objects.requireNonNull(line)));
+        }
     }
 
 }
