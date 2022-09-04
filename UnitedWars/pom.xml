@@ -72,5 +72,11 @@
             <version>1.19.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.TownyAdvanced</groupId>
+            <artifactId>eventwar</artifactId>
+            <version>0.0.48</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
