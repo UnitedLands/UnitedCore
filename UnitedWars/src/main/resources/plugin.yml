@@ -1,0 +1,8 @@
+name: UnitedWars
+version: '${project.version}'
+main: org.unitedlands.war.UnitedWars
+api-version: 1.19
+depend: [ Towny, EventWar ]
+authors: [ Maroon28 ]
+description: A plugin which hooks into EventWar to achieve custom war behaviour!
+website: unitedlands.org
