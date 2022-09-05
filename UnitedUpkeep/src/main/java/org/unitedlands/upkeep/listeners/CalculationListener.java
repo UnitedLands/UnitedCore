@@ -31,7 +31,7 @@ public class CalculationListener implements Listener {
         if (town.isNeutral()) {
             // Neutrality fees should be 10% of the upkeep.
             int defaultFee = 25;
-            upkeep += upkeep * 0.1 - defaultFee;
+            upkeep += upkeep * 0.1 + defaultFee;
         }
         event.setUpkeep(upkeep);
     }

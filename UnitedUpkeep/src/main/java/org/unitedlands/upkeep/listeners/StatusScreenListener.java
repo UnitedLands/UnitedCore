@@ -97,7 +97,7 @@ public class StatusScreenListener implements Listener {
 
     private double getNeutralityFee() {
         int defaultFee = 25;
-        return (getTownUpkeepCalculator().getDiscountedUpkeep() * 0.1) - defaultFee;
+        return (getTownUpkeepCalculator().getDiscountedUpkeep() * 0.1) + defaultFee;
     }
 
     private TextComponent getUpkeepComponent() {
