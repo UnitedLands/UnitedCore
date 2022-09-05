@@ -2,6 +2,7 @@ package org.unitedlands.upkeep.listeners;
 
 import com.palmergames.adventure.text.Component;
 import com.palmergames.adventure.text.TextComponent;
+import com.palmergames.adventure.text.event.HoverEvent;
 import com.palmergames.adventure.text.format.NamedTextColor;
 import com.palmergames.adventure.text.format.TextDecoration;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
@@ -41,20 +42,20 @@ public class StatusScreenListener implements Listener {
         TextComponent upkeepComponent = getUpkeepComponent();
 
         if (getBonusBlockDiscount() > 0 && getNationDiscount() > 0) {
-            upkeepComponent = getComponentWithAllDiscounts();
+            upkeepComponent = upkeepComponent.hoverEvent(HoverEvent.showText(getComponentWithAllDiscounts()));
         } else if (getNationDiscount() > 0) {
-            upkeepComponent = upkeepComponent.append(getNationDiscountComponent());
+            upkeepComponent = upkeepComponent.hoverEvent(HoverEvent.showText(getNationDiscountComponent()));
         } else if (getBonusBlockDiscount() > 0) {
-            upkeepComponent = upkeepComponent.append(getBonusDiscountComponent());
+            upkeepComponent = upkeepComponent.hoverEvent(HoverEvent.showText(getBonusDiscountComponent()));
         }
 
         screen.replaceComponent("upkeep", upkeepComponent);
     }
 
     private TextComponent getComponentWithAllDiscounts() {
-        return Component.text("\n")
-                .append(getUpkeepComponent())
+        return Component.text("")
                 .append(getNationDiscountComponent())
+                .append(Component.text("\n"))
                 .append(getBonusDiscountComponent());
     }
 
@@ -77,17 +78,16 @@ public class StatusScreenListener implements Listener {
         double upkeep = calculator.calculateTownUpkeep();
         double discountedUpkeep = calculator.getDiscountedUpkeep();
         return Component
-                .text("\n")
+                .text("")
                 .append(Component.text("\nUpkeep: ", NamedTextColor.DARK_GREEN))
-                .append(Component.text( " " + upkeep, NamedTextColor.GRAY, TextDecoration.STRIKETHROUGH))
-                .append(Component.text( discountedUpkeep + " Gold", NamedTextColor.RED));
+                .append(Component.text( upkeep, NamedTextColor.GRAY, TextDecoration.STRIKETHROUGH))
+                .append(Component.text( " " + discountedUpkeep + " Gold", NamedTextColor.RED));
     }
 
     private void replaceTownSizeComponent() {
         TextComponent townSizeComponent = Component
-                .text("\n")
-                .append(Component.text("\nTown Size: ", NamedTextColor.DARK_GREEN)
-                .append(Component.text(getTownsize(), NamedTextColor.GREEN)));
+                .text("\nTown Size: ", NamedTextColor.DARK_GREEN)
+                .append(Component.text(getTownsize(), NamedTextColor.GREEN));
         screen.replaceComponent("townblocks", townSizeComponent);
     }
 
