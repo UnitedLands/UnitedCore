@@ -28,6 +28,8 @@ public class StatusScreenListener implements Listener {
         town = event.getTown();
         replaceTownSizeComponent();
         replaceUpkeepComponent();
+        // Remove the default neutrality cost.
+        screen.removeStatusComponent("neutralityCost");
     }
 
     private TownUpkeepCalculator getTownUpkeepCalculator() {
@@ -44,19 +46,27 @@ public class StatusScreenListener implements Listener {
         if (getBonusBlockDiscount() > 0 && getNationDiscount() > 0) {
             upkeepComponent = upkeepComponent.hoverEvent(HoverEvent.showText(getComponentWithAllDiscounts()));
         } else if (getNationDiscount() > 0) {
-            upkeepComponent = upkeepComponent.hoverEvent(HoverEvent.showText(getNationDiscountComponent()));
+            upkeepComponent = upkeepComponent.hoverEvent(HoverEvent.showText(getNationDiscountComponent().append(getNeutralityComponent())));
         } else if (getBonusBlockDiscount() > 0) {
-            upkeepComponent = upkeepComponent.hoverEvent(HoverEvent.showText(getBonusDiscountComponent()));
+            upkeepComponent = upkeepComponent.hoverEvent(HoverEvent.showText(getBonusDiscountComponent().append(getNeutralityComponent())));
         }
 
         screen.replaceComponent("upkeep", upkeepComponent);
+    }
+
+    private void replaceTownSizeComponent() {
+        TextComponent townSizeComponent = Component
+                .text("\nTown Size: ", NamedTextColor.DARK_GREEN)
+                .append(Component.text(getTownsize(), NamedTextColor.GREEN));
+        screen.replaceComponent("townblocks", townSizeComponent);
     }
 
     private TextComponent getComponentWithAllDiscounts() {
         return Component.text("")
                 .append(getNationDiscountComponent())
                 .append(Component.text("\n"))
-                .append(getBonusDiscountComponent());
+                .append(getBonusDiscountComponent())
+                .append(getNeutralityComponent());
     }
 
     private TextComponent getNationDiscountComponent() {
@@ -73,22 +83,33 @@ public class StatusScreenListener implements Listener {
                 .append(Component.text("]", NamedTextColor.DARK_GREEN));
     }
 
+    private TextComponent getNeutralityComponent() {
+        // Return an empty component if the town isn't neutral.
+        if (!town.isNeutral()) {
+            return Component.empty();
+        }
+        double fee = getNeutralityFee();
+        return Component
+                .text("\n[Neutrality Fees: ", NamedTextColor.DARK_GREEN)
+                .append(Component.text(fee + " Gold", NamedTextColor.RED))
+                .append(Component.text("]", NamedTextColor.DARK_GREEN));
+    }
+
+    private double getNeutralityFee() {
+        int defaultFee = 25;
+        return (getTownUpkeepCalculator().getDiscountedUpkeep() * 0.1) - defaultFee;
+    }
+
     private TextComponent getUpkeepComponent() {
         var calculator = getTownUpkeepCalculator();
-        double upkeep = calculator.calculateTownUpkeep();
-        double discountedUpkeep = calculator.getDiscountedUpkeep();
+        double neutralityFee = getNeutralityFee();
+        double upkeep = calculator.calculateTownUpkeep() + neutralityFee;
+        double discountedUpkeep = calculator.getDiscountedUpkeep() + neutralityFee;
         return Component
                 .text("")
                 .append(Component.text("\nUpkeep: ", NamedTextColor.DARK_GREEN))
-                .append(Component.text( upkeep, NamedTextColor.GRAY, TextDecoration.STRIKETHROUGH))
+                .append(Component.text(upkeep, NamedTextColor.GRAY, TextDecoration.STRIKETHROUGH))
                 .append(Component.text( " " + discountedUpkeep + " Gold", NamedTextColor.RED));
-    }
-
-    private void replaceTownSizeComponent() {
-        TextComponent townSizeComponent = Component
-                .text("\nTown Size: ", NamedTextColor.DARK_GREEN)
-                .append(Component.text(getTownsize(), NamedTextColor.GREEN));
-        screen.replaceComponent("townblocks", townSizeComponent);
     }
 
     private double getNationDiscount() {
