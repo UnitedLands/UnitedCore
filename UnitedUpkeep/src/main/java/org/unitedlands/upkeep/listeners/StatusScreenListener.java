@@ -102,7 +102,10 @@ public class StatusScreenListener implements Listener {
 
     private TextComponent getUpkeepComponent() {
         var calculator = getTownUpkeepCalculator();
-        double neutralityFee = getNeutralityFee();
+        double neutralityFee = 0.0;
+        if (town.isNeutral()) {
+            neutralityFee = getNeutralityFee();
+        }
         double upkeep = calculator.calculateTownUpkeep() + neutralityFee;
         double discountedUpkeep = calculator.getDiscountedUpkeep() + neutralityFee;
         return Component
