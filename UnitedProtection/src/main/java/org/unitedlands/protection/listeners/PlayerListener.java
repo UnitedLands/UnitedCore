@@ -65,12 +65,12 @@ public class PlayerListener implements Listener {
         return getWhitelistedBlocks().contains(block.getType().toString());
     }
 
-    private boolean isInTown(Block block, Resident resident) {
-        Player player = resident.getPlayer();
+    private boolean isInTown(Block block, Player player) {
         Location playerLocation = player.getLocation();
         if (towny.isWilderness(playerLocation)) {
             return false;
         }
+        Resident resident = towny.getResident(player);
         Location blockLocation = block.getLocation();
         Town town = towny.getTownBlock(blockLocation).getTownOrNull();
         if (town == null || !resident.hasTown()) {
@@ -101,6 +101,6 @@ public class PlayerListener implements Listener {
             return true;
         }
 
-        return blockY >= getProtectedY() || isInTown(block, resident);
+        return blockY >= getProtectedY() || isInTown(block, player);
     }
 }
