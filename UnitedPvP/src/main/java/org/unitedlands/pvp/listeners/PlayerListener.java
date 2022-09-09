@@ -2,11 +2,16 @@ package org.unitedlands.pvp.listeners;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.player.PlayerKilledPlayerEvent;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import de.jeff_media.angelchest.AngelChest;
+import de.jeff_media.angelchest.events.AngelChestSpawnEvent;
 import net.kyori.adventure.text.TextReplacementConfig;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EnderCrystal;
@@ -22,6 +27,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.jetbrains.annotations.NotNull;
 import org.unitedlands.pvp.UnitedPvP;
 import org.unitedlands.pvp.player.PvpPlayer;
 import org.unitedlands.pvp.util.Utils;
@@ -136,6 +142,10 @@ public class PlayerListener implements Listener {
         if (areInSameTown(killer, victim))
             return;
 
+        // If an outlaw is killed, don't increase the hostility
+        if (isOutlawKill(event))
+            return;
+
         // If both are defensive, the killer is being hostile. Increase their hostility.
         if (killerPvP.isDefensive() && victimPvP.isDefensive()) {
             killerPvP.setHostility(killerPvP.getHostility() + 1);
@@ -154,6 +164,38 @@ public class PlayerListener implements Listener {
             tryTownNeutralityRemoval(killer);
         }
     }
+
+    private boolean isOutlawKill(PlayerKilledPlayerEvent event) {
+        var killerRes = event.getKillerRes();
+        var victimRes = event.getVictimRes();
+
+        var killerTown = killerRes.getTownOrNull();
+        if (killerTown == null) return false;
+
+        return killerTown.hasOutlaw(victimRes);
+    }
+
+    @EventHandler
+    public void onGraveSpawn(AngelChestSpawnEvent event) {
+        AngelChest chest = event.getAngelChest();
+        Location graveLocation = chest.getBlock().getLocation();
+        OfflinePlayer player = chest.getPlayer();
+        if (isInOutlawTown(player, graveLocation))
+            chest.setProtected(false);
+    }
+
+    private boolean isInOutlawTown(OfflinePlayer player, Location graveLocation) {
+        Resident resident = towny.getResident(player.getUniqueId());
+        if (resident == null) return false;
+        // Make sure they're not in the wilderness
+        if (towny.isWilderness(graveLocation)) return false;
+        Town town = towny.getTownBlock(graveLocation).getTownOrNull();
+        // This shouldn't happen but adding it to be safe.
+        if (town == null) return false;
+
+        return town.hasOutlaw(resident);
+    }
+
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
