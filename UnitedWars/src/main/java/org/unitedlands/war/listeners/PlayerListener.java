@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.unitedlands.war.UnitedWars;
 import org.unitedlands.war.Utils;
@@ -23,6 +24,21 @@ public class PlayerListener implements Listener {
     public PlayerListener(UnitedWars unitedWars) {
         this.unitedWars = unitedWars;
         config = unitedWars.getConfig();
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+
+        Town town = getPlayerTown(player);
+        if (town == null) return;
+        if (!town.hasActiveWar()) return;
+
+        if (isBannedWorld(player.getWorld().getName()))
+            teleportPlayerToSpawn(player);
+
+        for (String command: config.getStringList("commands-on-login"))
+            player.performCommand(command);
     }
 
 

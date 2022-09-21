@@ -42,16 +42,6 @@ public class WarListener implements Listener {
             WarBossBar warBossBar = getActiveWarBossbar(player);
             warBossBar.addViewer(player);
         }
-
-        Town town = getPlayerTown(player);
-        if (town == null) return;
-        if (!town.hasActiveWar()) return;
-
-        if (isBannedWorld(player.getWorld().getName()))
-            teleportPlayerToSpawn(player);
-
-        for (String command: config.getStringList("commands-on-login"))
-            player.performCommand(command);
     }
 
     @EventHandler
