@@ -13,7 +13,7 @@
 
     <description>A plugin which hooks into EventWar to achieve custom war behaviour!</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <url>unitedlands.org</url>
@@ -63,6 +63,14 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>jeff-media-public</id>
+            <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -74,8 +82,20 @@
         </dependency>
         <dependency>
             <groupId>com.github.TownyAdvanced</groupId>
+            <artifactId>Towny</artifactId>
+            <version>0.98.3.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.TownyAdvanced</groupId>
             <artifactId>eventwar</artifactId>
             <version>0.0.48</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.jeff_media</groupId>
+            <artifactId>AngelChestAPI</artifactId>
+            <version>9.0.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
