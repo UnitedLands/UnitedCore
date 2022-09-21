@@ -1,29 +1,22 @@
 package org.unitedlands.war.listeners;
 
-import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import de.jeff_media.angelchest.events.AngelChestSpawnEvent;
 import io.github.townyadvanced.eventwar.events.EventWarDeclarationEvent;
 import io.github.townyadvanced.eventwar.events.EventWarStartEvent;
 import io.github.townyadvanced.eventwar.instance.War;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.war.UnitedWars;
-import org.unitedlands.war.Utils;
 import org.unitedlands.war.WarBossBar;
 
 import java.util.HashMap;
