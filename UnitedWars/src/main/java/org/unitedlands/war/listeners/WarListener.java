@@ -29,9 +29,10 @@ import org.unitedlands.war.WarBossBar;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.unitedlands.war.Utils.*;
+
 public class WarListener implements Listener {
     private final UnitedWars unitedWars;
-    private final TownyAPI townyAPI = TownyAPI.getInstance();
     private final HashMap<Town, WarBossBar> activeBossbars = new HashMap<>();
     private final @NotNull FileConfiguration config;
 
@@ -49,7 +50,7 @@ public class WarListener implements Listener {
             warBossBar.addViewer(player);
         }
 
-        Town town = getTown(player);
+        Town town = getPlayerTown(player);
         if (town == null) return;
         if (!town.hasActiveWar()) return;
 
@@ -61,39 +62,12 @@ public class WarListener implements Listener {
     }
 
     @EventHandler
-    public void onCommandExecute(PlayerCommandPreprocessEvent event) {
-        if (!config.getStringList("banned-commands").contains(event.getMessage())) return;
-        Player player = event.getPlayer();
-        Town town = getTown(player);
-        if (town == null) return;
-        if (town.hasActiveWar()) {
-            player.sendMessage(Utils.getMessage("banned-command"));
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (hasActiveWarBossbar(player)) {
             WarBossBar warBossBar = getActiveWarBossbar(player);
             warBossBar.removeViewer(player);
         }
-    }
-
-    @EventHandler (priority = EventPriority.HIGHEST)
-    public void onTeleport(PlayerTeleportEvent event) {
-        Player player = event.getPlayer();
-        Town town = getTown(player);
-        if (town == null) return;
-        if (!town.hasActiveWar()) return;
-
-        if (isBannedWorld(event.getTo().getWorld().getName())) {
-            event.setCancelled(true);
-            player.sendMessage(Utils.getMessage("teleport-cancelled"));
-            player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1, 0.6F);
-        }
-
     }
 
     @EventHandler
@@ -113,17 +87,6 @@ public class WarListener implements Listener {
                 player.performCommand(command);
         }
 
-    }
-
-    private boolean isBannedWorld(String worldName) {
-        List<String> bannedWorlds = config.getStringList("banned-worlds");
-        return bannedWorlds.contains(worldName);
-    }
-
-    private void teleportPlayerToSpawn(Player player) {
-        Location spawn = townyAPI.getResident(player).getTownOrNull().getSpawnOrNull();
-        if (spawn == null) return;
-        player.teleportAsync(spawn);
     }
 
     @EventHandler
@@ -147,17 +110,6 @@ public class WarListener implements Listener {
         Nation targetNation = event.getWarringNations().get(1);
 
         notifyDeclaration(targetNation, declaringTown.getNationOrNull());
-    }
-
-    @EventHandler
-    public void onGraveCreation(AngelChestSpawnEvent event) {
-        Resident resident =  townyAPI.getResident(event.getAngelChest().getPlayer().getUniqueId());
-        if (resident == null) return;
-        if (resident.hasTown()) {
-            if (resident.getTownOrNull().hasActiveWar()) {
-                event.getAngelChest().setProtected(false);
-            }
-        }
     }
 
     private void notifyDeclaration(Nation targetNation, Nation declaringNation) {
@@ -197,7 +149,7 @@ public class WarListener implements Listener {
     }
 
     private boolean hasActiveWarBossbar(Player player) {
-        Town town = getTown(player);
+        Town town = getPlayerTown(player);
         if (town == null) return false;
         if (activeBossbars.containsKey(town)) {
             WarBossBar warBossBar = activeBossbars.get(town);
@@ -212,14 +164,8 @@ public class WarListener implements Listener {
     }
 
     private WarBossBar getActiveWarBossbar(Player player) {
-        Town town = getTown(player);
+        Town town = getPlayerTown(player);
         return activeBossbars.get(town);
     }
-
-    private Town getTown(Player player) {
-        Resident resident = townyAPI.getResident(player);
-        return resident.getTownOrNull();
-    }
-
 
 }
