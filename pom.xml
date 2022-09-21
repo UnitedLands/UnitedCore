@@ -18,8 +18,8 @@
         <module>UnitedSkills</module>
         <module>UnitedTransport</module>
         <module>UnitedBrands</module>
+        <module>UnitedWars</module>
     </modules>
-
     <build>
         <plugins>
             <plugin>
