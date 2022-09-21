@@ -1,0 +1,27 @@
+banned-worlds:
+  - spawn
+  - world_resource
+  - world_the_end
+  - world_nether
+banned-commands:
+  - "/maphide"
+  - "/squaremap:map hide"
+  - "/dungeon"
+  - "/dxl"
+  - "/dungeons"
+commands-on-war-start:
+  - "mapshow"
+  - "towny war hud"
+commands-on-login:
+  - "mapshow"
+town-declaration-book:
+  1:
+    - "     <red><bold>DECLARATION OF WAR"
+    - " <black> get boned"
+  2:
+    - " <red><bold>DECLARATION OF WAR TWO!!!"
+    - "<black> get boned again lmao"
+messages:
+  prefix: "<bold><red>U<white>L</bold> <gray>» "
+  teleport-cancelled: '<red>You have an ongoing war! You cannot teleport to any worlds outside <yellow>Earth!'
+  banned-command: '<red>You may not use this command during wars!'
