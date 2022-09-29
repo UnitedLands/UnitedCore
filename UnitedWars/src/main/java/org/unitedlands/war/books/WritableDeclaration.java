@@ -70,7 +70,7 @@ public class WritableDeclaration {
         ItemMeta meta = writableBook.getItemMeta();
         meta.addEnchant(Enchantment.LURE, 1, false);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        Component name = getDeserializedString(CONFIG.getString("writable-declaration-name"));
+        Component name = getDeserializedString(CONFIG.getString("declaration-book-name"));
 
         meta.displayName(name);
         meta.lore(getLore());
@@ -111,9 +111,9 @@ public class WritableDeclaration {
     }
 
     @NotNull
-    private Component getDeserializedString(String CONFIG) {
+    private Component getDeserializedString(String string) {
         return UnitedWars.MINI_MESSAGE.deserialize(
-                CONFIG,
+                string,
                 Placeholder.component("declarer-name", text(getDeclarerName())),
                 Placeholder.component("target-name", text(getTargetName()))
         );

@@ -15,12 +15,6 @@ public class TownDeclarationBook implements DeclarationBook {
     private final Declarer declarer;
     private final WarTarget warTarget;
 
-    public TownDeclarationBook(Declarer declarer, WarTarget warTarget) {
-        this.declarer = declarer;
-        this.warTarget = warTarget;
-        writableDeclaration = new WritableDeclaration(declarer, warTarget, getType());
-    }
-
     public TownDeclarationBook(WritableDeclaration writableDeclaration) {
         this.writableDeclaration = writableDeclaration;
         declarer = writableDeclaration.getDeclarer();

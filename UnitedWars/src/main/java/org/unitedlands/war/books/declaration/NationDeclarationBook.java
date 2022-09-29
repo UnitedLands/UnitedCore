@@ -24,7 +24,8 @@ public class NationDeclarationBook implements DeclarationBook {
 
     @Override
     public ItemStack getBook() {
-        return null;
+        BookGenerator bookGenerator = new BookGenerator(this);
+        return bookGenerator.generateBook();
     }
 
     @Override
@@ -34,16 +35,16 @@ public class NationDeclarationBook implements DeclarationBook {
 
     @Override
     public Declarer getDeclarer() {
-        return null;
+        return declarer;
     }
 
     @Override
     public WarTarget getWarTarget() {
-        return null;
+        return warTarget;
     }
 
     @Override
     public List<Component> getReason() {
-        return null;
+        return writableDeclaration.getReason();
     }
 }
