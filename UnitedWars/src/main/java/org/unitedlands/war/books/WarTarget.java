@@ -32,7 +32,7 @@ public class WarTarget {
     public WarTarget(Nation nation) {
         this.nation = nation;
         this.town = nation.getCapital();
-        targetMayor = town.getMayor().getPlayer();
+        targetMayor = Bukkit.getOfflinePlayer(town.getMayor().getUUID());
     }
 
     public OfflinePlayer getTargetMayor() {
