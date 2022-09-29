@@ -14,14 +14,31 @@ commands-on-war-start:
   - "towny war hud"
 commands-on-login:
   - "mapshow"
-town-declaration-book:
+townwar-declaration-book:
   1:
     - "     <red><bold>DECLARATION OF WAR"
     - " <black> get boned"
   2:
     - " <red><bold>DECLARATION OF WAR TWO!!!"
     - "<black> get boned again lmao"
+
+declaration-book-name: 'War Declaration Book [<declarer-name> vs <target-name>]'
+writable-declaration-lore:
+  - ''
+  - '<!i><yellow>Right-click<gray> this book to write'
+  - '<!i><gray>your reasoning behind the <yellow>war!'
+  - ''
 messages:
   prefix: "<bold><red>U<white>L</bold> <gray>» "
   teleport-cancelled: '<red>You have an ongoing war! You cannot teleport to any worlds outside <yellow>Earth!'
   banned-command: '<red>You may not use this command during wars!'
+  must-specify-target: '<red>No target found! Please write the target''s name in order to create a war book!'
+  must-have-town: '<red>You must have a town to create a book!'
+  must-have-nation: '<red>You must have a nation to create a book!'
+  must-not-be-neutral: '<red>You cannot create a war book while neutral! Please disable neutrality first!'
+  ongoing-war: '<red>You cannot create a new war book while you have an ongoing war!'
+  not-enough-tokens: '<red>You cannot create a war book of this type! You need <cost> tokens first!'
+  invalid-town-name: '<red>Town not found! Please enter the correct name!'
+  must-be-mayor: '<red>Only mayors can create war books!'
+  must-not-be-neutral-target: '<red>Target is neutral! You can only create books for non-neutral towns!'
+  ongoing-war-target: '<red>Target has an ongoing war!'

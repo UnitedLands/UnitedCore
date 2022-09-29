@@ -48,6 +48,11 @@ public class Utils {
         return resident.getTownOrNull();
     }
 
+    public static Town getPlayerTown(UUID uuid) {
+        Resident resident = getTownyResident(uuid);
+        return resident.getTownOrNull();
+    }
+
     public static Resident getTownyResident(Player player) {
         return TOWNY_API.getResident(player);
     }
