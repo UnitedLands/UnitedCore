@@ -47,10 +47,8 @@ public class BookGenerator {
                 .author(text(getAuthorName()))
                 .title(text("War Declaration Book"))
                 .build();
-
-        attachWarData();
-
         bookItem.setItemMeta(bookMeta);
+        attachWarData();
         return bookItem;
     }
 
@@ -130,10 +128,11 @@ public class BookGenerator {
         pdc.set(NamespacedKey.fromString("eventwar.dow.book.town"), PersistentDataType.STRING, townUUID.toString());
         pdc.set(NamespacedKey.fromString("eventwar.dow.book.type"), PersistentDataType.STRING, declarationBook.getType().name());
         pdc.set(NamespacedKey.fromString("unitedwars.book.target"), PersistentDataType.STRING, targetUUID.toString());
+        bookItem.setItemMeta(bookMeta);
     }
 
     private String getAuthorName() {
-        switch (declarationBook.getType().name()) {
+        switch (declarationBook.getType().name().toUpperCase()) {
             case "TOWNWAR" -> declarationBook.getDeclarer().getTown().getFormattedName();
             case "NATIONWAR" -> declarationBook.getDeclarer().getNation().getFormattedName();
             default -> declarationBook.getDeclarer().getDeclaringPlayer().name();

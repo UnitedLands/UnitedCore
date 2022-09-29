@@ -41,7 +41,7 @@ import static org.unitedlands.war.Utils.*;
 
 public class WarCommand implements TabExecutor {
     private static final List<String> warTabCompletes = Arrays.asList("declare", "book");
-    private static final List<String> bookTabCompletes = Arrays.asList("town", "nation");
+    private static final List<String> optionsTabCompletes = Arrays.asList("town", "nation");
     private CommandSender sender;
 
     public WarCommand() {
@@ -51,22 +51,25 @@ public class WarCommand implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+
+        if (args[0].equalsIgnoreCase("declare")) {
+            if (args.length == 2)
+                return NameUtil.filterByStart(optionsTabCompletes, args[1]);
+        }
+
         if (args[0].equalsIgnoreCase("book")) {
             if (args.length == 2) {
-                return NameUtil.filterByStart(bookTabCompletes, args[1]);
-            } else {
-                if (args.length == 3) {
-                    if (args[1].equalsIgnoreCase("town")) {
-                        return BaseCommand.getTownyStartingWith(args[2], "t");
-                    }
-
-                    if (args[1].equalsIgnoreCase("nation")) {
-                        return BaseCommand.getTownyStartingWith(args[2], "n");
-                    }
-                    return Collections.emptyList();
-
+                return NameUtil.filterByStart(optionsTabCompletes, args[1]);
+            }
+            if (args.length == 3) {
+                if (args[1].equalsIgnoreCase("town")) {
+                    return BaseCommand.getTownyStartingWith(args[2], "t");
                 }
 
+                if (args[1].equalsIgnoreCase("nation")) {
+                    return BaseCommand.getTownyStartingWith(args[2], "n");
+                }
+                return Collections.emptyList();
             }
         }
         return args.length == 1 ? NameUtil.filterByStart(warTabCompletes, args[0]) : Collections.emptyList();
@@ -283,11 +286,11 @@ public class WarCommand implements TabExecutor {
     }
 
     private boolean isNationWarBook(PersistentDataContainer pdc) {
-        return pdc.get(getTypeKey(), PersistentDataType.STRING).equals("NATIONWAR");
+        return pdc.get(getTypeKey(), PersistentDataType.STRING).equalsIgnoreCase("NATIONWAR");
     }
 
     private boolean isTownWarBook(PersistentDataContainer pdc) {
-        return pdc.get(getTypeKey(), PersistentDataType.STRING).equals("TOWNWAR");
+        return pdc.get(getTypeKey(), PersistentDataType.STRING).equalsIgnoreCase("TOWNWAR");
     }
 
     private void testBookRequirementsAreMet(WarTypeEnum wartype) throws TownyException {

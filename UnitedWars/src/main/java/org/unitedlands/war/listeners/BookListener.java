@@ -34,6 +34,7 @@ public class BookListener implements Listener {
     public void onBookEdit(PlayerEditBookEvent event) {
         boolean isWritableDeclaration = WritableDeclaration.isWritableDeclaration(event.getPreviousBookMeta().getPersistentDataContainer());
         if (!isWritableDeclaration) return;
+        if (!event.isSigning()) return;
         BookMeta bookMeta = event.getNewBookMeta();
         WritableDeclaration writableDeclaration = generateFromMeta(bookMeta);
         // Extract the pages from the new book the player edited
