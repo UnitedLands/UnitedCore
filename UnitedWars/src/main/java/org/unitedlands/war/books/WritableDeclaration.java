@@ -120,7 +120,7 @@ public class WritableDeclaration {
         );
     }
 
-    private String getDeclarerName() {
+    public String getDeclarerName() {
         if (warType.isTownWar()) {
             return declarer.getTown().getFormattedName();
         } else if (warType.isNationWar()) {

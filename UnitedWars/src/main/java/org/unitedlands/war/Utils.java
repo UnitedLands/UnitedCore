@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -22,10 +23,15 @@ public class Utils {
 
     @NotNull
     public static Component getMessage(String message) {
-        FileConfiguration config = getPlugin().getConfig();
-        String prefix = config.getString("messages.prefix");
-        String configuredMessage = prefix + config.getString("messages." + message);
+        String prefix = CONFIG.getString("messages.prefix");
+        String configuredMessage = prefix + CONFIG.getString("messages." + message);
         return MINI_MESSAGE.deserialize(Objects.requireNonNullElseGet(configuredMessage, () -> "<red>Message <yellow>" + message + "<red> could not be found in the config file!"));
+    }
+
+    public static Component getMessage(String message, TagResolver.Single... resolvers ) {
+        String prefix = CONFIG.getString("messages.prefix");
+        String configuredMessage = prefix + CONFIG.getString("messages." + message);
+        return MINI_MESSAGE.deserialize(configuredMessage, resolvers);
     }
 
     public static UnitedWars getPlugin() {
