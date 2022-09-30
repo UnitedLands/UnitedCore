@@ -47,6 +47,7 @@ public class WarBossBar {
                         viewer.playSound(viewer, Sound.EVENT_RAID_HORN, 75, 1);
                         viewer.showTitle(getTimeTitle(0));
                         viewer.hideBossBar(bossBar);
+                        task.cancel();
                     } else {
                         viewer.playSound(viewer, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1F, 0.6F);
                         viewer.showTitle(getTimeTitle(getRemainingSeconds()));
@@ -57,11 +58,6 @@ public class WarBossBar {
             Component name = Component.text( "WAR STARTS IN: " , NamedTextColor.DARK_RED, TextDecoration.BOLD);
             bossBar.name(name.append(Component.text(getRemainingSeconds() + "s", NamedTextColor.RED).decoration(TextDecoration.BOLD, false)));
             bossBar.progress((float) Math.max(0.0F, bossBar.progress() - decrease));
-
-            // After all is done, check the if the bossbar is at 0 to finish the task.
-            if (bossBar.progress() <= 0.0F) {
-                task.cancel();
-            }
 
         }, 0, 20L);
     }
