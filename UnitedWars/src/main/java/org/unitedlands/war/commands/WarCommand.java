@@ -16,7 +16,7 @@ import io.github.townyadvanced.eventwar.objects.WarType;
 import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import io.github.townyadvanced.eventwar.settings.EventWarSettings;
 import io.github.townyadvanced.eventwar.util.WarUtil;
-import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -37,6 +37,7 @@ import org.unitedlands.war.books.WritableDeclaration;
 
 import java.util.*;
 
+import static net.kyori.adventure.text.Component.text;
 import static org.unitedlands.war.Utils.*;
 
 public class WarCommand implements TabExecutor {
@@ -80,18 +81,125 @@ public class WarCommand implements TabExecutor {
             }
 
             if (args[0].equalsIgnoreCase("book")) {
-                // [t war] book (1) town (2) Cheese (3)
                 if (args.length < 3) {
                     sender.sendMessage(getMessage("must-specify-target"));
                     return true;
                 }
-                switch (args[1].toLowerCase()) {
-                    case "town" -> parseTownBookCreationCommand(args[2]);
-                    case "nation" -> parseNationBookCreationCommand(args[2]);
-                }
+                WarType type = WarTypeEnum.valueOf((args[1] + "war").toUpperCase()).getType();
+                parseBookCreation(type, args[2]);
             }
         }
         return true;
+    }
+
+    private void parseBookCreation(WarType type, String target) {
+        Player player = (Player) sender;
+        Resident resident = getTownyResident(player);
+
+        if (!resident.hasTown()) {
+            player.sendMessage(getMessage("must-have-town"));
+            return;
+        }
+        if (!resident.isMayor()) {
+            player.sendMessage(getMessage("must-be-mayor"));
+            return;
+        }
+        if (isNeutral(resident)) {
+            player.sendMessage(getMessage("must-not-be-neutral"));
+            return;
+        }
+        if (hasActiveWar(resident)) {
+            player.sendMessage(getMessage("ongoing-war"));
+        }
+
+        switch(type.name().toLowerCase()) {
+            case "townwar" -> parseTownBookCreationCommand(target);
+            case "nationwar" -> {
+                if (resident.hasNation()) {
+                    parseNationBookCreationCommand(target);
+                } else {
+                    player.sendMessage(getMessage("must-have-nation"));
+                }
+            }
+        }
+    }
+    
+
+    private void parseTownBookCreationCommand(@NotNull String target) {
+        Player player = (Player) sender;
+        Town targetTown = UnitedWars.TOWNY_API.getTown(target);
+        
+        if (targetTown == null) {
+            player.sendMessage(getMessage("invalid-town-name"));
+            return;
+        }
+
+        if (targetTown.isNeutral()) {
+            player.sendMessage(getMessage("must-not-be-neutral-target"));
+            return;
+        }
+
+        if (targetTown.hasActiveWar()) {
+            player.sendMessage(getMessage("ongoing-war-target"));
+            return;
+        }
+
+        WarType type = WarTypeEnum.TOWNWAR.getType();
+        int cost = type.tokenCost();
+
+        Confirmation.runOnAccept(() -> {
+            Town declaringTown = getPlayerTown(player);
+            takeTokens(declaringTown, cost);
+
+            WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetTown), type);
+            player.getInventory().addItem(writableDeclaration.getWritableBook());
+
+            TownyMessaging.sendPrefixedTownMessage(declaringTown, Translatable.of("msg_town_purchased_declaration_of_type", declaringTown, type.name()));
+
+        }).setTitle(Translatable.of("msg_you_are_about_to_purchase_a_declaration_of_war_of_type_for_x_tokens", type.name(), cost)).sendTo(player);
+    }
+
+    private void parseNationBookCreationCommand(@NotNull String target) {
+        Player player = (Player) sender;
+
+        Town targetNation = UnitedWars.TOWNY_API.getTown(target);
+        if (targetNation == null) {
+            player.sendMessage(getMessage("invalid-nation-name"));
+            return;
+        }
+
+        if (targetNation.isNeutral()) {
+            player.sendMessage(getMessage("must-not-be-neutral-target"));
+            return;
+        }
+
+        if (targetNation.hasActiveWar()) {
+            player.sendMessage(getMessage("ongoing-war-target"));
+            return;
+        }
+
+        WarType type = WarTypeEnum.NATIONWAR.getType();
+        int cost = type.tokenCost();
+
+        Confirmation.runOnAccept(() -> {
+            Nation declaringNation = getPlayerTown(player).getNationOrNull();
+            takeTokens(declaringNation.getCapital(), cost);
+
+            WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetNation), type);
+            player.getInventory().addItem(writableDeclaration.getWritableBook());
+
+            TownyMessaging.sendPrefixedNationMessage(declaringNation, Translatable.of("msg_town_purchased_declaration_of_type", declaringNation, type.name()));
+
+        }).setTitle(Translatable.of("msg_you_are_about_to_purchase_a_declaration_of_war_of_type_for_x_tokens", type.name(), cost)).sendTo(player);
+    }
+
+    private void takeTokens(Town declaringTown, int cost) {
+        if (WarMetaDataController.getWarTokens(declaringTown) < cost) {
+            sender.sendMessage(getMessage("not-enough-tokens", Placeholder.component("cost", text(cost))));
+            return ;
+        }
+        int remainder = WarMetaDataController.getWarTokens(declaringTown) - cost;
+        WarMetaDataController.setTokens(declaringTown, remainder);
     }
 
     private void parseDeclareCommand() {
@@ -110,81 +218,13 @@ public class WarCommand implements TabExecutor {
             }
             case "nationwar" -> {
                 try {
-                    parseNationWarCommand();
+                    parseNationWar();
                 } catch (TownyException e) {
                     TownyMessaging.sendErrorMsg(sender, e.getMessage());
                 }
             }
         }
     }
-
-    private void parseTownBookCreationCommand(@NotNull String target) {
-        Player player = (Player) sender;
-        Resident resident = getTownyResident(player);
-        if (!resident.hasTown()) {
-            player.sendMessage(getMessage("must-have-town"));
-            return;
-        }
-        if (!resident.isMayor()) {
-            player.sendMessage(getMessage("must-be-mayor"));
-            return;
-        }
-        Town declaringTown = getPlayerTown(player);
-        if (declaringTown.isNeutral()) {
-            player.sendMessage(getMessage("must-not-be-neutral"));
-            return;
-        }
-
-        if (declaringTown.hasActiveWar()) {
-            player.sendMessage(getMessage("ongoing-war"));
-            return;
-        }
-
-        Town targetTown = UnitedWars.TOWNY_API.getTown(target);
-        if (targetTown == null) {
-            player.sendMessage(getMessage("invalid-town-name"));
-            return;
-        }
-
-        if (targetTown.isNeutral()) {
-            player.sendMessage(getMessage("must-not-be-neutral-target"));
-            return;
-        }
-
-        if (targetTown.hasActiveWar()) {
-            player.sendMessage(getMessage("ongoing-war-target"));
-            return;
-        }
-
-        WarType type = WarTypeEnum.TOWNWAR.getType();
-        int cost = type.tokenCost();
-        TextReplacementConfig costReplacer = TextReplacementConfig.builder().match("<cost>").replacement(String.valueOf(cost)).build();
-
-        if (WarMetaDataController.getWarTokens(declaringTown) < cost) {
-            player.sendMessage(getMessage("not-enough-tokens").replaceText(costReplacer));
-            return;
-        }
-
-        Confirmation.runOnAccept(() -> {
-            if (WarMetaDataController.getWarTokens(declaringTown) < cost) {
-                player.sendMessage(getMessage("not-enough-tokens").replaceText(costReplacer));
-                return;
-            }
-            WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetTown), type);
-            player.getInventory().addItem(writableDeclaration.getWritableBook());
-
-            int remainder = WarMetaDataController.getWarTokens(declaringTown) - cost;
-            WarMetaDataController.setTokens(declaringTown, remainder);
-            TownyMessaging.sendPrefixedTownMessage(declaringTown, Translatable.of("msg_town_purchased_declaration_of_type", declaringTown, type.name()));
-
-        }).setTitle(Translatable.of("msg_you_are_about_to_purchase_a_declaration_of_war_of_type_for_x_tokens", type.name(), cost)).sendTo(player);
-    }
-
-    private void parseNationBookCreationCommand(@NotNull String target) {
-
-    }
-
-    // Heavily copied from EventWar as to not break shit. Thanks Llmdl, xoxo.
     private void parseTownWar() throws TownyException {
         Player player = (Player) this.sender;
         Town targetTown = getTargetFromBook().getTown();
@@ -225,7 +265,7 @@ public class WarCommand implements TabExecutor {
         }).setTitle(Translatable.of("player_are_you_sure_you_want_to_start_a_townwar", targetTown)).sendTo(player);
     }
 
-    private void parseNationWarCommand() throws TownyException {
+    private void parseNationWar() throws TownyException {
         Player player = (Player) this.sender;
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (!resident.hasNation()) {
@@ -368,6 +408,20 @@ public class WarCommand implements TabExecutor {
 
     private boolean townsHaveEnoughOnline(Town targetTown, Town town) {
         return WarUtil.townHasEnoughOnline(targetTown, WarTypeEnum.TOWNWAR.getType()) && WarUtil.townHasEnoughOnline(town, WarTypeEnum.TOWNWAR.getType());
+    }
+
+    private boolean isNeutral(Resident resident) {
+        if (resident.getTownOrNull().hasNation()) {
+            return resident.getNationOrNull().isNeutral();
+        }
+        return resident.getTownOrNull().isNeutral();
+    }
+
+    private boolean hasActiveWar(Resident resident) {
+        if (resident.getTownOrNull().hasNation()) {
+            return resident.getNationOrNull().hasActiveWar();
+        }
+        return resident.getTownOrNull().hasActiveWar();   
     }
 
     private Town getDOWPurchaser(Player player) {
