@@ -5,6 +5,8 @@ import com.palmergames.bukkit.towny.object.Town;
 import io.github.townyadvanced.eventwar.objects.WarType;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Material;
@@ -45,24 +47,33 @@ public class BookGenerator {
         }
         bookMeta = builder
                 .author(text(getName("declarer")))
-                .title(parseLine(CONFIG.getString("declaration-book-name")))
+                .title(text("War Declaration Book"))
                 .build();
-        bookItem.setItemMeta(bookMeta);
+        bookMeta.displayName(getTitle());
+        bookMeta.setCustomModelData(1);
         attachWarData();
+        bookItem.setItemMeta(bookMeta);
         return bookItem;
+    }
+
+    @NotNull
+    private Component getTitle() {
+        Component dotComponent = text("⬩").color(TextColor.color(0xBEA50C)).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false);
+        Component titleComponent = text(" War Declaration Book ").color(TextColor.color(0xAD240C)).decoration(TextDecoration.BOLD, false);
+        return dotComponent.append(titleComponent).append(dotComponent);
     }
 
     private List<Component> getConfiguredPages() {
         ConfigurationSection bookSection = CONFIG.getConfigurationSection(declarationBook.getType().name().toLowerCase() + "-declaration-book");
         List<Component> deserializedPages = new ArrayList<>(16);
 
-        for (String key: bookSection.getKeys(false)) {
+        for (String key : bookSection.getKeys(false)) {
             List<String> pageLines = bookSection.getStringList(key);
             Component deserializedPage = empty();
-            for (String line: pageLines) {
+            for (String line : pageLines) {
                 deserializedPage = deserializedPage
-                            .append(parseLine(line))
-                            .append(newline());
+                        .append(parseLine(line))
+                        .append(newline());
             }
             deserializedPages.add(deserializedPage);
         }
@@ -166,7 +177,6 @@ public class BookGenerator {
         pdc.set(NamespacedKey.fromString("eventwar.dow.book.town"), PersistentDataType.STRING, townUUID.toString());
         pdc.set(NamespacedKey.fromString("eventwar.dow.book.type"), PersistentDataType.STRING, declarationBook.getType().name());
         pdc.set(NamespacedKey.fromString("unitedwars.book.target"), PersistentDataType.STRING, targetUUID.toString());
-        bookItem.setItemMeta(bookMeta);
     }
 
 }
