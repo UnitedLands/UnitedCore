@@ -52,11 +52,6 @@ public class WarCommand implements TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        if (args[0].equalsIgnoreCase("declare")) {
-            if (args.length == 2)
-                return NameUtil.filterByStart(optionsTabCompletes, args[1]);
-        }
-
         if (args[0].equalsIgnoreCase("book")) {
             if (args.length == 2) {
                 return NameUtil.filterByStart(optionsTabCompletes, args[1]);
@@ -79,24 +74,11 @@ public class WarCommand implements TabExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (commandSender instanceof Player) {
             sender = commandSender;
+
             if (args[0].equalsIgnoreCase("declare")) {
-                switch (args[1].toLowerCase()) {
-                    case "town" -> {
-                        try {
-                            parseTownWarCommand();
-                        } catch (TownyException e) {
-                            TownyMessaging.sendErrorMsg(sender, e.getMessage());
-                        }
-                    }
-                    case "nation" -> {
-                        try {
-                            parseNationWarCommand();
-                        } catch (TownyException e) {
-                            TownyMessaging.sendErrorMsg(sender, e.getMessage());
-                        }
-                    }
-                }
+                parseDeclareCommand();
             }
+
             if (args[0].equalsIgnoreCase("book")) {
                 // [t war] book (1) town (2) Cheese (3)
                 if (args.length < 3) {
@@ -104,16 +86,36 @@ public class WarCommand implements TabExecutor {
                     return true;
                 }
                 switch (args[1].toLowerCase()) {
-                    case "town" -> {
-                        parseTownBookCreationCommand(args[2]);
-                    }
-                    case "nation" -> {
-                        parseNationBookCreationCommand(args[2]);
-                    }
+                    case "town" -> parseTownBookCreationCommand(args[2]);
+                    case "nation" -> parseNationBookCreationCommand(args[2]);
                 }
             }
         }
         return true;
+    }
+
+    private void parseDeclareCommand() {
+        WarType warType = getWarType();
+        if (warType == null) {
+            sender.sendMessage(getMessage("invalid-declaration-book"));
+            return;
+        }
+        switch (warType.name().toLowerCase()) {
+            case "townwar" -> {
+                try {
+                    parseTownWar();
+                } catch (TownyException e) {
+                    TownyMessaging.sendErrorMsg(sender, e.getMessage());
+                }
+            }
+            case "nationwar" -> {
+                try {
+                    parseNationWarCommand();
+                } catch (TownyException e) {
+                    TownyMessaging.sendErrorMsg(sender, e.getMessage());
+                }
+            }
+        }
     }
 
     private void parseTownBookCreationCommand(@NotNull String target) {
@@ -183,7 +185,7 @@ public class WarCommand implements TabExecutor {
     }
 
     // Heavily copied from EventWar as to not break shit. Thanks Llmdl, xoxo.
-    private void parseTownWarCommand() throws TownyException {
+    private void parseTownWar() throws TownyException {
         Player player = (Player) this.sender;
         Town targetTown = getTargetFromBook().getTown();
         if (targetTown == null) {
@@ -270,10 +272,9 @@ public class WarCommand implements TabExecutor {
     }
 
     private WarTarget getTargetFromBook() {
-        Player player = (Player) this.sender;
-        ItemStack book = player.getInventory().getItemInMainHand();
-        PersistentDataContainer pdc = book.getItemMeta().getPersistentDataContainer();
+        PersistentDataContainer pdc = getHeldBookData();
         NamespacedKey targetKey = NamespacedKey.fromString("unitedwars.book.target");
+
         if (pdc.has(targetKey)) {
             UUID targetUUID = UUID.fromString(pdc.get(targetKey, PersistentDataType.STRING));
             if (isTownWarBook(pdc)) {
@@ -282,6 +283,25 @@ public class WarCommand implements TabExecutor {
                 return new WarTarget(UnitedWars.TOWNY_API.getNation(targetUUID));
             }
         }
+        return null;
+    }
+
+    @NotNull
+    private PersistentDataContainer getHeldBookData() {
+        Player player = (Player) this.sender;
+        ItemStack book = player.getInventory().getItemInMainHand();
+        return book.getItemMeta().getPersistentDataContainer();
+    }
+
+    private WarType getWarType() {
+       PersistentDataContainer pdc = getHeldBookData();
+       String storedTypeName = pdc.get(NamespacedKey.fromString("eventwar.dow.book.type"), PersistentDataType.STRING);
+        try {
+            return WarTypeEnum.parseType(storedTypeName).getType();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // Default to town war
         return null;
     }
 
