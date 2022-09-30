@@ -53,9 +53,9 @@ public class BookListener implements Listener {
 
 
         Player player = event.getPlayer();
-        event.setCancelled(true);
         // Replace the held item, the old book, with the new sealed book to be used for declaration.
-        player.getInventory().setItemInMainHand(declarationBook.getBook());
+        DeclarationBook finalDeclarationBook = declarationBook;
+        unitedWars.getServer().getScheduler().runTask(unitedWars, () -> player.getInventory().setItemInMainHand(finalDeclarationBook.getBook()));
     }
 
     private WritableDeclaration generateFromMeta(BookMeta bookMeta) {
