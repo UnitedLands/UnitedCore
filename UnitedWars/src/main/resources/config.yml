@@ -21,7 +21,11 @@ townwar-declaration-book:
   2:
     - " <red><bold>DECLARATION OF WAR TWO!!!"
     - "<black> get boned again lmao"
-
+nationwar-declaration-book:
+  1:
+    - " <red><bold>DECLARATION OF WAR"
+    - " <black>The nation of <declarer-name> declared war on <target-name>"
+    - " <black>some other stuff here idk."
 declaration-book-name: 'War Declaration Book [<declarer-name> vs <target-name>]'
 writable-declaration-lore:
   - ''
