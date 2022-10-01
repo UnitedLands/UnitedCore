@@ -16,6 +16,7 @@ import io.github.townyadvanced.eventwar.objects.WarType;
 import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import io.github.townyadvanced.eventwar.settings.EventWarSettings;
 import io.github.townyadvanced.eventwar.util.WarUtil;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -389,11 +390,24 @@ public class WarCommand implements TabExecutor {
 
     private void removeHeldBook(Player player) {
         ItemStack playerHand = player.getInventory().getItemInMainHand();
+        ItemStack bookCopy = createBookCopy(playerHand);
         if (playerHand.getAmount() == 1) {
             player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
         } else {
             playerHand.setAmount(playerHand.getAmount() - 1);
         }
+        // Add the copy without any PDC. For History purposes.
+        player.getInventory().addItem(bookCopy);
+    }
+
+    private ItemStack createBookCopy(ItemStack book) {
+        ItemMeta copyMeta = book.getItemMeta();
+        book.getItemMeta().getPersistentDataContainer().getKeys().forEach(key -> {
+            copyMeta.getPersistentDataContainer().remove(key);
+        });
+        copyMeta.displayName(copyMeta.displayName().append(text( "(Artifact)").color(NamedTextColor.GRAY)));
+        book.setItemMeta(copyMeta);
+        return book;
     }
 
     @Nullable
