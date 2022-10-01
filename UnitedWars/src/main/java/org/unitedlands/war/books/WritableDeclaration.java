@@ -1,19 +1,14 @@
 package org.unitedlands.war.books;
 
-import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.object.Town;
 import io.github.townyadvanced.eventwar.objects.WarType;
-import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -80,7 +75,7 @@ public class WritableDeclaration {
 
     private void attachWarData() {
         UUID townUUID = getDeclarer().getTown().getUUID();
-        UUID targetUUID = getTargetUUID();
+        UUID targetUUID = warTarget.getUUID();
 
         ItemMeta meta = writableBook.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
@@ -90,15 +85,6 @@ public class WritableDeclaration {
         pdc.set(key("unitedwars.book.writable"), PersistentDataType.INTEGER, 1); // 1 = true, 0 = false
 
         writableBook.setItemMeta(meta);
-    }
-
-    private UUID getTargetUUID() {
-        UUID targetUUID = null;
-        if (warType.isTownWar())
-            targetUUID = this.getWarTarget().getTown().getUUID();
-        else if (warType.isNationWar())
-            targetUUID = this.getWarTarget().getNation().getUUID();
-        return targetUUID;
     }
 
     private List<Component> getLore() {
