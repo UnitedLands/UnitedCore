@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.unitedlands.war.UnitedWars;
 import org.unitedlands.war.Utils;
 import org.unitedlands.war.books.Declarer;
+import org.unitedlands.war.books.WarTarget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,10 +174,17 @@ public class BookGenerator {
     public void attachWarData() {
         PersistentDataContainer pdc = bookMeta.getPersistentDataContainer();
         UUID townUUID = declarationBook.getDeclarer().getTown().getUUID();
-        UUID targetUUID = declarationBook.getWarTarget().getTown().getUUID();
+        UUID targetUUID = getTargetUUID();
         pdc.set(NamespacedKey.fromString("eventwar.dow.book.town"), PersistentDataType.STRING, townUUID.toString());
         pdc.set(NamespacedKey.fromString("eventwar.dow.book.type"), PersistentDataType.STRING, declarationBook.getType().name());
         pdc.set(NamespacedKey.fromString("unitedwars.book.target"), PersistentDataType.STRING, targetUUID.toString());
+    }
+
+    private UUID getTargetUUID() {
+        WarTarget target = declarationBook.getWarTarget();
+        if (declarationBook.getType().isNationWar())
+            return target.getNation().getUUID();
+        return target.getTown().getUUID();
     }
 
 }
