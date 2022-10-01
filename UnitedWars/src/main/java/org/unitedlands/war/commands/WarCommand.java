@@ -163,7 +163,7 @@ public class WarCommand implements TabExecutor {
     private void parseNationBookCreationCommand(@NotNull String target) {
         Player player = (Player) sender;
 
-        Town targetNation = UnitedWars.TOWNY_API.getTown(target);
+        Nation targetNation = UnitedWars.TOWNY_API.getNation(target);
         if (targetNation == null) {
             player.sendMessage(getMessage("invalid-nation-name"));
             return;
