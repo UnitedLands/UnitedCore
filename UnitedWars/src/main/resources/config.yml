@@ -43,6 +43,7 @@ messages:
   ongoing-war: '<red>You cannot create a new war book while you have an ongoing war!'
   not-enough-tokens: '<red>You cannot create a war book of this type! You need <cost> tokens first!'
   invalid-town-name: '<red>Town not found! Please enter the correct name!'
+  invalid-nation-name: '<red>Town not found! Please enter the correct name!'
   must-be-mayor: '<red>Only mayors can create war books!'
   only-mayors-can-sign: '<red>Only the mayor of <yellow><declarer-name><red> can sign this declaration book!'
   must-not-be-neutral-target: '<red>Target is neutral! You can only create books for non-neutral towns!'
