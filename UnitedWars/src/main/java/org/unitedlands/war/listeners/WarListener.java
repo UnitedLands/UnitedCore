@@ -29,13 +29,11 @@ import java.util.UUID;
 import static org.unitedlands.war.Utils.*;
 
 public class WarListener implements Listener {
-    private final UnitedWars unitedWars;
     private final HashMap<Town, WarBossBar> activeBossbars = new HashMap<>();
     private final HashMap<UUID, Integer> townScores = new HashMap<>();
     private final @NotNull FileConfiguration config;
 
     public WarListener(UnitedWars unitedWars) {
-        this.unitedWars = unitedWars;
         config = unitedWars.getConfig();
     }
 
@@ -98,11 +96,7 @@ public class WarListener implements Listener {
         if (winner.equals(loser)) {
             loser = event.getWarringTowns().get(0);
         }
-        giveWarEarnings(winner.getAccount(), loser.getAccount());
-        giveBonusClaims(winner);
-
-        untrackScores(winner);
-        untrackScores(loser);
+        giveWarEarnings(winner, loser);
     }
 
     @EventHandler
@@ -117,24 +111,24 @@ public class WarListener implements Listener {
             loser = war.getWarParticipants().getNations().get(0);
         }
 
-        BankAccount winnerAccount = winner.getAccount();
         for (Town losingTown: loser.getTowns()) {
-            giveWarEarnings(winnerAccount, losingTown.getAccount());
-            untrackScores(losingTown);
+            giveWarEarnings(winner.getCapital(), losingTown);
         }
-
-        giveBonusClaims(winner.getCapital());
-        untrackScores(winner.getCapital());
     }
 
     private void untrackScores(Town town) {
         townScores.remove(town.getUUID());
     }
 
-    private void giveWarEarnings(BankAccount winner, BankAccount loser) {
-        double amount = loser.getHoldingBalance() * 0.5;
-        loser.withdraw(amount, "Lost a war");
-        winner.deposit(amount, "Won a war");
+    private void giveWarEarnings(Town winner, Town loser) {
+        // Monetary rewards
+        double amount = loser.getAccount().getHoldingBalance() * 0.5;
+        loser.getAccount().withdraw(amount, "Lost a war");
+        winner.getAccount().deposit(amount, "Won a war");
+
+        giveBonusClaims(winner);
+        untrackScores(winner);
+        untrackScores(loser);
     }
 
     private void giveBonusClaims(Town winner) {
