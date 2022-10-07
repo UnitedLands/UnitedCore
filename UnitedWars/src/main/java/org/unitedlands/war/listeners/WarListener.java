@@ -99,6 +99,8 @@ public class WarListener implements Listener {
             loser = event.getWarringTowns().get(0);
         }
         giveWarEarnings(winner.getAccount(), loser.getAccount());
+        giveBonusClaims(winner);
+
         untrackScores(winner);
         untrackScores(loser);
     }
