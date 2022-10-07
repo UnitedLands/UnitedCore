@@ -131,8 +131,8 @@ public class WarListener implements Listener {
 
     private void giveWarEarnings(BankAccount winner, BankAccount loser) {
         double amount = loser.getHoldingBalance() * 0.5;
-        loser.setBalance(amount, "Lost a war");
-        winner.setBalance(winner.getCachedBalance() + amount, "Won a war");
+        loser.withdraw(amount, "Lost a war");
+        winner.deposit(amount, "Won a war");
     }
 
     private void giveBonusClaims(Town winner) {
