@@ -7,6 +7,7 @@ import com.palmergames.bukkit.towny.object.economy.BankAccount;
 import io.github.townyadvanced.eventwar.events.EventWarDeclarationEvent;
 import io.github.townyadvanced.eventwar.events.EventWarEndEvent;
 import io.github.townyadvanced.eventwar.events.EventWarStartEvent;
+import io.github.townyadvanced.eventwar.events.TownScoredEvent;
 import io.github.townyadvanced.eventwar.instance.War;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -23,12 +24,14 @@ import org.unitedlands.war.WarBossBar;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static org.unitedlands.war.Utils.*;
 
 public class WarListener implements Listener {
     private final UnitedWars unitedWars;
     private final HashMap<Town, WarBossBar> activeBossbars = new HashMap<>();
+    private final HashMap<UUID, Integer> townScores = new HashMap<>();
     private final @NotNull FileConfiguration config;
 
     public WarListener(UnitedWars unitedWars) {
@@ -61,6 +64,7 @@ public class WarListener implements Listener {
         WarBossBar warBossBar = new WarBossBar(war);
         for (Town town: event.getWarringTowns()) {
             activeBossbars.put(town, warBossBar);
+            townScores.put(town.getUUID(), 0);
         }
         warBossBar.startCountdown();
 
@@ -75,6 +79,15 @@ public class WarListener implements Listener {
     }
 
     @EventHandler
+    public void onScore(TownScoredEvent event) {
+        UUID townUUID = event.getTown().getUUID();
+        if (townScores.containsKey(townUUID)) {
+            int previousScore = townScores.get(townUUID);
+            townScores.replace(townUUID, previousScore + event.getScore());
+        }
+    }
+
+    @EventHandler
     public void onTownWarEnd(EventWarEndEvent event) {
         War war = event.getWar();
         if (!war.getWarType().isTownWar()) return;
@@ -86,6 +99,8 @@ public class WarListener implements Listener {
             loser = event.getWarringTowns().get(0);
         }
         giveWarEarnings(winner.getAccount(), loser.getAccount());
+        untrackScores(winner);
+        untrackScores(loser);
     }
 
     @EventHandler
@@ -103,13 +118,27 @@ public class WarListener implements Listener {
         BankAccount winnerAccount = winner.getAccount();
         for (Town losingTown: loser.getTowns()) {
             giveWarEarnings(winnerAccount, losingTown.getAccount());
+            untrackScores(losingTown);
         }
+
+        giveBonusClaims(winner.getCapital());
+        untrackScores(winner.getCapital());
+    }
+
+    private void untrackScores(Town town) {
+        townScores.remove(town.getUUID());
     }
 
     private void giveWarEarnings(BankAccount winner, BankAccount loser) {
-        double amount = loser.getCachedBalance() * 0.5;
+        double amount = loser.getHoldingBalance() * 0.5;
         loser.setBalance(amount, "Lost a war");
         winner.setBalance(winner.getCachedBalance() + amount, "Won a war");
+    }
+
+    private void giveBonusClaims(Town winner) {
+        int totalScore = townScores.get(winner.getUUID());
+        double bonusClaims = Math.round((double) totalScore / 10);
+        winner.addBonusBlocks((int) bonusClaims);
     }
 
     @EventHandler
