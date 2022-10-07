@@ -3,7 +3,9 @@ package org.unitedlands.war.listeners;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.economy.BankAccount;
 import io.github.townyadvanced.eventwar.events.EventWarDeclarationEvent;
+import io.github.townyadvanced.eventwar.events.EventWarEndEvent;
 import io.github.townyadvanced.eventwar.events.EventWarStartEvent;
 import io.github.townyadvanced.eventwar.instance.War;
 import net.kyori.adventure.text.Component;
@@ -62,14 +64,52 @@ public class WarListener implements Listener {
         }
         warBossBar.startCountdown();
 
-        for (Player player: war.getWarParticipants().getOnlineWarriors()) {
+        for (Player player : war.getWarParticipants().getOnlineWarriors()) {
             if (isBannedWorld(player.getWorld().getName()))
                 teleportPlayerToSpawn(player);
 
-            for (String command: config.getStringList("commands-on-war-start"))
+            for (String command : config.getStringList("commands-on-war-start"))
                 player.performCommand(command);
         }
 
+    }
+
+    @EventHandler
+    public void onTownWarEnd(EventWarEndEvent event) {
+        War war = event.getWar();
+        if (!war.getWarType().isTownWar()) return;
+
+        Town winner = event.getWinningTown();
+        Town loser = event.getWarringTowns().get(1);
+        // Winner may have been the initial target, if so then get the other.
+        if (winner.equals(loser)) {
+            loser = event.getWarringTowns().get(0);
+        }
+        giveWarEarnings(winner.getAccount(), loser.getAccount());
+    }
+
+    @EventHandler
+    public void onNationWarEnd(EventWarEndEvent event) {
+        War war = event.getWar();
+        if (!war.getWarType().isNationWar()) return;
+
+        Nation winner = event.getWinningTown().getNationOrNull();
+        Nation loser = war.getWarParticipants().getNations().get(1);
+        // Winner may have been the initial target, if so then get the other.
+        if (winner.equals(loser)) {
+            loser = war.getWarParticipants().getNations().get(0);
+        }
+
+        BankAccount winnerAccount = winner.getAccount();
+        for (Town losingTown: loser.getTowns()) {
+            giveWarEarnings(winnerAccount, losingTown.getAccount());
+        }
+    }
+
+    private void giveWarEarnings(BankAccount winner, BankAccount loser) {
+        double amount = loser.getCachedBalance() * 0.5;
+        loser.setBalance(amount, "Lost a war");
+        winner.setBalance(winner.getCachedBalance() + amount, "Won a war");
     }
 
     @EventHandler
