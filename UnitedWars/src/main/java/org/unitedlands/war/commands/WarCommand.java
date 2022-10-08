@@ -17,6 +17,7 @@ import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import io.github.townyadvanced.eventwar.settings.EventWarSettings;
 import io.github.townyadvanced.eventwar.util.WarUtil;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -248,6 +249,7 @@ public class WarCommand implements TabExecutor {
             Town town = resident.getTownOrNull();
             if (!townsHaveEnoughOnline(targetTown, town)) {
                 TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_not_enough_people_online_for_townwar", EventWarSettings.townWarMinOnline())});
+                return;
             }
             List<Town> towns = new ArrayList<>();
             List<Resident> residents = new ArrayList<>();
@@ -402,10 +404,8 @@ public class WarCommand implements TabExecutor {
 
     private ItemStack createBookCopy(ItemStack book) {
         ItemMeta copyMeta = book.getItemMeta();
-        book.getItemMeta().getPersistentDataContainer().getKeys().forEach(key -> {
-            copyMeta.getPersistentDataContainer().remove(key);
-        });
-        copyMeta.displayName(copyMeta.displayName().append(text( "(Artifact)").color(NamedTextColor.GRAY)));
+        book.getItemMeta().getPersistentDataContainer().getKeys().clear();
+        copyMeta.displayName(copyMeta.displayName().append(text( " (Artifact)").color(NamedTextColor.GRAY)).decoration(TextDecoration.ITALIC, false));
         book.setItemMeta(copyMeta);
         return book;
     }
