@@ -6,7 +6,6 @@ import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -14,12 +13,10 @@ import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.war.UnitedWars;
-import org.unitedlands.war.Utils;
 import org.unitedlands.war.books.Declarer;
 import org.unitedlands.war.books.WarTarget;
 import org.unitedlands.war.books.WritableDeclaration;
@@ -31,7 +28,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
-import static org.unitedlands.war.Utils.*;
+import static org.unitedlands.war.Utils.getMessage;
+import static org.unitedlands.war.Utils.getTownyResident;
 
 public class BookListener implements Listener {
     private final UnitedWars unitedWars;
@@ -73,7 +71,7 @@ public class BookListener implements Listener {
         return WritableDeclaration.isWritableDeclaration(pdc);
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBookInteract(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
         if (item == null) return;
