@@ -49,7 +49,7 @@ public class BookGenerator {
                 .author(text(getName("declarer")))
                 .title(text("War Declaration Book"))
                 .build();
-        bookMeta.displayName(getTitle());
+        bookMeta.displayName(getDisplayName());
         bookMeta.setCustomModelData(1);
         attachWarData();
         bookItem.setItemMeta(bookMeta);
@@ -57,10 +57,8 @@ public class BookGenerator {
     }
 
     @NotNull
-    private Component getTitle() {
-        Component dotComponent = text("⬩").color(TextColor.color(0xBEA50C)).decoration(TextDecoration.BOLD, true).decoration(TextDecoration.ITALIC, false);
-        Component titleComponent = text(" War Declaration Book ").color(TextColor.color(0xAD240C)).decoration(TextDecoration.BOLD, false);
-        return dotComponent.append(titleComponent).append(dotComponent);
+    private Component getDisplayName() {
+        return parseLine(CONFIG.getString("declaration-book-name"));
     }
 
     private List<Component> getConfiguredPages() {
@@ -90,6 +88,7 @@ public class BookGenerator {
         return UnitedWars.MINI_MESSAGE.deserialize(placeholderParsedLine,
                 placeholder("declarer-name", getName("declarer")),
                 placeholder("target-name", getName("target")),
+                placeholder("declaring-mayor", declarer.getDeclaringPlayer().getName()),
                 placeholderStat("declarer-balance"),
                 placeholderStat("declarer-blocks"),
                 placeholderStat("declarer-residents"),
@@ -135,9 +134,15 @@ public class BookGenerator {
 
     private String getTownStat(String statName, Town town) {
         switch (statName) {
-            case "blocks" -> town.getNumTownBlocks();
-            case "residents" -> town.getNumResidents();
-            case "balance" -> town.getAccount().getCachedBalance();
+            case "blocks" -> {
+                return String.valueOf(town.getNumTownBlocks());
+            }
+            case "residents" -> {
+                return String.valueOf(town.getNumResidents());
+            }
+            case "balance" -> {
+                return String.valueOf(town.getAccount().getHoldingBalance());
+            }
         }
         return "0";
     }
@@ -154,7 +159,6 @@ public class BookGenerator {
     }
 
     private String getName(String type) {
-
         WarType warType = declarationBook.getType();
         Town town;
         if (type.equals("declarer")) {
