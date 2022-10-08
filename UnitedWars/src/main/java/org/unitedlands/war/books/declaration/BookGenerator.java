@@ -152,8 +152,16 @@ public class BookGenerator {
             case "blocks" -> {
                 return String.valueOf(nation.getTownBlocks().size());
             }
-            case "residents" -> nation.getNumResidents();
-            case "balance" -> nation.getAccount().getCachedBalance();
+            case "residents" -> {
+                return String.valueOf(nation.getNumResidents());
+            }
+            case "balance" -> {
+                double totalBalance = nation.getAccount().getHoldingBalance();
+                for (Town town: nation.getTowns()) {
+                    totalBalance += town.getAccount().getHoldingBalance();
+                }
+                return String.valueOf(totalBalance);
+            }
         }
         return "0";
     }
