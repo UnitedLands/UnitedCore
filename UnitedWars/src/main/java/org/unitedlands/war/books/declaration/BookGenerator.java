@@ -50,7 +50,7 @@ public class BookGenerator {
                 .title(text("War Declaration Book"))
                 .build();
         bookMeta.displayName(getDisplayName());
-        bookMeta.setCustomModelData(1);
+        bookMeta.setCustomModelData(2);
         attachWarData();
         bookItem.setItemMeta(bookMeta);
         return bookItem;

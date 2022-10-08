@@ -69,7 +69,7 @@ public class WritableDeclaration {
 
         meta.displayName(name);
         meta.lore(getLore());
-        meta.setCustomModelData(1);
+        meta.setCustomModelData(2);
         writableBook.setItemMeta(meta);
     }
 
