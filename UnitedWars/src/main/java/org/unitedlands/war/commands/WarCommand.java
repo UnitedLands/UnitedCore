@@ -57,7 +57,7 @@ public class WarCommand implements TabExecutor {
 
         if (args[0].equalsIgnoreCase("book")) {
             if (args.length == 2) {
-                return NameUtil.filterByStart(optionsTabCompletes, args[1]);
+                return optionsTabCompletes;
             }
             if (args.length == 3) {
                 if (args[1].equalsIgnoreCase("town")) {
@@ -70,7 +70,7 @@ public class WarCommand implements TabExecutor {
                 return Collections.emptyList();
             }
         }
-        return args.length == 1 ? NameUtil.filterByStart(warTabCompletes, args[0]) : Collections.emptyList();
+        return args.length == 1 ? warTabCompletes : Collections.emptyList();
     }
 
     @Override
