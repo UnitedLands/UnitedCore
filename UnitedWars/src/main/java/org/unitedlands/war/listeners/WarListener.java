@@ -116,27 +116,6 @@ public class WarListener implements Listener {
         }
     }
 
-    private void untrackScores(Town town) {
-        townScores.remove(town.getUUID());
-    }
-
-    private void giveWarEarnings(Town winner, Town loser) {
-        // Monetary rewards
-        double amount = loser.getAccount().getHoldingBalance() * 0.5;
-        loser.getAccount().withdraw(amount, "Lost a war");
-        winner.getAccount().deposit(amount, "Won a war");
-
-        giveBonusClaims(winner);
-        untrackScores(winner);
-        untrackScores(loser);
-    }
-
-    private void giveBonusClaims(Town winner) {
-        int totalScore = townScores.get(winner.getUUID());
-        double bonusClaims = Math.round((double) totalScore / 10);
-        winner.addBonusBlocks((int) bonusClaims);
-    }
-
     @EventHandler
     public void onTownWarDeclaration(EventWarDeclarationEvent event) {
         // Only handle town wars here, nation wars in another listener to keep things clean.
@@ -158,6 +137,27 @@ public class WarListener implements Listener {
         Nation targetNation = event.getWarringNations().get(1);
 
         notifyDeclaration(targetNation, declaringTown.getNationOrNull());
+    }
+
+    private void untrackScores(Town town) {
+        townScores.remove(town.getUUID());
+    }
+
+    private void giveWarEarnings(Town winner, Town loser) {
+        // Monetary rewards
+        double amount = loser.getAccount().getHoldingBalance() * 0.5;
+        loser.getAccount().withdraw(amount, "Lost a war");
+        winner.getAccount().deposit(amount, "Won a war");
+
+        giveBonusClaims(winner);
+        untrackScores(winner);
+        untrackScores(loser);
+    }
+
+    private void giveBonusClaims(Town winner) {
+        int totalScore = townScores.get(winner.getUUID());
+        double bonusClaims = Math.round((double) totalScore / 10);
+        winner.addBonusBlocks((int) bonusClaims);
     }
 
     private void notifyDeclaration(Nation targetNation, Nation declaringNation) {
