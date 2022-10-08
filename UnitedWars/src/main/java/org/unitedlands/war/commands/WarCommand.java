@@ -7,7 +7,6 @@ import com.palmergames.bukkit.towny.command.BaseCommand;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.*;
-import com.palmergames.bukkit.towny.utils.NameUtil;
 import io.github.townyadvanced.eventwar.db.WarMetaDataController;
 import io.github.townyadvanced.eventwar.events.EventWarDeclarationEvent;
 import io.github.townyadvanced.eventwar.instance.War;
@@ -114,7 +113,7 @@ public class WarCommand implements TabExecutor {
             player.sendMessage(getMessage("ongoing-war"));
         }
 
-        switch(type.name().toLowerCase()) {
+        switch (type.name().toLowerCase()) {
             case "townwar" -> parseTownBookCreationCommand(target);
             case "nationwar" -> {
                 if (resident.hasNation()) {
@@ -125,12 +124,12 @@ public class WarCommand implements TabExecutor {
             }
         }
     }
-    
+
 
     private void parseTownBookCreationCommand(@NotNull String target) {
         Player player = (Player) sender;
         Town targetTown = UnitedWars.TOWNY_API.getTown(target);
-        
+
         if (targetTown == null) {
             player.sendMessage(getMessage("invalid-town-name"));
             return;
@@ -198,7 +197,7 @@ public class WarCommand implements TabExecutor {
     private void takeTokens(Town declaringTown, int cost) {
         if (WarMetaDataController.getWarTokens(declaringTown) < cost) {
             sender.sendMessage(getMessage("not-enough-tokens", Placeholder.component("cost", text(cost))));
-            return ;
+            return;
         }
         int remainder = WarMetaDataController.getWarTokens(declaringTown) - cost;
         WarMetaDataController.setTokens(declaringTown, remainder);
@@ -227,6 +226,7 @@ public class WarCommand implements TabExecutor {
             }
         }
     }
+
     private void parseTownWar() throws TownyException {
         Player player = (Player) this.sender;
         Town targetTown = getTargetFromBook().getTown();
@@ -291,25 +291,26 @@ public class WarCommand implements TabExecutor {
                 TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_cannot_declare_war_on_neutral")});
                 return;
             }
-            if (WarUtil.nationHasEnoughOnline(targetNation, WarTypeEnum.NATIONWAR.getType()) && WarUtil.nationHasEnoughOnline(declaringNation, WarTypeEnum.NATIONWAR.getType())) {
-                List<Nation> nations = new ArrayList<>();
-                List<Resident> residents = new ArrayList<>();
-                nations.add(declaringNation);
-                nations.add(targetNation);
-
-                residents.addAll(declaringNation.getResidents());
-                residents.addAll(targetNation.getResidents());
-                DeclarationOfWar dow = new DeclarationOfWar(player, WarTypeEnum.NATIONWAR.getType(), this.getDOWPurchaser(player));
-                EventWarDeclarationEvent ewde = new EventWarDeclarationEvent(dow, nations, null, residents);
-                Bukkit.getServer().getPluginManager().callEvent(ewde);
-                if (ewde.isCancelled()) {
-                    return;
-                }
-                new War(nations, null, residents, WarTypeEnum.NATIONWAR.getType(), dow);
-                removeHeldBook(player);
-            } else {
+            if (!nationsHaveEnoughOnline(targetNation, declaringNation)) {
                 TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_not_enough_people_online_for_nationwar", EventWarSettings.nationWarMinOnline())});
+                return;
             }
+            List<Nation> nations = new ArrayList<>();
+            List<Resident> residents = new ArrayList<>();
+            nations.add(declaringNation);
+            nations.add(targetNation);
+
+            residents.addAll(declaringNation.getResidents());
+            residents.addAll(targetNation.getResidents());
+            DeclarationOfWar dow = new DeclarationOfWar(player, WarTypeEnum.NATIONWAR.getType(), this.getDOWPurchaser(player));
+            EventWarDeclarationEvent ewde = new EventWarDeclarationEvent(dow, nations, null, residents);
+            Bukkit.getServer().getPluginManager().callEvent(ewde);
+            if (ewde.isCancelled()) {
+                return;
+            }
+            new War(nations, null, residents, WarTypeEnum.NATIONWAR.getType(), dow);
+            removeHeldBook(player);
+
         }).setTitle(Translatable.of("player_are_you_sure_you_want_to_start_a_nationwar", targetNation)).sendTo(player);
 
     }
@@ -337,8 +338,8 @@ public class WarCommand implements TabExecutor {
     }
 
     private WarType getWarType() {
-       PersistentDataContainer pdc = getHeldBookData();
-       String storedTypeName = pdc.get(NamespacedKey.fromString("eventwar.dow.book.type"), PersistentDataType.STRING);
+        PersistentDataContainer pdc = getHeldBookData();
+        String storedTypeName = pdc.get(NamespacedKey.fromString("eventwar.dow.book.type"), PersistentDataType.STRING);
         try {
             return WarTypeEnum.parseType(storedTypeName).getType();
         } catch (Exception e) {
@@ -405,7 +406,7 @@ public class WarCommand implements TabExecutor {
     private ItemStack createBookCopy(ItemStack book) {
         ItemMeta copyMeta = book.getItemMeta();
         book.getItemMeta().getPersistentDataContainer().getKeys().clear();
-        copyMeta.displayName(copyMeta.displayName().append(text( " (Artifact)").color(NamedTextColor.GRAY)).decoration(TextDecoration.ITALIC, false));
+        copyMeta.displayName(copyMeta.displayName().append(text(" (Artifact)").color(NamedTextColor.GRAY)).decoration(TextDecoration.ITALIC, false));
         book.setItemMeta(copyMeta);
         return book;
     }
@@ -424,6 +425,10 @@ public class WarCommand implements TabExecutor {
         return WarUtil.townHasEnoughOnline(targetTown, WarTypeEnum.TOWNWAR.getType()) && WarUtil.townHasEnoughOnline(town, WarTypeEnum.TOWNWAR.getType());
     }
 
+    private boolean nationsHaveEnoughOnline(Nation targetNation, Nation nation) {
+        return WarUtil.nationHasEnoughOnline(targetNation, WarTypeEnum.NATIONWAR.getType()) && WarUtil.nationHasEnoughOnline(nation, WarTypeEnum.NATIONWAR.getType());
+    }
+
     private boolean isNeutral(Resident resident) {
         if (resident.getTownOrNull().hasNation()) {
             return resident.getNationOrNull().isNeutral();
@@ -435,7 +440,7 @@ public class WarCommand implements TabExecutor {
         if (resident.getTownOrNull().hasNation()) {
             return resident.getNationOrNull().hasActiveWar();
         }
-        return resident.getTownOrNull().hasActiveWar();   
+        return resident.getTownOrNull().hasActiveWar();
     }
 
     private Town getDOWPurchaser(Player player) {
