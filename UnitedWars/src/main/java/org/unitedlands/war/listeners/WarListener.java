@@ -9,6 +9,7 @@ import io.github.townyadvanced.eventwar.events.EventWarEndEvent;
 import io.github.townyadvanced.eventwar.events.EventWarStartEvent;
 import io.github.townyadvanced.eventwar.events.TownScoredEvent;
 import io.github.townyadvanced.eventwar.instance.War;
+import io.github.townyadvanced.eventwar.objects.WarType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Sound;
@@ -114,6 +115,8 @@ public class WarListener implements Listener {
         for (Town losingTown: loser.getTowns()) {
             giveWarEarnings(winner.getCapital(), losingTown);
         }
+
+        giveAdditionalNationEarnings(winner, loser);
     }
 
     @EventHandler
@@ -152,6 +155,12 @@ public class WarListener implements Listener {
         giveBonusClaims(winner);
         untrackScores(winner);
         untrackScores(loser);
+    }
+
+    private void giveAdditionalNationEarnings(Nation winningNation, Nation losingNation) {
+        double amount = losingNation.getAccount().getHoldingBalance() * 0.5;
+        losingNation.getAccount().withdraw(amount, "Lost a war");
+        winningNation.getAccount().deposit(amount, "Won a war");
     }
 
     private void giveBonusClaims(Town winner) {
