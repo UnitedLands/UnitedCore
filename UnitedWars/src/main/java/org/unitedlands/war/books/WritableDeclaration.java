@@ -74,8 +74,8 @@ public class WritableDeclaration {
     }
 
     private void attachWarData() {
-        UUID townUUID = getDeclarer().getTown().getUUID();
-        UUID targetUUID = warTarget.getUUID();
+        UUID townUUID = getDeclarer().town().getUUID();
+        UUID targetUUID = warTarget.uuid();
 
         ItemMeta meta = writableBook.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
@@ -108,20 +108,20 @@ public class WritableDeclaration {
 
     public String getDeclarerName() {
         if (warType.isTownWar()) {
-            return declarer.getTown().getFormattedName();
+            return declarer.town().getFormattedName();
         } else if (warType.isNationWar()) {
-            return declarer.getNation().getFormattedName();
+            return declarer.nation().getFormattedName();
         }
-        return declarer.getDeclaringPlayer().getName();
+        return declarer.player().getName();
     }
 
     private String getTargetName() {
         if (warType.isTownWar()) {
-            return warTarget.getTown().getFormattedName();
+            return warTarget.town().getFormattedName();
         } else if (warType.isNationWar()) {
-            return warTarget.getNation().getFormattedName();
+            return warTarget.nation().getFormattedName();
         }
-        return warTarget.getTargetMayor().getName();
+        return warTarget.targetMayor().getName();
     }
 
     public WarType getWarType() {

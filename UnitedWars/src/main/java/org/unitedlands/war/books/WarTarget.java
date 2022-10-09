@@ -33,19 +33,19 @@ public class WarTarget {
         targetMayor = Bukkit.getOfflinePlayer(town.getMayor().getUUID());
     }
 
-    public OfflinePlayer getTargetMayor() {
+    public OfflinePlayer targetMayor() {
         return targetMayor;
     }
 
-    public Town getTown() {
+    public Town town() {
         return town;
     }
 
-    public Nation getNation() {
+    public Nation nation() {
         return nation;
     }
 
-    public UUID getUUID() {
+    public UUID uuid() {
         if (type.isNationWar())
             return nation.getUUID();
         else

@@ -5,8 +5,6 @@ import com.palmergames.bukkit.towny.object.Town;
 import io.github.townyadvanced.eventwar.objects.WarType;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Material;
@@ -83,12 +81,12 @@ public class BookGenerator {
     @NotNull
     private Component parseLine(String line) {
         Declarer declarer = declarationBook.getDeclarer();
-        String placeholderParsedLine = PlaceholderAPI.setPlaceholders(declarer.getDeclaringPlayer(), line);
+        String placeholderParsedLine = PlaceholderAPI.setPlaceholders(declarer.player(), line);
 
         return UnitedWars.MINI_MESSAGE.deserialize(placeholderParsedLine,
                 placeholder("declarer-name", getName("declarer")),
                 placeholder("target-name", getName("target")),
-                placeholder("declaring-mayor", declarer.getDeclaringPlayer().getName()),
+                placeholder("declaring-mayor", declarer.player().getName()),
                 placeholderStat("declarer-balance"),
                 placeholderStat("declarer-blocks"),
                 placeholderStat("declarer-residents"),
@@ -110,9 +108,9 @@ public class BookGenerator {
 
             Nation nation = null;
             if (type.equals("declarer"))
-                nation = declarationBook.getDeclarer().getNation();
+                nation = declarationBook.getDeclarer().nation();
             else if (type.equals("target"))
-                nation = declarationBook.getWarTarget().getNation();
+                nation = declarationBook.getWarTarget().nation();
             return placeholder(name, getNationStat(stat, nation));
         }
 
@@ -124,9 +122,9 @@ public class BookGenerator {
 
             Town town = null;
             if (type.equals("declarer"))
-                town = declarationBook.getDeclarer().getTown();
+                town = declarationBook.getDeclarer().town();
             else if (type.equals("target"))
-                town = declarationBook.getWarTarget().getTown();
+                town = declarationBook.getWarTarget().town();
             return placeholder(name, getTownStat(stat, town));
         }
         return placeholder(name, "0");
@@ -170,9 +168,9 @@ public class BookGenerator {
         WarType warType = declarationBook.getType();
         Town town;
         if (type.equals("declarer")) {
-            town = declarationBook.getDeclarer().getTown();
+            town = declarationBook.getDeclarer().town();
         } else {
-            town = declarationBook.getWarTarget().getTown();
+            town = declarationBook.getWarTarget().town();
         }
         if (warType.isTownWar()) {
             return town.getFormattedName();
@@ -184,8 +182,8 @@ public class BookGenerator {
 
     public void attachWarData() {
         PersistentDataContainer pdc = bookMeta.getPersistentDataContainer();
-        UUID townUUID = declarationBook.getDeclarer().getTown().getUUID();
-        UUID targetUUID = declarationBook.getWarTarget().getUUID();
+        UUID townUUID = declarationBook.getDeclarer().town().getUUID();
+        UUID targetUUID = declarationBook.getWarTarget().uuid();
         pdc.set(NamespacedKey.fromString("eventwar.dow.book.town"), PersistentDataType.STRING, townUUID.toString());
         pdc.set(NamespacedKey.fromString("eventwar.dow.book.type"), PersistentDataType.STRING, declarationBook.getType().name());
         pdc.set(NamespacedKey.fromString("unitedwars.book.target"), PersistentDataType.STRING, targetUUID.toString());

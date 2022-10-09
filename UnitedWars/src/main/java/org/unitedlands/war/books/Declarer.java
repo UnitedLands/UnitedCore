@@ -29,15 +29,15 @@ public class Declarer {
             nation = null;
     }
 
-    public Player getDeclaringPlayer() {
+    public Player player() {
         return declaringPlayer;
     }
 
-    public Town getTown() {
+    public Town town() {
         return town;
     }
 
-    public Nation getNation() {
+    public Nation nation() {
         return nation;
     }
 

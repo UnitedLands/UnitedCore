@@ -88,7 +88,7 @@ public class BookListener implements Listener {
     }
 
     private boolean canWriteBook(Resident resident, WritableDeclaration writableDeclaration) {
-        return resident.getTownOrNull().equals(writableDeclaration.getDeclarer().getTown()) && resident.isMayor();
+        return resident.getTownOrNull().equals(writableDeclaration.getDeclarer().town()) && resident.isMayor();
     }
 
     private WritableDeclaration generateFromMeta(BookMeta bookMeta) {

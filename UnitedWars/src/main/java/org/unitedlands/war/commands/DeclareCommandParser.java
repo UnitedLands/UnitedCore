@@ -27,7 +27,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.unitedlands.war.UnitedWars;
 import org.unitedlands.war.books.WarTarget;
 
@@ -72,7 +71,7 @@ public class DeclareCommandParser {
 
     private void parseTownWar() throws TownyException {
         Player player = (Player) this.sender;
-        Town targetTown = getTargetFromBook().getTown();
+        Town targetTown = getTargetFromBook().town();
         if (targetTown == null) {
             throw new TownyException(Translatable.of("msg_invalid_name"));
         }
@@ -118,7 +117,7 @@ public class DeclareCommandParser {
             throw new TownyException(Translatable.of("msg_err_dont_belong_nation"));
         }
         Nation declaringNation = resident.getNationOrNull();
-        Nation targetNation = getTargetFromBook().getNation();
+        Nation targetNation = getTargetFromBook().nation();
         if (targetNation == null) {
             throw new TownyException(Translatable.of("msg_target_has_no_nation"));
         }
