@@ -26,13 +26,13 @@ import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.*;
 
-public class BookGenerator {
+public class DeclarationBookGenerator {
     private static final FileConfiguration CONFIG = Utils.getPlugin().getConfig();
     private final DeclarationBook declarationBook;
     private final ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK);
     private BookMeta bookMeta = (BookMeta) bookItem.getItemMeta();
 
-    public BookGenerator(DeclarationBook declarationBook) {
+    public DeclarationBookGenerator(DeclarationBook declarationBook) {
         this.declarationBook = declarationBook;
     }
 

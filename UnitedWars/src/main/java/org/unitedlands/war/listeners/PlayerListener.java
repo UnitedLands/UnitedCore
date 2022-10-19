@@ -43,7 +43,7 @@ public class PlayerListener implements Listener {
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onTeleport(PlayerTeleportEvent event) {
+    public void onBannedWorldTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
         Town town = getPlayerTown(player);
         if (town == null) return;
@@ -71,7 +71,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onGraveCreation(AngelChestSpawnEvent event) {
-        Resident resident =  getTownyResident(event.getAngelChest().getPlayer().getUniqueId());
+        Resident resident = getTownyResident(event.getAngelChest().getPlayer().getUniqueId());
         if (resident == null) return;
         if (resident.hasTown()) {
             if (resident.getTownOrNull().hasActiveWar()) {
@@ -79,5 +79,4 @@ public class PlayerListener implements Listener {
             }
         }
     }
-
 }

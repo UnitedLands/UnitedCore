@@ -24,7 +24,7 @@ public class NationDeclarationBook implements DeclarationBook {
 
     @Override
     public ItemStack getBook() {
-        BookGenerator bookGenerator = new BookGenerator(this);
+        DeclarationBookGenerator bookGenerator = new DeclarationBookGenerator(this);
         return bookGenerator.generateBook();
     }
 
