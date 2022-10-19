@@ -23,7 +23,7 @@ public class TownDeclarationBook implements DeclarationBook {
 
     @Override
     public ItemStack getBook() {
-        DeclarationBookGenerator bookGenerator = new DeclarationBookGenerator(this);
+        BookGenerator bookGenerator = new BookGenerator(this);
         return bookGenerator.generateBook();
     }
 
