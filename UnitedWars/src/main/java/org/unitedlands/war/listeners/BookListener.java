@@ -1,6 +1,9 @@
 package org.unitedlands.war.listeners;
 
 import com.palmergames.bukkit.towny.object.Resident;
+import io.github.townyadvanced.eventwar.WarBooks;
+import io.github.townyadvanced.eventwar.events.EventWarBookEvent;
+import io.github.townyadvanced.eventwar.instance.War;
 import io.github.townyadvanced.eventwar.objects.WarType;
 import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import net.kyori.adventure.text.Component;
@@ -17,12 +20,16 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.war.UnitedWars;
-import org.unitedlands.war.books.Declarer;
-import org.unitedlands.war.books.WarTarget;
-import org.unitedlands.war.books.WritableDeclaration;
-import org.unitedlands.war.books.declaration.DeclarationBook;
+import org.unitedlands.war.books.warbooks.WarBook;
+import org.unitedlands.war.books.data.Declarer;
+import org.unitedlands.war.books.data.WarTarget;
+import org.unitedlands.war.books.declaration.WritableDeclaration;
+import org.unitedlands.war.books.declaration.DeclarationWarBook;
 import org.unitedlands.war.books.declaration.NationDeclarationBook;
 import org.unitedlands.war.books.declaration.TownDeclarationBook;
+import org.unitedlands.war.books.warbooks.EndWarBook;
+import org.unitedlands.war.books.warbooks.MidWarBook;
+import org.unitedlands.war.books.warbooks.StartWarBook;
 
 import java.util.List;
 import java.util.UUID;
@@ -54,7 +61,7 @@ public class BookListener implements Listener {
 
         // Generate the sealed book.
         WarType type = writableDeclaration.getWarType();
-        DeclarationBook declarationBook = null;
+        DeclarationWarBook declarationBook = null;
         if (type.isTownWar()) {
             declarationBook = new TownDeclarationBook(writableDeclaration);
         } else if (type.isNationWar()) {
@@ -63,8 +70,21 @@ public class BookListener implements Listener {
 
 
         // Replace the held item, the old book, with the new sealed book to be used for declaration.
-        DeclarationBook finalDeclarationBook = declarationBook;
+        DeclarationWarBook finalDeclarationBook = declarationBook;
         unitedWars.getServer().getScheduler().runTask(unitedWars, () -> event.getPlayer().getInventory().setItemInMainHand(finalDeclarationBook.getBook()));
+    }
+
+    @EventHandler
+    public void onWarBookGive(EventWarBookEvent event) {
+        WarBooks.BookType type = event.getType();
+        War war = event.getWar();
+        WarBook warBook = switch (type.name()) {
+            case "START" -> new StartWarBook(war);
+            case "MID" -> new MidWarBook(war);
+            case "END" -> new EndWarBook(war);
+        };
+        event.setCancelled(true);
+        event.getPlayer().getInventory().addItem(warBook.getBook());
     }
 
     private static boolean isWritableDeclaration(PersistentDataContainer pdc) {

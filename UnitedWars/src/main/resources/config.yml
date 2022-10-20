@@ -234,7 +234,17 @@ nationwar-declaration-book:
     - ""
     - ""
     - "<dark_red>╚═╬<black>☠</black>╬═══╬<black>☠</black>╬═╝"
-declaration-book-name: '<color:#BEA50C>⬩ <color:#AD240C>War Declaration Scroll <color:#BEA50C>⬩'
+start-war-book:
+  0:
+    - "War started!!!"
+end-war-book:
+  0:
+    - "War Ended!!!"
+mid-war-book:
+  0:
+    - "Mid War update!!!"
+townwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Town War Declaration Scroll <color:#BEA50C>⬩'
+nationwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Nation War Declaration Scroll <color:#BEA50C>⬩'
 writable-declaration-lore:
   - ''
   - '<!i><yellow>Right-click<gray> this book to write'

@@ -28,7 +28,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.war.UnitedWars;
-import org.unitedlands.war.books.WarTarget;
+import org.unitedlands.war.books.data.WarTarget;
 
 import java.util.ArrayList;
 import java.util.List;

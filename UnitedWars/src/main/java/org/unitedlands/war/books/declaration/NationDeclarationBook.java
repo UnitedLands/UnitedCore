@@ -4,13 +4,13 @@ import io.github.townyadvanced.eventwar.objects.WarType;
 import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
-import org.unitedlands.war.books.Declarer;
-import org.unitedlands.war.books.WarTarget;
-import org.unitedlands.war.books.WritableDeclaration;
+import org.unitedlands.war.books.generators.DeclarationGenerator;
+import org.unitedlands.war.books.data.Declarer;
+import org.unitedlands.war.books.data.WarTarget;
 
 import java.util.List;
 
-public class NationDeclarationBook implements DeclarationBook {
+public class NationDeclarationBook implements DeclarationWarBook {
 
     private final WritableDeclaration writableDeclaration;
     private final Declarer declarer;
@@ -24,13 +24,18 @@ public class NationDeclarationBook implements DeclarationBook {
 
     @Override
     public ItemStack getBook() {
-        BookGenerator bookGenerator = new BookGenerator(this);
-        return bookGenerator.generateBook();
+        DeclarationGenerator declarationGenerator = new DeclarationGenerator(this);
+        return declarationGenerator.generateBook();
     }
 
     @Override
     public WarType getType() {
         return WarTypeEnum.NATIONWAR.getType();
+    }
+
+    @Override
+    public String slug() {
+        return "nationwar-declaration";
     }
 
     @Override
