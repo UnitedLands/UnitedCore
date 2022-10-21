@@ -37,9 +37,7 @@ public class BookGenerator {
     public ItemStack generateBook() {
         List<Component> pages = getConfiguredPages();
         BookMeta.BookMetaBuilder builder = bookMeta.toBuilder();
-        for (Component page: pages) {
-            builder.addPage(page);
-        }
+        pages.forEach(builder::addPage);
         bookMeta = builder
                 .author(text("WarUpdates"))
                 .title(text("War Book"))

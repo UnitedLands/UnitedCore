@@ -1,6 +1,7 @@
 package org.unitedlands.war.books.generators;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -9,13 +10,16 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.unitedlands.war.books.declaration.DeclarationWarBook;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import static net.kyori.adventure.text.Component.text;
 
 public class DeclarationGenerator extends BookGenerator {
     private final DeclarationWarBook declarationBook;
     private ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK);
-    private final BookMeta bookMeta = (BookMeta) bookItem.getItemMeta();
+    private BookMeta bookMeta = (BookMeta) bookItem.getItemMeta();
 
     public DeclarationGenerator(DeclarationWarBook declarationBook) {
         super(declarationBook);
@@ -24,26 +28,23 @@ public class DeclarationGenerator extends BookGenerator {
 
     @Override
     public ItemStack generateBook() {
-        bookItem = super.generateBook();
-        // Add custom model data
+        List<Component> pages = getPagesWithReason();
+
+        BookMeta.BookMetaBuilder builder = bookMeta.toBuilder();
+        // add the pages to the book
+        pages.forEach(builder::addPage);
+        bookMeta = builder
+                .author(text(getName("declarer")))
+                .title(text("War Declaration Book"))
+                .build();
+        bookMeta.displayName(getDisplayName());
         bookMeta.setCustomModelData(2);
-        // Change author and title
-        bookMeta.setAuthor(getName("declarer"));
-        bookMeta.setTitle("War Declaration Book");
-        // Attach extra war data.
         attachWarData();
         bookItem.setItemMeta(bookMeta);
         return bookItem;
     }
 
-    @Override
-    protected List<Component> getConfiguredPages() {
-        List<Component> pages = super.getConfiguredPages();
-        pages.addAll(declarationBook.getReason());
-        return pages;
-    }
-
-    public void attachWarData() {
+    private void attachWarData() {
         PersistentDataContainer pdc = bookMeta.getPersistentDataContainer();
         UUID townUUID = declarationBook.getDeclarer().town().getUUID();
         UUID targetUUID = declarationBook.getWarTarget().uuid();
@@ -52,5 +53,10 @@ public class DeclarationGenerator extends BookGenerator {
         pdc.set(NamespacedKey.fromString("unitedwars.book.target"), PersistentDataType.STRING, targetUUID.toString());
     }
 
+    private List<Component> getPagesWithReason() {
+        List<Component> pages = getConfiguredPages();
+        pages.addAll(declarationBook.getReason());
+        return pages;
+    }
 
 }
