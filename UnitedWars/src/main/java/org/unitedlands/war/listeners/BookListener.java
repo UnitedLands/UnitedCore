@@ -82,6 +82,7 @@ public class BookListener implements Listener {
             case "START" -> new StartWarBook(war);
             case "MID" -> new MidWarBook(war);
             case "END" -> new EndWarBook(war);
+            default -> null;
         };
         event.setCancelled(true);
         event.getPlayer().getInventory().addItem(warBook.getBook());
