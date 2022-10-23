@@ -32,6 +32,7 @@ import org.unitedlands.war.books.data.WarTarget;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
@@ -246,7 +247,8 @@ public class DeclareCommandParser {
 
     private ItemStack createBookCopy(ItemStack book) {
         ItemMeta copyMeta = book.getItemMeta();
-        book.getItemMeta().getPersistentDataContainer().getKeys().clear();
+        Set<NamespacedKey> keys = copyMeta.getPersistentDataContainer().getKeys();
+        keys.forEach(key -> copyMeta.getPersistentDataContainer().remove(key));
         copyMeta.displayName(copyMeta.displayName().append(text(" (Artifact)").color(NamedTextColor.GRAY)).decoration(TextDecoration.ITALIC, false));
         book.setItemMeta(copyMeta);
         return book;
