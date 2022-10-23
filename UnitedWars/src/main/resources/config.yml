@@ -245,6 +245,9 @@ mid-war-book:
     - "Mid War update!!!"
 townwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Town War Declaration Scroll <color:#BEA50C>⬩'
 nationwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Nation War Declaration Scroll <color:#BEA50C>⬩'
+start-war-name: "War breaks out!"
+end-war-name: "The War has ended!"
+mid-war-name: "Mid War book!"
 writable-declaration-lore:
   - ''
   - '<!i><yellow>Right-click<gray> this book to write'
