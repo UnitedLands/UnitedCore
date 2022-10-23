@@ -1,4 +1,4 @@
-package org.unitedlands.war.books.declaration;
+package org.unitedlands.war.books.generators;
 
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
@@ -8,59 +8,48 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.unitedlands.war.UnitedWars;
 import org.unitedlands.war.Utils;
-import org.unitedlands.war.books.Declarer;
+import org.unitedlands.war.books.warbooks.WarBook;
+import org.unitedlands.war.books.data.Declarer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.*;
 
-public class DeclarationBookGenerator {
+public class BookGenerator {
+    private final WarBook warBook;
     private static final FileConfiguration CONFIG = Utils.getPlugin().getConfig();
-    private final DeclarationBook declarationBook;
     private final ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK);
     private BookMeta bookMeta = (BookMeta) bookItem.getItemMeta();
-
-    public DeclarationBookGenerator(DeclarationBook declarationBook) {
-        this.declarationBook = declarationBook;
+    public BookGenerator(WarBook warBook) {
+        this.warBook = warBook;
     }
+
 
     public ItemStack generateBook() {
         List<Component> pages = getConfiguredPages();
-
         BookMeta.BookMetaBuilder builder = bookMeta.toBuilder();
-        for (Component page: pages) {
-            builder.addPage(page);
-        }
+        pages.forEach(builder::addPage);
         bookMeta = builder
-                .author(text(getName("declarer")))
-                .title(text("War Declaration Book"))
+                .author(text("WarUpdates"))
+                .title(text("War Book"))
                 .build();
         bookMeta.displayName(getDisplayName());
-        bookMeta.setCustomModelData(2);
-        attachWarData();
         bookItem.setItemMeta(bookMeta);
         return bookItem;
     }
 
-    @NotNull
-    private Component getDisplayName() {
-        return parseLine(CONFIG.getString("declaration-book-name"));
-    }
 
-    private List<Component> getConfiguredPages() {
-        ConfigurationSection bookSection = CONFIG.getConfigurationSection(declarationBook.getType().name().toLowerCase() + "-declaration-book");
+    protected List<Component> getConfiguredPages() {
+        ConfigurationSection bookSection = getBookSection();
         List<Component> deserializedPages = new ArrayList<>(16);
 
         for (String key : bookSection.getKeys(false)) {
@@ -73,14 +62,22 @@ public class DeclarationBookGenerator {
             }
             deserializedPages.add(deserializedPage);
         }
-        // Append the reason at the end.
-        deserializedPages.addAll(declarationBook.getReason());
         return deserializedPages;
     }
 
+    @Nullable
+    private ConfigurationSection getBookSection() {
+        return CONFIG.getConfigurationSection(warBook.slug() + "-book");
+    }
+
     @NotNull
-    private Component parseLine(String line) {
-        Declarer declarer = declarationBook.getDeclarer();
+    protected Component getDisplayName() {
+        return parseLine(CONFIG.getString(warBook.slug() + "-name"));
+    }
+
+    @NotNull
+    protected Component parseLine(String line) {
+        Declarer declarer = warBook.getDeclarer();
         String placeholderParsedLine = PlaceholderAPI.setPlaceholders(declarer.player(), line);
 
         return UnitedWars.MINI_MESSAGE.deserialize(placeholderParsedLine,
@@ -95,36 +92,51 @@ public class DeclarationBookGenerator {
                 placeholderStat("target-residents"));
     }
 
+    protected String getName(String type) {
+        WarType warType = warBook.getType();
+        Town town;
+        if (type.equals("declarer")) {
+            town = warBook.getDeclarer().town();
+        } else {
+            town = warBook.getWarTarget().town();
+        }
+        if (warType.isTownWar()) {
+            return town.getFormattedName();
+        } else if (warType.isNationWar()) {
+            return town.getNationOrNull().getFormattedName();
+        }
+        return town.getMayor().getPlayer().getName();
+    }
 
     private TagResolver.@NotNull Single placeholder(String name, String output) {
         return Placeholder.component(name, text(output));
     }
 
     private TagResolver.Single placeholderStat(String name) {
-        if (declarationBook.getType().isNationWar()) {
+        if (warBook.getType().isNationWar()) {
             String[] split = name.split("-");
             String type = split[0];
             String stat = split[1];
 
             Nation nation = null;
             if (type.equals("declarer"))
-                nation = declarationBook.getDeclarer().nation();
+                nation = warBook.getDeclarer().nation();
             else if (type.equals("target"))
-                nation = declarationBook.getWarTarget().nation();
+                nation = warBook.getWarTarget().nation();
             return placeholder(name, getNationStat(stat, nation));
         }
 
 
-        if (declarationBook.getType().isTownWar()) {
+        if (warBook.getType().isTownWar()) {
             String[] split = name.split("-");
             String type = split[0];
             String stat = split[1];
 
             Town town = null;
             if (type.equals("declarer"))
-                town = declarationBook.getDeclarer().town();
+                town = warBook.getDeclarer().town();
             else if (type.equals("target"))
-                town = declarationBook.getWarTarget().town();
+                town = warBook.getWarTarget().town();
             return placeholder(name, getTownStat(stat, town));
         }
         return placeholder(name, "0");
@@ -163,31 +175,4 @@ public class DeclarationBookGenerator {
         }
         return "0";
     }
-
-    private String getName(String type) {
-        WarType warType = declarationBook.getType();
-        Town town;
-        if (type.equals("declarer")) {
-            town = declarationBook.getDeclarer().town();
-        } else {
-            town = declarationBook.getWarTarget().town();
-        }
-        if (warType.isTownWar()) {
-            return town.getFormattedName();
-        } else if (warType.isNationWar()) {
-            return town.getNationOrNull().getFormattedName();
-        }
-        return town.getMayor().getPlayer().getName();
-    }
-
-    public void attachWarData() {
-        PersistentDataContainer pdc = bookMeta.getPersistentDataContainer();
-        UUID townUUID = declarationBook.getDeclarer().town().getUUID();
-        UUID targetUUID = declarationBook.getWarTarget().uuid();
-        pdc.set(NamespacedKey.fromString("eventwar.dow.book.town"), PersistentDataType.STRING, townUUID.toString());
-        pdc.set(NamespacedKey.fromString("eventwar.dow.book.type"), PersistentDataType.STRING, declarationBook.getType().name());
-        pdc.set(NamespacedKey.fromString("unitedwars.book.target"), PersistentDataType.STRING, targetUUID.toString());
-    }
-
-
 }

@@ -1,4 +1,4 @@
-package org.unitedlands.war.books;
+package org.unitedlands.war.books.declaration;
 
 import io.github.townyadvanced.eventwar.objects.WarType;
 import net.kyori.adventure.text.Component;
@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.unitedlands.war.UnitedWars;
 import org.unitedlands.war.Utils;
+import org.unitedlands.war.books.data.Declarer;
+import org.unitedlands.war.books.data.WarTarget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
 
-public class WritableDeclaration {
+public class WritableDeclaration  {
     private static final FileConfiguration CONFIG = Utils.getPlugin().getConfig();
 
     private final Declarer declarer;
@@ -55,7 +57,7 @@ public class WritableDeclaration {
         return declarer;
     }
 
-    public ItemStack getWritableBook() {
+    public ItemStack getBook() {
         addItemMeta();
         attachWarData();
         return writableBook;

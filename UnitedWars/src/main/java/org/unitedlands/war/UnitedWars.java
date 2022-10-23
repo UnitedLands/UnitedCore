@@ -2,7 +2,6 @@ package org.unitedlands.war;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.war.commands.WarCommand;

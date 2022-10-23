@@ -14,9 +14,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.war.UnitedWars;
-import org.unitedlands.war.books.Declarer;
-import org.unitedlands.war.books.WarTarget;
-import org.unitedlands.war.books.WritableDeclaration;
+import org.unitedlands.war.books.data.Declarer;
+import org.unitedlands.war.books.data.WarTarget;
+import org.unitedlands.war.books.declaration.WritableDeclaration;
 
 import static net.kyori.adventure.text.Component.text;
 import static org.unitedlands.war.Utils.*;
@@ -89,7 +89,7 @@ public class BookCommandParser {
             takeTokens(declaringTown, cost);
 
             WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetTown), type);
-            player.getInventory().addItem(writableDeclaration.getWritableBook());
+            player.getInventory().addItem(writableDeclaration.getBook());
 
             TownyMessaging.sendPrefixedTownMessage(declaringTown, Translatable.of("msg_town_purchased_declaration_of_type", declaringTown, type.name()));
 
@@ -123,7 +123,7 @@ public class BookCommandParser {
             takeTokens(declaringNation.getCapital(), cost);
 
             WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetNation), type);
-            player.getInventory().addItem(writableDeclaration.getWritableBook());
+            player.getInventory().addItem(writableDeclaration.getBook());
 
             TownyMessaging.sendPrefixedNationMessage(declaringNation, Translatable.of("msg_town_purchased_declaration_of_type", declaringNation, type.name()));
 

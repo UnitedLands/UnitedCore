@@ -234,7 +234,20 @@ nationwar-declaration-book:
     - ""
     - ""
     - "<dark_red>╚═╬<black>☠</black>╬═══╬<black>☠</black>╬═╝"
-declaration-book-name: '<color:#BEA50C>⬩ <color:#AD240C>War Declaration Scroll <color:#BEA50C>⬩'
+start-war-book:
+  0:
+    - "War started!!!"
+end-war-book:
+  0:
+    - "War Ended!!!"
+mid-war-book:
+  0:
+    - "Mid War update!!!"
+townwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Town War Declaration Scroll <color:#BEA50C>⬩'
+nationwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Nation War Declaration Scroll <color:#BEA50C>⬩'
+start-war-name: "War breaks out!"
+end-war-name: "The War has ended!"
+mid-war-name: "Mid War book!"
 writable-declaration-lore:
   - ''
   - '<!i><yellow>Right-click<gray> this book to write'
@@ -251,6 +264,7 @@ messages:
   ongoing-war: '<red>You cannot create a new war book while you have an ongoing war!'
   not-enough-tokens: '<red>You cannot create a war book of this type! You need <cost> tokens first!'
   invalid-town-name: '<red>Town not found! Please enter the correct name!'
+  invalid-declaration-book: '<red>You cannot use artifacts as war books!'
   invalid-nation-name: '<red>Town not found! Please enter the correct name!'
   must-be-mayor: '<red>Only mayors can create war books!'
   only-mayors-can-sign: '<red>Only the mayor of <yellow><declarer-name><red> can sign this declaration book!'
