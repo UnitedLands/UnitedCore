@@ -2,7 +2,12 @@ package org.unitedlands.war.listeners;
 
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import de.jeff_media.angelchest.AngelChest;
+import de.jeff_media.angelchest.AngelChestPlugin;
 import de.jeff_media.angelchest.events.AngelChestSpawnEvent;
+import io.github.townyadvanced.eventwar.util.WarUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -10,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.unitedlands.war.UnitedWars;
@@ -77,6 +83,22 @@ public class PlayerListener implements Listener {
             if (resident.getTownOrNull().hasActiveWar()) {
                 event.getAngelChest().setProtected(false);
             }
+        }
+    }
+
+    @EventHandler
+    public void onGraveInteract(PlayerInteractEvent event) {
+        if (!event.hasBlock()) return;
+        if (event.getClickedBlock().getType() != Material.SOUL_CAMPFIRE) return;
+
+        AngelChestPlugin plugin = (AngelChestPlugin) Bukkit.getPluginManager().getPlugin("AngelChest");
+        AngelChest chest = plugin.getAngelChestAtBlock(event.getClickedBlock());
+        if (chest == null) return;
+
+        Resident openingResident = getTownyResident(event.getPlayer());
+        Resident graveResident = getTownyResident(chest.getPlayer().getUniqueId());
+        if (WarUtil.hasSameWar(openingResident, graveResident)) {
+            chest.setProtected(false);
         }
     }
 }
