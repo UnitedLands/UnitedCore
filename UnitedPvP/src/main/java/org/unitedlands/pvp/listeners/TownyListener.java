@@ -92,7 +92,6 @@ public class TownyListener implements Listener {
             if (bossBar.progress() <= 0.0) {
                 task.cancel();
                 player.hideBossBar(bossBar);
-                return;
             }
             bossBar.progress((float) Math.max(0.0, bossBar.progress() - timeDecrease));
         }, 0, 20L);
