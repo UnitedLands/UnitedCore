@@ -3,6 +3,7 @@ package org.unitedlands.protection.listeners;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownBlock;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -13,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.unitedlands.protection.UnitedProtection;
 
 import java.util.List;
@@ -72,7 +74,9 @@ public class PlayerListener implements Listener {
         }
         Resident resident = towny.getResident(player);
         Location blockLocation = block.getLocation();
-        Town town = towny.getTownBlock(blockLocation).getTownOrNull();
+        @Nullable TownBlock townBlock = towny.getTownBlock(blockLocation);
+        if (townBlock == null) return false;
+        Town town = townBlock.getTownOrNull();
         if (town == null || !resident.hasTown()) {
             return false;
         }
