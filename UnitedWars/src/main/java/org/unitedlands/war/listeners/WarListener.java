@@ -1,15 +1,16 @@
 package org.unitedlands.war.listeners;
 
+import com.palmergames.bukkit.towny.event.NewDayEvent;
+import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.economy.BankAccount;
+import io.github.townyadvanced.eventwar.db.WarMetaDataController;
 import io.github.townyadvanced.eventwar.events.EventWarDeclarationEvent;
 import io.github.townyadvanced.eventwar.events.EventWarEndEvent;
 import io.github.townyadvanced.eventwar.events.EventWarStartEvent;
 import io.github.townyadvanced.eventwar.events.TownScoredEvent;
 import io.github.townyadvanced.eventwar.instance.War;
-import io.github.townyadvanced.eventwar.objects.WarType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Sound;
@@ -22,6 +23,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.war.UnitedWars;
 import org.unitedlands.war.WarBossBar;
+import org.unitedlands.war.books.TokenCostCalculator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +56,27 @@ public class WarListener implements Listener {
         if (hasActiveWarBossbar(player)) {
             WarBossBar warBossBar = getActiveWarBossbar(player);
             warBossBar.removeViewer(player);
+        }
+    }
+
+    @EventHandler
+    public void onNewTownyDay(NewDayEvent event) {
+        List<Town> towns = UnitedWars.TOWNY_API.getTowns();
+        for (Town town: towns) {
+            if (town.isBankrupt() || town.isRuined() || town.isNeutral()) continue;
+            TokenCostCalculator costCalculator = new TokenCostCalculator(town);
+            int earnedTokens = costCalculator.calculateTokenIncome();
+            int currentTokens = WarMetaDataController.getWarTokens(town);
+            WarMetaDataController.setTokens(town, currentTokens + earnedTokens);
+        }
+    }
+
+    @EventHandler
+    public void onTownStatus(TownStatusScreenEvent event) {
+        Town town = event.getTown();
+        if (!town.isNeutral()) {
+            TokenCostCalculator costCalculator = new TokenCostCalculator(town);
+            event.getStatusScreen().addComponentOf("dailyWarTokens", "§2Daily War Tokens: §a" + costCalculator.calculateWarCost());
         }
     }
 

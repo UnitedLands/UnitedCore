@@ -2,10 +2,7 @@ package org.unitedlands.war.commands;
 
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
-import com.palmergames.bukkit.towny.object.Nation;
-import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.Translatable;
+import com.palmergames.bukkit.towny.object.*;
 import io.github.townyadvanced.eventwar.db.WarMetaDataController;
 import io.github.townyadvanced.eventwar.objects.WarType;
 import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
@@ -14,9 +11,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.war.UnitedWars;
+import org.unitedlands.war.books.TokenCostCalculator;
 import org.unitedlands.war.books.data.Declarer;
 import org.unitedlands.war.books.data.WarTarget;
-import org.unitedlands.war.books.declaration.WritableDeclaration;
+import org.unitedlands.war.books.warbooks.WritableDeclaration;
 
 import static net.kyori.adventure.text.Component.text;
 import static org.unitedlands.war.Utils.*;
@@ -116,13 +114,14 @@ public class BookCommandParser {
         }
 
         WarType type = WarTypeEnum.NATIONWAR.getType();
-        int cost = type.tokenCost();
+        WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetNation), type);
+        TokenCostCalculator costCalculator = new TokenCostCalculator(writableDeclaration);
+        int cost = costCalculator.calculateWarCost();
 
         Confirmation.runOnAccept(() -> {
             Nation declaringNation = getPlayerTown(player).getNationOrNull();
             takeTokens(declaringNation.getCapital(), cost);
 
-            WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetNation), type);
             player.getInventory().addItem(writableDeclaration.getBook());
 
             TownyMessaging.sendPrefixedNationMessage(declaringNation, Translatable.of("msg_town_purchased_declaration_of_type", declaringNation, type.name()));

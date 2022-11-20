@@ -16,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.unitedlands.war.UnitedWars;
 import org.unitedlands.war.Utils;
-import org.unitedlands.war.books.warbooks.WarBook;
 import org.unitedlands.war.books.data.Declarer;
+import org.unitedlands.war.books.warbooks.WarBook;
 
 import java.util.ArrayList;
 import java.util.List;

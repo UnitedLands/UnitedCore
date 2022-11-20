@@ -23,7 +23,7 @@ import org.unitedlands.war.UnitedWars;
 import org.unitedlands.war.books.warbooks.WarBook;
 import org.unitedlands.war.books.data.Declarer;
 import org.unitedlands.war.books.data.WarTarget;
-import org.unitedlands.war.books.declaration.WritableDeclaration;
+import org.unitedlands.war.books.warbooks.WritableDeclaration;
 import org.unitedlands.war.books.declaration.DeclarationWarBook;
 import org.unitedlands.war.books.declaration.NationDeclarationBook;
 import org.unitedlands.war.books.declaration.TownDeclarationBook;
