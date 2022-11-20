@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.unitedlands.war.books.generators.DeclarationGenerator;
 import org.unitedlands.war.books.data.Declarer;
 import org.unitedlands.war.books.data.WarTarget;
+import org.unitedlands.war.books.warbooks.WritableDeclaration;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.unitedlands.war.books.declaration;
+package org.unitedlands.war.books.warbooks;
 
 import io.github.townyadvanced.eventwar.objects.WarType;
 import net.kyori.adventure.text.Component;
@@ -18,6 +18,7 @@ import org.unitedlands.war.UnitedWars;
 import org.unitedlands.war.Utils;
 import org.unitedlands.war.books.data.Declarer;
 import org.unitedlands.war.books.data.WarTarget;
+import org.unitedlands.war.books.warbooks.WarBook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
 
-public class WritableDeclaration  {
+public class WritableDeclaration implements WarBook {
     private static final FileConfiguration CONFIG = Utils.getPlugin().getConfig();
 
     private final Declarer declarer;
@@ -51,6 +52,13 @@ public class WritableDeclaration  {
 
     public WarTarget getWarTarget() {
         return warTarget;
+    }
+    public WarType getType() {
+        return warType;
+    }
+
+    public String slug() {
+        return "writable-declaration";
     }
 
     public Declarer getDeclarer() {
