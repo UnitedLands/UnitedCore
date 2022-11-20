@@ -52,7 +52,8 @@ public class TokenCostCalculator {
         double bonusMod = (bonusStep * targetHostilityStep) + 1;
 
 
-        return (int) Math.floor((baseIncome * riseMod + bonusMod));
+        int calculatedIncome = (int) Math.floor((baseIncome * riseMod + bonusMod));
+        return Math.min(5, calculatedIncome);
     }
 
     public int calculateWarCost() {
@@ -75,7 +76,8 @@ public class TokenCostCalculator {
         double fallMod = (fallStep * targetHostilityStep) + 1;
 
 
-        return (int) Math.floor((baseCost * riseMod) / fallMod);
+        int calculatedCost = (int) Math.floor((baseCost * riseMod) / fallMod);
+        return Math.max(10, calculatedCost);
     }
 
     private int getBaseCost() {
