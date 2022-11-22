@@ -76,7 +76,7 @@ public class WarListener implements Listener {
         Town town = event.getTown();
         if (!town.isNeutral()) {
             TokenCostCalculator costCalculator = new TokenCostCalculator(town);
-            event.getStatusScreen().addComponentOf("dailyWarTokens", "§2Daily War Tokens: §a" + costCalculator.calculateWarCost());
+            event.getStatusScreen().addComponentOf("dailyWarTokens", "§2Daily War Tokens: §a" + costCalculator.calculateTokenIncome());
         }
     }
 
