@@ -115,12 +115,12 @@ public class BookCommandParser {
 
         WarType type = WarTypeEnum.NATIONWAR.getType();
         WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetNation), type);
-        TokenCostCalculator costCalculator = new TokenCostCalculator(writableDeclaration);
+        TokenCostCalculator costCalculator = new TokenCostCalculator(targetNation);
         int cost = costCalculator.calculateWarCost();
 
         Confirmation.runOnAccept(() -> {
             Nation declaringNation = getPlayerTown(player).getNationOrNull();
-            takeTokens(declaringNation.getCapital(), cost);
+            takeTokens(declaringNation, cost);
 
             player.getInventory().addItem(writableDeclaration.getBook());
 
@@ -129,13 +129,13 @@ public class BookCommandParser {
         }).setTitle(Translatable.of("msg_you_are_about_to_purchase_a_declaration_of_war_of_type_for_x_tokens", type.name(), cost)).sendTo(player);
     }
 
-    private void takeTokens(Town declaringTown, int cost) {
-        if (WarMetaDataController.getWarTokens(declaringTown) < cost) {
+    private void takeTokens(TownyObject declarer, int cost) {
+        if (WarMetaDataController.getWarTokens(declarer) < cost) {
             sender.sendMessage(getMessage("not-enough-tokens", Placeholder.component("cost", text(cost))));
             return;
         }
-        int remainder = WarMetaDataController.getWarTokens(declaringTown) - cost;
-        WarMetaDataController.setTokens(declaringTown, remainder);
+        int remainder = WarMetaDataController.getWarTokens(declarer) - cost;
+        WarMetaDataController.setTokens(declarer, remainder);
     }
 
     private boolean isNeutral(Resident resident) {

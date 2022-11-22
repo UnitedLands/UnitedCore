@@ -1,6 +1,7 @@
 package org.unitedlands.war.listeners;
 
 import com.palmergames.bukkit.towny.event.NewDayEvent;
+import com.palmergames.bukkit.towny.event.statusscreen.NationStatusScreenEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -76,6 +77,15 @@ public class WarListener implements Listener {
         Town town = event.getTown();
         if (!town.isNeutral()) {
             TokenCostCalculator costCalculator = new TokenCostCalculator(town);
+            event.getStatusScreen().addComponentOf("dailyWarTokens", "§2Daily War Tokens: §a" + costCalculator.calculateTokenIncome());
+        }
+    }
+
+    @EventHandler
+    public void onNationStatus(NationStatusScreenEvent event) {
+        Nation nation = event.getNation();
+        if (!nation.isNeutral()) {
+            TokenCostCalculator costCalculator = new TokenCostCalculator(nation);
             event.getStatusScreen().addComponentOf("dailyWarTokens", "§2Daily War Tokens: §a" + costCalculator.calculateTokenIncome());
         }
     }
