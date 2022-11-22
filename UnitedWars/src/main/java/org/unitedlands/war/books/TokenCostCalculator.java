@@ -117,9 +117,9 @@ public class TokenCostCalculator {
     }
 
     private int getTotalTargetSize() {
-        return switch (book.getType().name()) {
-            case "TOWNWAR" -> targetTown.getNumTownBlocks();
-            case "NATIONWAR" -> targetNation.getNumTownblocks();
-        };
+        if (book.getType().name().equals("NATIONWAR")) {
+            return targetNation.getNumTownblocks();
+        }
+        return targetTown.getNumTownBlocks();
     }
 }
