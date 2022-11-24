@@ -12,6 +12,11 @@ import org.unitedlands.wars.listeners.WarListener;
 public final class UnitedWars extends JavaPlugin {
     public static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
     public static final TownyAPI TOWNY_API = TownyAPI.getInstance();
+    private static UnitedWars plugin;
+
+    public UnitedWars() {
+        plugin = this;
+    }
 
     @Override
     public void onEnable() {
@@ -25,6 +30,10 @@ public final class UnitedWars extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public static UnitedWars getInstance() {
+        return plugin;
     }
 
     private void registerListener(Listener listener) {

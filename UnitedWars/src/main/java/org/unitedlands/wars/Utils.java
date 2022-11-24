@@ -19,7 +19,7 @@ import static org.unitedlands.wars.UnitedWars.MINI_MESSAGE;
 
 public class Utils {
     private static final TownyAPI TOWNY_API = TownyAPI.getInstance();
-    private static final FileConfiguration CONFIG = getPlugin().getConfig();
+    private static final FileConfiguration CONFIG = UnitedWars.getInstance().getConfig();
 
     @NotNull
     public static Component getMessage(String message) {
@@ -32,10 +32,6 @@ public class Utils {
         String prefix = CONFIG.getString("messages.prefix");
         String configuredMessage = prefix + CONFIG.getString("messages." + message);
         return MINI_MESSAGE.deserialize(configuredMessage, resolvers);
-    }
-
-    public static UnitedWars getPlugin() {
-        return (UnitedWars) Bukkit.getServer().getPluginManager().getPlugin("UnitedWars");
     }
 
     public static boolean isBannedWorld(String worldName) {

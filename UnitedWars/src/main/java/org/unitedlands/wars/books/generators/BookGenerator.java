@@ -26,7 +26,7 @@ import static net.kyori.adventure.text.Component.*;
 
 public class BookGenerator {
     private final WarBook warBook;
-    private static final FileConfiguration CONFIG = Utils.getPlugin().getConfig();
+    private static final FileConfiguration CONFIG = UnitedWars.getInstance().getConfig();
     private final ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK);
     private BookMeta bookMeta = (BookMeta) bookItem.getItemMeta();
     public BookGenerator(WarBook warBook) {

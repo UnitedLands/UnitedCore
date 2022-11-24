@@ -26,7 +26,7 @@ import java.util.UUID;
 import static net.kyori.adventure.text.Component.text;
 
 public class WritableDeclaration implements WarBook {
-    private static final FileConfiguration CONFIG = Utils.getPlugin().getConfig();
+    private static final FileConfiguration CONFIG = UnitedWars.getInstance().getConfig();
 
     private final Declarer declarer;
     private final WarTarget warTarget;

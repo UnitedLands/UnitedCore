@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class WarTimer {
-    private static final UnitedWars UNITED_WARS = Utils.getPlugin();
+    private static final UnitedWars UNITED_WARS = UnitedWars.getInstance();
     private final long startTime;
     private HashSet<UUID> viewers;
     private final BossBar bossBar;
