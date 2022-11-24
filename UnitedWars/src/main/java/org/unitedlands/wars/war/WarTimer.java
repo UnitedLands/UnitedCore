@@ -1,4 +1,4 @@
-package org.unitedlands.wars;
+package org.unitedlands.wars.war;
 
 import com.palmergames.bukkit.towny.object.Resident;
 import io.github.townyadvanced.eventwar.instance.War;
@@ -12,12 +12,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.Utils;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-public class WarBossBar {
+public class WarTimer {
     private static final UnitedWars UNITED_WARS = Utils.getPlugin();
     private final long startTime;
     private HashSet<UUID> viewers;
@@ -25,7 +27,7 @@ public class WarBossBar {
 
     private final War war;
 
-    public WarBossBar(War war) {
+    public WarTimer(War war) {
         this.war = war;
         startTime = System.currentTimeMillis() + getDelay() * 1000L;
         bossBar = getBossBar();

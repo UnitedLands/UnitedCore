@@ -23,7 +23,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
-import org.unitedlands.wars.WarBossBar;
+import org.unitedlands.wars.war.WarTimer;
 import org.unitedlands.wars.books.TokenCostCalculator;
 
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import java.util.UUID;
 import static org.unitedlands.wars.Utils.*;
 
 public class WarListener implements Listener {
-    private final HashMap<Town, WarBossBar> activeBossbars = new HashMap<>();
+    private final HashMap<Town, WarTimer> activeBossbars = new HashMap<>();
     private final HashMap<UUID, Integer> townScores = new HashMap<>();
     private final @NotNull FileConfiguration config;
 
@@ -46,8 +46,8 @@ public class WarListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (hasActiveWarBossbar(player)) {
-            WarBossBar warBossBar = getActiveWarBossbar(player);
-            warBossBar.addViewer(player);
+            WarTimer warTimer = getActiveWarBossbar(player);
+            warTimer.addViewer(player);
         }
     }
 
@@ -55,8 +55,8 @@ public class WarListener implements Listener {
     public void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (hasActiveWarBossbar(player)) {
-            WarBossBar warBossBar = getActiveWarBossbar(player);
-            warBossBar.removeViewer(player);
+            WarTimer warTimer = getActiveWarBossbar(player);
+            warTimer.removeViewer(player);
         }
     }
 
@@ -93,12 +93,12 @@ public class WarListener implements Listener {
     @EventHandler
     public void onWarStart(EventWarStartEvent event) {
         War war = event.getWar();
-        WarBossBar warBossBar = new WarBossBar(war);
+        WarTimer warTimer = new WarTimer(war);
         for (Town town: event.getWarringTowns()) {
-            activeBossbars.put(town, warBossBar);
+            activeBossbars.put(town, warTimer);
             townScores.put(town.getUUID(), 0);
         }
-        warBossBar.startCountdown();
+        warTimer.startCountdown();
 
         for (Player player : war.getWarParticipants().getOnlineWarriors()) {
             if (isBannedWorld(player.getWorld().getName()))
@@ -242,8 +242,8 @@ public class WarListener implements Listener {
         Town town = getPlayerTown(player);
         if (town == null) return false;
         if (activeBossbars.containsKey(town)) {
-            WarBossBar warBossBar = activeBossbars.get(town);
-            if (warBossBar.getRemainingSeconds() > 0) {
+            WarTimer warTimer = activeBossbars.get(town);
+            if (warTimer.getRemainingSeconds() > 0) {
                 return true;
             } else {
                 activeBossbars.remove(town);
@@ -253,7 +253,7 @@ public class WarListener implements Listener {
         return false;
     }
 
-    private WarBossBar getActiveWarBossbar(Player player) {
+    private WarTimer getActiveWarBossbar(Player player) {
         Town town = getPlayerTown(player);
         return activeBossbars.get(town);
     }
