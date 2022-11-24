@@ -1,4 +1,4 @@
-package org.unitedlands.war.books.warbooks;
+package org.unitedlands.wars.books.warbooks;
 
 import io.github.townyadvanced.eventwar.objects.WarType;
 import net.kyori.adventure.text.Component;
@@ -14,11 +14,10 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.unitedlands.war.UnitedWars;
-import org.unitedlands.war.Utils;
-import org.unitedlands.war.books.data.Declarer;
-import org.unitedlands.war.books.data.WarTarget;
-import org.unitedlands.war.books.warbooks.WarBook;
+import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.Utils;
+import org.unitedlands.wars.books.data.Declarer;
+import org.unitedlands.wars.books.data.WarTarget;
 
 import java.util.ArrayList;
 import java.util.List;

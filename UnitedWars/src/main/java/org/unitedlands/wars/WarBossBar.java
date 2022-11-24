@@ -1,4 +1,4 @@
-package org.unitedlands.war;
+package org.unitedlands.wars;
 
 import com.palmergames.bukkit.towny.object.Resident;
 import io.github.townyadvanced.eventwar.instance.War;

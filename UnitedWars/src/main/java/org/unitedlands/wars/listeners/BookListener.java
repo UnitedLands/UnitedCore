@@ -1,4 +1,4 @@
-package org.unitedlands.war.listeners;
+package org.unitedlands.wars.listeners;
 
 import com.palmergames.bukkit.towny.object.Resident;
 import io.github.townyadvanced.eventwar.WarBooks;
@@ -19,24 +19,24 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.war.UnitedWars;
-import org.unitedlands.war.books.warbooks.WarBook;
-import org.unitedlands.war.books.data.Declarer;
-import org.unitedlands.war.books.data.WarTarget;
-import org.unitedlands.war.books.warbooks.WritableDeclaration;
-import org.unitedlands.war.books.declaration.DeclarationWarBook;
-import org.unitedlands.war.books.declaration.NationDeclarationBook;
-import org.unitedlands.war.books.declaration.TownDeclarationBook;
-import org.unitedlands.war.books.warbooks.EndWarBook;
-import org.unitedlands.war.books.warbooks.MidWarBook;
-import org.unitedlands.war.books.warbooks.StartWarBook;
+import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.books.warbooks.WarBook;
+import org.unitedlands.wars.books.data.Declarer;
+import org.unitedlands.wars.books.data.WarTarget;
+import org.unitedlands.wars.books.warbooks.WritableDeclaration;
+import org.unitedlands.wars.books.declaration.DeclarationWarBook;
+import org.unitedlands.wars.books.declaration.NationDeclarationBook;
+import org.unitedlands.wars.books.declaration.TownDeclarationBook;
+import org.unitedlands.wars.books.warbooks.EndWarBook;
+import org.unitedlands.wars.books.warbooks.MidWarBook;
+import org.unitedlands.wars.books.warbooks.StartWarBook;
 
 import java.util.List;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
-import static org.unitedlands.war.Utils.getMessage;
-import static org.unitedlands.war.Utils.getTownyResident;
+import static org.unitedlands.wars.Utils.getMessage;
+import static org.unitedlands.wars.Utils.getTownyResident;
 
 public class BookListener implements Listener {
     private final UnitedWars unitedWars;

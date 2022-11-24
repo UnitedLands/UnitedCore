@@ -1,16 +1,14 @@
-package org.unitedlands.war.books.generators;
+package org.unitedlands.wars.books.generators;
 
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.unitedlands.war.books.declaration.DeclarationWarBook;
+import org.unitedlands.wars.books.declaration.DeclarationWarBook;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 

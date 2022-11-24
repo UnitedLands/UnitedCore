@@ -1,4 +1,4 @@
-package org.unitedlands.war;
+package org.unitedlands.wars;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static org.unitedlands.war.UnitedWars.MINI_MESSAGE;
+import static org.unitedlands.wars.UnitedWars.MINI_MESSAGE;
 
 public class Utils {
     private static final TownyAPI TOWNY_API = TownyAPI.getInstance();

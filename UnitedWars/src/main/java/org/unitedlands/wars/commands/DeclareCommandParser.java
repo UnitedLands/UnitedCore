@@ -1,4 +1,4 @@
-package org.unitedlands.war.commands;
+package org.unitedlands.wars.commands;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyMessaging;
@@ -27,8 +27,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.war.UnitedWars;
-import org.unitedlands.war.books.data.WarTarget;
+import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.books.data.WarTarget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
-import static org.unitedlands.war.Utils.getMessage;
+import static org.unitedlands.wars.Utils.getMessage;
 
 public class DeclareCommandParser {
     private final CommandSender sender;

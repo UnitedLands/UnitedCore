@@ -1,7 +1,7 @@
-package org.unitedlands.war.books.declaration;
+package org.unitedlands.wars.books.declaration;
 
 import net.kyori.adventure.text.Component;
-import org.unitedlands.war.books.warbooks.WarBook;
+import org.unitedlands.wars.books.warbooks.WarBook;
 
 import java.util.List;
 

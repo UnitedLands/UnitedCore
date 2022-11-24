@@ -1,9 +1,9 @@
-package org.unitedlands.war.books.data;
+package org.unitedlands.wars.books.data;
 
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.entity.Player;
-import org.unitedlands.war.Utils;
+import org.unitedlands.wars.Utils;
 
 public class Declarer {
     private final Player declaringPlayer;

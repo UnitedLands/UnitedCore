@@ -1,13 +1,13 @@
-package org.unitedlands.war;
+package org.unitedlands.wars;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.unitedlands.war.commands.WarCommand;
-import org.unitedlands.war.listeners.BookListener;
-import org.unitedlands.war.listeners.PlayerListener;
-import org.unitedlands.war.listeners.WarListener;
+import org.unitedlands.wars.commands.WarCommand;
+import org.unitedlands.wars.listeners.BookListener;
+import org.unitedlands.wars.listeners.PlayerListener;
+import org.unitedlands.wars.listeners.WarListener;
 
 public final class UnitedWars extends JavaPlugin {
     public static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();

@@ -1,4 +1,4 @@
-package org.unitedlands.war.commands;
+package org.unitedlands.wars.commands;
 
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
@@ -10,15 +10,15 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.war.UnitedWars;
-import org.unitedlands.war.books.TokenCostCalculator;
-import org.unitedlands.war.books.data.Declarer;
-import org.unitedlands.war.books.data.WarTarget;
-import org.unitedlands.war.books.warbooks.WritableDeclaration;
+import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.books.TokenCostCalculator;
+import org.unitedlands.wars.books.data.Declarer;
+import org.unitedlands.wars.books.data.WarTarget;
+import org.unitedlands.wars.books.warbooks.WritableDeclaration;
 
 import static net.kyori.adventure.text.Component.text;
-import static org.unitedlands.war.Utils.*;
-import static org.unitedlands.war.Utils.getMessage;
+import static org.unitedlands.wars.Utils.*;
+import static org.unitedlands.wars.Utils.getMessage;
 
 public class BookCommandParser {
     private final CommandSender sender;

@@ -1,4 +1,4 @@
-package org.unitedlands.war.books;
+package org.unitedlands.wars.books;
 
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;

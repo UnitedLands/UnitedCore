@@ -1,18 +1,18 @@
-package org.unitedlands.war.books.warbooks;
+package org.unitedlands.wars.books.warbooks;
 
 import io.github.townyadvanced.eventwar.instance.War;
 import io.github.townyadvanced.eventwar.objects.WarType;
 import org.bukkit.inventory.ItemStack;
-import org.unitedlands.war.books.data.Declarer;
-import org.unitedlands.war.books.data.WarTarget;
-import org.unitedlands.war.books.generators.BookGenerator;
+import org.unitedlands.wars.books.data.Declarer;
+import org.unitedlands.wars.books.data.WarTarget;
+import org.unitedlands.wars.books.generators.BookGenerator;
 
-public class StartWarBook implements WarBook {
+public class EndWarBook implements WarBook {
     private final Declarer declarer;
     private final WarTarget warTarget;
     private final WarType warType;
 
-    public StartWarBook(War war) {
+    public EndWarBook(War war) {
         this.declarer = new Declarer(war.getDeclarationOfWar().getTown());
         this.warTarget = new WarTarget(war.getWarParticipants().getTowns().get(1));
         this.warType = war.getWarType();
@@ -41,6 +41,6 @@ public class StartWarBook implements WarBook {
 
     @Override
     public String slug() {
-        return "start-war";
+        return "end-war";
     }
 }

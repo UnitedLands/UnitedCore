@@ -1,9 +1,9 @@
-package org.unitedlands.war.books.warbooks;
+package org.unitedlands.wars.books.warbooks;
 
 import io.github.townyadvanced.eventwar.objects.WarType;
 import org.bukkit.inventory.ItemStack;
-import org.unitedlands.war.books.data.Declarer;
-import org.unitedlands.war.books.data.WarTarget;
+import org.unitedlands.wars.books.data.Declarer;
+import org.unitedlands.wars.books.data.WarTarget;
 
 public interface WarBook {
     ItemStack getBook();

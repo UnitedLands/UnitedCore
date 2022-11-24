@@ -1,4 +1,4 @@
-package org.unitedlands.war.listeners;
+package org.unitedlands.wars.listeners;
 
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -18,10 +18,10 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.unitedlands.war.UnitedWars;
-import org.unitedlands.war.Utils;
+import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.Utils;
 
-import static org.unitedlands.war.Utils.*;
+import static org.unitedlands.wars.Utils.*;
 
 public class PlayerListener implements Listener {
     private final UnitedWars unitedWars;

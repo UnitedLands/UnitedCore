@@ -1,4 +1,4 @@
-package org.unitedlands.war.listeners;
+package org.unitedlands.wars.listeners;
 
 import com.palmergames.bukkit.towny.event.NewDayEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.NationStatusScreenEvent;
@@ -22,15 +22,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.war.UnitedWars;
-import org.unitedlands.war.WarBossBar;
-import org.unitedlands.war.books.TokenCostCalculator;
+import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.WarBossBar;
+import org.unitedlands.wars.books.TokenCostCalculator;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static org.unitedlands.war.Utils.*;
+import static org.unitedlands.wars.Utils.*;
 
 public class WarListener implements Listener {
     private final HashMap<Town, WarBossBar> activeBossbars = new HashMap<>();

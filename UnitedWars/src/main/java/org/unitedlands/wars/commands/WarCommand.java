@@ -1,4 +1,4 @@
-package org.unitedlands.war.commands;
+package org.unitedlands.wars.commands;
 
 import com.palmergames.bukkit.towny.TownyCommandAddonAPI;
 import com.palmergames.bukkit.towny.command.BaseCommand;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.unitedlands.war.Utils.getMessage;
+import static org.unitedlands.wars.Utils.getMessage;
 
 public class WarCommand implements TabExecutor {
     private static final List<String> warTabCompletes = Arrays.asList("declare", "book");
