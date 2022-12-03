@@ -276,3 +276,5 @@ messages:
   only-mayors-can-sign: '<red>Only the mayor of <yellow><declarer-name><red> can sign this declaration book!'
   must-not-be-neutral-target: '<red>Target is neutral! You can only create books for non-neutral towns!'
   ongoing-war-target: '<red>Target has an ongoing war!'
+  war-won: '<green>Victory! The war has ended! You''ve won <bold>half</bold> of your enemy''s balance, and 25% of their claims!'
+  war-lost: 'You''ve lost the war... Your enemy has taken over half of your Gold, and they''ve earned bonus claims from you.'
