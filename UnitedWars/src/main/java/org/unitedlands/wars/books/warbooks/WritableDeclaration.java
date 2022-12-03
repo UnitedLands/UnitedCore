@@ -1,6 +1,5 @@
 package org.unitedlands.wars.books.warbooks;
 
-import io.github.townyadvanced.eventwar.objects.WarType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
@@ -15,9 +14,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.unitedlands.wars.UnitedWars;
-import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
+import org.unitedlands.wars.war.WarType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,18 +115,18 @@ public class WritableDeclaration implements WarBook {
     }
 
     public String getDeclarerName() {
-        if (warType.isTownWar()) {
+        if (warType == WarType.TOWNWAR) {
             return declarer.town().getFormattedName();
-        } else if (warType.isNationWar()) {
+        } else if (warType == WarType.NATIONWAR) {
             return declarer.nation().getFormattedName();
         }
         return declarer.player().getName();
     }
 
     private String getTargetName() {
-        if (warType.isTownWar()) {
+        if (warType == WarType.TOWNWAR) {
             return warTarget.town().getFormattedName();
-        } else if (warType.isNationWar()) {
+        } else if (warType == WarType.NATIONWAR) {
             return warTarget.nation().getFormattedName();
         }
         return warTarget.targetMayor().getName();

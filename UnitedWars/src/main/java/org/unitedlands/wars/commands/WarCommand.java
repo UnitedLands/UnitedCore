@@ -3,14 +3,13 @@ package org.unitedlands.wars.commands;
 import com.palmergames.bukkit.towny.TownyCommandAddonAPI;
 import com.palmergames.bukkit.towny.command.BaseCommand;
 import com.palmergames.bukkit.towny.object.AddonCommand;
-import io.github.townyadvanced.eventwar.objects.WarType;
-import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.unitedlands.wars.war.WarType;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,7 +61,7 @@ public class WarCommand implements TabExecutor {
                     commandSender.sendMessage(getMessage("must-specify-target"));
                     return true;
                 }
-                WarType type = WarTypeEnum.valueOf((args[1] + "war").toUpperCase()).getType();
+                WarType type = WarType.valueOf((args[1] + "war").toUpperCase());
                 BookCommandParser parser = new BookCommandParser(commandSender);
                 parser.parseBookCreation(type, args[2]);
             }

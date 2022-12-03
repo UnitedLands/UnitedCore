@@ -3,9 +3,6 @@ package org.unitedlands.wars.commands;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.*;
-import io.github.townyadvanced.eventwar.db.WarMetaDataController;
-import io.github.townyadvanced.eventwar.objects.WarType;
-import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,10 +12,11 @@ import org.unitedlands.wars.books.TokenCostCalculator;
 import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
 import org.unitedlands.wars.books.warbooks.WritableDeclaration;
+import org.unitedlands.wars.war.WarDataController;
+import org.unitedlands.wars.war.WarType;
 
 import static net.kyori.adventure.text.Component.text;
 import static org.unitedlands.wars.Utils.*;
-import static org.unitedlands.wars.Utils.getMessage;
 
 public class BookCommandParser {
     private final CommandSender sender;
@@ -79,8 +77,9 @@ public class BookCommandParser {
             return;
         }
 
-        WarType type = WarTypeEnum.TOWNWAR.getType();
-        int cost = type.tokenCost();
+        WarType type = WarType.TOWNWAR;
+        TokenCostCalculator costCalculator = new TokenCostCalculator(targetTown);
+        int cost = costCalculator.calculateWarCost();
 
         Confirmation.runOnAccept(() -> {
             Town declaringTown = getPlayerTown(player);
@@ -113,7 +112,7 @@ public class BookCommandParser {
             return;
         }
 
-        WarType type = WarTypeEnum.NATIONWAR.getType();
+        WarType type = WarType.NATIONWAR;
         WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetNation), type);
         TokenCostCalculator costCalculator = new TokenCostCalculator(targetNation);
         int cost = costCalculator.calculateWarCost();
@@ -130,12 +129,12 @@ public class BookCommandParser {
     }
 
     private void takeTokens(TownyObject declarer, int cost) {
-        if (WarMetaDataController.getWarTokens(declarer) < cost) {
+        if (WarDataController.getWarTokens(declarer) < cost) {
             sender.sendMessage(getMessage("not-enough-tokens", Placeholder.component("cost", text(cost))));
             return;
         }
-        int remainder = WarMetaDataController.getWarTokens(declarer) - cost;
-        WarMetaDataController.setTokens(declarer, remainder);
+        int remainder = WarDataController.getWarTokens(declarer) - cost;
+        WarDataController.setTokens(declarer, remainder);
     }
 
     private boolean isNeutral(Resident resident) {

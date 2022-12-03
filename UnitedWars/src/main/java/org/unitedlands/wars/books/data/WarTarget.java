@@ -2,10 +2,9 @@ package org.unitedlands.wars.books.data;
 
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
-import io.github.townyadvanced.eventwar.objects.WarType;
-import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.unitedlands.wars.war.WarType;
 
 import java.util.UUID;
 
@@ -19,7 +18,7 @@ public class WarTarget {
     public WarTarget(Town town) {
         this.town = town;
         targetMayor = Bukkit.getOfflinePlayer(town.getMayor().getUUID());
-        type = WarTypeEnum.TOWNWAR.getType();
+        type = WarType.TOWNWAR;
         if (town.hasNation())
             nation = town.getNationOrNull();
         else
@@ -29,7 +28,7 @@ public class WarTarget {
     public WarTarget(Nation nation) {
         this.nation = nation;
         this.town = nation.getCapital();
-        type = WarTypeEnum.NATIONWAR.getType();
+        type = WarType.NATIONWAR;
         targetMayor = Bukkit.getOfflinePlayer(town.getMayor().getUUID());
     }
 
@@ -46,7 +45,7 @@ public class WarTarget {
     }
 
     public UUID uuid() {
-        if (type.isNationWar())
+        if (type == WarType.NATIONWAR)
             return nation.getUUID();
         else
             return town.getUUID();

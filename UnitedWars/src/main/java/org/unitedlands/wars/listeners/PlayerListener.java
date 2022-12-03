@@ -1,25 +1,32 @@
 package org.unitedlands.wars.listeners;
 
+import com.palmergames.bukkit.towny.event.player.PlayerKilledPlayerEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import de.jeff_media.angelchest.AngelChest;
 import de.jeff_media.angelchest.AngelChestPlugin;
 import de.jeff_media.angelchest.events.AngelChestSpawnEvent;
-import io.github.townyadvanced.eventwar.util.WarUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
+import org.unitedlands.wars.war.WarDataController;
+import org.unitedlands.wars.war.WarDatabase;
+import org.unitedlands.wars.war.WarUtil;
+import org.unitedlands.wars.war.entities.WarringEntity;
+import org.unitedlands.wars.war.entities.WarringTown;
 
 import static org.unitedlands.wars.Utils.*;
 
@@ -83,6 +90,38 @@ public class PlayerListener implements Listener {
             if (resident.getTownOrNull().hasActiveWar()) {
                 event.getAngelChest().setProtected(false);
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerKillPlayer(PlayerKilledPlayerEvent event) {
+        Resident killer = getTownyResident(event.getKiller());
+        Resident victim = getTownyResident(event.getVictim());
+
+        if (WarUtil.hasSameWar(killer, victim)) {
+            // Killer doesn't have lives, return
+            if (WarDataController.hasResidentLives(killer))
+                return;
+
+            if (WarDataController.hasResidentLives(victim)) {
+                WarDataController.decrementResidentLives(victim);
+                WarringEntity warringEntity = WarDatabase.getWarringEntity(victim.getPlayer());
+                warringEntity.getWarHealth().decrementMaxHealth(5);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onTotemPop(EntityResurrectEvent event) {
+        if (event.isCancelled())
+            return;
+
+        LivingEntity entity = event.getEntity();
+        if (entity instanceof Player player) {
+            WarringEntity warringEntity = WarDatabase.getWarringEntity(player);
+            if (warringEntity == null)
+                return;
+            warringEntity.getWarHealth().decrementHealth(1);
         }
     }
 

@@ -6,35 +6,37 @@ import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import io.github.townyadvanced.eventwar.db.WarMetaDataController;
-import io.github.townyadvanced.eventwar.events.EventWarDeclarationEvent;
-import io.github.townyadvanced.eventwar.events.EventWarEndEvent;
-import io.github.townyadvanced.eventwar.events.EventWarStartEvent;
-import io.github.townyadvanced.eventwar.events.TownScoredEvent;
-import io.github.townyadvanced.eventwar.instance.War;
+import com.palmergames.bukkit.towny.object.economy.BankAccount;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
-import org.unitedlands.wars.war.WarTimer;
 import org.unitedlands.wars.books.TokenCostCalculator;
+import org.unitedlands.wars.books.data.Declarer;
+import org.unitedlands.wars.books.data.WarTarget;
+import org.unitedlands.wars.events.WarDeclareEvent;
+import org.unitedlands.wars.events.WarEndEvent;
+import org.unitedlands.wars.war.War;
+import org.unitedlands.wars.war.WarDataController;
+import org.unitedlands.wars.war.WarDatabase;
+import org.unitedlands.wars.war.WarType;
+import org.unitedlands.wars.war.entities.WarringEntity;
+import org.unitedlands.wars.war.entities.WarringNation;
+import org.unitedlands.wars.war.entities.WarringTown;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
-
-import static org.unitedlands.wars.Utils.*;
 
 public class WarListener implements Listener {
-    private final HashMap<Town, WarTimer> activeBossbars = new HashMap<>();
-    private final HashMap<UUID, Integer> townScores = new HashMap<>();
     private final @NotNull FileConfiguration config;
 
     public WarListener(UnitedWars unitedWars) {
@@ -45,30 +47,46 @@ public class WarListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (hasActiveWarBossbar(player)) {
-            WarTimer warTimer = getActiveWarBossbar(player);
-            warTimer.addViewer(player);
-        }
-    }
 
-    @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        if (hasActiveWarBossbar(player)) {
-            WarTimer warTimer = getActiveWarBossbar(player);
-            warTimer.removeViewer(player);
+        War war = WarDatabase.getWar(player);
+        if (war == null)
+            return;
+
+        if (war.hasActiveTimer()) {
+            war.getWarTimer().addViewer(player);
+            return;
         }
+
+        WarringEntity warringEntity = WarDatabase.getWarringEntity(player);
+        if (warringEntity == null)
+            return;
+
+        warringEntity.getWarHealth().show(player);
     }
 
     @EventHandler
     public void onNewTownyDay(NewDayEvent event) {
         List<Town> towns = UnitedWars.TOWNY_API.getTowns();
-        for (Town town: towns) {
-            if (town.isBankrupt() || town.isRuined() || town.isNeutral()) continue;
+        for (Town town : towns) {
+            if (town.isBankrupt() || town.isRuined() || town.isNeutral())
+                continue;
             TokenCostCalculator costCalculator = new TokenCostCalculator(town);
             int earnedTokens = costCalculator.calculateTokenIncome();
-            int currentTokens = WarMetaDataController.getWarTokens(town);
-            WarMetaDataController.setTokens(town, currentTokens + earnedTokens);
+            int currentTokens = WarDataController.getWarTokens(town);
+            WarDataController.setTokens(town, currentTokens + earnedTokens);
+        }
+
+        for (WarringTown warringTown : WarDatabase.getWarringTowns()) {
+            warringTown.getWarHealth().decrementHealth(20);
+            if (warringTown.getWarHealth().getValue() == 0) {
+                WarDatabase.removeWarringTown(warringTown.getTown());
+            }
+        }
+        for (WarringNation warringNation : WarDatabase.getWarringNations()) {
+            warringNation.getWarHealth().decrementHealth(20);
+            if (warringNation.getWarHealth().getValue() == 0) {
+                WarDatabase.removeWarringNation(warringNation.getNation());
+            }
         }
     }
 
@@ -91,103 +109,66 @@ public class WarListener implements Listener {
     }
 
     @EventHandler
-    public void onWarStart(EventWarStartEvent event) {
+    public void onTownWarEnd(WarEndEvent event) {
         War war = event.getWar();
-        WarTimer warTimer = new WarTimer(war);
-        for (Town town: event.getWarringTowns()) {
-            activeBossbars.put(town, warTimer);
-            townScores.put(town.getUUID(), 0);
-        }
-        warTimer.startCountdown();
+        if (!war.getWarType().equals(WarType.TOWNWAR))
+            return;
 
-        for (Player player : war.getWarParticipants().getOnlineWarriors()) {
-            if (isBannedWorld(player.getWorld().getName()))
-                teleportPlayerToSpawn(player);
+        WarringTown winner = (WarringTown) event.getWinner();
+        WarringTown loser = (WarringTown) event.getLoser();
 
-            for (String command : config.getStringList("commands-on-war-start"))
-                player.performCommand(command);
-        }
+        giveWarEarnings(winner.getTown(), loser.getTown());
 
+        // Remove from tracker
+        WarDatabase.removeWarringEntity(loser);
+        WarDatabase.removeWarringEntity(winner);
     }
 
     @EventHandler
-    public void onScore(TownScoredEvent event) {
-        UUID townUUID = event.getTown().getUUID();
-        if (townScores.containsKey(townUUID)) {
-            int previousScore = townScores.get(townUUID);
-            townScores.replace(townUUID, previousScore + event.getScore());
-        }
-    }
-
-    @EventHandler
-    public void onTownWarEnd(EventWarEndEvent event) {
+    public void onNationWarEnd(WarEndEvent event) {
         War war = event.getWar();
-        if (!war.getWarType().isTownWar()) return;
+        if (!war.getWarType().equals(WarType.NATIONWAR))
+            return;
 
-        Town winner = event.getWinningTown();
-        Town loser = event.getWarringTowns().get(1);
-        // Winner may have been the initial target, if so then get the other.
-        if (winner.equals(loser)) {
-            loser = event.getWarringTowns().get(0);
+        // We know it's going to be a nation, since it's a nation war
+        WarringNation winner = (WarringNation) event.getWinner();
+        WarringNation loser = (WarringNation) event.getLoser();
+
+        for (Town losingTown : loser.getNation().getTowns()) {
+            giveWarEarnings(winner.getNation().getCapital(), losingTown);
         }
-        giveWarEarnings(winner, loser);
+
+        giveAdditionalNationEarnings(winner.getNation(), loser.getNation());
+
+        // Remove from tracker
+        WarDatabase.removeWarringEntity(loser);
+        WarDatabase.removeWarringEntity(winner);
     }
 
     @EventHandler
-    public void onNationWarEnd(EventWarEndEvent event) {
-        War war = event.getWar();
-        if (!war.getWarType().isNationWar()) return;
+    public void onWarDeclaration(WarDeclareEvent event) {
+        Declarer declarer = event.getDeclarer();
+        WarTarget target = event.getTarget();
 
-        Nation winner = event.getWinningTown().getNationOrNull();
-        Nation loser = war.getWarParticipants().getNations().get(1);
-        // Winner may have been the initial target, if so then get the other.
-        if (winner.equals(loser)) {
-            loser = war.getWarParticipants().getNations().get(0);
+        if (event.getDeclarationWarBook().getType() == WarType.TOWNWAR) {
+            Town declaringTown = declarer.town();
+            Town targetTown = target.town();
+            notifyDeclaration(targetTown, declaringTown);
         }
 
-        for (Town losingTown: loser.getTowns()) {
-            giveWarEarnings(winner.getCapital(), losingTown);
+        if (event.getDeclarationWarBook().getType() == WarType.NATIONWAR) {
+            Nation declaringNation = declarer.nation();
+            Nation targetNation = target.nation();
+            notifyDeclaration(targetNation, declaringNation);
         }
-
-        giveAdditionalNationEarnings(winner, loser);
     }
 
-    @EventHandler
-    public void onTownWarDeclaration(EventWarDeclarationEvent event) {
-        // Only handle town wars here, nation wars in another listener to keep things clean.
-        if (!event.getDeclarationOfWar().getType().isTownWar()) return;
-
-        Town declaringTown = event.getDeclaringTown();
-        // The target town is found at index 1, as per EventWar's codebase.
-        Town targetTown = event.getWarringTowns().get(1);
-
-        notifyDeclaration(targetTown, declaringTown);
-    }
-
-    @EventHandler
-    public void onNationWarDeclaration(EventWarDeclarationEvent event) {
-        if (!event.getDeclarationOfWar().getType().isNationWar()) return;
-
-        Town declaringTown = event.getDeclaringTown();
-        // The target nation is found at index 1, as per EventWar's codebase.
-        Nation targetNation = event.getWarringNations().get(1);
-
-        notifyDeclaration(targetNation, declaringTown.getNationOrNull());
-    }
-
-    private void untrackScores(Town town) {
-        townScores.remove(town.getUUID());
-    }
-
-    private void giveWarEarnings(Town winner, Town loser) {
-        // Monetary rewards
-        double amount = loser.getAccount().getHoldingBalance() * 0.5;
-        loser.getAccount().withdraw(amount, "Lost a war");
-        winner.getAccount().deposit(amount, "Won a war");
-
-        giveBonusClaims(winner);
-        untrackScores(winner);
-        untrackScores(loser);
+    private void giveWarEarnings(Town winningTown, Town losingTown) {
+        BankAccount winnerAccount = winningTown.getAccount();
+        double amount = winnerAccount.getHoldingBalance() * 0.5;
+        losingTown.getAccount().withdraw(amount, "Lost a war");
+        winnerAccount.deposit(amount, "Won a war");
+        giveBonusClaims(winningTown, losingTown);
     }
 
     private void giveAdditionalNationEarnings(Nation winningNation, Nation losingNation) {
@@ -196,19 +177,18 @@ public class WarListener implements Listener {
         winningNation.getAccount().deposit(amount, "Won a war");
     }
 
-    private void giveBonusClaims(Town winner) {
-        int totalScore = townScores.get(winner.getUUID());
-        double bonusClaims = Math.round((double) totalScore / 10);
+    private void giveBonusClaims(Town winner, Town loser) {
+        double bonusClaims = loser.getNumTownBlocks() * 0.25;
         winner.addBonusBlocks((int) bonusClaims);
     }
 
     private void notifyDeclaration(Nation targetNation, Nation declaringNation) {
         List<Resident> targetResidents = targetNation.getResidents();
-        Title declarationTitle =  getTitle("<dark_red><bold>War Declaration!", "<yellow>" + declaringNation.getFormattedName() + "<red> has declared war on your nation");
+        Title declarationTitle = getTitle("<dark_red><bold>War Declaration!", "<yellow>" + declaringNation.getFormattedName() + "<red> has declared war on your nation");
         notifyResidents(targetResidents, declarationTitle);
 
         List<Resident> warringResidents = targetNation.getResidents();
-        Title warringTitle =  getTitle("<red><bold>War Declaration!", "<red>Your nation has declared war on <yellow>" + targetNation.getFormattedName());
+        Title warringTitle = getTitle("<red><bold>War Declaration!", "<red>Your nation has declared war on <yellow>" + targetNation.getFormattedName());
         notifyResidents(warringResidents, warringTitle);
     }
 
@@ -226,7 +206,8 @@ public class WarListener implements Listener {
     private void notifyResidents(List<Resident> residents, Title title) {
         for (Resident resident: residents) {
             Player player = resident.getPlayer();
-            if (player == null) continue;
+            if (player == null)
+                continue;
             player.showTitle(title);
             player.playSound(player, Sound.EVENT_RAID_HORN, 75, 1);
         }
@@ -237,25 +218,4 @@ public class WarListener implements Listener {
         Component subTitle = UnitedWars.MINI_MESSAGE.deserialize(sub);
         return Title.title(mainTitle, subTitle);
     }
-
-    private boolean hasActiveWarBossbar(Player player) {
-        Town town = getPlayerTown(player);
-        if (town == null) return false;
-        if (activeBossbars.containsKey(town)) {
-            WarTimer warTimer = activeBossbars.get(town);
-            if (warTimer.getRemainingSeconds() > 0) {
-                return true;
-            } else {
-                activeBossbars.remove(town);
-                return false;
-            }
-        }
-        return false;
-    }
-
-    private WarTimer getActiveWarBossbar(Player player) {
-        Town town = getPlayerTown(player);
-        return activeBossbars.get(town);
-    }
-
 }

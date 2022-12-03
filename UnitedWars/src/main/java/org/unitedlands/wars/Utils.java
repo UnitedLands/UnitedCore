@@ -5,7 +5,7 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.bukkit.Bukkit;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -48,6 +48,12 @@ public class Utils {
     public static Town getPlayerTown(Player player) {
         Resident resident = getTownyResident(player);
         return resident.getTownOrNull();
+    }
+
+    public static Title getTitle(String main, String sub) {
+        Component mainTitle = UnitedWars.MINI_MESSAGE.deserialize(main);
+        Component subTitle = UnitedWars.MINI_MESSAGE.deserialize(sub);
+        return Title.title(mainTitle, subTitle);
     }
 
     public static Town getPlayerTown(UUID uuid) {

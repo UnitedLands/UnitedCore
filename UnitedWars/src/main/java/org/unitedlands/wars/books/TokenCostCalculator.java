@@ -3,16 +3,12 @@ package org.unitedlands.wars.books;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import io.github.townyadvanced.eventwar.objects.WarType;
-import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.unitedlands.pvp.player.PvpPlayer;
+import org.unitedlands.wars.war.WarType;
 
 import java.util.List;
-
-import static io.github.townyadvanced.eventwar.settings.EventWarSettings.nationWarTokenCost;
-import static io.github.townyadvanced.eventwar.settings.EventWarSettings.townWarTokenCost;
 
 public class TokenCostCalculator {
     private final List<Resident> residents;
@@ -22,13 +18,13 @@ public class TokenCostCalculator {
     public TokenCostCalculator(Town town) {
         this.residents = town.getResidents();
         this.size = town.getNumTownBlocks();
-        this.type = WarTypeEnum.TOWNWAR.getType();;
+        this.type = WarType.TOWNWAR;
     }
 
     public TokenCostCalculator(Nation nation) {
         this.residents = nation.getResidents();
         this.size = nation.getNumTownblocks();
-        this.type = WarTypeEnum.NATIONWAR.getType();
+        this.type = WarType.TOWNWAR;
     }
 
     public int calculateTokenIncome() {
@@ -80,11 +76,7 @@ public class TokenCostCalculator {
     }
 
     private int getBaseCost() {
-        if (type.isTownWar()) {
-            return townWarTokenCost();
-        } else {
-            return nationWarTokenCost();
-        }
+        return type.getBaseCost();
     }
 
     private int getTotalTargetHostility() {

@@ -2,7 +2,6 @@ package org.unitedlands.wars.books.generators;
 
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
-import io.github.townyadvanced.eventwar.objects.WarType;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -15,9 +14,9 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.unitedlands.wars.UnitedWars;
-import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.warbooks.WarBook;
+import org.unitedlands.wars.war.WarType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,9 +99,9 @@ public class BookGenerator {
         } else {
             town = warBook.getWarTarget().town();
         }
-        if (warType.isTownWar()) {
+        if (warType == WarType.TOWNWAR) {
             return town.getFormattedName();
-        } else if (warType.isNationWar()) {
+        } else if (warType == WarType.NATIONWAR) {
             return town.getNationOrNull().getFormattedName();
         }
         return town.getMayor().getPlayer().getName();
@@ -113,7 +112,7 @@ public class BookGenerator {
     }
 
     private TagResolver.Single placeholderStat(String name) {
-        if (warBook.getType().isNationWar()) {
+        if (warBook.getType() == WarType.NATIONWAR) {
             String[] split = name.split("-");
             String type = split[0];
             String stat = split[1];
@@ -127,7 +126,7 @@ public class BookGenerator {
         }
 
 
-        if (warBook.getType().isTownWar()) {
+        if (warBook.getType() == WarType.TOWNWAR) {
             String[] split = name.split("-");
             String type = split[0];
             String stat = split[1];

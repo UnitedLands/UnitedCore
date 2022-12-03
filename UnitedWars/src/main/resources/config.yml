@@ -243,6 +243,12 @@ end-war-book:
 mid-war-book:
   0:
     - "Mid War update!!!"
+townwar:
+  delay: 1800
+nationwar:
+  delay: 1800
+alliancewar:
+  delay: 1800
 townwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Town War Declaration Scroll <color:#BEA50C>⬩'
 nationwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Nation War Declaration Scroll <color:#BEA50C>⬩'
 start-war-name: "War breaks out!"

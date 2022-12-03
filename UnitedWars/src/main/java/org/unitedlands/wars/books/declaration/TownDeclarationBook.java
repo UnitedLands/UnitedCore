@@ -1,13 +1,12 @@
 package org.unitedlands.wars.books.declaration;
 
-import io.github.townyadvanced.eventwar.objects.WarType;
-import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
-import org.unitedlands.wars.books.generators.DeclarationGenerator;
 import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
+import org.unitedlands.wars.books.generators.DeclarationGenerator;
 import org.unitedlands.wars.books.warbooks.WritableDeclaration;
+import org.unitedlands.wars.war.WarType;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class TownDeclarationBook implements DeclarationWarBook {
 
     @Override
     public WarType getType() {
-        return WarTypeEnum.TOWNWAR.getType();
+        return WarType.TOWNWAR;
     }
 
     @Override

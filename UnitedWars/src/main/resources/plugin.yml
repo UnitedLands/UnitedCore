@@ -1,10 +1,15 @@
 name: UnitedWars
 version: '${project.version}'
-main: org.unitedlands.war.UnitedWars
+main: org.unitedlands.wars.UnitedWars
 api-version: 1.18
-depend: [ Towny, EventWar ]
+depend: [ Towny ]
 authors: [ Maroon28 ]
 description: A plugin which hooks into EventWar to achieve custom war behaviour!
 website: unitedlands.org
 commands:
   war:
+    description: Used to declare and start wars
+    usage: "/war [declare/book] [town/nation] name"
+  waradmin:
+    description: Used by admins to manage wars
+    permission: united.wars.admin
