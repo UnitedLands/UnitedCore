@@ -19,10 +19,9 @@ import java.util.UUID;
 public class WarTimer {
     private static final UnitedWars PLUGIN = UnitedWars.getInstance();
     private final long startTime;
-    private HashSet<UUID> viewers;
     private final BossBar bossBar;
-
     private final War war;
+    private HashSet<UUID> viewers;
 
     public WarTimer(War war) {
         this.war = war;
@@ -37,7 +36,7 @@ public class WarTimer {
         if (viewers == null) return;
 
         PLUGIN.getServer().getScheduler().runTaskTimer(PLUGIN, task -> {
-            for (UUID viewerUUID: viewers) {
+            for (UUID viewerUUID : viewers) {
                 Player viewer = Bukkit.getPlayer(viewerUUID);
                 if (viewer == null) continue;
 
@@ -57,7 +56,7 @@ public class WarTimer {
 
                 }
             }
-            Component name = Component.text( "WAR STARTS IN: " , NamedTextColor.DARK_RED, TextDecoration.BOLD);
+            Component name = Component.text("WAR STARTS IN: ", NamedTextColor.DARK_RED, TextDecoration.BOLD);
             bossBar.name(name.append(Component.text(getFormattedTime(), NamedTextColor.RED).decoration(TextDecoration.BOLD, false)));
             bossBar.progress(Math.max(0.0F, bossBar.progress() - decrease));
 
@@ -90,7 +89,7 @@ public class WarTimer {
     private HashSet<UUID> getViewers() {
         HashSet<Resident> residents = war.getResidents();
         viewers = new HashSet<>();
-        for (Resident resident: residents) {
+        for (Resident resident : residents) {
             Player player = resident.getPlayer();
             addViewer(player);
         }
@@ -100,7 +99,7 @@ public class WarTimer {
     @NotNull
     public BossBar getBossBar() {
         Component time = Component.text(getRemainingSeconds() + "s", NamedTextColor.RED).decoration(TextDecoration.BOLD, false);
-        final Component name = Component.text( "WAR STARTS IN: " , NamedTextColor.DARK_RED, TextDecoration.BOLD);
+        final Component name = Component.text("WAR STARTS IN: ", NamedTextColor.DARK_RED, TextDecoration.BOLD);
         return BossBar.bossBar(name.append(time), 1, BossBar.Color.RED, BossBar.Overlay.NOTCHED_6);
     }
 

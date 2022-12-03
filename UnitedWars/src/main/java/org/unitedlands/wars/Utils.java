@@ -28,7 +28,7 @@ public class Utils {
         return MINI_MESSAGE.deserialize(Objects.requireNonNullElseGet(configuredMessage, () -> "<red>Message <yellow>" + message + "<red> could not be found in the config file!"));
     }
 
-    public static Component getMessage(String message, TagResolver.Single... resolvers ) {
+    public static Component getMessage(String message, TagResolver.Single... resolvers) {
         String prefix = CONFIG.getString("messages.prefix");
         String configuredMessage = prefix + CONFIG.getString("messages." + message);
         return MINI_MESSAGE.deserialize(configuredMessage, resolvers);

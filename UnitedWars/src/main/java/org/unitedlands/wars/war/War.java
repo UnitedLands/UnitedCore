@@ -17,12 +17,11 @@ import static org.unitedlands.wars.Utils.teleportPlayerToSpawn;
 
 public class War {
     private static final UnitedWars plugin = UnitedWars.getInstance();
-
-    private UUID uuid = UUID.randomUUID();
     private final List<WarringTown> warringTowns;
     private final List<WarringNation> warringNations;
     private final HashSet<Resident> residents;
     private final WarType warType;
+    private UUID uuid = UUID.randomUUID();
     private WarTimer warTimer = null;
 
     public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType) {
@@ -89,7 +88,7 @@ public class War {
     }
 
     public void endWarTimer() {
-        for (Resident resident: getResidents()) {
+        for (Resident resident : getResidents()) {
             Player player = resident.getPlayer();
             // Player is offline, next
             if (player == null) continue;
@@ -103,7 +102,7 @@ public class War {
     }
 
     private void runPlayerProcedures() {
-        for (Resident resident: getResidents()) {
+        for (Resident resident : getResidents()) {
             Player player = resident.getPlayer();
             // Player is offline, next
             if (player == null) continue;
@@ -145,7 +144,7 @@ public class War {
         if (warTimer == null)
             return false;
         else
-         return warTimer.getRemainingSeconds() > 0;
+            return warTimer.getRemainingSeconds() > 0;
     }
 
     private List<WarringTown> generateWarringTownList(List<Town> townList) {
@@ -153,7 +152,7 @@ public class War {
             return null;
 
         List<WarringTown> generatedList = new ArrayList<>();
-        for (Town town: townList) {
+        for (Town town : townList) {
             generatedList.add(new WarringTown(town, new WarHealth(town), town.getResidents(), this));
         }
         return generatedList;
@@ -164,11 +163,11 @@ public class War {
             return null;
 
         List<WarringNation> generatedList = new ArrayList<>();
-        for (Nation nation: nationList) {
+        for (Nation nation : nationList) {
             // Create a list with the nation residents
             List<Resident> warringResidents = new ArrayList<>(nation.getResidents());
             // add all the allies
-            for (Nation ally: nation.getAllies()) {
+            for (Nation ally : nation.getAllies()) {
                 warringResidents.addAll(ally.getResidents());
             }
             generatedList.add(new WarringNation(nation, new WarHealth(nation), warringResidents, this));

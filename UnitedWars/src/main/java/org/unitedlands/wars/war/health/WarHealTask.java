@@ -9,9 +9,9 @@ public class WarHealTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (WarringEntity warringEntity: WarDatabase.getWarringEntities()) {
+        for (WarringEntity warringEntity : WarDatabase.getWarringEntities()) {
             int amount = 0;
-            for (Resident resident: warringEntity.getWarParticipants()) {
+            for (Resident resident : warringEntity.getWarParticipants()) {
                 if (resident.isOnline())
                     amount++;
             }

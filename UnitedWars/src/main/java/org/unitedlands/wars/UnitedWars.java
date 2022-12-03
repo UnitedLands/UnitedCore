@@ -29,6 +29,10 @@ public final class UnitedWars extends JavaPlugin {
         plugin = this;
     }
 
+    public static UnitedWars getInstance() {
+        return plugin;
+    }
+
     @Override
     public void onEnable() {
         registerListener(new WarListener(this));
@@ -48,13 +52,10 @@ public final class UnitedWars extends JavaPlugin {
         WarDatabase.saveWarData();
     }
 
-    public static UnitedWars getInstance() {
-        return plugin;
-    }
-
     public FileConfiguration getWarConfig() {
         return this.warConfig;
     }
+
     private void createWarConfig() {
         File warFile = new File(getDataFolder(), "wars.yml");
         if (!warFile.exists()) {

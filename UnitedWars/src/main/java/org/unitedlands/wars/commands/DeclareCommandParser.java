@@ -38,8 +38,8 @@ import static org.unitedlands.wars.Utils.getMessage;
 import static org.unitedlands.wars.war.WarUtil.*;
 
 public class DeclareCommandParser {
-    private final CommandSender sender;
     private static final NamespacedKey TYPE_KEY = NamespacedKey.fromString("eventwar.dow.book.type");
+    private final CommandSender sender;
 
     public DeclareCommandParser(CommandSender sender) {
         this.sender = sender;

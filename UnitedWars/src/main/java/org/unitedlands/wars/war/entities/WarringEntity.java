@@ -9,9 +9,14 @@ import java.util.UUID;
 
 public interface WarringEntity {
     War getWar();
+
     UUID getUUID();
+
     WarHealth getWarHealth();
+
     List<Resident> getWarParticipants();
+
     String getPath();
+
     String name();
 }

@@ -51,6 +51,7 @@ public class WritableDeclaration implements WarBook {
     public WarTarget getWarTarget() {
         return warTarget;
     }
+
     public WarType getType() {
         return warType;
     }
@@ -135,6 +136,7 @@ public class WritableDeclaration implements WarBook {
     public WarType getWarType() {
         return warType;
     }
+
     public List<Component> getReason() {
         return reason;
     }

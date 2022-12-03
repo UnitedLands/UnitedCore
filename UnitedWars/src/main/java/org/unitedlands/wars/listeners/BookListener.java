@@ -32,6 +32,10 @@ public class BookListener implements Listener {
         this.unitedWars = unitedWars;
     }
 
+    private static boolean isWritableDeclaration(PersistentDataContainer pdc) {
+        return WritableDeclaration.isWritableDeclaration(pdc);
+    }
+
     @EventHandler
     public void onBookEdit(PlayerEditBookEvent event) {
         boolean isWritableDeclaration = isWritableDeclaration(event.getPreviousBookMeta().getPersistentDataContainer());
@@ -59,10 +63,6 @@ public class BookListener implements Listener {
         // Replace the held item, the old book, with the new sealed book to be used for declaration.
         DeclarationWarBook finalDeclarationBook = declarationBook;
         unitedWars.getServer().getScheduler().runTask(unitedWars, () -> event.getPlayer().getInventory().setItemInMainHand(finalDeclarationBook.getBook()));
-    }
-
-    private static boolean isWritableDeclaration(PersistentDataContainer pdc) {
-        return WritableDeclaration.isWritableDeclaration(pdc);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

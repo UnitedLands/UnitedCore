@@ -12,7 +12,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
-import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
 import org.unitedlands.wars.books.warbooks.WritableDeclaration;
@@ -78,6 +77,7 @@ public class WarUtil {
             warTarget = new WarTarget(UnitedWars.TOWNY_API.getNation(targetUUID));
         return warTarget;
     }
+
     private static boolean isNotOnCooldownForWar(WarType type, TownyObject obj) {
         return !WarDataController.hasLastWarTime(obj) || !tooSoonForWar(type, obj);
     }

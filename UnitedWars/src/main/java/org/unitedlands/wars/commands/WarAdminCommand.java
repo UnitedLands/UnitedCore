@@ -21,7 +21,9 @@ import org.unitedlands.wars.war.entities.WarringEntity;
 import org.unitedlands.wars.war.entities.WarringNation;
 import org.unitedlands.wars.war.entities.WarringTown;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class WarAdminCommand implements TabExecutor {
     private static final List<String> adminTabCompletes = Arrays.asList("end", "purge");
@@ -92,19 +94,19 @@ public class WarAdminCommand implements TabExecutor {
     private void parsePurgeCommand() {
         TownyUniverse townyUniverse = TownyUniverse.getInstance();
         WarDatabase.cleanUpBossBars();
-        for (Town town: townyUniverse.getTowns()) {
+        for (Town town : townyUniverse.getTowns()) {
             town.setActiveWar(false);
             WarDatabase.removeWarringTown(town);
             WarDataController.removeEndTime(town);
         }
 
-        for (Nation nation: townyUniverse.getNations()) {
+        for (Nation nation : townyUniverse.getNations()) {
             nation.setActiveWar(false);
             WarDatabase.removeWarringNation(nation);
             WarDataController.removeEndTime(nation);
         }
 
-        for (Resident resident: townyUniverse.getResidents()) {
+        for (Resident resident : townyUniverse.getResidents()) {
             WarDataController.removeResidentLivesMeta(resident);
         }
 

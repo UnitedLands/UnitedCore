@@ -24,10 +24,11 @@ import java.util.List;
 import static net.kyori.adventure.text.Component.*;
 
 public class BookGenerator {
-    private final WarBook warBook;
     private static final FileConfiguration CONFIG = UnitedWars.getInstance().getConfig();
+    private final WarBook warBook;
     private final ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK);
     private BookMeta bookMeta = (BookMeta) bookItem.getItemMeta();
+
     public BookGenerator(WarBook warBook) {
         this.warBook = warBook;
     }
@@ -166,7 +167,7 @@ public class BookGenerator {
             }
             case "balance" -> {
                 double totalBalance = nation.getAccount().getHoldingBalance();
-                for (Town town: nation.getTowns()) {
+                for (Town town : nation.getTowns()) {
                     totalBalance += town.getAccount().getHoldingBalance();
                 }
                 return String.valueOf(totalBalance);

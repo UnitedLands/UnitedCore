@@ -7,8 +7,12 @@ import org.unitedlands.wars.war.WarType;
 
 public interface WarBook {
     ItemStack getBook();
+
     Declarer getDeclarer();
+
     WarTarget getWarTarget();
+
     WarType getType();
+
     String slug();
 }

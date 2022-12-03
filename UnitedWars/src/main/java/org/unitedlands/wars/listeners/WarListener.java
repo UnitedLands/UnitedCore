@@ -9,16 +9,12 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.economy.BankAccount;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.books.TokenCostCalculator;
@@ -194,7 +190,7 @@ public class WarListener implements Listener {
 
     private void notifyDeclaration(Town town, Town declaringTown) {
         List<Resident> targetResidents = town.getResidents();
-        Title declarationTitle =  getTitle("<red><bold>War Declaration!", "<yellow>" + declaringTown.getFormattedName() + "<red>has declared war on you");
+        Title declarationTitle = getTitle("<red><bold>War Declaration!", "<yellow>" + declaringTown.getFormattedName() + "<red>has declared war on you");
         notifyResidents(targetResidents, declarationTitle);
 
         List<Resident> warringResidents = declaringTown.getResidents();
@@ -204,7 +200,7 @@ public class WarListener implements Listener {
     }
 
     private void notifyResidents(List<Resident> residents, Title title) {
-        for (Resident resident: residents) {
+        for (Resident resident : residents) {
             Player player = resident.getPlayer();
             if (player == null)
                 continue;

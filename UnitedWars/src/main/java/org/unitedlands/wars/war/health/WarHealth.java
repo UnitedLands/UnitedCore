@@ -12,10 +12,11 @@ import org.unitedlands.wars.events.WarHealthChangeEvent;
 import java.text.MessageFormat;
 
 public class WarHealth {
+    private final String name;
     private int health = 100;
     private int maxHealth = 100;
-    private final String name;
     private final BossBar bossBar = generateBossBar();
+
     public WarHealth(String name) {
         this.name = name;
     }
@@ -70,9 +71,11 @@ public class WarHealth {
     public void show(Player player) {
         player.showBossBar(getBossBar());
     }
+
     public void hide(Player player) {
         player.hideBossBar(getBossBar());
     }
+
     public void increaseHealth(int increment) {
         int newHealth = Math.min(maxHealth, health + increment);
         WarHealthChangeEvent whce = new WarHealthChangeEvent(this, health, maxHealth, newHealth, maxHealth);

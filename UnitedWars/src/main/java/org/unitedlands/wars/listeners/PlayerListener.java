@@ -26,7 +26,6 @@ import org.unitedlands.wars.war.WarDataController;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.WarUtil;
 import org.unitedlands.wars.war.entities.WarringEntity;
-import org.unitedlands.wars.war.entities.WarringTown;
 
 import static org.unitedlands.wars.Utils.*;
 
@@ -50,7 +49,7 @@ public class PlayerListener implements Listener {
         if (isBannedWorld(player.getWorld().getName()))
             teleportPlayerToSpawn(player);
 
-        for (String command: config.getStringList("commands-on-login"))
+        for (String command : config.getStringList("commands-on-login"))
             player.performCommand(command);
     }
 

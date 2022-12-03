@@ -13,7 +13,7 @@ public class WarHealthChangeEvent extends Event {
     private final int previousMax;
     private final int newMax;
 
-    public WarHealthChangeEvent(WarHealth health, int previousHealth,  int previousMax, int newHealth, int newMax) {
+    public WarHealthChangeEvent(WarHealth health, int previousHealth, int previousMax, int newHealth, int newMax) {
         this.health = health;
         this.previousHealth = previousHealth;
         this.newHealth = newHealth;
@@ -21,11 +21,11 @@ public class WarHealthChangeEvent extends Event {
         this.newMax = newMax;
     }
 
-    public @NotNull HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 

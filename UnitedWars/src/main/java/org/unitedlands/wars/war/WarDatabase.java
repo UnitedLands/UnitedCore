@@ -125,7 +125,7 @@ public class WarDatabase {
 
         // Wars ready for removal
         // Either ended or purged.
-        for (War war: WARS_TO_REMOVE) {
+        for (War war : WARS_TO_REMOVE) {
             warConfig.set("wars." + war.getUuid(), null);
         }
 
@@ -154,6 +154,7 @@ public class WarDatabase {
         WARS.remove(war);
         WARS_TO_REMOVE.add(war);
     }
+
     public static void removeWarringEntity(WarringEntity warringEntity) {
         if (warringEntity instanceof WarringTown)
             WARRING_TOWNS.remove(warringEntity);
@@ -238,9 +239,11 @@ public class WarDatabase {
     public static HashSet<WarringNation> getWarringNations() {
         return WARRING_NATIONS;
     }
+
     public static HashSet<War> getWars() {
         return WARS;
     }
+
     @NotNull
     public static HashSet<WarringEntity> getWarringEntities() {
         HashSet<WarringEntity> warringEntities = new HashSet<>(WARRING_TOWNS);
@@ -249,7 +252,7 @@ public class WarDatabase {
     }
 
     public static void cleanUpBossBars() {
-        for (War war: WarDatabase.getWars()) {
+        for (War war : WarDatabase.getWars()) {
             if (war.hasActiveTimer()) {
                 war.getResidents().forEach(resident -> {
                     if (resident.getPlayer() != null) {
@@ -267,6 +270,7 @@ public class WarDatabase {
             });
         }
     }
+
     public static void clearSets() {
         WARRING_TOWNS.clear();
         WARRING_NATIONS.clear();
