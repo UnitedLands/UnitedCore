@@ -33,19 +33,27 @@ public class WarHealthChangeEvent extends Event {
         return health;
     }
 
-    public int getPreviousHealth() {
-        return previousHealth;
+    public int getHealthDifference() {
+        return Math.abs(this.newHealth - previousHealth);
     }
 
-    public int getNewHealth() {
-        return newHealth;
+    public int getMaxDifference() {
+        return Math.abs(this.newMax - previousMax);
     }
 
-    public int getPreviousMax() {
-        return previousMax;
+
+    public boolean isZeroHealth() {
+        return newHealth == 0 || newMax == 0;
+    }
+    public boolean maxHealthDecreased() {
+        return previousMax < newMax;
     }
 
-    public int getNewMax() {
-        return newMax;
+    public boolean healthIncreased() {
+        return newHealth > previousHealth;
+    }
+
+    public boolean healthDecreased() {
+        return previousHealth < newHealth;
     }
 }
