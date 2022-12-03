@@ -187,6 +187,14 @@ public class WarDatabase {
         return null;
     }
 
+    public static WarringEntity getWarringEntity(WarHealth warHealth) {
+        for (WarringEntity warringEntity : getWarringEntities()) {
+            if (warringEntity.getWarHealth().equals(warHealth))
+                return warringEntity;
+        }
+        return null;
+    }
+
     public static WarringTown getWarringTown(Town town) {
         for (WarringTown warringTown : WARRING_TOWNS) {
             if (warringTown.getTown().equals(town)) return warringTown;
