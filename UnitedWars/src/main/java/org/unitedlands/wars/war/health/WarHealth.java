@@ -44,7 +44,6 @@ public class WarHealth {
     }
 
     public void updateHealthBar() {
-        BossBar old = bossBar;
         String mainColor = getMainColor();
         String bracketColor = getBracketColor();
         String name = MessageFormat.format("{3}{0} <bold>HP: {4}[</bold>{3}{1}/{2}<bold>{4}]",
@@ -52,7 +51,6 @@ public class WarHealth {
         bossBar.name(getTitle(name));
         bossBar.progress((float) health / 100F);
         bossBar.color(getBossBarColor());
-        Bukkit.broadcastMessage(String.valueOf(old.equals(bossBar)));
     }
 
     private BossBar.Color getBossBarColor() {
@@ -70,10 +68,10 @@ public class WarHealth {
 
 
     public void show(Player player) {
-        player.showBossBar(bossBar);
+        player.showBossBar(getBossBar());
     }
     public void hide(Player player) {
-        player.hideBossBar(bossBar);
+        player.hideBossBar(getBossBar());
     }
     public void increaseHealth(int increment) {
         int newHealth = Math.min(maxHealth, health + increment);
