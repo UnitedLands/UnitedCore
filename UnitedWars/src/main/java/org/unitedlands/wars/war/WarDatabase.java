@@ -6,6 +6,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.war.entities.WarringEntity;
 import org.unitedlands.wars.war.entities.WarringNation;
@@ -229,13 +230,6 @@ public class WarDatabase {
         return getWar(player) != null;
     }
 
-    public static HashSet<WarringEntity> getWarringEntities() {
-        HashSet<WarringEntity> warringEntities = new HashSet<>();
-        warringEntities.addAll(WARRING_TOWNS);
-        warringEntities.addAll(WARRING_NATIONS);
-        return warringEntities;
-    }
-
 
     public static HashSet<WarringTown> getWarringTowns() {
         return WARRING_TOWNS;
@@ -247,15 +241,14 @@ public class WarDatabase {
     public static HashSet<War> getWars() {
         return WARS;
     }
-    public static void removeAll() {
-        for (WarringEntity warringEntity: getWarringEntities()) {
-            warringEntity.getWarParticipants().forEach(resident -> {
-                if (resident.isOnline()) {
-                    warringEntity.getWarHealth().hide(resident.getPlayer());
-                    resident.getPlayer().hideBossBar(warringEntity.getWarHealth().getBossBar());
-                }
-            });
-        }
+    @NotNull
+    public static HashSet<WarringEntity> getWarringEntities() {
+        HashSet<WarringEntity> warringEntities = new HashSet<>(WARRING_TOWNS);
+        warringEntities.addAll(WARRING_NATIONS);
+        return warringEntities;
+    }
+
+    public static void cleanUpBossBars() {
         for (War war: WarDatabase.getWars()) {
             if (war.hasActiveTimer()) {
                 war.getResidents().forEach(resident -> {
@@ -264,7 +257,17 @@ public class WarDatabase {
                     }
                 });
             }
+
+            war.getResidents().forEach(resident -> {
+                if (!resident.isOnline())
+                    return;
+                Player player = resident.getPlayer();
+                WarringEntity warringEntity = getWarringEntity(player);
+                player.hideBossBar(warringEntity.getWarHealth().getBossBar());
+            });
         }
+    }
+    public static void clearSets() {
         WARRING_TOWNS.clear();
         WARRING_NATIONS.clear();
         WARS_TO_REMOVE.addAll(WARS);

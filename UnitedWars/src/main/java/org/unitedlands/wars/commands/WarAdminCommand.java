@@ -10,7 +10,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.unitedlands.wars.UnitedWars;
@@ -92,7 +91,7 @@ public class WarAdminCommand implements TabExecutor {
 
     private void parsePurgeCommand() {
         TownyUniverse townyUniverse = TownyUniverse.getInstance();
-
+        WarDatabase.cleanUpBossBars();
         for (Town town: townyUniverse.getTowns()) {
             town.setActiveWar(false);
             WarDatabase.removeWarringTown(town);
@@ -109,8 +108,10 @@ public class WarAdminCommand implements TabExecutor {
             WarDataController.removeResidentLivesMeta(resident);
         }
 
-        WarDatabase.removeAll();
+        WarDatabase.clearSets();
         WarDatabase.saveWarData();
+
+        sender.sendMessage(Component.text("Purged all saved and ongoing wars!").color(NamedTextColor.GREEN));
     }
 
     private void parseEndCommand(WarringEntity winner, WarringEntity loser) {
