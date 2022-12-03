@@ -3,8 +3,14 @@ package org.unitedlands.wars.war;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.Utils;
+import org.unitedlands.wars.events.WarEndEvent;
 import org.unitedlands.wars.war.entities.WarringEntity;
 import org.unitedlands.wars.war.entities.WarringNation;
 import org.unitedlands.wars.war.entities.WarringTown;
@@ -84,9 +90,25 @@ public class War {
     }
 
     public void endWar(WarringEntity winner, WarringEntity loser) {
+        // Call event. Handle rewarding in WarListener
+        WarEndEvent warEndEvent = new WarEndEvent(this, winner, loser);
+        Bukkit.getServer().getPluginManager().callEvent(warEndEvent);
 
+        // Remove health.
+        hideHealth(winner);
+        hideHealth(loser);
+
+        // Notify entities
+        notifyWin(winner);
+        notifyLoss(loser);
+
+        // Clear from database.
+        WarDatabase.removeWarringEntity(winner);
+        WarDatabase.removeWarringEntity(loser);
+        WarDatabase.removeWar(this);
     }
 
+    // Called inside WarTimer.
     public void endWarTimer() {
         for (Resident resident : getResidents()) {
             Player player = resident.getPlayer();
@@ -147,6 +169,38 @@ public class War {
             return warTimer.getRemainingSeconds() > 0;
     }
 
+    private void hideHealth(WarringEntity warringEntity) {
+        warringEntity.getWarParticipants().forEach(resident -> {
+            Player player = resident.getPlayer();
+            if (player != null)
+                warringEntity.getWarHealth().hide(player);
+        });
+    }
+
+    private void notifyWin(WarringEntity warringEntity) {
+        Title title = Utils.getTitle("<dark_green>VICTORY!", "<green>The war has ended!");
+        warringEntity.getWarParticipants().forEach(resident -> {
+            Player player = resident.getPlayer();
+            if (player != null) {
+                player.showTitle(title);
+                player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_1, 1F, 1F);
+                player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
+                player.sendMessage(Utils.getMessage("war-won"));
+            }
+        });
+    }
+
+    private void notifyLoss(WarringEntity warringEntity) {
+        Title title = Utils.getTitle("<dark_red>WAR LOST!", "<red>The war has ended!");
+        warringEntity.getWarParticipants().forEach(resident -> {
+            Player player = resident.getPlayer();
+            if (player != null) {
+                player.showTitle(title);
+                player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
+                player.sendMessage(Utils.getMessage("war-lost"));
+            }
+        });
+    }
     private List<WarringTown> generateWarringTownList(List<Town> townList) {
         if (townList == null)
             return null;

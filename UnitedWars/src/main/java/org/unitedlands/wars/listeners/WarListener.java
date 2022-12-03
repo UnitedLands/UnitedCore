@@ -114,10 +114,6 @@ public class WarListener implements Listener {
         WarringTown loser = (WarringTown) event.getLoser();
 
         giveWarEarnings(winner.getTown(), loser.getTown());
-
-        // Remove from tracker
-        WarDatabase.removeWarringEntity(loser);
-        WarDatabase.removeWarringEntity(winner);
     }
 
     @EventHandler
@@ -135,10 +131,6 @@ public class WarListener implements Listener {
         }
 
         giveAdditionalNationEarnings(winner.getNation(), loser.getNation());
-
-        // Remove from tracker
-        WarDatabase.removeWarringEntity(loser);
-        WarDatabase.removeWarringEntity(winner);
     }
 
     @EventHandler
@@ -176,6 +168,11 @@ public class WarListener implements Listener {
     private void giveBonusClaims(Town winner, Town loser) {
         double bonusClaims = loser.getNumTownBlocks() * 0.25;
         winner.addBonusBlocks((int) bonusClaims);
+    }
+
+    private void giveBonusClaims(Nation winner, Nation loser) {
+        double bonusClaims = loser.getNumTownblocks() * 0.25;
+        winner.getCapital().addBonusBlocks((int) bonusClaims);
     }
 
     private void notifyDeclaration(Nation targetNation, Nation declaringNation) {
