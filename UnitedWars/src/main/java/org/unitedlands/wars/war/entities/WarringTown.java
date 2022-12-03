@@ -17,15 +17,6 @@ public class WarringTown implements WarringEntity {
     private final List<Resident> warringResidents;
     private final UUID warUUID;
 
-    public WarringTown(Town town, WarHealth warHealth, List<Resident> warringResidents, UUID warUUID) {
-        this.townUUID = town.getUUID();
-        this.warHealth = warHealth;
-        this.warringResidents = warringResidents;
-        this.warUUID = warUUID;
-
-        WarDatabase.addWarringTown(this);
-    }
-
     public WarringTown(Town town, WarHealth warHealth, List<Resident> warringResidents, War war) {
         this.townUUID = town.getUUID();
         this.warHealth = warHealth;

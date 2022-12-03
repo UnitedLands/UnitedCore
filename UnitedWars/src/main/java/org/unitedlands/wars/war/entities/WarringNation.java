@@ -17,16 +17,6 @@ public class WarringNation implements WarringEntity {
     private final List<Resident> warringResidents;
     private final UUID warUUID;
 
-    public WarringNation(Nation nation, WarHealth warHealth, List<Resident> warringResidents, UUID warUUID) {
-        this.nationUUID = nation.getUUID();
-        this.warHealth = warHealth;
-        this.warringResidents = warringResidents;
-        this.warUUID = warUUID;
-        if (nationUUID != null && warHealth != null && warUUID != null) {
-            WarDatabase.addWarringNation(this);
-        }
-    }
-
     public WarringNation(Nation nation, WarHealth warHealth, List<Resident> warringResidents, War war) {
         this.nationUUID = nation.getUUID();
         this.warHealth = warHealth;
