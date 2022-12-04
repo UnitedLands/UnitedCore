@@ -88,13 +88,12 @@ public class BookCommandParser {
         int cost = costCalculator.calculateWarCost();
 
         Confirmation.runOnAccept(() -> {
-            takeTokens(declaringTown, cost);
+            if (takeTokens(declaringTown, cost)) {
+                WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetTown), type);
+                player.getInventory().addItem(writableDeclaration.getBook());
 
-            WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetTown), type);
-            player.getInventory().addItem(writableDeclaration.getBook());
-
-            TownyMessaging.sendPrefixedTownMessage(declaringTown, Translatable.of("msg_town_purchased_declaration_of_type", declaringTown, type.name()));
-
+                TownyMessaging.sendPrefixedTownMessage(declaringTown, Translatable.of("msg_town_purchased_declaration_of_type", declaringTown, type.name()));
+            }
         }).setTitle(Translatable.of("msg_you_are_about_to_purchase_a_declaration_of_war_of_type_for_x_tokens", type.name(), cost)).sendTo(player);
     }
 
@@ -124,22 +123,21 @@ public class BookCommandParser {
 
         Confirmation.runOnAccept(() -> {
             Nation declaringNation = getPlayerTown(player).getNationOrNull();
-            takeTokens(declaringNation, cost);
-
-            player.getInventory().addItem(writableDeclaration.getBook());
-
-            TownyMessaging.sendPrefixedNationMessage(declaringNation, Translatable.of("msg_town_purchased_declaration_of_type", declaringNation, type.name()));
-
+            if (takeTokens(declaringNation, cost)) {
+                player.getInventory().addItem(writableDeclaration.getBook());
+                TownyMessaging.sendPrefixedNationMessage(declaringNation, Translatable.of("msg_town_purchased_declaration_of_type", declaringNation, type.name()));
+            }
         }).setTitle(Translatable.of("msg_you_are_about_to_purchase_a_declaration_of_war_of_type_for_x_tokens", type.name(), cost)).sendTo(player);
     }
 
-    private void takeTokens(TownyObject declarer, int cost) {
+    private boolean takeTokens(TownyObject declarer, int cost) {
         if (WarDataController.getWarTokens(declarer) < cost) {
             sender.sendMessage(getMessage("not-enough-tokens", Placeholder.component("cost", text(cost))));
-            return;
+            return false;
         }
         int remainder = WarDataController.getWarTokens(declarer) - cost;
         WarDataController.setTokens(declarer, remainder);
+        return true;
     }
 
     private boolean isNeutral(Resident resident) {
