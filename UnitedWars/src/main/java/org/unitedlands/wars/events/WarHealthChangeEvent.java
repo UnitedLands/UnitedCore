@@ -13,7 +13,7 @@ public class WarHealthChangeEvent extends Event {
     private final int newMax;
 
     public WarHealthChangeEvent(WarHealth health, int newHealth, int newMax) {
-        super(Bukkit.isPrimaryThread());
+        super(!Bukkit.getServer().isPrimaryThread());
         this.health = health;
         this.newHealth = newHealth;
         this.newMax = newMax;
