@@ -1,5 +1,6 @@
 package org.unitedlands.wars.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +13,7 @@ public class WarHealthChangeEvent extends Event {
     private final int newMax;
 
     public WarHealthChangeEvent(WarHealth health, int newHealth, int newMax) {
+        super(Bukkit.isPrimaryThread());
         this.health = health;
         this.newHealth = newHealth;
         this.newMax = newMax;
