@@ -26,7 +26,7 @@ public class WarUtil {
 
 
     public static boolean nationHasEnoughOnline(Nation nation) {
-        return TownyAPI.getInstance().getOnlinePlayersInNation(nation).size() > 1;
+        return TownyAPI.getInstance().getOnlinePlayersInNation(nation).size() >= 1;
     }
 
     public static boolean townHasEnoughOnline(Town town) {
