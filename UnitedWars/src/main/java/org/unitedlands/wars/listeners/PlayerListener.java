@@ -6,6 +6,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import de.jeff_media.angelchest.AngelChest;
 import de.jeff_media.angelchest.AngelChestPlugin;
 import de.jeff_media.angelchest.events.AngelChestSpawnEvent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -20,14 +21,17 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.war.WarDataController;
 import org.unitedlands.wars.war.WarDatabase;
-import org.unitedlands.wars.war.WarUtil;
 import org.unitedlands.wars.war.entities.WarringEntity;
 
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static org.unitedlands.wars.Utils.*;
+import static org.unitedlands.wars.war.WarUtil.hasSameWar;
 
 public class PlayerListener implements Listener {
     private final UnitedWars unitedWars;
@@ -97,7 +101,7 @@ public class PlayerListener implements Listener {
         Resident killer = getTownyResident(event.getKiller());
         Resident victim = getTownyResident(event.getVictim());
 
-        if (WarUtil.hasSameWar(killer, victim)) {
+        if (hasSameWar(killer, victim)) {
             // Killer doesn't have lives, return
             if (WarDataController.hasResidentLives(killer))
                 return;
@@ -106,8 +110,22 @@ public class PlayerListener implements Listener {
                 WarDataController.decrementResidentLives(victim);
                 WarringEntity warringEntity = WarDatabase.getWarringEntity(victim.getPlayer());
                 warringEntity.getWarHealth().decrementMaxHealth(5);
+
+                Component message = getPlayerDeathMessage(warringEntity, killer, victim);
+                warringEntity.getOnlinePlayers().forEach(player -> player.sendMessage(message));
             }
         }
+    }
+
+    @NotNull
+    private Component getPlayerDeathMessage(WarringEntity entity, Resident killer, Resident victim) {
+        return Utils.getMessage("player-killed",
+                component("<victim>",
+                        text(victim.getName())),
+                component("<killer>",
+                        text(killer.getName())),
+                component("<victim-warrer>",
+                        text(entity.name())));
     }
 
     @EventHandler
@@ -116,13 +134,20 @@ public class PlayerListener implements Listener {
             return;
 
         LivingEntity entity = event.getEntity();
-        if (entity instanceof Player player) {
-            WarringEntity warringEntity = WarDatabase.getWarringEntity(player);
+        if (entity instanceof Player victim) {
+            WarringEntity warringEntity = WarDatabase.getWarringEntity(victim);
             if (warringEntity == null)
                 return;
             warringEntity.getWarHealth().decrementHealth(1);
+
+            Component message = Utils.getMessage("totem-pop",
+                    component("<victim>", text(victim.getName())),
+                    component("<victim-warrer>", text(warringEntity.name())));
+
+            warringEntity.getOnlinePlayers().forEach(player -> player.sendMessage(message));
         }
     }
+
 
     @EventHandler
     public void onGraveInteract(PlayerInteractEvent event) {
@@ -135,7 +160,7 @@ public class PlayerListener implements Listener {
 
         Resident openingResident = getTownyResident(event.getPlayer());
         Resident graveResident = getTownyResident(chest.getPlayer().getUniqueId());
-        if (WarUtil.hasSameWar(openingResident, graveResident)) {
+        if (hasSameWar(openingResident, graveResident)) {
             chest.setProtected(false);
         }
     }
