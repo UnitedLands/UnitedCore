@@ -7,7 +7,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.unitedlands.wars.UnitedWars;
@@ -91,7 +90,7 @@ public class War {
         runPlayerProcedures();
 
         // Make the involved entities have an active war.
-        setActiveWar();
+        toggleActiveWar(true);
     }
 
     public void endWar(WarringEntity winner, WarringEntity loser) {
@@ -110,6 +109,9 @@ public class War {
         notifyLoss();
         // Give rewards
         giveWarEarnings();
+
+        // Toggle active war
+        toggleActiveWar(false);
 
         // Clear from database.
         WarDatabase.removeWarringEntity(winner);
@@ -154,21 +156,21 @@ public class War {
         }
     }
 
-    private void setActiveWar() {
+    private void toggleActiveWar(boolean toggle) {
         if (warType == WarType.TOWNWAR) {
             for (WarringTown town : warringTowns) {
-                town.getTown().setActiveWar(true);
+                town.getTown().setActiveWar(toggle);
                 WarDataController.setLastWarTime(town.getTown(), System.currentTimeMillis());
             }
         }
 
         if (warType == WarType.NATIONWAR) {
             for (WarringNation nation : warringNations) {
-                nation.getNation().setActiveWar(true);
+                nation.getNation().setActiveWar(toggle);
                 WarDataController.setLastWarTime(nation.getNation(), System.currentTimeMillis());
 
                 for (Nation ally : nation.getNation().getAllies()) {
-                    ally.setActiveWar(true);
+                    ally.setActiveWar(toggle);
                 }
             }
         }
@@ -190,7 +192,7 @@ public class War {
     }
 
     private void notifyWin() {
-        Title title = Utils.getTitle("<dark_green>VICTORY!", "<green>The war has ended!");
+        Title title = Utils.getTitle("<dark_green><bold>VICTORY!", "<green>The war has ended!");
         winner.getOnlinePlayers().forEach(player -> {
             player.showTitle(title);
          //   player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_1, 1F, 1F);
@@ -200,7 +202,7 @@ public class War {
     }
 
     private void notifyLoss() {
-        Title title = Utils.getTitle("<dark_red>WAR LOST!", "<red>The war has ended!");
+        Title title = Utils.getTitle("<dark_red><bold>WAR LOST!", "<red>The war has ended!");
         loser.getOnlinePlayers().forEach(player -> {
             player.showTitle(title);
          //   player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
