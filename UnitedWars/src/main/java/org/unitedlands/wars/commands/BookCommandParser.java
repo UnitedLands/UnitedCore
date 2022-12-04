@@ -123,7 +123,7 @@ public class BookCommandParser {
 
         Confirmation.runOnAccept(() -> {
             Nation declaringNation = getPlayerTown(player).getNationOrNull();
-            if (takeTokens(declaringNation, cost)) {
+            if (takeTokens(declaringNation.getCapital(), cost)) {
                 player.getInventory().addItem(writableDeclaration.getBook());
                 TownyMessaging.sendPrefixedNationMessage(declaringNation, Translatable.of("msg_town_purchased_declaration_of_type", declaringNation, type.name()));
             }
