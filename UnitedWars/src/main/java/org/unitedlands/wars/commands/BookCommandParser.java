@@ -157,13 +157,8 @@ public class BookCommandParser {
     private Translatable getConfirmationTitle(WarType warType, int cost) {
         String message = UnitedWars.getInstance().getConfig().getString("messages.war-confirmation")
                 .replace("<cost>", String.valueOf(cost))
-                .replace("<type>", getFormattedTypeName(warType));
+                .replace("<type>", warType.getFormattedName());
         return Translatable.of(message);
     }
 
-    private String getFormattedTypeName(WarType warType) {
-        String name = warType.name()
-                .substring(0,1).toUpperCase() + warType.name().substring(1).toLowerCase(); // Capitalize the first letter
-        return name + " War";
-    }
 }
