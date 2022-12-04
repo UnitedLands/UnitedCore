@@ -6,7 +6,6 @@ import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.economy.BankAccount;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Sound;
@@ -21,11 +20,8 @@ import org.unitedlands.wars.books.TokenCostCalculator;
 import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
 import org.unitedlands.wars.events.WarDeclareEvent;
-import org.unitedlands.wars.events.WarEndEvent;
-import org.unitedlands.wars.war.War;
-import org.unitedlands.wars.war.WarDataController;
-import org.unitedlands.wars.war.WarDatabase;
-import org.unitedlands.wars.war.WarType;
+import org.unitedlands.wars.events.WarHealthChangeEvent;
+import org.unitedlands.wars.war.*;
 import org.unitedlands.wars.war.entities.WarringEntity;
 import org.unitedlands.wars.war.entities.WarringNation;
 import org.unitedlands.wars.war.entities.WarringTown;
@@ -105,32 +101,18 @@ public class WarListener implements Listener {
     }
 
     @EventHandler
-    public void onTownWarEnd(WarEndEvent event) {
-        War war = event.getWar();
-        if (!war.getWarType().equals(WarType.TOWNWAR))
-            return;
+    public void onZeroHealth(WarHealthChangeEvent event) {
+        if (event.isZeroHealth()) {
+            WarringEntity warringEntity = WarDatabase.getWarringEntity(event.getHealth());
+            if (warringEntity == null)
+                return;
 
-        WarringTown winner = (WarringTown) event.getWinner();
-        WarringTown loser = (WarringTown) event.getLoser();
+            War war = warringEntity.getWar();
+            WarringEntity enemy = WarUtil.getOpposingEntity(warringEntity);
 
-        giveWarEarnings(winner.getTown(), loser.getTown());
-    }
-
-    @EventHandler
-    public void onNationWarEnd(WarEndEvent event) {
-        War war = event.getWar();
-        if (!war.getWarType().equals(WarType.NATIONWAR))
-            return;
-
-        // We know it's going to be a nation, since it's a nation war
-        WarringNation winner = (WarringNation) event.getWinner();
-        WarringNation loser = (WarringNation) event.getLoser();
-
-        for (Town losingTown : loser.getNation().getTowns()) {
-            giveWarEarnings(winner.getNation().getCapital(), losingTown);
+            war.endWar(enemy, warringEntity);
         }
 
-        giveAdditionalNationEarnings(winner.getNation(), loser.getNation());
     }
 
     @EventHandler
@@ -149,25 +131,6 @@ public class WarListener implements Listener {
             Nation targetNation = target.nation();
             notifyDeclaration(targetNation, declaringNation);
         }
-    }
-
-    private void giveWarEarnings(Town winningTown, Town losingTown) {
-        BankAccount winnerAccount = winningTown.getAccount();
-        double amount = winnerAccount.getHoldingBalance() * 0.5;
-        losingTown.getAccount().withdraw(amount, "Lost a war");
-        winnerAccount.deposit(amount, "Won a war");
-        giveBonusClaims(winningTown, losingTown);
-    }
-
-    private void giveAdditionalNationEarnings(Nation winningNation, Nation losingNation) {
-        double amount = losingNation.getAccount().getHoldingBalance() * 0.5;
-        losingNation.getAccount().withdraw(amount, "Lost a war");
-        winningNation.getAccount().deposit(amount, "Won a war");
-    }
-
-    private void giveBonusClaims(Town winner, Town loser) {
-        double bonusClaims = loser.getNumTownBlocks() * 0.25;
-        winner.addBonusBlocks((int) bonusClaims);
     }
 
     private void giveBonusClaims(Nation winner, Nation loser) {

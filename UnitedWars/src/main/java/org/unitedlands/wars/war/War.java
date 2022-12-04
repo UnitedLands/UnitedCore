@@ -3,6 +3,8 @@ package org.unitedlands.wars.war;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -18,8 +20,10 @@ import org.unitedlands.wars.war.health.WarHealth;
 
 import java.util.*;
 
+import static net.kyori.adventure.text.Component.text;
 import static org.unitedlands.wars.Utils.isBannedWorld;
 import static org.unitedlands.wars.Utils.teleportPlayerToSpawn;
+import static org.unitedlands.wars.war.WarUtil.*;
 
 public class War {
     private static final UnitedWars plugin = UnitedWars.getInstance();
@@ -29,6 +33,8 @@ public class War {
     private final WarType warType;
     private UUID uuid = UUID.randomUUID();
     private WarTimer warTimer = null;
+    private WarringEntity winner;
+    private WarringEntity loser;
 
     public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType) {
         this.warringTowns = generateWarringTownList(warringTowns);
@@ -90,6 +96,8 @@ public class War {
     }
 
     public void endWar(WarringEntity winner, WarringEntity loser) {
+        this.winner = winner;
+        this.loser = loser;
         // Call event. Handle rewarding in WarListener
         WarEndEvent warEndEvent = new WarEndEvent(this, winner, loser);
         Bukkit.getServer().getPluginManager().callEvent(warEndEvent);
@@ -99,8 +107,10 @@ public class War {
         hideHealth(loser);
 
         // Notify entities
-        notifyWin(winner);
-        notifyLoss(loser);
+        notifyWin();
+        notifyLoss();
+        // Give rewards
+        giveWarEarnings();
 
         // Clear from database.
         WarDatabase.removeWarringEntity(winner);
@@ -177,29 +187,67 @@ public class War {
         });
     }
 
-    private void notifyWin(WarringEntity warringEntity) {
+    private void notifyWin() {
         Title title = Utils.getTitle("<dark_green>VICTORY!", "<green>The war has ended!");
-        warringEntity.getWarParticipants().forEach(resident -> {
-            Player player = resident.getPlayer();
-            if (player != null) {
-                player.showTitle(title);
-                player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_1, 1F, 1F);
-                player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
-                player.sendMessage(Utils.getMessage("war-won"));
-            }
+        winner.getOnlinePlayers().forEach(player -> {
+            player.showTitle(title);
+            player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_1, 1F, 1F);
+            player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
+            player.sendMessage(Utils.getMessage("war-won", getWonAndLostPlaceholders()));
         });
     }
 
-    private void notifyLoss(WarringEntity warringEntity) {
+    private void notifyLoss() {
         Title title = Utils.getTitle("<dark_red>WAR LOST!", "<red>The war has ended!");
-        warringEntity.getWarParticipants().forEach(resident -> {
-            Player player = resident.getPlayer();
-            if (player != null) {
-                player.showTitle(title);
-                player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
-                player.sendMessage(Utils.getMessage("war-lost"));
-            }
+        loser.getOnlinePlayers().forEach(player -> {
+            player.showTitle(title);
+            player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
+            player.sendMessage(Utils.getMessage("war-lost", getWonAndLostPlaceholders()));
         });
+    }
+
+    private TagResolver.Single[] getWonAndLostPlaceholders() {
+        return new TagResolver.Single[] {
+                Placeholder.component("<money-amount>", text(calculateWonMoney())),
+                Placeholder.component("<bonus-claims>", text(calculateBonusBlocks())),
+                Placeholder.component("<winner>", text(winner.name())),
+                Placeholder.component("<loser>", text(loser.name()))
+        };
+    }
+
+
+    private void giveWarEarnings() {
+        if (winner instanceof WarringTown town) {
+            town.getTown().getAccount().deposit(calculateWonMoney(), "Won a war against " + loser.name());
+            town.getTown().addBonusBlocks(calculateBonusBlocks());
+        } else {
+            WarringNation winningNation = (WarringNation) winner;
+            winningNation.getNation().getCapital().getAccount().deposit(calculateWonMoney(), "Won a war against" + loser.name());
+            winningNation.getNation().getCapital().addBonusBlocks(calculateBonusBlocks());
+        }
+    }
+
+    private int calculateBonusBlocks() {
+        if (loser instanceof WarringTown warringTown) {
+            return (int) (warringTown.getTown().getNumTownBlocks() * 0.25);
+        } else {
+            WarringNation losingNation = (WarringNation) loser;
+            return (int) (losingNation.getNation().getNumTownblocks() * 0.25);
+        }
+    }
+
+    private double calculateWonMoney() {
+        if (loser instanceof WarringTown warringTown) {
+            return warringTown.getTown().getAccount().getHoldingBalance() * 0.5;
+        } else {
+            double total = 0;
+            WarringNation losingNation = (WarringNation) loser;
+            for (Town town : losingNation.getNation().getTowns()) {
+                total += town.getAccount().getHoldingBalance() * 0.5;
+            }
+            total += losingNation.getNation().getAccount().getHoldingBalance() * 0.5;
+            return total;
+        }
     }
     private List<WarringTown> generateWarringTownList(List<Town> townList) {
         if (townList == null)
