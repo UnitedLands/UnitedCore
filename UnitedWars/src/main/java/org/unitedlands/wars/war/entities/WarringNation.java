@@ -2,11 +2,13 @@ package org.unitedlands.wars.war.entities;
 
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
+import org.bukkit.entity.Player;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.war.War;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.health.WarHealth;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -36,6 +38,17 @@ public class WarringNation implements WarringEntity {
 
     public List<Resident> getWarParticipants() {
         return warringResidents;
+    }
+
+    @Override
+    public List<Player> getOnlinePlayers() {
+        List<Player> players = new ArrayList<>();
+        getWarParticipants().forEach(resident -> {
+            if (resident.getPlayer() != null) {
+                players.add(resident.getPlayer());
+            }
+        });
+        return players;
     }
 
     public UUID getUUID() {
