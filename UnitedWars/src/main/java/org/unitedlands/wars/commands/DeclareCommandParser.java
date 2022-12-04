@@ -77,7 +77,7 @@ public class DeclareCommandParser {
         }
         Confirmation.runOnAccept(() -> {
             try {
-                this.testBookRequirementsAreMet(WarType.TOWN);
+                this.testBookRequirementsAreMet(WarType.TOWNWAR);
             } catch (TownyException exception) {
                 TownyMessaging.sendErrorMsg(this.sender, exception.getMessage());
                 return;
@@ -103,7 +103,7 @@ public class DeclareCommandParser {
             WarDeclareEvent wde = new WarDeclareEvent(getWarHeldBook());
             Bukkit.getServer().getPluginManager().callEvent(wde);
 
-            new War(towns, null, residents, WarType.TOWN);
+            new War(towns, null, residents, WarType.TOWNWAR);
             removeHeldBook(player);
         }).setTitle(Translatable.of("player_are_you_sure_you_want_to_start_a_townwar", targetTown)).sendTo(player);
     }
@@ -121,7 +121,7 @@ public class DeclareCommandParser {
         }
         Confirmation.runOnAccept(() -> {
             try {
-                this.testBookRequirementsAreMet(WarType.NATION);
+                this.testBookRequirementsAreMet(WarType.NATIONWAR);
             } catch (TownyException var10) {
                 TownyMessaging.sendErrorMsg(this.sender, var10.getMessage());
                 return;
@@ -146,7 +146,7 @@ public class DeclareCommandParser {
             WarDeclareEvent wde = new WarDeclareEvent(getWarHeldBook());
             Bukkit.getServer().getPluginManager().callEvent(wde);
 
-            new War(null, nations, residents, WarType.NATION);
+            new War(null, nations, residents, WarType.NATIONWAR);
             removeHeldBook(player);
 
         }).setTitle(Translatable.of("player_are_you_sure_you_want_to_start_a_nationwar", targetNation)).sendTo(player);
@@ -175,7 +175,7 @@ public class DeclareCommandParser {
         if (book.getType() != Material.WRITTEN_BOOK) return null;
         BookMeta meta = (BookMeta) book.getItemMeta();
         WritableDeclaration writableDeclaration = generateWritableDeclaration(meta);
-        if (writableDeclaration.getWarType() == WarType.TOWN) {
+        if (writableDeclaration.getWarType() == WarType.TOWNWAR) {
             return new TownDeclarationBook(writableDeclaration);
         } else {
             return new NationDeclarationBook(writableDeclaration);

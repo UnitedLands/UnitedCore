@@ -53,9 +53,9 @@ public class BookListener implements Listener {
         // Generate the sealed book.
         WarType type = writableDeclaration.getWarType();
         DeclarationWarBook declarationBook = null;
-        if (type == WarType.TOWN) {
+        if (type == WarType.TOWNWAR) {
             declarationBook = new TownDeclarationBook(writableDeclaration);
-        } else if (type == WarType.NATION) {
+        } else if (type == WarType.NATIONWAR) {
             declarationBook = new NationDeclarationBook(writableDeclaration);
         }
 

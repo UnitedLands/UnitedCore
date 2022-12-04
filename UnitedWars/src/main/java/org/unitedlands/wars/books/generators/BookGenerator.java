@@ -100,9 +100,9 @@ public class BookGenerator {
         } else {
             town = warBook.getWarTarget().town();
         }
-        if (warType == WarType.TOWN) {
+        if (warType == WarType.TOWNWAR) {
             return town.getFormattedName();
-        } else if (warType == WarType.NATION) {
+        } else if (warType == WarType.NATIONWAR) {
             return town.getNationOrNull().getFormattedName();
         }
         return town.getMayor().getPlayer().getName();
@@ -113,7 +113,7 @@ public class BookGenerator {
     }
 
     private TagResolver.Single placeholderStat(String name) {
-        if (warBook.getType() == WarType.NATION) {
+        if (warBook.getType() == WarType.NATIONWAR) {
             String[] split = name.split("-");
             String type = split[0];
             String stat = split[1];
@@ -127,7 +127,7 @@ public class BookGenerator {
         }
 
 
-        if (warBook.getType() == WarType.TOWN) {
+        if (warBook.getType() == WarType.TOWNWAR) {
             String[] split = name.split("-");
             String type = split[0];
             String stat = split[1];

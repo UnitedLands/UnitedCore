@@ -58,7 +58,7 @@ public class WarDatabase {
             }
 
             // Start loading saved nations
-            if (warType.equals(WarType.NATION)) {
+            if (warType.equals(WarType.NATIONWAR)) {
                 ConfigurationSection savedNations = warSection.getConfigurationSection("warring-nations");
                 for (String nationUUID : savedNations.getKeys(false)) {
                     Nation nation = UnitedWars.TOWNY_API.getNation(UUID.fromString(nationUUID));
@@ -105,10 +105,10 @@ public class WarDatabase {
             warSection.set("type", war.getWarType().toString());
             // Create a unified list of all war participants.
             List<WarringEntity> warringEntities = new ArrayList<>();
-            if (war.getWarType() == WarType.TOWN) {
+            if (war.getWarType() == WarType.TOWNWAR) {
                 warringEntities.addAll(war.getWarringTowns());
             }
-            if (war.getWarType() == WarType.NATION) {
+            if (war.getWarType() == WarType.NATIONWAR) {
                 warringEntities.addAll(war.getWarringNations());
             }
             // Loop through each involved Entity in the war.

@@ -152,14 +152,14 @@ public class War {
     }
 
     private void setActiveWar() {
-        if (warType == WarType.TOWN) {
+        if (warType == WarType.TOWNWAR) {
             for (WarringTown town : warringTowns) {
                 town.getTown().setActiveWar(true);
                 WarDataController.setLastWarTime(town.getTown(), System.currentTimeMillis());
             }
         }
 
-        if (warType == WarType.NATION) {
+        if (warType == WarType.NATIONWAR) {
             for (WarringNation nation : warringNations) {
                 nation.getNation().setActiveWar(true);
                 WarDataController.setLastWarTime(nation.getNation(), System.currentTimeMillis());
