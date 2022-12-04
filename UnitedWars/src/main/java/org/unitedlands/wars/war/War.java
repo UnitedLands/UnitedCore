@@ -134,6 +134,9 @@ public class War {
 
     private void runPlayerProcedures() {
         for (Resident resident : getResidents()) {
+            // Set player lives
+            WarDataController.setResidentLives(resident, 3);
+
             Player player = resident.getPlayer();
             // Player is offline, next
             if (player == null) continue;
@@ -146,8 +149,6 @@ public class War {
             for (String command : plugin.getConfig().getStringList("commands-on-war-start"))
                 player.performCommand(command);
 
-            // Set player lives
-            WarDataController.setResidentLives(resident, 3);
         }
     }
 
