@@ -103,7 +103,7 @@ public class PlayerListener implements Listener {
 
         if (hasSameWar(killer, victim)) {
             // Killer doesn't have lives, return
-            if (WarDataController.hasResidentLives(killer))
+            if (!WarDataController.hasResidentLives(killer))
                 return;
 
             if (WarDataController.hasResidentLives(victim)) {
@@ -120,11 +120,11 @@ public class PlayerListener implements Listener {
     @NotNull
     private Component getPlayerDeathMessage(WarringEntity entity, Resident killer, Resident victim) {
         return Utils.getMessage("player-killed",
-                component("<victim>",
+                component("victim",
                         text(victim.getName())),
-                component("<killer>",
+                component("killer",
                         text(killer.getName())),
-                component("<victim-warrer>",
+                component("victim-warrer",
                         text(entity.name())));
     }
 
@@ -141,8 +141,8 @@ public class PlayerListener implements Listener {
             warringEntity.getWarHealth().decrementHealth(1);
 
             Component message = Utils.getMessage("totem-pop",
-                    component("<victim>", text(victim.getName())),
-                    component("<victim-warrer>", text(warringEntity.name())));
+                    component("victim", text(victim.getName())),
+                    component("victim-warrer", text(warringEntity.name())));
 
             warringEntity.getOnlinePlayers().forEach(player -> player.sendMessage(message));
         }
