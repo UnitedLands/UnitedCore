@@ -48,13 +48,15 @@ public class WarDatabase {
             WarType warType = WarType.valueOf(warSection.getString("type"));
 
             // Start loading the saved towns
-            ConfigurationSection savedTowns = warSection.getConfigurationSection("warring-towns");
-            for (String townUUID : savedTowns.getKeys(false)) {
-                Town town = UnitedWars.TOWNY_API.getTown(UUID.fromString(townUUID));
-                if (town == null) continue;
+            if (warType.equals(WarType.TOWNWAR)) {
+                ConfigurationSection savedTowns = warSection.getConfigurationSection("warring-towns");
+                for (String townUUID : savedTowns.getKeys(false)) {
+                    Town town = UnitedWars.TOWNY_API.getTown(UUID.fromString(townUUID));
+                    if (town == null) continue;
 
-                towns.add(town);
-                warResidents.addAll(town.getResidents());
+                    towns.add(town);
+                    warResidents.addAll(town.getResidents());
+                }
             }
 
             // Start loading saved nations
