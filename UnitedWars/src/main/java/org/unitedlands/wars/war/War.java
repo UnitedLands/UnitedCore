@@ -208,10 +208,10 @@ public class War {
 
     private TagResolver.Single[] getWonAndLostPlaceholders() {
         return new TagResolver.Single[] {
-                Placeholder.component("<money-amount>", text(calculateWonMoney())),
-                Placeholder.component("<bonus-claims>", text(calculateBonusBlocks())),
-                Placeholder.component("<winner>", text(winner.name())),
-                Placeholder.component("<loser>", text(loser.name()))
+                Placeholder.component("money-amount", text(calculateWonMoney())),
+                Placeholder.component("bonus-claims", text(calculateBonusBlocks())),
+                Placeholder.component("winner", text(winner.name())),
+                Placeholder.component("loser", text(loser.name()))
         };
     }
 
