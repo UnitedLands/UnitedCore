@@ -112,7 +112,11 @@ public class PlayerListener implements Listener {
                 warringEntity.getWarHealth().decrementMaxHealth(5);
 
                 Component message = getPlayerDeathMessage(warringEntity, killer, victim);
-                warringEntity.getOnlinePlayers().forEach(player -> player.sendMessage(message));
+                for (Resident resident : warringEntity.getWar().getResidents()) {
+                    if (resident.getPlayer() != null) {
+                        resident.getPlayer().sendMessage(message);
+                    }
+                }
             }
         }
     }
@@ -144,7 +148,11 @@ public class PlayerListener implements Listener {
                     component("victim", text(victim.getName())),
                     component("victim-warrer", text(warringEntity.name())));
 
-            warringEntity.getOnlinePlayers().forEach(player -> player.sendMessage(message));
+            for (Resident resident : warringEntity.getWar().getResidents()) {
+                if (resident.getPlayer() != null) {
+                    resident.getPlayer().sendMessage(message);
+                }
+            }
         }
     }
 
