@@ -123,6 +123,8 @@ public class War {
             Player player = resident.getPlayer();
             // Player is offline, next
             if (player == null) continue;
+            // Remove for again for safe measures
+            warTimer.removeViewer(player);
 
             // Show the health.
             WarringEntity warringEntity = WarDatabase.getWarringEntity(player);
@@ -191,7 +193,7 @@ public class War {
         Title title = Utils.getTitle("<dark_green>VICTORY!", "<green>The war has ended!");
         winner.getOnlinePlayers().forEach(player -> {
             player.showTitle(title);
-            player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_1, 1F, 1F);
+         //   player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_1, 1F, 1F);
             player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
             player.sendMessage(Utils.getMessage("war-won", getWonAndLostPlaceholders()));
         });
@@ -201,7 +203,7 @@ public class War {
         Title title = Utils.getTitle("<dark_red>WAR LOST!", "<red>The war has ended!");
         loser.getOnlinePlayers().forEach(player -> {
             player.showTitle(title);
-            player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
+         //   player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
             player.sendMessage(Utils.getMessage("war-lost", getWonAndLostPlaceholders()));
         });
     }
