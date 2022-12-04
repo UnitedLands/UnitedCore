@@ -281,3 +281,4 @@ messages:
   war-lost: 'You''ve lost the war... Your enemy has taken over <bold><gold><money-amount></gold></bold> Gold from your total balance, and they''ve earned <bonus-claims> bonus claims from you.'
   player-killed: '<red><killer> killed <victim>! <victim-warrer> has lost <dark_red>5 health</dark_red> permanently!'
   totem-pop: '<red><victim> has popped a totem! <victim-warrer> lost 1 hp!'
+  war-confirmation: '<blue>Are you sure you want to create a <type> book? This will cost you <cost> War tokens!'

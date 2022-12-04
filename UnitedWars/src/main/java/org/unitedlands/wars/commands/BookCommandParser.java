@@ -94,7 +94,7 @@ public class BookCommandParser {
 
                 TownyMessaging.sendPrefixedTownMessage(declaringTown, Translatable.of("msg_town_purchased_declaration_of_type", declaringTown, type.name()));
             }
-        }).setTitle(Translatable.of("msg_you_are_about_to_purchase_a_declaration_of_war_of_type_for_x_tokens", type.name(), cost)).sendTo(player);
+        }).setTitle(getConfirmationTitle(type, cost)).sendTo(player);
     }
 
     private void parseNationBookCreationCommand(@NotNull String target) {
@@ -127,7 +127,7 @@ public class BookCommandParser {
                 player.getInventory().addItem(writableDeclaration.getBook());
                 TownyMessaging.sendPrefixedNationMessage(declaringNation, Translatable.of("msg_town_purchased_declaration_of_type", declaringNation, type.name()));
             }
-        }).setTitle(Translatable.of("msg_you_are_about_to_purchase_a_declaration_of_war_of_type_for_x_tokens", type.name(), cost)).sendTo(player);
+        }).setTitle(getConfirmationTitle(type, cost)).sendTo(player);
     }
 
     private boolean takeTokens(TownyObject declarer, int cost) {
@@ -152,5 +152,18 @@ public class BookCommandParser {
             return resident.getNationOrNull().hasActiveWar();
         }
         return resident.getTownOrNull().hasActiveWar();
+    }
+
+    private Translatable getConfirmationTitle(WarType warType, int cost) {
+        String message = UnitedWars.getInstance().getConfig().getString("messages.war-confirmation")
+                .replace("<cost>", String.valueOf(cost))
+                .replace("<type>", getFormattedTypeName(warType));
+        return Translatable.of(message);
+    }
+
+    private String getFormattedTypeName(WarType warType) {
+        String name = warType.name()
+                .substring(0,1).toUpperCase() + warType.name().substring(1).toLowerCase(); // Capitalize the first letter
+        return name + " War";
     }
 }
