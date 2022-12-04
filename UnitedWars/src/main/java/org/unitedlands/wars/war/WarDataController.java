@@ -17,8 +17,7 @@ public class WarDataController {
     }
 
     public static boolean hasResidentLives(Resident res) {
-        IntegerDataField idf = (IntegerDataField) residentLives.clone();
-        return res.hasMeta(idf.getKey());
+        return getResidentLives(res) > 0;
     }
 
     public static void setResidentLives(Resident res, int lives) {
