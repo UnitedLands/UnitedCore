@@ -70,15 +70,9 @@ public class WarListener implements Listener {
 
         for (WarringTown warringTown : WarDatabase.getWarringTowns()) {
             warringTown.getWarHealth().decrementHealth(20);
-            if (warringTown.getWarHealth().getValue() == 0) {
-                WarDatabase.removeWarringTown(warringTown.getTown());
-            }
         }
         for (WarringNation warringNation : WarDatabase.getWarringNations()) {
             warringNation.getWarHealth().decrementHealth(20);
-            if (warringNation.getWarHealth().getValue() == 0) {
-                WarDatabase.removeWarringNation(warringNation.getNation());
-            }
         }
     }
 
