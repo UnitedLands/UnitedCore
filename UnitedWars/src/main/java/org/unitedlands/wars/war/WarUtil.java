@@ -92,7 +92,7 @@ public class WarUtil {
     public static boolean hasSameWar(Resident first, Resident second) {
         Player player = first.getPlayer();
         Player secondPlayer = second.getPlayer();
-        if (!WarDatabase.hasWar(player) && !WarDatabase.hasWar(secondPlayer))
+        if (!WarDatabase.hasWar(player) || !WarDatabase.hasWar(secondPlayer))
             return false;
 
         return WarDatabase.getWar(player).equals(WarDatabase.getWar(secondPlayer));
