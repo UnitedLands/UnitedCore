@@ -275,6 +275,7 @@ messages:
   must-be-mayor: '<red>Only mayors can create war books!'
   only-mayors-can-sign: '<red>Only the mayor of <yellow><declarer-name><red> can sign this declaration book!'
   must-not-be-neutral-target: '<red>Target is neutral! You can only create books for non-neutral towns!'
+  must-declare-nationwar: '<red>You cannot declare a <yellow>town war</yellow> because both sides have nations! Declare a <yellow>nation war</yellow> instead!'
   ongoing-war-target: '<red>Target has an ongoing war!'
   war-won: '<green>Victory! The war has ended! You''ve won <bold><gold><money-amount></gold></bold> Gold from your enemy''s balance, and an extra <bonus-claims> bonus claims!'
   war-lost: 'You''ve lost the war... Your enemy has taken over <bold><gold><money-amount></gold></bold> Gold from your total balance, and they''ve earned <bonus-claims> bonus claims from you.'

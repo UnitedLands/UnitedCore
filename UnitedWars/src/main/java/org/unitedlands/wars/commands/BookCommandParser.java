@@ -76,13 +76,18 @@ public class BookCommandParser {
             player.sendMessage(getMessage("ongoing-war-target"));
             return;
         }
+        Town declaringTown = getPlayerTown(player);
+        // Both have a nation, force a nation war.
+        if (targetTown.hasNation() && declaringTown.hasNation()) {
+            player.sendMessage(getMessage("must-declare-nationwar"));
+            return;
+        }
 
         WarType type = WarType.TOWNWAR;
         TokenCostCalculator costCalculator = new TokenCostCalculator(targetTown);
         int cost = costCalculator.calculateWarCost();
 
         Confirmation.runOnAccept(() -> {
-            Town declaringTown = getPlayerTown(player);
             takeTokens(declaringTown, cost);
 
             WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetTown), type);
