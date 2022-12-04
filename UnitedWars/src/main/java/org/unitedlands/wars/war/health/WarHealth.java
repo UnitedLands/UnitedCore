@@ -78,7 +78,7 @@ public class WarHealth {
 
     public void increaseHealth(int increment) {
         int newHealth = Math.min(maxHealth, health + increment);
-        WarHealthChangeEvent whce = new WarHealthChangeEvent(this, health, maxHealth, newHealth, maxHealth);
+        WarHealthChangeEvent whce = new WarHealthChangeEvent(this, newHealth, maxHealth);
         Bukkit.getServer().getPluginManager().callEvent(whce);
         this.health = newHealth;
         updateHealthBar();
@@ -86,14 +86,14 @@ public class WarHealth {
 
     public void decrementHealth(int decrement) {
         int newHealth = Math.max(0, health - decrement);
-        WarHealthChangeEvent whce = new WarHealthChangeEvent(this, health, maxHealth, newHealth, maxHealth);
+        WarHealthChangeEvent whce = new WarHealthChangeEvent(this, newHealth, maxHealth);
         Bukkit.getServer().getPluginManager().callEvent(whce);
         this.health = newHealth;
         updateHealthBar();
     }
 
     public void setHealth(int health) {
-        WarHealthChangeEvent whce = new WarHealthChangeEvent(this, this.health, maxHealth, health, maxHealth);
+        WarHealthChangeEvent whce = new WarHealthChangeEvent(this, health, maxHealth);
         Bukkit.getServer().getPluginManager().callEvent(whce);
         this.health = health;
         updateHealthBar();
@@ -108,6 +108,8 @@ public class WarHealth {
     }
 
     public void setMaxHealth(int maxHealth) {
+        WarHealthChangeEvent whce = new WarHealthChangeEvent(this, health, Math.max(0, maxHealth));
+        Bukkit.getServer().getPluginManager().callEvent(whce);
         if (health == this.maxHealth) {
             setHealth(maxHealth);
         }

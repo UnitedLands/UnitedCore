@@ -8,16 +8,12 @@ import org.unitedlands.wars.war.health.WarHealth;
 public class WarHealthChangeEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final WarHealth health;
-    private final int previousHealth;
     private final int newHealth;
-    private final int previousMax;
     private final int newMax;
 
-    public WarHealthChangeEvent(WarHealth health, int previousHealth, int previousMax, int newHealth, int newMax) {
+    public WarHealthChangeEvent(WarHealth health, int newHealth, int newMax) {
         this.health = health;
-        this.previousHealth = previousHealth;
         this.newHealth = newHealth;
-        this.previousMax = previousMax;
         this.newMax = newMax;
     }
 
@@ -33,27 +29,8 @@ public class WarHealthChangeEvent extends Event {
         return health;
     }
 
-    public int getHealthDifference() {
-        return Math.abs(this.newHealth - previousHealth);
-    }
-
-    public int getMaxDifference() {
-        return Math.abs(this.newMax - previousMax);
-    }
-
 
     public boolean isZeroHealth() {
         return newHealth == 0 || newMax == 0;
-    }
-    public boolean maxHealthDecreased() {
-        return previousMax < newMax;
-    }
-
-    public boolean healthIncreased() {
-        return newHealth > previousHealth;
-    }
-
-    public boolean healthDecreased() {
-        return previousHealth < newHealth;
     }
 }
