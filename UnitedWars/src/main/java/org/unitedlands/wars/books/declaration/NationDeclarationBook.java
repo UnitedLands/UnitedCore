@@ -30,7 +30,7 @@ public class NationDeclarationBook implements DeclarationWarBook {
 
     @Override
     public WarType getType() {
-        return WarType.NATIONWAR;
+        return WarType.NATION;
     }
 
     @Override

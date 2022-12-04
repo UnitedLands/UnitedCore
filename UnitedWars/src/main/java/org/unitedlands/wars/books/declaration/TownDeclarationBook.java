@@ -30,7 +30,7 @@ public class TownDeclarationBook implements DeclarationWarBook {
 
     @Override
     public WarType getType() {
-        return WarType.TOWNWAR;
+        return WarType.TOWN;
     }
 
     @Override

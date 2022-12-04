@@ -18,13 +18,13 @@ public class TokenCostCalculator {
     public TokenCostCalculator(Town town) {
         this.residents = town.getResidents();
         this.size = town.getNumTownBlocks();
-        this.type = WarType.TOWNWAR;
+        this.type = WarType.TOWN;
     }
 
     public TokenCostCalculator(Nation nation) {
         this.residents = nation.getResidents();
         this.size = nation.getNumTownblocks();
-        this.type = WarType.TOWNWAR;
+        this.type = WarType.TOWN;
     }
 
     public int calculateTokenIncome() {

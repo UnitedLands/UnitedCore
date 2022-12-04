@@ -23,7 +23,6 @@ import java.util.*;
 import static net.kyori.adventure.text.Component.text;
 import static org.unitedlands.wars.Utils.isBannedWorld;
 import static org.unitedlands.wars.Utils.teleportPlayerToSpawn;
-import static org.unitedlands.wars.war.WarUtil.*;
 
 public class War {
     private static final UnitedWars plugin = UnitedWars.getInstance();
@@ -153,14 +152,14 @@ public class War {
     }
 
     private void setActiveWar() {
-        if (warType == WarType.TOWNWAR) {
+        if (warType == WarType.TOWN) {
             for (WarringTown town : warringTowns) {
                 town.getTown().setActiveWar(true);
                 WarDataController.setLastWarTime(town.getTown(), System.currentTimeMillis());
             }
         }
 
-        if (warType == WarType.NATIONWAR) {
+        if (warType == WarType.NATION) {
             for (WarringNation nation : warringNations) {
                 nation.getNation().setActiveWar(true);
                 WarDataController.setLastWarTime(nation.getNation(), System.currentTimeMillis());

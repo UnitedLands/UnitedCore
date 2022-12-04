@@ -73,7 +73,7 @@ public class WarUtil {
     @NotNull
     private static WarTarget getWarTarget(WarType warType, UUID targetUUID) {
         WarTarget warTarget;
-        if (warType == WarType.TOWNWAR)
+        if (warType == WarType.TOWN)
             warTarget = new WarTarget(UnitedWars.TOWNY_API.getTown(targetUUID));
         else
             warTarget = new WarTarget(UnitedWars.TOWNY_API.getNation(targetUUID));

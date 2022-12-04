@@ -18,7 +18,7 @@ public class WarTarget {
     public WarTarget(Town town) {
         this.town = town;
         targetMayor = Bukkit.getOfflinePlayer(town.getMayor().getUUID());
-        type = WarType.TOWNWAR;
+        type = WarType.TOWN;
         if (town.hasNation())
             nation = town.getNationOrNull();
         else
@@ -28,7 +28,7 @@ public class WarTarget {
     public WarTarget(Nation nation) {
         this.nation = nation;
         this.town = nation.getCapital();
-        type = WarType.NATIONWAR;
+        type = WarType.NATION;
         targetMayor = Bukkit.getOfflinePlayer(town.getMayor().getUUID());
     }
 
@@ -45,7 +45,7 @@ public class WarTarget {
     }
 
     public UUID uuid() {
-        if (type == WarType.NATIONWAR)
+        if (type == WarType.NATION)
             return nation.getUUID();
         else
             return town.getUUID();

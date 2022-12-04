@@ -120,13 +120,13 @@ public class WarListener implements Listener {
         Declarer declarer = event.getDeclarer();
         WarTarget target = event.getTarget();
 
-        if (event.getDeclarationWarBook().getType() == WarType.TOWNWAR) {
+        if (event.getDeclarationWarBook().getType() == WarType.TOWN) {
             Town declaringTown = declarer.town();
             Town targetTown = target.town();
             notifyDeclaration(targetTown, declaringTown);
         }
 
-        if (event.getDeclarationWarBook().getType() == WarType.NATIONWAR) {
+        if (event.getDeclarationWarBook().getType() == WarType.NATION) {
             Nation declaringNation = declarer.nation();
             Nation targetNation = target.nation();
             notifyDeclaration(targetNation, declaringNation);

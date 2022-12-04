@@ -83,7 +83,7 @@ public class BookCommandParser {
             return;
         }
 
-        WarType type = WarType.TOWNWAR;
+        WarType type = WarType.TOWN;
         TokenCostCalculator costCalculator = new TokenCostCalculator(targetTown);
         int cost = costCalculator.calculateWarCost();
 
@@ -116,7 +116,7 @@ public class BookCommandParser {
             return;
         }
 
-        WarType type = WarType.NATIONWAR;
+        WarType type = WarType.NATION;
         WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetNation), type);
         TokenCostCalculator costCalculator = new TokenCostCalculator(targetNation);
         int cost = costCalculator.calculateWarCost();

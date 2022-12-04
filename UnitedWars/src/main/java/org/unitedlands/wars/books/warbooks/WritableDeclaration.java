@@ -116,18 +116,18 @@ public class WritableDeclaration implements WarBook {
     }
 
     public String getDeclarerName() {
-        if (warType == WarType.TOWNWAR) {
+        if (warType == WarType.TOWN) {
             return declarer.town().getFormattedName();
-        } else if (warType == WarType.NATIONWAR) {
+        } else if (warType == WarType.NATION) {
             return declarer.nation().getFormattedName();
         }
         return declarer.player().getName();
     }
 
     private String getTargetName() {
-        if (warType == WarType.TOWNWAR) {
+        if (warType == WarType.TOWN) {
             return warTarget.town().getFormattedName();
-        } else if (warType == WarType.NATIONWAR) {
+        } else if (warType == WarType.NATION) {
             return warTarget.nation().getFormattedName();
         }
         return warTarget.targetMayor().getName();
