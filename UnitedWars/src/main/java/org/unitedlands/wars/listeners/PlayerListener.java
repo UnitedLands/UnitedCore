@@ -7,6 +7,7 @@ import de.jeff_media.angelchest.AngelChest;
 import de.jeff_media.angelchest.AngelChestPlugin;
 import de.jeff_media.angelchest.events.AngelChestSpawnEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -112,6 +113,11 @@ public class PlayerListener implements Listener {
                 warringEntity.getWarHealth().decrementMaxHealth(5);
 
                 Component message = getPlayerDeathMessage(warringEntity, killer, victim);
+
+                if (WarDataController.getResidentLives(victim) == 0) {
+                    notifyWarKick(victim.getPlayer(), warringEntity);
+                    return;
+                }
                 for (Resident resident : warringEntity.getWar().getResidents()) {
                     if (resident.getPlayer() != null) {
                         resident.getPlayer().sendMessage(message);
@@ -119,6 +125,22 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+    }
+
+    private void notifyWarKick(Player player, WarringEntity warringEntity) {
+        Title title = getTitle("<dark_red><bold>OUT OF LIVES!", "<red>You've lost all your <yellow>3</yellow> lives!");
+        player.showTitle(title);
+        // player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1f, 1f);
+
+        Component message = getMessage("removed-from-war",
+                component("victim-warrer", text(warringEntity.name())));
+        warringEntity.getWar().getResidents().forEach(resident -> {
+            if (resident.isOnline()) {
+                resident.getPlayer().sendMessage(message);
+            }
+        });
+
+
     }
 
     @NotNull
