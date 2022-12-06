@@ -99,6 +99,9 @@ public class DeclareCommandParser {
             towns.add(targetTown);
             residents.addAll(town.getResidents());
             residents.addAll(targetTown.getResidents());
+            if (targetTown.hasNation()) {
+                residents.addAll(targetTown.getNationOrNull().getResidents());
+            }
 
             WarDeclareEvent wde = new WarDeclareEvent(getWarHeldBook());
             Bukkit.getServer().getPluginManager().callEvent(wde);
