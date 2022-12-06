@@ -103,10 +103,11 @@ public class DeclareCommandParser {
                 residents.addAll(targetTown.getNationOrNull().getResidents());
             }
 
+            new War(towns, null, residents, WarType.TOWNWAR);
+
             WarDeclareEvent wde = new WarDeclareEvent(getWarHeldBook());
             Bukkit.getServer().getPluginManager().callEvent(wde);
 
-            new War(towns, null, residents, WarType.TOWNWAR);
             removeHeldBook(player);
         }).setTitle(Translatable.of("player_are_you_sure_you_want_to_start_a_townwar", targetTown)).sendTo(player);
     }
@@ -146,12 +147,12 @@ public class DeclareCommandParser {
             residents.addAll(declaringNation.getResidents());
             residents.addAll(targetNation.getResidents());
 
+            new War(null, nations, residents, WarType.NATIONWAR);
+
             WarDeclareEvent wde = new WarDeclareEvent(getWarHeldBook());
             Bukkit.getServer().getPluginManager().callEvent(wde);
 
-            new War(null, nations, residents, WarType.NATIONWAR);
             removeHeldBook(player);
-
         }).setTitle(Translatable.of("player_are_you_sure_you_want_to_start_a_nationwar", targetNation)).sendTo(player);
 
     }
