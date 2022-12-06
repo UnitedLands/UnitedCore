@@ -107,49 +107,34 @@ public class WarListener implements Listener {
         WarTarget target = event.getTarget();
 
         if (event.getDeclarationWarBook().getType() == WarType.TOWNWAR) {
-            Town declaringTown = declarer.town();
-            Town targetTown = target.town();
+            WarringEntity declaringTown = WarDatabase.getWarringTown(declarer.town());
+            WarringEntity targetTown = WarDatabase.getWarringTown(target.town());
             notifyDeclaration(targetTown, declaringTown);
         }
 
         if (event.getDeclarationWarBook().getType() == WarType.NATIONWAR) {
-            Nation declaringNation = declarer.nation();
-            Nation targetNation = target.nation();
+            WarringEntity declaringNation = WarDatabase.getWarringNation(declarer.nation());
+            WarringEntity targetNation = WarDatabase.getWarringNation(target.nation());
             notifyDeclaration(targetNation, declaringNation);
         }
     }
 
-    private void giveBonusClaims(Nation winner, Nation loser) {
-        double bonusClaims = loser.getNumTownblocks() * 0.25;
-        winner.getCapital().addBonusBlocks((int) bonusClaims);
+
+    private void notifyDeclaration(WarringEntity target, WarringEntity declarer) {
+        String type = target.getWar().getWarType().getFormattedName();
+        String entityType = target.getWar().getWarType() == WarType.NATIONWAR ? "nation" : "town";
+
+        List<Player> onlineTarget = target.getOnlinePlayers();
+        Title declarationTitle = getTitle("<dark_red><bold>War Declaration!", "<yellow>" + declarer.name() + "</yellow><red> has declared a <yellow>" + type + "</yellow> on your " + entityType + "!");
+        notifyResidents(onlineTarget, declarationTitle);
+
+        List<Player> onlineDeclarer = declarer.getOnlinePlayers();
+        Title warringTitle = getTitle("<red><bold>War Declaration!", "<red>Your " + entityType + " has declared a <yellow>" + type + "</yellow>on <yellow>" + target.name());
+        notifyResidents(onlineDeclarer, warringTitle);
     }
 
-    private void notifyDeclaration(Nation targetNation, Nation declaringNation) {
-        List<Resident> targetResidents = targetNation.getResidents();
-        Title declarationTitle = getTitle("<dark_red><bold>War Declaration!", "<yellow>" + declaringNation.getFormattedName() + "<red> has declared war on your nation");
-        notifyResidents(targetResidents, declarationTitle);
-
-        List<Resident> warringResidents = targetNation.getResidents();
-        Title warringTitle = getTitle("<red><bold>War Declaration!", "<red>Your nation has declared war on <yellow>" + targetNation.getFormattedName());
-        notifyResidents(warringResidents, warringTitle);
-    }
-
-    private void notifyDeclaration(Town town, Town declaringTown) {
-        List<Resident> targetResidents = town.getResidents();
-        Title declarationTitle = getTitle("<red><bold>War Declaration!", "<yellow>" + declaringTown.getFormattedName() + "<red>has declared war on you");
-        notifyResidents(targetResidents, declarationTitle);
-
-        List<Resident> warringResidents = declaringTown.getResidents();
-        Title warringTitle = getTitle("<red><bold>War Declaration!", "<red>Your town has declared war on <yellow>" + town.getFormattedName());
-        notifyResidents(warringResidents, warringTitle);
-
-    }
-
-    private void notifyResidents(List<Resident> residents, Title title) {
-        for (Resident resident : residents) {
-            Player player = resident.getPlayer();
-            if (player == null)
-                continue;
+    private void notifyResidents(List<Player> players, Title title) {
+        for (Player player : players) {
             player.showTitle(title);
             player.playSound(player, Sound.EVENT_RAID_HORN, 75, 1);
         }
