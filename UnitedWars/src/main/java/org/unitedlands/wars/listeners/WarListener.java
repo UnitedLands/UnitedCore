@@ -33,6 +33,16 @@ public class WarListener implements Listener {
 
 
     @EventHandler
+    public void onTownBlockPVPTest(TownBlockPVPTestEvent event) {
+        if (!WarDatabase.getWars().isEmpty()) {
+            if (WarDatabase.getWarringTown(event.getTown()) != null
+                    || WarDatabase.getWarringNation(event.getTown().getNationOrNull()) != null) {
+                event.setPvp(true);
+            }
+        }
+    }
+
+    @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
