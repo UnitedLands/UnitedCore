@@ -1,10 +1,8 @@
 package org.unitedlands.wars.listeners;
 
 import com.palmergames.bukkit.towny.event.NewDayEvent;
-import com.palmergames.bukkit.towny.event.statusscreen.NationStatusScreenEvent;
+import com.palmergames.bukkit.towny.event.damage.TownBlockPVPTestEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
-import com.palmergames.bukkit.towny.object.Nation;
-import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -23,8 +21,6 @@ import org.unitedlands.wars.events.WarDeclareEvent;
 import org.unitedlands.wars.events.WarHealthChangeEvent;
 import org.unitedlands.wars.war.*;
 import org.unitedlands.wars.war.entities.WarringEntity;
-import org.unitedlands.wars.war.entities.WarringNation;
-import org.unitedlands.wars.war.entities.WarringTown;
 
 import java.util.List;
 
@@ -68,11 +64,25 @@ public class WarListener implements Listener {
             WarDataController.setTokens(town, currentTokens + earnedTokens);
         }
 
-        for (WarringTown warringTown : WarDatabase.getWarringTowns()) {
-            warringTown.getWarHealth().decrementHealth(20);
-        }
-        for (WarringNation warringNation : WarDatabase.getWarringNations()) {
-            warringNation.getWarHealth().decrementHealth(20);
+        for (WarringEntity warringEntity : WarDatabase.getWarringEntities()) {
+            int current = warringEntity.getWarHealth().getValue();
+            WarringEntity opposingEntity = WarUtil.getOpposingEntity(warringEntity);
+            int enemyCurrent = opposingEntity.getWarHealth().getValue();
+
+            warringEntity.getWarHealth().setHealth(Math.max(0, current - 20));
+            if (warringEntity.getWarHealth().getValue() == 0) {
+                WarringEntity winner;
+                WarringEntity loser;
+                // If the original entity had less than the enemy, then they lost the war.
+                if (current < enemyCurrent) {
+                    winner = opposingEntity;
+                    loser = warringEntity;
+                } else {
+                    winner = warringEntity;
+                    loser = opposingEntity;
+                }
+                warringEntity.getWar().endWar(winner, loser);
+            }
         }
     }
 
