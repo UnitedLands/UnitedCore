@@ -158,18 +158,20 @@ public class War {
 
     private void toggleActiveWar(boolean toggle) {
         if (warType == WarType.TOWNWAR) {
-            for (WarringTown town : warringTowns) {
-                town.getTown().setActiveWar(toggle);
-                WarDataController.setLastWarTime(town.getTown(), System.currentTimeMillis());
+            for (WarringTown warringTown : warringTowns) {
+                Town town = warringTown.getTown();
+                town.setActiveWar(toggle);
+                WarDataController.setLastWarTime(town, System.currentTimeMillis());
             }
         }
 
         if (warType == WarType.NATIONWAR) {
-            for (WarringNation nation : warringNations) {
-                nation.getNation().setActiveWar(toggle);
-                WarDataController.setLastWarTime(nation.getNation(), System.currentTimeMillis());
+            for (WarringNation warringNation : warringNations) {
+                Nation nation = warringNation.getNation();
+                nation.setActiveWar(toggle);
+                WarDataController.setLastWarTime(nation, System.currentTimeMillis());
 
-                for (Nation ally : nation.getNation().getAllies()) {
+                for (Nation ally : nation.getAllies()) {
                     ally.setActiveWar(toggle);
                 }
             }
