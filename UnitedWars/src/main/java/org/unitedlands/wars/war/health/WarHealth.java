@@ -93,8 +93,6 @@ public class WarHealth {
     }
 
     public void setHealth(int health) {
-        WarHealthChangeEvent whce = new WarHealthChangeEvent(this, health, maxHealth);
-        Bukkit.getServer().getPluginManager().callEvent(whce);
         this.health = health;
         updateHealthBar();
     }
