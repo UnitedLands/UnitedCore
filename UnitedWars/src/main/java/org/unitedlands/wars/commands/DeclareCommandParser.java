@@ -144,8 +144,8 @@ public class DeclareCommandParser {
             nations.add(declaringNation);
             nations.add(targetNation);
 
-            residents.addAll(declaringNation.getResidents());
-            residents.addAll(targetNation.getResidents());
+            residents.addAll(getResidents(declaringNation));
+            residents.addAll(getResidents(targetNation));
 
             new War(null, nations, residents, WarType.NATIONWAR);
 
@@ -184,6 +184,14 @@ public class DeclareCommandParser {
         } else {
             return new NationDeclarationBook(writableDeclaration);
         }
+    }
+
+    private List<Resident> getResidents(Nation nation) {
+        List<Resident> residents = new ArrayList<>(nation.getResidents());
+        nation.getAllies().forEach(ally -> {
+            residents.addAll(ally.getResidents());
+        });
+        return residents;
     }
 
     @NotNull
