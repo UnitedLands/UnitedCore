@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.war.entities.WarringEntity;
 import org.unitedlands.wars.war.entities.WarringNation;
 import org.unitedlands.wars.war.entities.WarringTown;
@@ -176,19 +177,10 @@ public class WarDatabase {
 
     public static WarringEntity getWarringEntity(Player player) {
         HashSet<WarringEntity> warringEntities = getWarringEntities();
-        Resident resident = UnitedWars.TOWNY_API.getResident(player);
-        if (!resident.hasTown())
-            return null;
-
-        Town town = resident.getTownOrNull();
-        for (WarringEntity warringEntity : warringEntities) {
-            UUID uuid = warringEntity.getUUID();
-            if (uuid.equals(town.getUUID())) {
+        Resident resident = Utils.getTownyResident(player);
+        for (WarringEntity warringEntity: warringEntities) {
+            if (warringEntity.getWarParticipants().contains(resident)) {
                 return warringEntity;
-            } else if (town.hasNation()) {
-                if (town.getNationOrNull().getUUID().equals(uuid)) {
-                    return warringEntity;
-                }
             }
         }
         return null;
