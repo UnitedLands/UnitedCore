@@ -76,30 +76,37 @@ public class WarListener implements Listener {
         }
 
         for (WarringEntity warringEntity : WarDatabase.getWarringEntities()) {
-            int current = warringEntity.getWarHealth().getValue();
-            WarringEntity opposingEntity = WarUtil.getOpposingEntity(warringEntity);
-            int enemyCurrent = opposingEntity.getWarHealth().getValue();
-
+            tryEndingWar(warringEntity);
             // Add 3 lives for each resident, up to a max of 6.
-            for (Resident resident: warringEntity.getWarParticipants()) {
-                int currentLives = WarDataController.getResidentLives(resident);
-                WarDataController.setResidentLives(resident,Math.max(6, currentLives + 3));
-            }
+            addResidentLives(warringEntity);
+        }
+    }
 
-            warringEntity.getWarHealth().setHealth(Math.max(0, current - 20));
-            if (warringEntity.getWarHealth().getValue() == 0) {
-                WarringEntity winner;
-                WarringEntity loser;
-                // If the original entity had less than the enemy, then they lost the war.
-                if (current < enemyCurrent) {
-                    winner = opposingEntity;
-                    loser = warringEntity;
-                } else {
-                    winner = warringEntity;
-                    loser = opposingEntity;
-                }
-                warringEntity.getWar().endWar(winner, loser);
+    private void addResidentLives(WarringEntity warringEntity) {
+        for (Resident resident: warringEntity.getWarParticipants()) {
+            int currentLives = WarDataController.getResidentLives(resident);
+            WarDataController.setResidentLives(resident, Math.min(6, currentLives + 3));
+        }
+    }
+
+    private void tryEndingWar(WarringEntity warringEntity) {
+        int current = warringEntity.getWarHealth().getValue();
+        WarringEntity opposingEntity = WarUtil.getOpposingEntity(warringEntity);
+        int enemyCurrent = opposingEntity.getWarHealth().getValue();
+
+        warringEntity.getWarHealth().setHealth(Math.max(0, current - 20));
+        if (warringEntity.getWarHealth().getValue() == 0) {
+            WarringEntity winner;
+            WarringEntity loser;
+            // If the original entity had less than the enemy, then they lost the war.
+            if (current < enemyCurrent) {
+                winner = opposingEntity;
+                loser = warringEntity;
+            } else {
+                winner = warringEntity;
+                loser = opposingEntity;
             }
+            warringEntity.getWar().endWar(winner, loser);
         }
     }
 
