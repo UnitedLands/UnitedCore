@@ -177,14 +177,17 @@ public class WarDatabase {
     public static WarringEntity getWarringEntity(Player player) {
         HashSet<WarringEntity> warringEntities = getWarringEntities();
         Resident resident = UnitedWars.TOWNY_API.getResident(player);
-        if (!resident.hasTown()) return null;
+        if (!resident.hasTown())
+            return null;
+
         Town town = resident.getTownOrNull();
         for (WarringEntity warringEntity : warringEntities) {
             UUID uuid = warringEntity.getUUID();
-            if (uuid.equals(town.getUUID()) || uuid.equals(town.getNationOrNull().getUUID())) {
+            if (uuid.equals(town.getUUID())) {
                 return warringEntity;
+            } else if (town.hasNation()) {
+                return town.getNationOrNull().getUUID().equals(uuid) ? warringEntity : null;
             }
-
         }
         return null;
     }
