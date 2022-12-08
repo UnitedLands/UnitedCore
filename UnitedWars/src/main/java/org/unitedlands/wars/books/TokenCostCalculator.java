@@ -72,7 +72,7 @@ public class TokenCostCalculator {
 
 
         int calculatedCost = (int) Math.floor((baseCost * riseMod) / fallMod);
-        return Math.max(10, calculatedCost);
+        return calculatedCost;
     }
 
     private int getBaseCost() {
