@@ -1,6 +1,7 @@
 package org.unitedlands.wars;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.wars.commands.WarAdminCommand;
 import org.unitedlands.wars.commands.WarCommand;
+import org.unitedlands.wars.hooks.Placeholders;
 import org.unitedlands.wars.listeners.BookListener;
 import org.unitedlands.wars.listeners.PlayerListener;
 import org.unitedlands.wars.listeners.WarListener;
@@ -39,6 +41,7 @@ public final class UnitedWars extends JavaPlugin {
         setCommandExecutors();
         runTasks();
         load();
+        registerPlaceholders();
     }
 
     private void registerListeners() {
@@ -59,6 +62,12 @@ public final class UnitedWars extends JavaPlugin {
         createWarConfig();
         WarDatabase.loadSavedData();
         saveDefaultConfig();
+    }
+
+    private void registerPlaceholders() {
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new Placeholders().register();
+        }
     }
     @Override
     public void onDisable() {

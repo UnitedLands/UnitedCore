@@ -3,6 +3,7 @@ version: '${project.version}'
 main: org.unitedlands.wars.UnitedWars
 api-version: 1.18
 depend: [ Towny ]
+softdepend: [ PlaceholderAPI ]
 authors: [ Maroon28 ]
 description: A plugin which hooks into EventWar to achieve custom war behaviour!
 website: unitedlands.org
