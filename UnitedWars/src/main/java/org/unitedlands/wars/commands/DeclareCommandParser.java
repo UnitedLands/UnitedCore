@@ -3,18 +3,10 @@ package org.unitedlands.wars.commands;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
-import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.Translatable;
-import io.github.townyadvanced.eventwar.events.EventWarDeclarationEvent;
-import io.github.townyadvanced.eventwar.instance.War;
-import io.github.townyadvanced.eventwar.objects.DeclarationOfWar;
-import io.github.townyadvanced.eventwar.objects.WarType;
-import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
-import io.github.townyadvanced.eventwar.settings.EventWarSettings;
-import io.github.townyadvanced.eventwar.util.WarUtil;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -23,24 +15,30 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.books.data.WarTarget;
+import org.unitedlands.wars.books.declaration.DeclarationWarBook;
+import org.unitedlands.wars.books.declaration.NationDeclarationBook;
+import org.unitedlands.wars.books.declaration.TownDeclarationBook;
+import org.unitedlands.wars.books.warbooks.WritableDeclaration;
+import org.unitedlands.wars.events.WarDeclareEvent;
+import org.unitedlands.wars.war.War;
+import org.unitedlands.wars.war.WarType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static net.kyori.adventure.text.Component.text;
 import static org.unitedlands.wars.Utils.getMessage;
+import static org.unitedlands.wars.war.WarUtil.*;
 
 public class DeclareCommandParser {
+    private static final NamespacedKey TYPE_KEY = NamespacedKey.fromString("unitedwars.book.type");
     private final CommandSender sender;
-    private static final NamespacedKey TYPE_KEY = NamespacedKey.fromString("eventwar.dow.book.type");
 
     public DeclareCommandParser(CommandSender sender) {
         this.sender = sender;
@@ -53,36 +51,22 @@ public class DeclareCommandParser {
             return;
         }
         switch (warType.name().toLowerCase()) {
-            case "townwar" -> {
-                try {
-                    parseTownWar();
-                } catch (TownyException e) {
-                    TownyMessaging.sendErrorMsg(sender, e.getMessage());
-                }
-            }
-            case "nationwar" -> {
-                try {
-                    parseNationWar();
-                } catch (TownyException e) {
-                    TownyMessaging.sendErrorMsg(sender, e.getMessage());
-                }
-            }
+            case "townwar" -> parseTownWar();
+            case "nationwar" -> parseNationWar();
         }
     }
 
-    private void parseTownWar() throws TownyException {
+    private void parseTownWar() {
         Player player = (Player) this.sender;
         Town targetTown = getTargetFromBook().town();
         if (targetTown == null) {
-            throw new TownyException(Translatable.of("msg_invalid_name"));
+           player.sendMessage(getMessage("invalid-town-name"));
+           return;
         }
         Confirmation.runOnAccept(() -> {
-            try {
-                this.testBookRequirementsAreMet(WarTypeEnum.TOWNWAR);
-            } catch (TownyException exception) {
-                TownyMessaging.sendErrorMsg(this.sender, exception.getMessage());
+
+            if (!testBookRequirementsAreMet(WarType.TOWNWAR))
                 return;
-            }
 
             if (targetTown.isNeutral()) {
                 TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_cannot_declare_war_on_neutral")});
@@ -91,70 +75,69 @@ public class DeclareCommandParser {
             Resident resident = UnitedWars.TOWNY_API.getResident(player);
             Town town = resident.getTownOrNull();
             if (!townsHaveEnoughOnline(targetTown, town)) {
-                TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_not_enough_people_online_for_townwar", EventWarSettings.townWarMinOnline())});
+                TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_not_enough_people_online_for_townwar", 1)});
                 return;
             }
             List<Town> towns = new ArrayList<>();
-            List<Resident> residents = new ArrayList<>();
+            HashSet<Resident> residents = new HashSet<>();
             towns.add(town);
             towns.add(targetTown);
             residents.addAll(town.getResidents());
             residents.addAll(targetTown.getResidents());
-            DeclarationOfWar dow = new DeclarationOfWar(player, WarTypeEnum.TOWNWAR.getType(), getDOWPurchaser(player));
-            EventWarDeclarationEvent ewde = new EventWarDeclarationEvent(dow, null, towns, residents);
-            Bukkit.getServer().getPluginManager().callEvent(ewde);
-            if (ewde.isCancelled()) {
-                return;
+            if (targetTown.hasNation()) {
+                residents.addAll(targetTown.getNationOrNull().getResidents());
             }
-            new War(null, towns, residents, WarTypeEnum.TOWNWAR.getType(), dow);
+
+            new War(towns, null, residents, WarType.TOWNWAR);
+
+            WarDeclareEvent wde = new WarDeclareEvent(getWarHeldBook());
+            Bukkit.getServer().getPluginManager().callEvent(wde);
+
             removeHeldBook(player);
-        }).setTitle(Translatable.of("player_are_you_sure_you_want_to_start_a_townwar", targetTown)).sendTo(player);
+        }).setTitle(getConfirmationTitle(WarType.TOWNWAR, targetTown.getFormattedName())).sendTo(player);
     }
 
-    private void parseNationWar() throws TownyException {
+    private void parseNationWar() {
         Player player = (Player) this.sender;
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (!resident.hasNation()) {
-            throw new TownyException(Translatable.of("msg_err_dont_belong_nation"));
+            player.sendMessage(getMessage("must-have-nation"));
+            return;
         }
         Nation declaringNation = resident.getNationOrNull();
         Nation targetNation = getTargetFromBook().nation();
         if (targetNation == null) {
-            throw new TownyException(Translatable.of("msg_target_has_no_nation"));
+            player.sendMessage(getMessage("invalid-nation-name"));
+            return;
         }
+
         Confirmation.runOnAccept(() -> {
-            try {
-                this.testBookRequirementsAreMet(WarTypeEnum.NATIONWAR);
-            } catch (TownyException var10) {
-                TownyMessaging.sendErrorMsg(this.sender, var10.getMessage());
+            if (!testBookRequirementsAreMet(WarType.NATIONWAR))
                 return;
-            }
 
             if (targetNation.isNeutral()) {
-                TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_cannot_declare_war_on_neutral")});
+                player.sendMessage(getMessage("must-not-be-neutral-target"));
                 return;
             }
             if (!nationsHaveEnoughOnline(targetNation, declaringNation)) {
-                TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_not_enough_people_online_for_nationwar", EventWarSettings.nationWarMinOnline())});
+                player.sendMessage(getMessage("must-have-online-player"));
                 return;
             }
             List<Nation> nations = new ArrayList<>();
-            List<Resident> residents = new ArrayList<>();
+            HashSet<Resident> residents = new HashSet<>();
             nations.add(declaringNation);
             nations.add(targetNation);
 
-            residents.addAll(declaringNation.getResidents());
-            residents.addAll(targetNation.getResidents());
-            DeclarationOfWar dow = new DeclarationOfWar(player, WarTypeEnum.NATIONWAR.getType(), this.getDOWPurchaser(player));
-            EventWarDeclarationEvent ewde = new EventWarDeclarationEvent(dow, nations, null, residents);
-            Bukkit.getServer().getPluginManager().callEvent(ewde);
-            if (ewde.isCancelled()) {
-                return;
-            }
-            new War(nations, null, residents, WarTypeEnum.NATIONWAR.getType(), dow);
-            removeHeldBook(player);
+            residents.addAll(getResidents(declaringNation));
+            residents.addAll(getResidents(targetNation));
 
-        }).setTitle(Translatable.of("player_are_you_sure_you_want_to_start_a_nationwar", targetNation)).sendTo(player);
+            new War(null, nations, residents, WarType.NATIONWAR);
+
+            WarDeclareEvent wde = new WarDeclareEvent(getWarHeldBook());
+            Bukkit.getServer().getPluginManager().callEvent(wde);
+
+            removeHeldBook(player);
+        }).setTitle(getConfirmationTitle(WarType.NATIONWAR, targetNation.getFormattedName())).sendTo(player);
 
     }
 
@@ -173,6 +156,28 @@ public class DeclareCommandParser {
         return null;
     }
 
+    private DeclarationWarBook getWarHeldBook() {
+        Player player = (Player) sender;
+        ItemStack book = player.getInventory().getItemInMainHand();
+
+        if (book.getType() != Material.WRITTEN_BOOK) return null;
+        BookMeta meta = (BookMeta) book.getItemMeta();
+        WritableDeclaration writableDeclaration = generateWritableDeclaration(meta);
+        if (writableDeclaration.getWarType() == WarType.TOWNWAR) {
+            return new TownDeclarationBook(writableDeclaration);
+        } else {
+            return new NationDeclarationBook(writableDeclaration);
+        }
+    }
+
+    private List<Resident> getResidents(Nation nation) {
+        List<Resident> residents = new ArrayList<>(nation.getResidents());
+        nation.getAllies().forEach(ally -> {
+            residents.addAll(ally.getResidents());
+        });
+        return residents;
+    }
+
     @NotNull
     private PersistentDataContainer getHeldBookData() {
         Player player = (Player) this.sender;
@@ -182,9 +187,9 @@ public class DeclareCommandParser {
 
     private WarType getWarType() {
         PersistentDataContainer pdc = getHeldBookData();
-        String storedTypeName = pdc.get(NamespacedKey.fromString("eventwar.dow.book.type"), PersistentDataType.STRING);
+        String storedTypeName = pdc.get(NamespacedKey.fromString("unitedwars.book.type"), PersistentDataType.STRING);
         try {
-            return WarTypeEnum.parseType(storedTypeName).getType();
+            return WarType.valueOf(storedTypeName.toUpperCase());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -199,38 +204,49 @@ public class DeclareCommandParser {
         return pdc.get(TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("TOWNWAR");
     }
 
-    private void testBookRequirementsAreMet(WarTypeEnum wartype) throws TownyException {
+    private boolean testBookRequirementsAreMet(WarType wartype) {
         Player player = (Player) this.sender;
         Resident resident = UnitedWars.TOWNY_API.getResident(player);
         if (!resident.hasTown()) {
-            throw new TownyException(Translatable.of("msg_err_must_belong_town"));
+            player.sendMessage(getMessage("must-have-town"));
+            return false;
         }
-        List<String> error = new ArrayList<>(1);
-        if (!WarUtil.isTownAllowedToWar(resident.getTownOrNull(), error, wartype.getType())) {
-            throw new TownyException(error.get(0));
+        Town town = resident.getTownOrNull();
+        if (town.hasActiveWar()) {
+            player.sendMessage(getMessage("ongoing-war"));
+            return false;
+        } else if (!isNotOnCooldownForWar(WarType.TOWNWAR, town)) {
+            player.sendMessage(getMessage("on-cooldown"));
+            return false;
         }
         ItemStack book = player.getInventory().getItemInMainHand();
         if (!book.getType().equals(Material.WRITTEN_BOOK)) {
-            throw new TownyException(Translatable.of("msg_err_you_are_not_holding_dow"));
+            player.sendMessage(getMessage("invalid-held-book"));
+            return false;
         }
         PersistentDataContainer pdc = book.getItemMeta().getPersistentDataContainer();
         if (pdc.isEmpty()) {
-            throw new TownyException(Translatable.of("msg_err_you_are_not_holding_dow"));
+            player.sendMessage(getMessage("invalid-held-book"));
+            return false;
         }
         if (!pdc.has(TYPE_KEY, PersistentDataType.STRING)) {
-            throw new TownyException(Translatable.of("msg_err_you_are_not_holding_dow"));
+            player.sendMessage(getMessage("invalid-held-book"));
+            return false;
         }
         String type = pdc.get(TYPE_KEY, PersistentDataType.STRING);
         if (!type.equalsIgnoreCase(wartype.name())) {
-            throw new TownyException(Translatable.of("msg_err_you_are_not_holding_correct_dow"));
+            player.sendMessage(getMessage("invalid-held-book"));
+            return false;
         }
         Town townWhoBoughtDOW = getDOWPurchaser(player);
         if (townWhoBoughtDOW == null) {
-            throw new TownyException(Translatable.of("msg_err_dow_owner_no_longer_exists"));
+            player.sendMessage(getMessage("invalid-held-book"));
+            return false;
         } else if (!resident.getTownOrNull().equals(townWhoBoughtDOW)) {
-            throw new TownyException(Translatable.of("msg_err_dow_owner_not_your_town"));
+            player.sendMessage(getMessage("must-be-book-owner"));
+            return false;
         }
-
+        return true; // all checks passed.
     }
 
     private void removeHeldBook(Player player) {
@@ -255,16 +271,22 @@ public class DeclareCommandParser {
     }
 
     private boolean townsHaveEnoughOnline(Town targetTown, Town town) {
-        return WarUtil.townHasEnoughOnline(targetTown, WarTypeEnum.TOWNWAR.getType()) && WarUtil.townHasEnoughOnline(town, WarTypeEnum.TOWNWAR.getType());
+        return townHasEnoughOnline(targetTown) && townHasEnoughOnline(town);
     }
 
     private boolean nationsHaveEnoughOnline(Nation targetNation, Nation nation) {
-        return WarUtil.nationHasEnoughOnline(targetNation, WarTypeEnum.NATIONWAR.getType()) && WarUtil.nationHasEnoughOnline(nation, WarTypeEnum.NATIONWAR.getType());
+        return nationHasEnoughOnline(targetNation) && nationHasEnoughOnline(nation);
     }
 
     private Town getDOWPurchaser(Player player) {
         ItemMeta bookMeta = player.getInventory().getItemInMainHand().getItemMeta();
-        NamespacedKey townKey = NamespacedKey.fromString("eventwar.dow.book.town");
+        NamespacedKey townKey = NamespacedKey.fromString("unitedwars.book.town");
         return UnitedWars.TOWNY_API.getTown(UUID.fromString(bookMeta.getPersistentDataContainer().get(townKey, PersistentDataType.STRING)));
+    }
+    private Translatable getConfirmationTitle(WarType warType, String name) {
+        String message = UnitedWars.getInstance().getConfig().getString("messages.war-declare-confirmation")
+                .replace("<target>", String.valueOf(name))
+                .replace("<type>", warType.getFormattedName());
+        return Translatable.of(message);
     }
 }

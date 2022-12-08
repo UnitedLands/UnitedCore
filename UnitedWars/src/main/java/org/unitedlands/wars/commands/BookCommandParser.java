@@ -3,9 +3,6 @@ package org.unitedlands.wars.commands;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.*;
-import io.github.townyadvanced.eventwar.db.WarMetaDataController;
-import io.github.townyadvanced.eventwar.objects.WarType;
-import io.github.townyadvanced.eventwar.objects.WarTypeEnum;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,10 +12,11 @@ import org.unitedlands.wars.books.TokenCostCalculator;
 import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
 import org.unitedlands.wars.books.warbooks.WritableDeclaration;
+import org.unitedlands.wars.war.WarDataController;
+import org.unitedlands.wars.war.WarType;
 
 import static net.kyori.adventure.text.Component.text;
 import static org.unitedlands.wars.Utils.*;
-import static org.unitedlands.wars.Utils.getMessage;
 
 public class BookCommandParser {
     private final CommandSender sender;
@@ -69,6 +67,12 @@ public class BookCommandParser {
             return;
         }
 
+        Town declaringTown = getPlayerTown(player);
+        if (declaringTown.equals(targetTown)) {
+            player.sendMessage(getMessage("cannot-declare-on-self"));
+            return;
+        }
+
         if (targetTown.isNeutral()) {
             player.sendMessage(getMessage("must-not-be-neutral-target"));
             return;
@@ -78,20 +82,24 @@ public class BookCommandParser {
             player.sendMessage(getMessage("ongoing-war-target"));
             return;
         }
+        // Both have a nation, force a nation war.
+        if (targetTown.hasNation() && declaringTown.hasNation()) {
+            player.sendMessage(getMessage("must-declare-nationwar"));
+            return;
+        }
 
-        WarType type = WarTypeEnum.TOWNWAR.getType();
-        int cost = type.tokenCost();
+        WarType type = WarType.TOWNWAR;
+        TokenCostCalculator costCalculator = new TokenCostCalculator(targetTown);
+        int cost = costCalculator.calculateWarCost();
 
         Confirmation.runOnAccept(() -> {
-            Town declaringTown = getPlayerTown(player);
-            takeTokens(declaringTown, cost);
+            if (takeTokens(declaringTown, cost)) {
+                WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetTown), type);
+                player.getInventory().addItem(writableDeclaration.getBook());
 
-            WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetTown), type);
-            player.getInventory().addItem(writableDeclaration.getBook());
-
-            TownyMessaging.sendPrefixedTownMessage(declaringTown, Translatable.of("msg_town_purchased_declaration_of_type", declaringTown, type.name()));
-
-        }).setTitle(Translatable.of("msg_you_are_about_to_purchase_a_declaration_of_war_of_type_for_x_tokens", type.name(), cost)).sendTo(player);
+                TownyMessaging.sendPrefixedTownMessage(declaringTown, Translatable.of("msg_town_purchased_declaration_of_type", declaringTown, type.name()));
+            }
+        }).setTitle(getConfirmationTitle(type, cost)).sendTo(player);
     }
 
     private void parseNationBookCreationCommand(@NotNull String target) {
@@ -100,6 +108,16 @@ public class BookCommandParser {
         Nation targetNation = UnitedWars.TOWNY_API.getNation(target);
         if (targetNation == null) {
             player.sendMessage(getMessage("invalid-nation-name"));
+            return;
+        }
+        Nation declaringNation = getPlayerTown(player).getNationOrNull();
+        if (targetNation.equals(declaringNation)) {
+            player.sendMessage(getMessage("cannot-declare-on-self"));
+            return;
+        }
+
+        if (declaringNation.getAllies().contains(targetNation)) {
+            player.sendMessage(getMessage("cannot-declare-on-allies"));
             return;
         }
 
@@ -113,29 +131,27 @@ public class BookCommandParser {
             return;
         }
 
-        WarType type = WarTypeEnum.NATIONWAR.getType();
+        WarType type = WarType.NATIONWAR;
         WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetNation), type);
         TokenCostCalculator costCalculator = new TokenCostCalculator(targetNation);
         int cost = costCalculator.calculateWarCost();
 
         Confirmation.runOnAccept(() -> {
-            Nation declaringNation = getPlayerTown(player).getNationOrNull();
-            takeTokens(declaringNation, cost);
-
-            player.getInventory().addItem(writableDeclaration.getBook());
-
-            TownyMessaging.sendPrefixedNationMessage(declaringNation, Translatable.of("msg_town_purchased_declaration_of_type", declaringNation, type.name()));
-
-        }).setTitle(Translatable.of("msg_you_are_about_to_purchase_a_declaration_of_war_of_type_for_x_tokens", type.name(), cost)).sendTo(player);
+            if (takeTokens(declaringNation.getCapital(), cost)) {
+                player.getInventory().addItem(writableDeclaration.getBook());
+                TownyMessaging.sendPrefixedNationMessage(declaringNation, Translatable.of("msg_town_purchased_declaration_of_type", declaringNation, type.name()));
+            }
+        }).setTitle(getConfirmationTitle(type, cost)).sendTo(player);
     }
 
-    private void takeTokens(TownyObject declarer, int cost) {
-        if (WarMetaDataController.getWarTokens(declarer) < cost) {
+    private boolean takeTokens(TownyObject declarer, int cost) {
+        if (WarDataController.getWarTokens(declarer) < cost) {
             sender.sendMessage(getMessage("not-enough-tokens", Placeholder.component("cost", text(cost))));
-            return;
+            return false;
         }
-        int remainder = WarMetaDataController.getWarTokens(declarer) - cost;
-        WarMetaDataController.setTokens(declarer, remainder);
+        int remainder = WarDataController.getWarTokens(declarer) - cost;
+        WarDataController.setTokens(declarer, remainder);
+        return true;
     }
 
     private boolean isNeutral(Resident resident) {
@@ -151,4 +167,12 @@ public class BookCommandParser {
         }
         return resident.getTownOrNull().hasActiveWar();
     }
+
+    private Translatable getConfirmationTitle(WarType warType, int cost) {
+        String message = UnitedWars.getInstance().getConfig().getString("messages.war-confirmation")
+                .replace("<cost>", String.valueOf(cost))
+                .replace("<type>", warType.getFormattedName());
+        return Translatable.of(message);
+    }
+
 }

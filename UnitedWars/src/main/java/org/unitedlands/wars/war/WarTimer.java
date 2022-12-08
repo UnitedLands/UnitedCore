@@ -1,8 +1,6 @@
 package org.unitedlands.wars.war;
 
 import com.palmergames.bukkit.towny.object.Resident;
-import io.github.townyadvanced.eventwar.instance.War;
-import io.github.townyadvanced.eventwar.settings.EventWarSettings;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -13,19 +11,17 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
-import org.unitedlands.wars.Utils;
 
+import java.time.Duration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 
 public class WarTimer {
-    private static final UnitedWars UNITED_WARS = UnitedWars.getInstance();
+    private static final UnitedWars PLUGIN = UnitedWars.getInstance();
     private final long startTime;
-    private HashSet<UUID> viewers;
     private final BossBar bossBar;
-
     private final War war;
+    private HashSet<UUID> viewers;
 
     public WarTimer(War war) {
         this.war = war;
@@ -36,11 +32,11 @@ public class WarTimer {
 
     public void startCountdown() {
         int delay = getDelay();
-        double decrease = (double) 1 / delay;
+        float decrease = (float) 1 / delay;
         if (viewers == null) return;
 
-        UNITED_WARS.getServer().getScheduler().runTaskTimer(UNITED_WARS, task -> {
-            for (UUID viewerUUID: viewers) {
+        PLUGIN.getServer().getScheduler().runTaskTimer(PLUGIN, task -> {
+            for (UUID viewerUUID : viewers) {
                 Player viewer = Bukkit.getPlayer(viewerUUID);
                 if (viewer == null) continue;
 
@@ -49,7 +45,10 @@ public class WarTimer {
                         viewer.playSound(viewer, Sound.EVENT_RAID_HORN, 75, 1);
                         viewer.showTitle(getTimeTitle(0));
                         viewer.hideBossBar(bossBar);
+                        viewers.clear();
+                        war.endWarTimer(); // Tell the war that the timer has ended.
                         task.cancel();
+                        break;
                     } else {
                         viewer.playSound(viewer, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1F, 0.6F);
                         viewer.showTitle(getTimeTitle(getRemainingSeconds()));
@@ -57,9 +56,9 @@ public class WarTimer {
 
                 }
             }
-            Component name = Component.text( "WAR STARTS IN: " , NamedTextColor.DARK_RED, TextDecoration.BOLD);
-            bossBar.name(name.append(Component.text(getRemainingSeconds() + "s", NamedTextColor.RED).decoration(TextDecoration.BOLD, false)));
-            bossBar.progress((float) Math.max(0.0F, bossBar.progress() - decrease));
+            Component name = Component.text("WAR STARTS IN: ", NamedTextColor.DARK_RED, TextDecoration.BOLD);
+            bossBar.name(name.append(Component.text(getFormattedTime(), NamedTextColor.RED).decoration(TextDecoration.BOLD, false)));
+            bossBar.progress(Math.max(0.0F, bossBar.progress() - decrease));
 
         }, 0, 20L);
     }
@@ -72,26 +71,25 @@ public class WarTimer {
         return Title.title(main, Component.text(""));
     }
 
+    private String getFormattedTime() {
+        Duration duration = Duration.ofSeconds(getRemainingSeconds());
+        return String.format("%02d:%02d", duration.toMinutes(), duration.toSecondsPart());
+    }
+
     public int getRemainingSeconds() {
         long currentTimeStamp = System.currentTimeMillis();
         return (int) (Math.max(0, Math.floor(startTime - currentTimeStamp) / 1000));
     }
 
     private int getDelay() {
-        return switch (war.getWarType().name()) {
-            case "TOWNWAR" -> EventWarSettings.townWarDelay();
-            case "NATIONWAR" -> EventWarSettings.nationWarDelay();
-            case "CIVILWAR" -> EventWarSettings.civilWarDelay();
-            case "WORLDWAR" -> EventWarSettings.worldWarDelay();
-            case "RIOT" -> EventWarSettings.riotDelay();
-            default -> 30;
-        };
+        String path = war.getWarType().name().toLowerCase() + ".delay";
+        return PLUGIN.getConfig().getInt(path);
     }
 
     private HashSet<UUID> getViewers() {
-        List<Resident> residents = war.getWarParticipants().getResidents();
+        HashSet<Resident> residents = war.getResidents();
         viewers = new HashSet<>();
-        for (Resident resident: residents) {
+        for (Resident resident : residents) {
             Player player = resident.getPlayer();
             addViewer(player);
         }
@@ -101,7 +99,7 @@ public class WarTimer {
     @NotNull
     public BossBar getBossBar() {
         Component time = Component.text(getRemainingSeconds() + "s", NamedTextColor.RED).decoration(TextDecoration.BOLD, false);
-        final Component name = Component.text( "WAR STARTS IN: " , NamedTextColor.DARK_RED, TextDecoration.BOLD);
+        final Component name = Component.text("WAR STARTS IN: ", NamedTextColor.DARK_RED, TextDecoration.BOLD);
         return BossBar.bossBar(name.append(time), 1, BossBar.Color.RED, BossBar.Overlay.NOTCHED_6);
     }
 

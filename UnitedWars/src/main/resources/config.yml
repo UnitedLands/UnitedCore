@@ -243,6 +243,12 @@ end-war-book:
 mid-war-book:
   0:
     - "Mid War update!!!"
+townwar:
+  delay: 1800
+nationwar:
+  delay: 1800
+alliancewar:
+  delay: 1800
 townwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Town War Declaration Scroll <color:#BEA50C>⬩'
 nationwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Nation War Declaration Scroll <color:#BEA50C>⬩'
 start-war-name: "War breaks out!"
@@ -262,11 +268,24 @@ messages:
   must-have-nation: '<red>You must have a nation to create a book!'
   must-not-be-neutral: '<red>You cannot create a war book while neutral! Please disable neutrality first!'
   ongoing-war: '<red>You cannot create a new war book while you have an ongoing war!'
+  on-cooldown: '<red>You fought too recently! You can''t declare another war yet.'
   not-enough-tokens: '<red>You cannot create a war book of this type! You need <cost> tokens first!'
   invalid-town-name: '<red>Town not found! Please enter the correct name!'
   invalid-declaration-book: '<red>You cannot use artifacts as war books!'
-  invalid-nation-name: '<red>Town not found! Please enter the correct name!'
+  invalid-nation-name: '<red>Nation not found! Please enter the correct name!'
   must-be-mayor: '<red>Only mayors can create war books!'
+  cannot-declare-on-self: '<red>You cannot declare war on your own town/nation!'
+  cannot-declare-on-allies: '<red>Target is an ally! You cannot declare war on them...'
   only-mayors-can-sign: '<red>Only the mayor of <yellow><declarer-name><red> can sign this declaration book!'
-  must-not-be-neutral-target: '<red>Target is neutral! You can only create books for non-neutral towns!'
-  ongoing-war-target: '<red>Target has an ongoing war!'
+  must-not-be-neutral-target: '<red>Target is neutral! You can only create books for non-neutral enemies!'
+  must-have-online-player: '<red>Your target must have at least 1 player online to declare a war!'
+  must-declare-nationwar: '<red>You cannot declare a <yellow>town war</yellow> because both sides have nations! Declare a <yellow>nation war</yellow> instead!'
+  ongoing-war-target: '<red>Target has an ongoing war! You cannot declare war on them!'
+  invalid-held-book: '<red>You must be holding a <yellow>declaration scroll</yellow> to use this command'
+  must-be-book-owner: '<red>Your town is not the owner of this declaration scroll!'
+  war-won: '<green>Victory! The war has ended! You''ve won <bold><gold><money-amount></gold></bold> Gold from your enemy''s balance, and an extra <bonus-claims> bonus claims!'
+  war-lost: 'You''ve lost the war... Your enemy has taken over <bold><gold><money-amount></gold></bold> Gold from your total balance, and they''ve earned <bonus-claims> bonus claims from you.'
+  player-killed: '<red><killer> killed <victim>! <victim-warrer> has lost <dark_red>5 health</dark_red> permanently!'
+  totem-pop: '<red><victim> has popped a totem! <victim-warrer> lost 1 hp!'
+  # Doesn't go through minimessage.
+  war-confirmation: '§cAre you sure you want to create a §e<type>§c book? This will cost you §e<cost> War tokens§c!'
