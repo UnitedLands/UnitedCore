@@ -1,5 +1,6 @@
 package org.unitedlands.wars.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +14,7 @@ public class WarEndEvent extends Event {
     private final WarringEntity losingEntity;
 
     public WarEndEvent(War war, WarringEntity winningEntity, WarringEntity losingEntity) {
+        super(!Bukkit.getServer().isPrimaryThread());
         this.war = war;
         this.winningEntity = winningEntity;
         this.losingEntity = losingEntity;
