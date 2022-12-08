@@ -37,7 +37,7 @@ import static org.unitedlands.wars.Utils.getMessage;
 import static org.unitedlands.wars.war.WarUtil.*;
 
 public class DeclareCommandParser {
-    private static final NamespacedKey TYPE_KEY = NamespacedKey.fromString("eventwar.dow.book.type");
+    private static final NamespacedKey TYPE_KEY = NamespacedKey.fromString("unitedwars.book.type");
     private final CommandSender sender;
 
     public DeclareCommandParser(CommandSender sender) {
@@ -191,7 +191,7 @@ public class DeclareCommandParser {
 
     private WarType getWarType() {
         PersistentDataContainer pdc = getHeldBookData();
-        String storedTypeName = pdc.get(NamespacedKey.fromString("eventwar.dow.book.type"), PersistentDataType.STRING);
+        String storedTypeName = pdc.get(NamespacedKey.fromString("unitedwars.book.type"), PersistentDataType.STRING);
         try {
             return WarType.valueOf(storedTypeName.toUpperCase());
         } catch (Exception e) {
@@ -284,7 +284,7 @@ public class DeclareCommandParser {
 
     private Town getDOWPurchaser(Player player) {
         ItemMeta bookMeta = player.getInventory().getItemInMainHand().getItemMeta();
-        NamespacedKey townKey = NamespacedKey.fromString("eventwar.dow.book.town");
+        NamespacedKey townKey = NamespacedKey.fromString("unitedwars.book.town");
         return UnitedWars.TOWNY_API.getTown(UUID.fromString(bookMeta.getPersistentDataContainer().get(townKey, PersistentDataType.STRING)));
     }
     private Translatable getConfirmationTitle(WarType warType, String name) {
