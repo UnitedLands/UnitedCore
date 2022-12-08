@@ -35,18 +35,31 @@ public final class UnitedWars extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        registerListeners();
+        setCommandExecutors();
+        runTasks();
+        load();
+    }
+
+    private void registerListeners() {
         registerListener(new WarListener(this));
         registerListener(new PlayerListener(this));
         registerListener(new BookListener(this));
+    }
+    private void setCommandExecutors() {
         getCommand("war").setExecutor(new WarCommand());
         getCommand("waradmin").setExecutor(new WarAdminCommand());
+    }
+    private void runTasks() {
         WarHealTask warHealTask = new WarHealTask();
         warHealTask.runTaskTimer(this, 0, 60 * 20 * 20);
+    }
+
+    private void load() {
         createWarConfig();
         WarDatabase.loadSavedData();
         saveDefaultConfig();
     }
-
     @Override
     public void onDisable() {
         WarDatabase.saveWarData();
