@@ -110,6 +110,7 @@ public class PlayerListener implements Listener {
             if (WarDataController.hasResidentLives(victim)) {
                 WarDataController.decrementResidentLives(victim);
                 WarringEntity warringEntity = WarDatabase.getWarringEntity(victim.getPlayer());
+                warringEntity.getWarHealth().decrementHealth(5);
                 warringEntity.getWarHealth().decrementMaxHealth(5);
 
                 Component message = getPlayerDeathMessage(warringEntity, killer, victim);
