@@ -51,12 +51,8 @@ public class DeclareCommandParser {
             return;
         }
         switch (warType.name().toLowerCase()) {
-            case "townwar" -> {
-                parseTownWar();
-            }
-            case "nationwar" -> {
-                parseNationWar();
-            }
+            case "townwar" -> parseTownWar();
+            case "nationwar" -> parseNationWar();
         }
     }
 
