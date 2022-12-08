@@ -84,7 +84,7 @@ public class WarHealth {
         updateHealthBar();
     }
 
-    public void decrementHealth(int decrement) {
+    public void decreaseHealth(int decrement) {
         int newHealth = Math.max(0, health - decrement);
         WarHealthChangeEvent whce = new WarHealthChangeEvent(this, newHealth, maxHealth);
         Bukkit.getServer().getPluginManager().callEvent(whce);
@@ -115,7 +115,7 @@ public class WarHealth {
         updateHealthBar();
     }
 
-    public void decrementMaxHealth(int decrease) {
+    public void decreaseMaxHealth(int decrease) {
         setMaxHealth(this.maxHealth - decrease);
     }
 

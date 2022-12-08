@@ -110,8 +110,8 @@ public class PlayerListener implements Listener {
             if (WarDataController.hasResidentLives(victim)) {
                 WarDataController.decrementResidentLives(victim);
                 WarringEntity warringEntity = WarDatabase.getWarringEntity(victim.getPlayer());
-                warringEntity.getWarHealth().decrementHealth(5);
-                warringEntity.getWarHealth().decrementMaxHealth(5);
+                warringEntity.getWarHealth().decreaseHealth(5);
+                warringEntity.getWarHealth().decreaseMaxHealth(5);
 
                 Component message = getPlayerDeathMessage(warringEntity, killer, victim);
 
@@ -165,7 +165,7 @@ public class PlayerListener implements Listener {
             WarringEntity warringEntity = WarDatabase.getWarringEntity(victim);
             if (warringEntity == null)
                 return;
-            warringEntity.getWarHealth().decrementHealth(1);
+            warringEntity.getWarHealth().decreaseHealth(1);
 
             Component message = Utils.getMessage("totem-pop",
                     component("victim", text(victim.getName())),
