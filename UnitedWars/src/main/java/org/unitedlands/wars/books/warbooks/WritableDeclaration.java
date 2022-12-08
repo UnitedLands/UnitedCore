@@ -88,8 +88,8 @@ public class WritableDeclaration implements WarBook {
 
         ItemMeta meta = writableBook.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(key("eventwar.dow.book.town"), PersistentDataType.STRING, townUUID.toString());
-        pdc.set(key("eventwar.dow.book.type"), PersistentDataType.STRING, warType.name());
+        pdc.set(key("unitedwars.book.town"), PersistentDataType.STRING, townUUID.toString());
+        pdc.set(key("unitedwars.book.type"), PersistentDataType.STRING, warType.name());
         pdc.set(key("unitedwars.book.target"), PersistentDataType.STRING, targetUUID.toString());
         pdc.set(key("unitedwars.book.writable"), PersistentDataType.INTEGER, 1); // 1 = true, 0 = false
 
