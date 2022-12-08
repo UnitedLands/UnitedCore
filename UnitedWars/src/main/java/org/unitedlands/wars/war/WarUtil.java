@@ -35,11 +35,11 @@ public class WarUtil {
     public static WritableDeclaration generateWritableDeclaration(BookMeta bookMeta) {
         PersistentDataContainer pdc = bookMeta.getPersistentDataContainer();
 
-        UUID declaringUUID = getUUID(pdc, "eventwar.dow.book.town");
+        UUID declaringUUID = getUUID(pdc, "unitedwars.book.town");
         Declarer declarer = new Declarer(UnitedWars.TOWNY_API.getTown(declaringUUID));
 
 
-        WarType warType = WarType.valueOf(pdc.get(NamespacedKey.fromString("eventwar.dow.book.type"), PersistentDataType.STRING).toUpperCase());
+        WarType warType = WarType.valueOf(pdc.get(NamespacedKey.fromString("unitedwars.book.type"), PersistentDataType.STRING).toUpperCase());
         UUID targetUUID = getUUID(pdc, "unitedwars.book.target");
         WarTarget warTarget = getWarTarget(warType, targetUUID);
 
