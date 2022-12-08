@@ -46,8 +46,8 @@ public class DeclarationGenerator extends BookGenerator {
         PersistentDataContainer pdc = bookMeta.getPersistentDataContainer();
         UUID townUUID = declarationBook.getDeclarer().town().getUUID();
         UUID targetUUID = declarationBook.getWarTarget().uuid();
-        pdc.set(NamespacedKey.fromString("unitedwars.dow.book.town"), PersistentDataType.STRING, townUUID.toString());
-        pdc.set(NamespacedKey.fromString("unitedwars.dow.book.type"), PersistentDataType.STRING, declarationBook.getType().name());
+        pdc.set(NamespacedKey.fromString("unitedwars.book.town"), PersistentDataType.STRING, townUUID.toString());
+        pdc.set(NamespacedKey.fromString("unitedwars.book.type"), PersistentDataType.STRING, declarationBook.getType().name());
         pdc.set(NamespacedKey.fromString("unitedwars.book.target"), PersistentDataType.STRING, targetUUID.toString());
     }
 
