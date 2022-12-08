@@ -31,6 +31,10 @@ public class Placeholders extends PlaceholderExpansion {
             if (WarDatabase.getWars().isEmpty())
                 return "";
 
+            // Empty string if player doesn't have a war.
+            if (!WarDatabase.hasWar(player.getPlayer()))
+                return "";
+
             Resident resident = Utils.getTownyResident(player.getUniqueId());
             String colorChar;
             int lives = WarDataController.getResidentLives(resident);
