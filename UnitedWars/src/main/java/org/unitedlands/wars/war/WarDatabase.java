@@ -186,7 +186,9 @@ public class WarDatabase {
             if (uuid.equals(town.getUUID())) {
                 return warringEntity;
             } else if (town.hasNation()) {
-                return town.getNationOrNull().getUUID().equals(uuid) ? warringEntity : null;
+                if (town.getNationOrNull().getUUID().equals(uuid)) {
+                    return warringEntity;
+                }
             }
         }
         return null;
