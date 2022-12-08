@@ -3,6 +3,7 @@ package org.unitedlands.wars.listeners;
 import com.palmergames.bukkit.towny.event.NewDayEvent;
 import com.palmergames.bukkit.towny.event.damage.TownBlockPVPTestEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -78,6 +79,12 @@ public class WarListener implements Listener {
             int current = warringEntity.getWarHealth().getValue();
             WarringEntity opposingEntity = WarUtil.getOpposingEntity(warringEntity);
             int enemyCurrent = opposingEntity.getWarHealth().getValue();
+
+            // Add 3 lives for each resident, up to a max of 6.
+            for (Resident resident: warringEntity.getWarParticipants()) {
+                int currentLives = WarDataController.getResidentLives(resident);
+                WarDataController.setResidentLives(resident,Math.max(6, currentLives + 3));
+            }
 
             warringEntity.getWarHealth().setHealth(Math.max(0, current - 20));
             if (warringEntity.getWarHealth().getValue() == 0) {

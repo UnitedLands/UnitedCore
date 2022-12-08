@@ -13,11 +13,6 @@ public class WarHealTask extends BukkitRunnable {
         for (WarringEntity warringEntity : WarDatabase.getWarringEntities()) {
             int amount = warringEntity.getOnlinePlayers().size();
             warringEntity.getWarHealth().increaseHealth(amount);
-            // Add 3 lives for each resident, up to a max of 6.
-            for (Resident resident: warringEntity.getWarParticipants()) {
-                int currentLives = WarDataController.getResidentLives(resident);
-                WarDataController.setResidentLives(resident,Math.max(6, currentLives + 3));
-            }
         }
 
     }
