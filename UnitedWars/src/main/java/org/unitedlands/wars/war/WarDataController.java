@@ -27,7 +27,7 @@ public class WarDataController {
         } else {
             res.addMetaData(new IntegerDataField("unitedwars_residentLives", lives, "War Lives Remaining"), true);
         }
-
+        res.save();
     }
 
     public static void decrementResidentLives(Resident res) {
