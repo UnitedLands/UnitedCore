@@ -274,6 +274,8 @@ messages:
   invalid-declaration-book: '<red>You cannot use artifacts as war books!'
   invalid-nation-name: '<red>Nation not found! Please enter the correct name!'
   must-be-mayor: '<red>Only mayors can create war books!'
+  cannot-declare-on-self: '<red>You cannot declare war on your own town/nation!'
+  cannot-declare-on-allies: '<red>Target is an ally! You cannot declare war on them...'
   only-mayors-can-sign: '<red>Only the mayor of <yellow><declarer-name><red> can sign this declaration book!'
   must-not-be-neutral-target: '<red>Target is neutral! You can only create books for non-neutral enemies!'
   must-have-online-player: '<red>Your target must have at least 1 player online to declare a war!'

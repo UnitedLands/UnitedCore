@@ -67,6 +67,12 @@ public class BookCommandParser {
             return;
         }
 
+        Town declaringTown = getPlayerTown(player);
+        if (declaringTown.equals(targetTown)) {
+            player.sendMessage(getMessage("cannot-declare-on-self"));
+            return;
+        }
+
         if (targetTown.isNeutral()) {
             player.sendMessage(getMessage("must-not-be-neutral-target"));
             return;
@@ -76,7 +82,6 @@ public class BookCommandParser {
             player.sendMessage(getMessage("ongoing-war-target"));
             return;
         }
-        Town declaringTown = getPlayerTown(player);
         // Both have a nation, force a nation war.
         if (targetTown.hasNation() && declaringTown.hasNation()) {
             player.sendMessage(getMessage("must-declare-nationwar"));
@@ -105,6 +110,16 @@ public class BookCommandParser {
             player.sendMessage(getMessage("invalid-nation-name"));
             return;
         }
+        Nation declaringNation = getPlayerTown(player).getNationOrNull();
+        if (targetNation.equals(declaringNation)) {
+            player.sendMessage(getMessage("cannot-declare-on-self"));
+            return;
+        }
+
+        if (declaringNation.getAllies().contains(targetNation)) {
+            player.sendMessage(getMessage("cannot-declare-on-allies"));
+            return;
+        }
 
         if (targetNation.isNeutral()) {
             player.sendMessage(getMessage("must-not-be-neutral-target"));
@@ -122,7 +137,6 @@ public class BookCommandParser {
         int cost = costCalculator.calculateWarCost();
 
         Confirmation.runOnAccept(() -> {
-            Nation declaringNation = getPlayerTown(player).getNationOrNull();
             if (takeTokens(declaringNation.getCapital(), cost)) {
                 player.getInventory().addItem(writableDeclaration.getBook());
                 TownyMessaging.sendPrefixedNationMessage(declaringNation, Translatable.of("msg_town_purchased_declaration_of_type", declaringNation, type.name()));
