@@ -3,7 +3,6 @@ package org.unitedlands.wars.commands;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
-import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -53,35 +52,25 @@ public class DeclareCommandParser {
         }
         switch (warType.name().toLowerCase()) {
             case "townwar" -> {
-                try {
-                    parseTownWar();
-                } catch (TownyException e) {
-                    TownyMessaging.sendErrorMsg(sender, e.getMessage());
-                }
+                parseTownWar();
             }
             case "nationwar" -> {
-                try {
-                    parseNationWar();
-                } catch (TownyException e) {
-                    TownyMessaging.sendErrorMsg(sender, e.getMessage());
-                }
+                parseNationWar();
             }
         }
     }
 
-    private void parseTownWar() throws TownyException {
+    private void parseTownWar() {
         Player player = (Player) this.sender;
         Town targetTown = getTargetFromBook().town();
         if (targetTown == null) {
-            throw new TownyException(Translatable.of("msg_invalid_name"));
+           player.sendMessage(getMessage("invalid-town-name"));
+           return;
         }
         Confirmation.runOnAccept(() -> {
-            try {
-                this.testBookRequirementsAreMet(WarType.TOWNWAR);
-            } catch (TownyException exception) {
-                TownyMessaging.sendErrorMsg(this.sender, exception.getMessage());
+
+            if (!testBookRequirementsAreMet(WarType.TOWNWAR))
                 return;
-            }
 
             if (targetTown.isNeutral()) {
                 TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_cannot_declare_war_on_neutral")});
@@ -109,34 +98,33 @@ public class DeclareCommandParser {
             Bukkit.getServer().getPluginManager().callEvent(wde);
 
             removeHeldBook(player);
-        }).setTitle(Translatable.of("player_are_you_sure_you_want_to_start_a_townwar", targetTown)).sendTo(player);
+        }).setTitle(getConfirmationTitle(WarType.TOWNWAR, targetTown.getFormattedName())).sendTo(player);
     }
 
-    private void parseNationWar() throws TownyException {
+    private void parseNationWar() {
         Player player = (Player) this.sender;
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (!resident.hasNation()) {
-            throw new TownyException(Translatable.of("msg_err_dont_belong_nation"));
+            player.sendMessage(getMessage("must-have-nation"));
+            return;
         }
         Nation declaringNation = resident.getNationOrNull();
         Nation targetNation = getTargetFromBook().nation();
         if (targetNation == null) {
-            throw new TownyException(Translatable.of("msg_target_has_no_nation"));
+            player.sendMessage(getMessage("invalid-nation-name"));
+            return;
         }
+
         Confirmation.runOnAccept(() -> {
-            try {
-                this.testBookRequirementsAreMet(WarType.NATIONWAR);
-            } catch (TownyException var10) {
-                TownyMessaging.sendErrorMsg(this.sender, var10.getMessage());
+            if (!testBookRequirementsAreMet(WarType.NATIONWAR))
                 return;
-            }
 
             if (targetNation.isNeutral()) {
-                TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_cannot_declare_war_on_neutral")});
+                player.sendMessage(getMessage("must-not-be-neutral-target"));
                 return;
             }
             if (!nationsHaveEnoughOnline(targetNation, declaringNation)) {
-                TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_not_enough_people_online_for_nationwar", 1)});
+                player.sendMessage(getMessage("must-have-online-player"));
                 return;
             }
             List<Nation> nations = new ArrayList<>();
@@ -153,7 +141,7 @@ public class DeclareCommandParser {
             Bukkit.getServer().getPluginManager().callEvent(wde);
 
             removeHeldBook(player);
-        }).setTitle(Translatable.of("player_are_you_sure_you_want_to_start_a_nationwar", targetNation)).sendTo(player);
+        }).setTitle(getConfirmationTitle(WarType.NATIONWAR, targetNation.getFormattedName())).sendTo(player);
 
     }
 
@@ -220,38 +208,49 @@ public class DeclareCommandParser {
         return pdc.get(TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("TOWNWAR");
     }
 
-    private void testBookRequirementsAreMet(WarType wartype) throws TownyException {
+    private boolean testBookRequirementsAreMet(WarType wartype) {
         Player player = (Player) this.sender;
         Resident resident = UnitedWars.TOWNY_API.getResident(player);
         if (!resident.hasTown()) {
-            throw new TownyException(Translatable.of("msg_err_must_belong_town"));
+            player.sendMessage(getMessage("must-have-town"));
+            return false;
         }
-        List<String> error = new ArrayList<>(1);
-        if (!isTownAllowedToWar(resident.getTownOrNull(), error, wartype)) {
-            throw new TownyException(error.get(0));
+        Town town = resident.getTownOrNull();
+        if (town.hasActiveWar()) {
+            player.sendMessage(getMessage("ongoing-war"));
+            return false;
+        } else if (!isNotOnCooldownForWar(WarType.TOWNWAR, town)) {
+            player.sendMessage(getMessage("on-cooldown"));
+            return false;
         }
         ItemStack book = player.getInventory().getItemInMainHand();
         if (!book.getType().equals(Material.WRITTEN_BOOK)) {
-            throw new TownyException(Translatable.of("msg_err_you_are_not_holding_dow"));
+            player.sendMessage(getMessage("invalid-held-book"));
+            return false;
         }
         PersistentDataContainer pdc = book.getItemMeta().getPersistentDataContainer();
         if (pdc.isEmpty()) {
-            throw new TownyException(Translatable.of("msg_err_you_are_not_holding_dow"));
+            player.sendMessage(getMessage("invalid-held-book"));
+            return false;
         }
         if (!pdc.has(TYPE_KEY, PersistentDataType.STRING)) {
-            throw new TownyException(Translatable.of("msg_err_you_are_not_holding_dow"));
+            player.sendMessage(getMessage("invalid-held-book"));
+            return false;
         }
         String type = pdc.get(TYPE_KEY, PersistentDataType.STRING);
         if (!type.equalsIgnoreCase(wartype.name())) {
-            throw new TownyException(Translatable.of("msg_err_you_are_not_holding_correct_dow"));
+            player.sendMessage(getMessage("invalid-held-book"));
+            return false;
         }
         Town townWhoBoughtDOW = getDOWPurchaser(player);
         if (townWhoBoughtDOW == null) {
-            throw new TownyException(Translatable.of("msg_err_dow_owner_no_longer_exists"));
+            player.sendMessage(getMessage("invalid-held-book"));
+            return false;
         } else if (!resident.getTownOrNull().equals(townWhoBoughtDOW)) {
-            throw new TownyException(Translatable.of("msg_err_dow_owner_not_your_town"));
+            player.sendMessage(getMessage("must-be-book-owner"));
+            return false;
         }
-
+        return true; // all checks passed.
     }
 
     private void removeHeldBook(Player player) {
@@ -287,5 +286,11 @@ public class DeclareCommandParser {
         ItemMeta bookMeta = player.getInventory().getItemInMainHand().getItemMeta();
         NamespacedKey townKey = NamespacedKey.fromString("eventwar.dow.book.town");
         return UnitedWars.TOWNY_API.getTown(UUID.fromString(bookMeta.getPersistentDataContainer().get(townKey, PersistentDataType.STRING)));
+    }
+    private Translatable getConfirmationTitle(WarType warType, String name) {
+        String message = UnitedWars.getInstance().getConfig().getString("messages.war-declare-confirmation")
+                .replace("<target>", String.valueOf(name))
+                .replace("<type>", warType.getFormattedName());
+        return Translatable.of(message);
     }
 }

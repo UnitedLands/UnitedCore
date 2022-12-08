@@ -19,7 +19,6 @@ import org.unitedlands.wars.war.entities.WarringEntity;
 import org.unitedlands.wars.war.entities.WarringNation;
 import org.unitedlands.wars.war.entities.WarringTown;
 
-import java.util.List;
 import java.util.UUID;
 
 public class WarUtil {
@@ -31,23 +30,6 @@ public class WarUtil {
 
     public static boolean townHasEnoughOnline(Town town) {
         return TownyAPI.getInstance().getOnlinePlayersInTown(town).size() >= 0;
-    }
-
-    public static boolean isTownAllowedToWar(Town town, List<String> error, WarType type) {
-        if (town.hasActiveWar()) {
-            error.add("The town " + town + " is already involved in a war. They will not take part in the war.");
-            return false;
-        } else if (!isNotOnCooldownForWar(type, town)) {
-            error.add("The town " + town + " fought too recently. They will not take part in the war.");
-            return false;
-        } else if (!town.getHomeBlockOrNull().getWorld().isWarAllowed()) {
-            error.add("The town " + town + " exists in a world with war disabled. They will not take part in the war.");
-            return false;
-        } else if (town.isNeutral()) {
-            error.add("The town " + town + " is neutral/peaceful. They will not take part in the war.");
-            return false;
-        }
-        return true;
     }
 
     public static WritableDeclaration generateWritableDeclaration(BookMeta bookMeta) {
@@ -80,7 +62,7 @@ public class WarUtil {
         return warTarget;
     }
 
-    private static boolean isNotOnCooldownForWar(WarType type, TownyObject obj) {
+    public static boolean isNotOnCooldownForWar(WarType type, TownyObject obj) {
         return !WarDataController.hasLastWarTime(obj) || !tooSoonForWar(type, obj);
     }
 
