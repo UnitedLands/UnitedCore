@@ -1,5 +1,6 @@
 package org.unitedlands.wars.war.entities;
 
+import com.palmergames.bukkit.towny.object.Government;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import org.bukkit.entity.Player;
@@ -49,6 +50,11 @@ public class WarringNation implements WarringEntity {
             }
         });
         return players;
+    }
+
+    @Override
+    public Government getGovernment() {
+        return getNation();
     }
 
     public UUID getUUID() {

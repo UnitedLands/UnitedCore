@@ -1,5 +1,6 @@
 package org.unitedlands.wars.war.entities;
 
+import com.palmergames.bukkit.towny.object.Government;
 import com.palmergames.bukkit.towny.object.Resident;
 import org.bukkit.entity.Player;
 import org.unitedlands.wars.war.War;
@@ -17,6 +18,8 @@ public interface WarringEntity {
 
     List<Resident> getWarParticipants();
     List<Player> getOnlinePlayers();
+
+    Government getGovernment();
 
     String getPath();
 
