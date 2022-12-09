@@ -57,6 +57,16 @@ public class War {
         WarDatabase.addWar(this);
     }
 
+    public List<WarringEntity> getWarringEntities() {
+        List<WarringEntity> warringEntities = new ArrayList<>();
+        if (warType == WarType.TOWNWAR)
+            warringEntities.addAll(warringTowns);
+        else
+            warringEntities.addAll(warringNations);
+
+        return warringEntities;
+    }
+
     public List<WarringTown> getWarringTowns() {
         return warringTowns;
     }
