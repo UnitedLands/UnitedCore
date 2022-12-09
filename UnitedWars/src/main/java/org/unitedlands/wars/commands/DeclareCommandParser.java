@@ -189,7 +189,7 @@ public class DeclareCommandParser {
         PersistentDataContainer pdc = getHeldBookData();
         String storedTypeName = pdc.get(NamespacedKey.fromString("unitedwars.book.type"), PersistentDataType.STRING);
         try {
-            return WarType.valueOf(storedTypeName.toUpperCase());
+            return WarType.valueOf(storedTypeName);
         } catch (Exception e) {
             e.printStackTrace();
         }
