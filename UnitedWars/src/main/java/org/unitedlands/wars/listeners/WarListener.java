@@ -157,7 +157,7 @@ public class WarListener implements Listener {
     private void notifyDeclaration(WarringEntity target, WarringEntity declarer) {
         String type = target.getWar().getWarType().getFormattedName();
 
-        Title declarationTitle = getTitle("<dark_red><bold>War Declaration!", "<yellow>" + declarer.name() + "</yellow><red> has declared a war" + type + "</yellow> on " + target.name() + "!");
+        Title declarationTitle = getTitle("<dark_red><bold>War Declaration!", "<yellow>" + declarer.name() + "</yellow><red> has declared a war on <yellow>" + target.name() + "</yellow>!");
 
         notifyResidents(target.getOnlinePlayers(), declarationTitle);
         notifyResidents(declarer.getOnlinePlayers(), declarationTitle);
