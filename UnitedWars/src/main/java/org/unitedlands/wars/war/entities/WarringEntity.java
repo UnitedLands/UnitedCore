@@ -20,6 +20,7 @@ public interface WarringEntity {
     List<Player> getOnlinePlayers();
 
     Government getGovernment();
+    Resident getLeader();
 
     String getPath();
 

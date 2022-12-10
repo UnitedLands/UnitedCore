@@ -56,6 +56,10 @@ public class WarringNation implements WarringEntity {
     public Government getGovernment() {
         return getNation();
     }
+    @Override
+    public Resident getLeader() {
+        return getNation().getKing();
+    }
 
     public UUID getUUID() {
         return nationUUID;

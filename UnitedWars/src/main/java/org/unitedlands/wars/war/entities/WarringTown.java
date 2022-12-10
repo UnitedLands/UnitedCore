@@ -60,6 +60,11 @@ public class WarringTown implements WarringEntity {
         return getTown();
     }
 
+    @Override
+    public Resident getLeader() {
+        return getTown().getMayor();
+    }
+
     public UUID getUUID() {
         return townUUID;
     }

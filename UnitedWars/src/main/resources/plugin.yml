@@ -14,3 +14,5 @@ commands:
   waradmin:
     description: Used by admins to manage wars
     permission: united.wars.admin
+  surrender:
+    description: Used to surrender from wars or accept surrender requests

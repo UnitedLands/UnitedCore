@@ -128,6 +128,28 @@ public class War {
         WarDatabase.removeWarringEntity(loser);
         WarDatabase.removeWar(this);
     }
+    public void surrenderWar(WarringEntity winner, WarringEntity loser) {
+        this.winner = winner;
+        this.loser = loser;
+        // Call event. Handle rewarding in WarListener
+        WarEndEvent warEndEvent = new WarEndEvent(this, winner, loser);
+        Bukkit.getServer().getPluginManager().callEvent(warEndEvent);
+
+        // Remove health.
+        hideHealth(winner);
+        hideHealth(loser);
+
+        // Notify
+        notifySurrenderAccepted();
+        notifySurrendered();
+        // Toggle active war
+        toggleActiveWar(false);
+
+        // Clear from database.
+        WarDatabase.removeWarringEntity(winner);
+        WarDatabase.removeWarringEntity(loser);
+        WarDatabase.removeWar(this);
+    }
 
     // Called inside WarTimer.
     public void endWarTimer() {
@@ -200,6 +222,24 @@ public class War {
             Player player = resident.getPlayer();
             if (player != null)
                 warringEntity.getWarHealth().hide(player);
+        });
+    }
+
+    private void notifySurrendered() {
+        Title title = Utils.getTitle("<dark_red><bold>WAR LOST!", "<red>You've surrendered from the war!");
+        loser.getOnlinePlayers().forEach(player -> {
+            player.showTitle(title);
+            //   player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
+            player.sendMessage(Utils.getMessage("war-lost-surrender", getWonAndLostPlaceholders()));
+        });
+    }
+
+    private void notifySurrenderAccepted() {
+        Title title = Utils.getTitle("<dark_green><bold>VICTORY!", "<green>Your enemy has surrendered!");
+        winner.getOnlinePlayers().forEach(player -> {
+            player.showTitle(title);
+            //   player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_1, 1F, 1F);
+            player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
         });
     }
 
