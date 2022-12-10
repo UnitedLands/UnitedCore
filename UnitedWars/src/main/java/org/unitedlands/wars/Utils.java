@@ -24,14 +24,24 @@ public class Utils {
     @NotNull
     public static Component getMessage(String message) {
         String prefix = CONFIG.getString("messages.prefix");
-        String configuredMessage = prefix + CONFIG.getString("messages." + message);
-        return MINI_MESSAGE.deserialize(Objects.requireNonNullElseGet(configuredMessage, () -> "<red>Message <yellow>" + message + "<red> could not be found in the config file!"));
+        String configuredMessage = CONFIG.getString("messages." + message);
+        if (configuredMessage == null) {
+            return MINI_MESSAGE.deserialize("<red>Message <yellow>" + message + "<red> could not be found in the config file!");
+        }
+        return MINI_MESSAGE.deserialize(prefix + configuredMessage);
     }
 
     public static Component getMessage(String message, TagResolver.Single... resolvers) {
         String prefix = CONFIG.getString("messages.prefix");
-        String configuredMessage = prefix + CONFIG.getString("messages." + message);
-        return MINI_MESSAGE.deserialize(configuredMessage, resolvers);
+        String configuredMessage = CONFIG.getString("messages." + message);
+        if (configuredMessage == null) {
+            return MINI_MESSAGE.deserialize("<red>Message <yellow>" + message + "<red> could not be found in the config file!");
+        }
+        return MINI_MESSAGE.deserialize(prefix + configuredMessage, resolvers);
+    }
+
+    public static String getMessageRaw(String message) {
+        return CONFIG.getString("messages." + message);
     }
 
     public static boolean isBannedWorld(String worldName) {
