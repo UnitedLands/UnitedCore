@@ -304,6 +304,8 @@ messages:
   request-sent: '<green>Surrender request successfully sent! You must now wait for the other side to accept or decline it!'
   health-too-high-to-surrender: '<red>You cannot surrender right now! Your health must be lower than or equal to <gold>65 HP</gold>!'
   # Doesn't go through minimessage.
+  town-purchased-declaration: '§bYour town has just purchased a declaration of war!'
+  nation-purchased-declaration: '§bYour nation has just purchased a declaration of war!'
   war-confirmation: '§cAre you sure you want to create a §e<type>§c book? This will cost you §e<cost> War tokens§c!'
   war-declare-confirmation: '§cAre you sure you want to declare a §e<type>§c on §e<target>? §cThe war will start immediately after confirmation.'
   surrender-confirm: '§cAre you sure you want to send a surrender request to §e<warring-name>§c? You will lose the war if the request is accepted.'

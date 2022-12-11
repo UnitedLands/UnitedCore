@@ -97,7 +97,7 @@ public class BookCommandParser {
                 WritableDeclaration writableDeclaration = new WritableDeclaration(new Declarer(player), new WarTarget(targetTown), type);
                 player.getInventory().addItem(writableDeclaration.getBook());
 
-                TownyMessaging.sendPrefixedTownMessage(declaringTown, Translatable.of("msg_town_purchased_declaration_of_type", declaringTown, type.name()));
+                TownyMessaging.sendPrefixedTownMessage(declaringTown, getMessageRaw("town-purchased-declaration"));
             }
         }).setTitle(getConfirmationTitle(type, cost)).sendTo(player);
     }
@@ -139,7 +139,7 @@ public class BookCommandParser {
         Confirmation.runOnAccept(() -> {
             if (takeTokens(declaringNation.getCapital(), cost)) {
                 player.getInventory().addItem(writableDeclaration.getBook());
-                TownyMessaging.sendPrefixedNationMessage(declaringNation, Translatable.of("msg_town_purchased_declaration_of_type", declaringNation, type.name()));
+                TownyMessaging.sendPrefixedNationMessage(declaringNation, getMessageRaw("nation-purchased-declaration"));
             }
         }).setTitle(getConfirmationTitle(type, cost)).sendTo(player);
     }
