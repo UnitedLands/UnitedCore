@@ -2,43 +2,47 @@ package org.unitedlands.wars.books.data;
 
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
 
+import java.util.UUID;
+
 public class Declarer {
-    private final Player declaringPlayer;
-    private final Town town;
-    private final Nation nation;
+    private final UUID declaringPlayer;
+    private final UUID town;
+    private final UUID nation;
 
 
     public Declarer(Player declaringPlayer) {
-        this.declaringPlayer = declaringPlayer;
-        town = Utils.getPlayerTown(declaringPlayer);
-        if (town.hasNation())
-            nation = town.getNationOrNull();
+        this.declaringPlayer = declaringPlayer.getUniqueId();
+        town = Utils.getPlayerTown(declaringPlayer).getUUID();
+        if (town().hasNation())
+            nation = town().getNationOrNull().getUUID();
         else
             nation = null;
     }
 
     public Declarer(Town town) {
-        this.town = town;
-        this.declaringPlayer = town.getMayor().getPlayer();
+        this.town = town.getUUID();
+        this.declaringPlayer = town().getMayor().getUUID();
         if (town.hasNation())
-            nation = town.getNationOrNull();
+            nation = town().getNationOrNull().getUUID();
         else
             nation = null;
     }
 
     public Player player() {
-        return declaringPlayer;
+        return Bukkit.getPlayer(declaringPlayer);
     }
 
     public Town town() {
-        return town;
+        return UnitedWars.TOWNY_API.getTown(town);
     }
 
     public Nation nation() {
-        return nation;
+        return UnitedWars.TOWNY_API.getNation(nation);
     }
 
 }

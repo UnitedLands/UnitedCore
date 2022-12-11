@@ -35,11 +35,9 @@ import static org.unitedlands.wars.Utils.*;
 import static org.unitedlands.wars.war.WarUtil.hasSameWar;
 
 public class PlayerListener implements Listener {
-    private final UnitedWars unitedWars;
     private final FileConfiguration config;
 
     public PlayerListener(UnitedWars unitedWars) {
-        this.unitedWars = unitedWars;
         config = unitedWars.getConfig();
     }
 
@@ -119,11 +117,7 @@ public class PlayerListener implements Listener {
                     notifyWarKick(victim.getPlayer(), warringEntity);
                     return;
                 }
-                for (Resident resident : warringEntity.getWar().getResidents()) {
-                    if (resident.getPlayer() != null) {
-                        resident.getPlayer().sendMessage(message);
-                    }
-                }
+                warringEntity.getWar().broadcast(message);
             }
         }
     }
@@ -135,13 +129,8 @@ public class PlayerListener implements Listener {
 
         Component message = getMessage("removed-from-war",
                 component("victim-warrer", text(warringEntity.name())));
-        warringEntity.getWar().getResidents().forEach(resident -> {
-            if (resident.isOnline()) {
-                resident.getPlayer().sendMessage(message);
-            }
-        });
 
-
+        warringEntity.getWar().broadcast(message);
     }
 
     @NotNull
@@ -171,11 +160,7 @@ public class PlayerListener implements Listener {
                     component("victim", text(victim.getName())),
                     component("victim-warrer", text(warringEntity.name())));
 
-            for (Resident resident : warringEntity.getWar().getResidents()) {
-                if (resident.getPlayer() != null) {
-                    resident.getPlayer().sendMessage(message);
-                }
-            }
+            warringEntity.getWar().broadcast(message);
         }
     }
 

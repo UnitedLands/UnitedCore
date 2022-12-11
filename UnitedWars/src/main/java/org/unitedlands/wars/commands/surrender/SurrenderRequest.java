@@ -43,7 +43,6 @@ class SurrenderRequest {
         this.moneyAmount = moneyAmount;
         town = null;
         notifyTarget();
-
     }
 
     SurrenderRequest(UUID requester, UUID target, SurrenderType type, Town town) {

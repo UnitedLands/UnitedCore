@@ -1,13 +1,14 @@
 package org.unitedlands.wars.war;
 
 public enum WarType {
-    NATIONWAR(15, 7, "Nation War"),
-    TOWNWAR(10, 4, "Town War");
+    NATIONWAR(20, 7, "Nation War"),
+    TOWNWAR(15, 4, "Town War");
 
 
     private final int baseCost;
     private final int cooldownInDays;
     private final String formattedName;
+
     WarType(int baseCost, int cooldownInDays, String formattedName) {
         this.baseCost = baseCost;
         this.cooldownInDays = cooldownInDays;

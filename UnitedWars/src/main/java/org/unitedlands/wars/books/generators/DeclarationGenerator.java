@@ -16,7 +16,7 @@ import static net.kyori.adventure.text.Component.text;
 
 public class DeclarationGenerator extends BookGenerator {
     private final DeclarationWarBook declarationBook;
-    private ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK);
+    private final ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK);
     private BookMeta bookMeta = (BookMeta) bookItem.getItemMeta();
 
     public DeclarationGenerator(DeclarationWarBook declarationBook) {

@@ -176,9 +176,18 @@ public class WarDatabase {
     }
 
     public static WarringEntity getWarringEntity(Player player) {
-        HashSet<WarringEntity> warringEntities = getWarringEntities();
         Resident resident = Utils.getTownyResident(player);
-        for (WarringEntity warringEntity: warringEntities) {
+        return getWarringEntity(resident);
+    }
+
+    public static WarringEntity getWarringEntity(UUID uuid) {
+        Resident resident = Utils.getTownyResident(uuid);
+        return getWarringEntity(resident);
+    }
+
+    public static WarringEntity getWarringEntity(Resident resident) {
+        HashSet<WarringEntity> warringEntities = getWarringEntities();
+        for (WarringEntity warringEntity : warringEntities) {
             if (warringEntity.getWarParticipants().contains(resident)) {
                 return warringEntity;
             }

@@ -1,7 +1,6 @@
 package org.unitedlands.wars.commands;
 
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -64,18 +63,17 @@ public class DeclareCommandParser {
            return;
         }
         Confirmation.runOnAccept(() -> {
-
             if (!testBookRequirementsAreMet(WarType.TOWNWAR))
                 return;
 
             if (targetTown.isNeutral()) {
-                TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_cannot_declare_war_on_neutral")});
+                player.sendMessage(getMessage("must-not-be-neutral-target"));
                 return;
             }
             Resident resident = UnitedWars.TOWNY_API.getResident(player);
             Town town = resident.getTownOrNull();
             if (!townsHaveEnoughOnline(targetTown, town)) {
-                TownyMessaging.sendErrorMsg(this.sender, new Translatable[]{Translatable.of("msg_err_not_enough_people_online_for_townwar", 1)});
+                player.sendMessage(getMessage("must-have-online-player"));
                 return;
             }
             List<Town> towns = new ArrayList<>();
@@ -187,7 +185,7 @@ public class DeclareCommandParser {
 
     private WarType getWarType() {
         PersistentDataContainer pdc = getHeldBookData();
-        String storedTypeName = pdc.get(NamespacedKey.fromString("unitedwars.book.type"), PersistentDataType.STRING);
+        String storedTypeName = pdc.get(TYPE_KEY, PersistentDataType.STRING);
         try {
             return WarType.valueOf(storedTypeName);
         } catch (Exception e) {

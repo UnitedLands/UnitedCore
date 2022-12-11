@@ -8,39 +8,38 @@ import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Sound;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.books.TokenCostCalculator;
 import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
 import org.unitedlands.wars.events.WarDeclareEvent;
 import org.unitedlands.wars.events.WarHealthChangeEvent;
-import org.unitedlands.wars.war.*;
+import org.unitedlands.wars.war.War;
+import org.unitedlands.wars.war.WarDataController;
+import org.unitedlands.wars.war.WarDatabase;
+import org.unitedlands.wars.war.WarUtil;
 import org.unitedlands.wars.war.entities.WarringEntity;
 
 import java.util.List;
 
 public class WarListener implements Listener {
-    private final @NotNull FileConfiguration config;
-
-    public WarListener(UnitedWars unitedWars) {
-        config = unitedWars.getConfig();
-    }
 
 
     @EventHandler
     public void onTownBlockPVPTest(TownBlockPVPTestEvent event) {
-        if (!WarDatabase.getWars().isEmpty()) {
-            if (WarDatabase.getWarringTown(event.getTown()) != null
-                    || WarDatabase.getWarringNation(event.getTown().getNationOrNull()) != null) {
-                event.setPvp(true);
-            }
+        if (WarDatabase.getWars().isEmpty())
+            return;
+
+        Town town = event.getTown();
+        if (WarDatabase.getWarringTown(town) != null
+                || WarDatabase.getWarringNation(town.getNationOrNull()) != null) {
+            event.setPvp(true);
         }
+
     }
 
     @EventHandler
@@ -115,7 +114,6 @@ public class WarListener implements Listener {
         Town town = event.getTown();
         if (!town.isNeutral()) {
             TokenCostCalculator costCalculator = new TokenCostCalculator(town);
-            event.getStatusScreen().addComponentOf("warTokens", "§2War Tokens: §a" + WarDataController.getWarTokens(town));
             event.getStatusScreen().addComponentOf("dailyWarTokens", "§2Daily War Tokens: §a" + costCalculator.calculateTokenIncome());
         }
     }
@@ -140,23 +138,14 @@ public class WarListener implements Listener {
         Declarer declarer = event.getDeclarer();
         WarTarget target = event.getTarget();
 
-        if (event.getDeclarationWarBook().getType() == WarType.TOWNWAR) {
-            WarringEntity declaringTown = WarDatabase.getWarringTown(declarer.town());
-            WarringEntity targetTown = WarDatabase.getWarringTown(target.town());
-            notifyDeclaration(targetTown, declaringTown);
-        }
+        WarringEntity declaringEntity = WarDatabase.getWarringEntity(declarer.player());
+        WarringEntity targetEntity = WarDatabase.getWarringEntity(target.targetMayor().getUniqueId());
 
-        if (event.getDeclarationWarBook().getType() == WarType.NATIONWAR) {
-            WarringEntity declaringNation = WarDatabase.getWarringNation(declarer.nation());
-            WarringEntity targetNation = WarDatabase.getWarringNation(target.nation());
-            notifyDeclaration(targetNation, declaringNation);
-        }
+        notifyDeclaration(targetEntity, declaringEntity);
     }
 
 
     private void notifyDeclaration(WarringEntity target, WarringEntity declarer) {
-        String type = target.getWar().getWarType().getFormattedName();
-
         Title declarationTitle = getTitle("<dark_red><bold>War Declaration!", "<yellow>" + declarer.name() + "</yellow><red> has declared a war on <yellow>" + target.name() + "</yellow>!");
 
         notifyResidents(target.getOnlinePlayers(), declarationTitle);
