@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.books.declaration.DeclarationWarBook;
 import org.unitedlands.wars.books.declaration.NationDeclarationBook;
@@ -32,15 +32,16 @@ public class BookListener implements Listener {
         this.unitedWars = unitedWars;
     }
 
-    private static boolean isWritableDeclaration(PersistentDataContainer pdc) {
-        return WritableDeclaration.isWritableDeclaration(pdc);
+    private static boolean isWritableDeclaration(ItemMeta meta) {
+        return WritableDeclaration.isWritableDeclaration(meta.getPersistentDataContainer());
     }
 
     @EventHandler
     public void onBookEdit(PlayerEditBookEvent event) {
-        boolean isWritableDeclaration = isWritableDeclaration(event.getPreviousBookMeta().getPersistentDataContainer());
-        if (!isWritableDeclaration) return;
-        if (!event.isSigning()) return;
+        if (!isWritableDeclaration(event.getPreviousBookMeta()))
+            return;
+        if (!event.isSigning())
+            return;
 
         BookMeta bookMeta = event.getNewBookMeta();
         WritableDeclaration writableDeclaration = generateWritableDeclaration(bookMeta);
@@ -52,24 +53,26 @@ public class BookListener implements Listener {
 
         // Generate the sealed book.
         WarType type = writableDeclaration.getWarType();
-        DeclarationWarBook declarationBook = null;
-        if (type == WarType.TOWNWAR) {
+        DeclarationWarBook declarationBook;
+        if (type == WarType.TOWNWAR)
             declarationBook = new TownDeclarationBook(writableDeclaration);
-        } else if (type == WarType.NATIONWAR) {
+        else
             declarationBook = new NationDeclarationBook(writableDeclaration);
-        }
-
 
         // Replace the held item, the old book, with the new sealed book to be used for declaration.
         DeclarationWarBook finalDeclarationBook = declarationBook;
         unitedWars.getServer().getScheduler().runTask(unitedWars, () -> event.getPlayer().getInventory().setItemInMainHand(finalDeclarationBook.getBook()));
     }
 
+    private boolean canWriteBook(Resident resident, WritableDeclaration writableDeclaration) {
+        return resident.getTownOrNull().equals(writableDeclaration.getDeclarer().town()) && resident.isMayor();
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBookInteract(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
         if (item == null) return;
-        if (!isWritableDeclaration(item.getItemMeta().getPersistentDataContainer())) return;
+        if (!isWritableDeclaration(item.getItemMeta())) return;
 
         Resident resident = getTownyResident(event.getPlayer());
         WritableDeclaration writableDeclaration = generateWritableDeclaration((BookMeta) item.getItemMeta());
@@ -79,9 +82,5 @@ public class BookListener implements Listener {
             event.getPlayer().sendMessage(getMessage("only-mayors-can-sign", Placeholder.component("declarer-name", text(writableDeclaration.getDeclarerName()))));
             event.getPlayer().closeInventory();
         }
-    }
-
-    private boolean canWriteBook(Resident resident, WritableDeclaration writableDeclaration) {
-        return resident.getTownOrNull().equals(writableDeclaration.getDeclarer().town()) && resident.isMayor();
     }
 }

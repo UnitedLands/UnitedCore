@@ -3,6 +3,7 @@ package org.unitedlands.wars.war;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.title.Title;
@@ -27,7 +28,7 @@ public class War {
     private static final UnitedWars plugin = UnitedWars.getInstance();
     private final List<WarringTown> warringTowns;
     private final List<WarringNation> warringNations;
-    private final HashSet<Resident> residents;
+    private final HashSet<UUID> residents;
     private final WarType warType;
     private UUID uuid = UUID.randomUUID();
     private WarTimer warTimer = null;
@@ -37,7 +38,7 @@ public class War {
     public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType) {
         this.warringTowns = generateWarringTownList(warringTowns);
         this.warringNations = generateWarringNationList(warringNations);
-        this.residents = residents;
+        this.residents = Utils.toUUID(residents);
         this.warType = warType;
         warTimer = new WarTimer(this);
         // Start the war immediately, since this is the first time.
@@ -50,7 +51,7 @@ public class War {
     public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType, UUID uuid) {
         this.warringTowns = generateWarringTownList(warringTowns);
         this.warringNations = generateWarringNationList(warringNations);
-        this.residents = residents;
+        this.residents = Utils.toUUID(residents);
         this.warType = warType;
         this.uuid = uuid;
         // Save war to internal database
@@ -75,8 +76,10 @@ public class War {
         return warringNations;
     }
 
-    public HashSet<Resident> getResidents() {
-        return residents;
+    public HashSet<Resident> getWarParticipants() {
+        HashSet<Resident> uuidResidents = new HashSet<>();
+        residents.forEach(uuid -> uuidResidents.add(Utils.getTownyResident(uuid)));
+        return uuidResidents;
     }
 
     public WarType getWarType() {
@@ -91,6 +94,14 @@ public class War {
         return warTimer;
     }
 
+    public HashSet<Player> getOnlinePlayers() {
+        HashSet<Player> players = new HashSet<>();
+        getWarParticipants().forEach(resident -> {
+            if (resident.isOnline())
+                players.add(resident.getPlayer());
+        });
+        return players;
+    }
 
     public void startWar() {
         // Start the war countdowns
@@ -122,12 +133,14 @@ public class War {
 
         // Toggle active war
         toggleActiveWar(false);
+        saveLastWarTimes();
 
         // Clear from database.
         WarDatabase.removeWarringEntity(winner);
         WarDatabase.removeWarringEntity(loser);
         WarDatabase.removeWar(this);
     }
+
     public void surrenderWar(WarringEntity winner, WarringEntity loser) {
         this.winner = winner;
         this.loser = loser;
@@ -153,10 +166,7 @@ public class War {
 
     // Called inside WarTimer.
     public void endWarTimer() {
-        for (Resident resident : getResidents()) {
-            Player player = resident.getPlayer();
-            // Player is offline, next
-            if (player == null) continue;
+        for (Player player : getOnlinePlayers()) {
             // Remove for again for safe measures
             warTimer.removeViewer(player);
 
@@ -168,8 +178,12 @@ public class War {
         }
     }
 
+    public void broadcast(Component message) {
+        getOnlinePlayers().forEach(player -> player.sendMessage(message));
+    }
+
     private void runPlayerProcedures() {
-        for (Resident resident : getResidents()) {
+        for (Resident resident : getWarParticipants()) {
             // Set player lives
             WarDataController.setResidentLives(resident, 3);
 
@@ -189,25 +203,17 @@ public class War {
     }
 
     private void toggleActiveWar(boolean toggle) {
-        if (warType == WarType.TOWNWAR) {
-            for (WarringTown warringTown : warringTowns) {
-                Town town = warringTown.getTown();
-                town.setActiveWar(toggle);
-                WarDataController.setLastWarTime(town, System.currentTimeMillis());
+        for (WarringEntity entity : getWarringEntities()) {
+            entity.getGovernment().setActiveWar(toggle);
+            if (entity.getGovernment() instanceof Nation nation) {
+                nation.getAllies().forEach(ally -> ally.setActiveWar(toggle));
             }
         }
+    }
 
-        if (warType == WarType.NATIONWAR) {
-            for (WarringNation warringNation : warringNations) {
-                Nation nation = warringNation.getNation();
-                nation.setActiveWar(toggle);
-                WarDataController.setLastWarTime(nation, System.currentTimeMillis());
-
-                for (Nation ally : nation.getAllies()) {
-                    ally.setActiveWar(toggle);
-                }
-            }
-        }
+    private void saveLastWarTimes() {
+        WarDataController.setLastWarTime(winner.getGovernment(), System.currentTimeMillis());
+        WarDataController.setLastWarTime(loser.getGovernment(), System.currentTimeMillis());
     }
 
     public boolean hasActiveTimer() {
@@ -218,11 +224,7 @@ public class War {
     }
 
     private void hideHealth(WarringEntity warringEntity) {
-        warringEntity.getWarParticipants().forEach(resident -> {
-            Player player = resident.getPlayer();
-            if (player != null)
-                warringEntity.getWarHealth().hide(player);
-        });
+        warringEntity.getOnlinePlayers().forEach(player -> warringEntity.getWarHealth().hide(player));
     }
 
     private void notifySurrendered() {
@@ -273,37 +275,27 @@ public class War {
 
 
     private void giveWarEarnings() {
-        if (winner instanceof WarringTown town) {
-            town.getTown().getAccount().deposit(calculateWonMoney(), "Won a war against " + loser.name());
+        winner.getGovernment().getAccount().deposit(calculateWonMoney(), "Won a war against" + loser.name());
+        if (winner instanceof WarringTown town)
             town.getTown().addBonusBlocks(calculateBonusBlocks());
-        } else {
-            WarringNation winningNation = (WarringNation) winner;
-            winningNation.getNation().getCapital().getAccount().deposit(calculateWonMoney(), "Won a war against" + loser.name());
-            winningNation.getNation().getCapital().addBonusBlocks(calculateBonusBlocks());
-        }
+        else if (winner instanceof WarringNation nation)
+            nation.getNation().getCapital().addBonusBlocks(calculateBonusBlocks());
     }
 
     private int calculateBonusBlocks() {
-        if (loser instanceof WarringTown warringTown) {
-            return (int) (warringTown.getTown().getNumTownBlocks() * 0.25);
-        } else {
-            WarringNation losingNation = (WarringNation) loser;
-            return (int) (losingNation.getNation().getNumTownblocks() * 0.25);
-        }
+        return (int) (loser.getGovernment().getTownBlocks().size() * 0.25);
     }
 
     private double calculateWonMoney() {
-        if (loser instanceof WarringTown warringTown) {
-            return warringTown.getTown().getAccount().getHoldingBalance() * 0.5;
-        } else {
-            double total = 0;
-            WarringNation losingNation = (WarringNation) loser;
-            for (Town town : losingNation.getNation().getTowns()) {
+        double total = 0;
+        total += loser.getGovernment().getAccount().getHoldingBalance() * 0.5;
+
+        if (loser.getGovernment() instanceof Nation nation) {
+            for (Town town : nation.getTowns()) {
                 total += town.getAccount().getHoldingBalance() * 0.5;
             }
-            total += losingNation.getNation().getAccount().getHoldingBalance() * 0.5;
-            return total;
         }
+        return total;
     }
     private List<WarringTown> generateWarringTownList(List<Town> townList) {
         if (townList == null)

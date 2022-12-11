@@ -176,9 +176,18 @@ public class WarDatabase {
     }
 
     public static WarringEntity getWarringEntity(Player player) {
-        HashSet<WarringEntity> warringEntities = getWarringEntities();
         Resident resident = Utils.getTownyResident(player);
-        for (WarringEntity warringEntity: warringEntities) {
+        return getWarringEntity(resident);
+    }
+
+    public static WarringEntity getWarringEntity(UUID uuid) {
+        Resident resident = Utils.getTownyResident(uuid);
+        return getWarringEntity(resident);
+    }
+
+    public static WarringEntity getWarringEntity(Resident resident) {
+        HashSet<WarringEntity> warringEntities = getWarringEntities();
+        for (WarringEntity warringEntity : warringEntities) {
             if (warringEntity.getWarParticipants().contains(resident)) {
                 return warringEntity;
             }
@@ -219,7 +228,7 @@ public class WarDatabase {
     public static War getWar(Player player) {
         for (War war : WARS) {
             Resident resident = getTownyResident(player);
-            if (war.getResidents().contains(resident)) {
+            if (war.getWarParticipants().contains(resident)) {
                 return war;
             }
         }
@@ -261,17 +270,10 @@ public class WarDatabase {
     public static void cleanUpBossBars() {
         for (War war : WarDatabase.getWars()) {
             if (war.hasActiveTimer()) {
-                war.getResidents().forEach(resident -> {
-                    if (resident.getPlayer() != null) {
-                        war.getWarTimer().removeViewer(resident.getPlayer());
-                    }
-                });
+                war.getOnlinePlayers().forEach(player -> war.getWarTimer().removeViewer(player));
             }
 
-            war.getResidents().forEach(resident -> {
-                if (!resident.isOnline())
-                    return;
-                Player player = resident.getPlayer();
+            war.getOnlinePlayers().forEach(player -> {
                 WarringEntity warringEntity = getWarringEntity(player);
                 player.hideBossBar(warringEntity.getWarHealth().getBossBar());
             });

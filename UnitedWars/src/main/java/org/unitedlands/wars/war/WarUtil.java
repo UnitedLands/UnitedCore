@@ -16,8 +16,6 @@ import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
 import org.unitedlands.wars.books.warbooks.WritableDeclaration;
 import org.unitedlands.wars.war.entities.WarringEntity;
-import org.unitedlands.wars.war.entities.WarringNation;
-import org.unitedlands.wars.war.entities.WarringTown;
 
 import java.util.UUID;
 
@@ -86,17 +84,9 @@ public class WarUtil {
 
     public static WarringEntity getOpposingEntity(WarringEntity entity) {
         War war = entity.getWar();
-        if (entity instanceof WarringTown) {
-            for (WarringTown warringTown: war.getWarringTowns()) {
-                if (warringTown != entity)
-                    return warringTown;
-            }
-        } else {
-            for (WarringNation warringNation: war.getWarringNations()) {
-                if (warringNation != entity)
-                    return warringNation;
-            }
-        }
+        for (WarringEntity warringEntity : war.getWarringEntities())
+            return warringEntity != entity ? warringEntity : null;
+
         return null;
     }
 }

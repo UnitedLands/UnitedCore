@@ -4,50 +4,48 @@ import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.war.WarType;
 
 import java.util.UUID;
 
 public class WarTarget {
-    private final OfflinePlayer targetMayor;
-    private final Town town;
-    private final Nation nation;
+    private final UUID targetMayor;
+    private final UUID town;
+    private final UUID nation;
     private final WarType type;
 
 
     public WarTarget(Town town) {
-        this.town = town;
-        targetMayor = Bukkit.getOfflinePlayer(town.getMayor().getUUID());
+        this.town = town.getUUID();
+        targetMayor = town.getMayor().getUUID();
         type = WarType.TOWNWAR;
         if (town.hasNation())
-            nation = town.getNationOrNull();
+            nation = town.getNationOrNull().getUUID();
         else
             nation = null;
     }
 
     public WarTarget(Nation nation) {
-        this.nation = nation;
-        this.town = nation.getCapital();
+        this.nation = nation.getUUID();
+        this.town = nation.getCapital().getUUID();
         type = WarType.NATIONWAR;
-        targetMayor = Bukkit.getOfflinePlayer(town.getMayor().getUUID());
+        targetMayor = town().getMayor().getUUID();
     }
 
     public OfflinePlayer targetMayor() {
-        return targetMayor;
+        return Bukkit.getPlayer(targetMayor);
     }
 
     public Town town() {
-        return town;
+        return UnitedWars.TOWNY_API.getTown(town);
     }
 
     public Nation nation() {
-        return nation;
+        return UnitedWars.TOWNY_API.getNation(nation);
     }
 
     public UUID uuid() {
-        if (type == WarType.NATIONWAR)
-            return nation.getUUID();
-        else
-            return town.getUUID();
+        return type == WarType.NATIONWAR ? nation : town;
     }
 }

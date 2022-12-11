@@ -11,9 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static org.unitedlands.wars.UnitedWars.MINI_MESSAGE;
 
@@ -69,6 +67,14 @@ public class Utils {
     public static Town getPlayerTown(UUID uuid) {
         Resident resident = getTownyResident(uuid);
         return resident.getTownOrNull();
+    }
+
+    public static HashSet<UUID> toUUID(Collection<Resident> residents) {
+        HashSet<UUID> uuids = new HashSet<>();
+        for (Resident resident: residents) {
+            uuids.add(resident.getUUID());
+        }
+        return uuids;
     }
 
     public static Resident getTownyResident(Player player) {

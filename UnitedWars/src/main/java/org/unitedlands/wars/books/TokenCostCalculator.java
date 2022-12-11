@@ -52,15 +52,15 @@ public class TokenCostCalculator {
     }
 
     public int calculateWarCost() {
-        int baseCost = getBaseCost();
+        int baseCost = type.getBaseCost();
 
         // Increase token cost by 10 percent
         final double riseStep = 0.10;
         // Rise every 100 claimed chunks
         final double riseAt = 100;
 
-        // Decrease token cost by 25 percent
-        final double fallStep = 0.25;
+        // Decrease token cost by 15 percent
+        final double fallStep = 0.15;
         // Decrease every 8 hostility points in a town
         final double fallAt = 8;
 
@@ -70,13 +70,8 @@ public class TokenCostCalculator {
         double riseMod = (riseStep * targetSizeStep) + 1;
         double fallMod = (fallStep * targetHostilityStep) + 1;
 
-
         int calculatedCost = (int) Math.floor((baseCost * riseMod) / fallMod);
         return Math.max(10, calculatedCost);
-    }
-
-    private int getBaseCost() {
-        return type.getBaseCost();
     }
 
     private int getTotalTargetHostility() {

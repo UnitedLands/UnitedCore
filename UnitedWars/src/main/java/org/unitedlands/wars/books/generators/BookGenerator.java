@@ -143,36 +143,26 @@ public class BookGenerator {
     }
 
     private String getTownStat(String statName, Town town) {
-        switch (statName) {
-            case "blocks" -> {
-                return String.valueOf(town.getNumTownBlocks());
-            }
-            case "residents" -> {
-                return String.valueOf(town.getNumResidents());
-            }
-            case "balance" -> {
-                return String.valueOf(town.getAccount().getHoldingBalance());
-            }
-        }
-        return "0";
+        return switch (statName) {
+            case "blocks" -> String.valueOf(town.getNumTownBlocks());
+            case "residents" -> String.valueOf(town.getNumResidents());
+            case "balance" -> String.valueOf(town.getAccount().getHoldingBalance());
+            default -> "0";
+        };
     }
 
     private String getNationStat(String statName, Nation nation) {
-        switch (statName) {
-            case "blocks" -> {
-                return String.valueOf(nation.getTownBlocks().size());
-            }
-            case "residents" -> {
-                return String.valueOf(nation.getNumResidents());
-            }
+        return switch (statName) {
+            case "blocks" -> String.valueOf(nation.getTownBlocks().size());
+            case "residents" -> String.valueOf(nation.getNumResidents());
             case "balance" -> {
                 double totalBalance = nation.getAccount().getHoldingBalance();
                 for (Town town : nation.getTowns()) {
                     totalBalance += town.getAccount().getHoldingBalance();
                 }
-                return String.valueOf(totalBalance);
+                yield String.valueOf(totalBalance);
             }
-        }
-        return "0";
+            default -> "0";
+        };
     }
 }

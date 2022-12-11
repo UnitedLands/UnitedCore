@@ -1,7 +1,6 @@
 package org.unitedlands.wars;
 
 import com.palmergames.bukkit.towny.TownyAPI;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -46,7 +45,7 @@ public final class UnitedWars extends JavaPlugin {
     }
 
     private void registerListeners() {
-        registerListener(new WarListener(this));
+        registerListener(new WarListener());
         registerListener(new PlayerListener(this));
         registerListener(new BookListener(this));
     }
