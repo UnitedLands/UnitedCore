@@ -3,14 +3,19 @@ package org.unitedlands.wars.listeners;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerEditBookEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.books.declaration.DeclarationWarBook;
 import org.unitedlands.wars.books.declaration.NationDeclarationBook;
@@ -34,6 +39,23 @@ public class BookListener implements Listener {
 
     private static boolean isWritableDeclaration(ItemMeta meta) {
         return WritableDeclaration.isWritableDeclaration(meta.getPersistentDataContainer());
+    }
+
+    @EventHandler
+    public void onPlayerCopyBook(PrepareItemCraftEvent event) {
+        ItemStack copy = event.getInventory().getResult();
+        if (copy == null)
+            return;
+        if (copy.getType() != Material.WRITTEN_BOOK)
+            return;
+        ItemMeta meta = copy.getItemMeta();
+        if (meta.getPersistentDataContainer().isEmpty())
+            return;
+
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        if (pdc.has(NamespacedKey.fromString("unitedwars.book.type"), PersistentDataType.STRING)) {
+            event.getInventory().setResult(new ItemStack(Material.AIR));
+        }
     }
 
     @EventHandler
