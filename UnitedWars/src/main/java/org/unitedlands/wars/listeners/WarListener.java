@@ -24,6 +24,7 @@ import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.WarUtil;
 import org.unitedlands.wars.war.entities.WarringEntity;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class WarListener implements Listener {
@@ -152,7 +153,7 @@ public class WarListener implements Listener {
         notifyResidents(declarer.getOnlinePlayers(), declarationTitle);
     }
 
-    private void notifyResidents(List<Player> players, Title title) {
+    private void notifyResidents(HashSet<Player> players, Title title) {
         for (Player player : players) {
             player.showTitle(title);
             player.playSound(player, Sound.EVENT_RAID_HORN, 75, 1);

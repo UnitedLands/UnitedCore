@@ -28,7 +28,7 @@ public class War {
     private static final UnitedWars plugin = UnitedWars.getInstance();
     private final List<WarringTown> warringTowns;
     private final List<WarringNation> warringNations;
-    private final HashSet<Resident> residents;
+    private final HashSet<UUID> residents;
     private final WarType warType;
     private UUID uuid = UUID.randomUUID();
     private WarTimer warTimer = null;
@@ -38,7 +38,7 @@ public class War {
     public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType) {
         this.warringTowns = generateWarringTownList(warringTowns);
         this.warringNations = generateWarringNationList(warringNations);
-        this.residents = residents;
+        this.residents = Utils.toUUID(residents);
         this.warType = warType;
         warTimer = new WarTimer(this);
         // Start the war immediately, since this is the first time.
@@ -51,7 +51,7 @@ public class War {
     public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType, UUID uuid) {
         this.warringTowns = generateWarringTownList(warringTowns);
         this.warringNations = generateWarringNationList(warringNations);
-        this.residents = residents;
+        this.residents = Utils.toUUID(residents);
         this.warType = warType;
         this.uuid = uuid;
         // Save war to internal database
@@ -76,8 +76,10 @@ public class War {
         return warringNations;
     }
 
-    public HashSet<Resident> getResidents() {
-        return residents;
+    public HashSet<Resident> getWarParticipants() {
+        HashSet<Resident> uuidResidents = new HashSet<>();
+        residents.forEach(uuid -> uuidResidents.add(Utils.getTownyResident(uuid)));
+        return uuidResidents;
     }
 
     public WarType getWarType() {
@@ -94,7 +96,7 @@ public class War {
 
     public HashSet<Player> getOnlinePlayers() {
         HashSet<Player> players = new HashSet<>();
-        getResidents().forEach(resident -> {
+        getWarParticipants().forEach(resident -> {
             if (resident.isOnline())
                 players.add(resident.getPlayer());
         });
@@ -181,7 +183,7 @@ public class War {
     }
 
     private void runPlayerProcedures() {
-        for (Resident resident : getResidents()) {
+        for (Resident resident : getWarParticipants()) {
             // Set player lives
             WarDataController.setResidentLives(resident, 3);
 

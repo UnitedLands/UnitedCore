@@ -5,25 +5,23 @@ import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import org.bukkit.entity.Player;
 import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.war.War;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.health.WarHealth;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class WarringNation implements WarringEntity {
     private final UUID nationUUID;
     private final WarHealth warHealth;
-    private final List<Resident> warringResidents;
+    private final List<UUID> warringResidents;
     private final UUID warUUID;
 
     public WarringNation(Nation nation, WarHealth warHealth, List<Resident> warringResidents, War war) {
         this.nationUUID = nation.getUUID();
         this.warHealth = warHealth;
-        this.warringResidents = warringResidents;
+        this.warringResidents = warringResidents.stream().map(Resident::getUUID).toList();
         this.warUUID = war.getUuid();
         WarDatabase.addWarringNation(this);
     }
@@ -36,14 +34,16 @@ public class WarringNation implements WarringEntity {
     public WarHealth getWarHealth() {
         return warHealth;
     }
-
-    public List<Resident> getWarParticipants() {
-        return warringResidents;
+    @Override
+    public HashSet<Resident> getWarParticipants() {
+        HashSet<Resident> residents = new HashSet<>();
+        warringResidents.forEach(uuid -> residents.add(Utils.getTownyResident(uuid)));
+        return residents;
     }
 
     @Override
-    public List<Player> getOnlinePlayers() {
-        List<Player> players = new ArrayList<>();
+    public HashSet<Player> getOnlinePlayers() {
+        HashSet<Player> players = new HashSet<>();
         getWarParticipants().forEach(resident -> {
             if (resident.getPlayer() != null) {
                 players.add(resident.getPlayer());

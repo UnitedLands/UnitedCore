@@ -87,7 +87,7 @@ public class WarTimer {
     }
 
     private HashSet<UUID> getViewers() {
-        HashSet<Resident> residents = war.getResidents();
+        HashSet<Resident> residents = war.getWarParticipants();
         viewers = new HashSet<>();
         for (Resident resident : residents) {
             Player player = resident.getPlayer();
