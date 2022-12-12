@@ -25,6 +25,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
+import org.unitedlands.wars.war.War;
 import org.unitedlands.wars.war.WarDataController;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.entities.WarringEntity;
@@ -64,6 +65,25 @@ public class PlayerListener implements Listener {
         if (town == null)
             return;
         if (!town.hasActiveWar())
+            return;
+        PlayerTeleportEvent.TeleportCause cause = event.getCause();
+        if (event.willDismountPlayer())
+            return;
+        if (!event.hasChangedBlock())
+            return;
+        if (cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT || cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL)
+            return;
+
+        War war = WarDatabase.getWar(town);
+        if (war == null)
+            return;
+        // Allow teleportation during war prep time.
+        if (war.hasActiveTimer())
+            return;
+
+        double distance = event.getFrom().distance(event.getTo());
+        // Too small, don't bother.
+        if (distance <= 50)
             return;
 
         event.setCancelled(true);
@@ -163,7 +183,6 @@ public class PlayerListener implements Listener {
             warringEntity.getWar().broadcast(message);
         }
     }
-
 
     @EventHandler
     public void onGraveInteract(PlayerInteractEvent event) {
