@@ -18,7 +18,7 @@ import java.util.List;
 import static org.unitedlands.wars.Utils.getMessage;
 
 public class WarCommand implements TabExecutor {
-    private static final List<String> warTabCompletes = Arrays.asList("declare", "book");
+    private static final List<String> warTabCompletes = Arrays.asList("declare", "scroll");
     private final String type;
     public WarCommand(String type) {
         this.type = type;
@@ -29,7 +29,7 @@ public class WarCommand implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (args[0].equalsIgnoreCase("book")) {
+        if (args[0].equalsIgnoreCase("scroll")) {
             if (args.length == 2) {
                 return BaseCommand.getTownyStartingWith(args[1], type);
             }
@@ -45,7 +45,7 @@ public class WarCommand implements TabExecutor {
                 parser.parseDeclareCommand();
             }
 
-            if (args[0].equalsIgnoreCase("book")) {
+            if (args[0].equalsIgnoreCase("scroll")) {
                 if (args.length < 2) {
                     commandSender.sendMessage(getMessage("must-specify-target"));
                     return true;

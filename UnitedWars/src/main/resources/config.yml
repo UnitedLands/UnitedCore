@@ -234,15 +234,6 @@ nationwar-declaration-book:
     - ""
     - ""
     - "<dark_red>╚═╬<black>☠</black>╬═══╬<black>☠</black>╬═╝"
-start-war-book:
-  0:
-    - "War started!!!"
-end-war-book:
-  0:
-    - "War Ended!!!"
-mid-war-book:
-  0:
-    - "Mid War update!!!"
 townwar:
   delay: 1800
 nationwar:
@@ -251,19 +242,16 @@ alliancewar:
   delay: 1800
 townwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Town War Declaration Scroll <color:#BEA50C>⬩'
 nationwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Nation War Declaration Scroll <color:#BEA50C>⬩'
-start-war-name: "War breaks out!"
-end-war-name: "The War has ended!"
-mid-war-name: "Mid War book!"
 writable-declaration-lore:
   - ''
-  - '<!i><yellow>Right-click<gray> this book to write'
+  - '<!i><yellow>Right-click<gray> this scroll to write'
   - '<!i><gray>your reasoning behind the <yellow>war!'
   - ''
 messages:
   prefix: "<bold><red>U<white>L</bold> <gray>» "
   teleport-cancelled: '<red>You have an ongoing war! You cannot teleport anywhere!'
   banned-command: '<red>You may not use this command during wars!'
-  must-specify-target: '<red>No target found! Please write the target''s name in order to create a war book!'
+  must-specify-target: '<red>No target found! Please write the target''s name in order to create a war scroll!'
   not-enough-arguments: '<red>You must specify <args>'
   mayor-offline: '<red><yellow><name></yellow> is the mayor of <yellow><warring-name></yellow> and is currently offline! You can only make an offer if they''re online!'
   not-enough-money: '<red>You have that much money in your account to offer!'
@@ -272,18 +260,18 @@ messages:
   town-not-in-nation: '<red>You cannot offer a town that''s not part of your nation!'
   must-have-nation: '<red>You must have a nation to use this command!'
   no-wars-found: '<red>You don''t have any wars...'
-  must-not-be-neutral: '<red>You cannot create a war book while neutral! Please disable neutrality first!'
-  ongoing-war: '<red>You cannot create a new war book while you have an ongoing war!'
+  must-not-be-neutral: '<red>You cannot create a war scroll while neutral! Please disable neutrality first!'
+  ongoing-war: '<red>You cannot create a new war scroll while you have an ongoing war!'
   on-cooldown: '<red>You fought too recently! You can''t declare another war yet.'
-  not-enough-tokens: '<red>You cannot create a war book of this type! You need <cost> tokens first!'
+  not-enough-tokens: '<red>You cannot create a war scroll of this type! You need <cost> tokens first!'
   invalid-town-name: '<red>Town not found! Please enter the correct name!'
-  invalid-declaration-book: '<red>You cannot use artifacts as war books!'
+  invalid-declaration-book: '<red>You cannot use artifacts as war scrolls!'
   invalid-nation-name: '<red>Nation not found! Please enter the correct name!'
   must-be-mayor: '<red>Only mayors can use this command!'
   cannot-declare-on-self: '<red>You cannot declare war on your own town/nation!'
   cannot-declare-on-allies: '<red>Target is an ally! You cannot declare war on them...'
   only-mayors-can-sign: '<red>Only the mayor of <yellow><declarer-name><red> can sign this declaration book!'
-  must-not-be-neutral-target: '<red>Target is neutral! You can only create books for non-neutral enemies!'
+  must-not-be-neutral-target: '<red>Target is neutral! You can only create scrolls for non-neutral enemies!'
   must-have-online-player: '<red>Your target must have at least 1 player online to declare a war!'
   must-declare-nationwar: '<red>You cannot declare a <yellow>town war</yellow> because both sides have nations! Declare a <yellow>nation war</yellow> instead!'
   ongoing-war-target: '<red>Target has an ongoing war! You cannot declare war on them!'
@@ -308,7 +296,7 @@ messages:
   cannot-do-in-war: '§cYou cannot use this command while in a war.'
   town-purchased-declaration: '§bYour town has just purchased a declaration of war!'
   nation-purchased-declaration: '§bYour nation has just purchased a declaration of war!'
-  war-confirmation: '§cAre you sure you want to create a §e<type>§c book? This will cost you §e<cost> War tokens§c!'
+  war-confirmation: '§cAre you sure you want to create a §e<type>§c scroll? This will cost you §e<cost> War tokens§c!'
   war-declare-confirmation: '§cAre you sure you want to declare a §e<type>§c on §e<target>? §cThe war will start immediately after confirmation.'
   surrender-confirm: '§cAre you sure you want to send a surrender request to §e<warring-name>§c? You will lose the war if the request is accepted.'
   surrender-accept-money: '§cAre you sure you want to accept §6<money-amount> Gold§c from §e<surrender-name>§c? Accepting will end the war immediately with you as a winner.'
