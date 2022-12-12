@@ -54,8 +54,8 @@ public class TokenCostCalculator {
     public int calculateWarCost() {
         int baseCost = type.getBaseCost();
 
-        // Increase token cost by 10 percent
-        final double riseStep = 0.10;
+        // Increase token cost by 25 percent
+        final double riseStep = 0.25;
         // Rise every 100 claimed chunks
         final double riseAt = 100;
 
