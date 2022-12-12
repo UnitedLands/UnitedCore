@@ -13,6 +13,7 @@ import org.unitedlands.wars.commands.surrender.SurrenderCommand;
 import org.unitedlands.wars.hooks.Placeholders;
 import org.unitedlands.wars.listeners.BookListener;
 import org.unitedlands.wars.listeners.PlayerListener;
+import org.unitedlands.wars.listeners.TownyListener;
 import org.unitedlands.wars.listeners.WarListener;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.health.WarHealTask;
@@ -48,6 +49,7 @@ public final class UnitedWars extends JavaPlugin {
         registerListener(new WarListener());
         registerListener(new PlayerListener(this));
         registerListener(new BookListener(this));
+        registerListener(new TownyListener());
     }
     private void setCommandExecutors() {
         // Register war command for nations
