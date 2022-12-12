@@ -58,17 +58,17 @@ public class PlayerListener implements Listener {
 
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBannedWorldTeleport(PlayerTeleportEvent event) {
+    public void onTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
         Town town = getPlayerTown(player);
-        if (town == null) return;
-        if (!town.hasActiveWar()) return;
+        if (town == null)
+            return;
+        if (!town.hasActiveWar())
+            return;
 
-        if (isBannedWorld(event.getTo().getWorld().getName())) {
-            event.setCancelled(true);
-            player.sendMessage(Utils.getMessage("teleport-cancelled"));
-            player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1, 0.6F);
-        }
+        event.setCancelled(true);
+        player.sendMessage(Utils.getMessage("teleport-cancelled"));
+        player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1, 0.6F);
 
     }
 

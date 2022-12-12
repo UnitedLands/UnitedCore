@@ -235,6 +235,15 @@ public class WarDatabase {
         return null;
     }
 
+    public static War getWar(Town town) {
+        for (War war : WARS) {
+            if (war.getWarParticipants().contains(town.getMayor())) {
+                return war;
+            }
+        }
+        return null;
+    }
+
     public static boolean hasTown(Town town) {
         return getWarringTown(town) != null;
     }
@@ -245,6 +254,10 @@ public class WarDatabase {
 
     public static boolean hasWar(Player player) {
         return getWar(player) != null;
+    }
+
+    public static boolean hasWar(Town town) {
+        return hasTown(town) || hasNation(town.getNationOrNull());
     }
 
 

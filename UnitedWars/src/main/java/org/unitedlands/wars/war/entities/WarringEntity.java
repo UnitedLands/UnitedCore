@@ -20,6 +20,7 @@ public interface WarringEntity {
 
     HashSet<Resident> getWarParticipants();
     HashSet<Player> getOnlinePlayers();
+    void addResident(Resident resident);
 
     Government getGovernment();
     Resident getLeader();

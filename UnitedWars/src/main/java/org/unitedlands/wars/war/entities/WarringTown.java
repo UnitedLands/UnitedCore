@@ -56,6 +56,11 @@ public class WarringTown implements WarringEntity {
     }
 
     @Override
+    public void addResident(Resident resident) {
+        warringResidents.add(resident.getUUID());
+    }
+
+    @Override
     public Government getGovernment() {
         return getTown();
     }

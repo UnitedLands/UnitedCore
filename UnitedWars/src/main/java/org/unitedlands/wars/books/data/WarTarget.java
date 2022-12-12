@@ -34,7 +34,7 @@ public class WarTarget {
     }
 
     public OfflinePlayer targetMayor() {
-        return Bukkit.getPlayer(targetMayor);
+        return Bukkit.getOfflinePlayer(targetMayor);
     }
 
     public Town town() {

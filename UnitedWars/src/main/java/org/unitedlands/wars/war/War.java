@@ -21,8 +21,7 @@ import org.unitedlands.wars.war.health.WarHealth;
 import java.util.*;
 
 import static net.kyori.adventure.text.Component.text;
-import static org.unitedlands.wars.Utils.isBannedWorld;
-import static org.unitedlands.wars.Utils.teleportPlayerToSpawn;
+import static org.unitedlands.wars.Utils.*;
 
 public class War {
     private static final UnitedWars plugin = UnitedWars.getInstance();
@@ -80,6 +79,31 @@ public class War {
         HashSet<Resident> uuidResidents = new HashSet<>();
         residents.forEach(uuid -> uuidResidents.add(Utils.getTownyResident(uuid)));
         return uuidResidents;
+    }
+
+    public void addResident(Resident resident, Town town) {
+        residents.add(resident.getUUID());
+        WarringEntity entity = WarDatabase.getWarringTown(town);
+        if (entity == null)
+            entity = WarDatabase.getWarringNation(town.getNationOrNull());
+
+        if (entity != null) {
+            entity.addResident(resident);
+        }
+    }
+
+    public void removeTown(Town town) {
+        WarringNation warringNation = WarDatabase.getWarringNation(town.getNationOrNull());
+        if (warringNation == null)
+            return;
+        town.getResidents().forEach(resident -> {
+            // Remove the lives of the residents. No longer part of the war.
+            WarDataController.removeResidentLivesMeta(resident);
+            // Remove UUIDs from list
+            residents.remove(resident.getUUID());
+            if (resident.isOnline())
+                resident.getPlayer().sendMessage(getMessage("town-deleted-removed-from-war"));
+        });
     }
 
     public WarType getWarType() {
@@ -206,6 +230,7 @@ public class War {
         for (WarringEntity entity : getWarringEntities()) {
             entity.getGovernment().setActiveWar(toggle);
             if (entity.getGovernment() instanceof Nation nation) {
+                nation.getTowns().forEach(town -> town.setActiveWar(toggle));
                 nation.getAllies().forEach(ally -> ally.setActiveWar(toggle));
             }
         }

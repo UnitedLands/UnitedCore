@@ -261,7 +261,7 @@ writable-declaration-lore:
   - ''
 messages:
   prefix: "<bold><red>U<white>L</bold> <gray>» "
-  teleport-cancelled: '<red>You have an ongoing war! You cannot teleport to any worlds outside <yellow>Earth!'
+  teleport-cancelled: '<red>You have an ongoing war! You cannot teleport anywhere!'
   banned-command: '<red>You may not use this command during wars!'
   must-specify-target: '<red>No target found! Please write the target''s name in order to create a war book!'
   not-enough-arguments: '<red>You must specify <args>'
@@ -303,7 +303,9 @@ messages:
   surrender-received: '<red>You received a surrender request from <yellow><requester></yellow>! They have offered <yellow><offer></yellow> in order to end this war! Do <yellow>/surrender accept</yellow> to accept!'
   request-sent: '<green>Surrender request successfully sent! You must now wait for the other side to accept or decline it!'
   health-too-high-to-surrender: '<red>You cannot surrender right now! Your health must be lower than or equal to <gold>65 HP</gold>!'
+  town-deleted-removed-from-war: '<red>Your town was deleted! You''ve been removed from the war and lost all your lives!'
   # Doesn't go through minimessage.
+  cannot-do-in-war: '§cYou cannot use this command while in a war.'
   town-purchased-declaration: '§bYour town has just purchased a declaration of war!'
   nation-purchased-declaration: '§bYour nation has just purchased a declaration of war!'
   war-confirmation: '§cAre you sure you want to create a §e<type>§c book? This will cost you §e<cost> War tokens§c!'

@@ -15,13 +15,13 @@ import java.util.*;
 public class WarringNation implements WarringEntity {
     private final UUID nationUUID;
     private final WarHealth warHealth;
-    private final List<UUID> warringResidents;
+    private final HashSet<UUID> warringResidents;
     private final UUID warUUID;
 
     public WarringNation(Nation nation, WarHealth warHealth, List<Resident> warringResidents, War war) {
         this.nationUUID = nation.getUUID();
         this.warHealth = warHealth;
-        this.warringResidents = warringResidents.stream().map(Resident::getUUID).toList();
+        this.warringResidents = Utils.toUUID(warringResidents);
         this.warUUID = war.getUuid();
         WarDatabase.addWarringNation(this);
     }
@@ -50,6 +50,10 @@ public class WarringNation implements WarringEntity {
             }
         });
         return players;
+    }
+    @Override
+    public void addResident(Resident resident) {
+        warringResidents.add(resident.getUUID());
     }
 
     @Override
