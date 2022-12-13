@@ -119,6 +119,15 @@ public class WarHealth {
         setMaxHealth(this.maxHealth - decrease);
     }
 
+    public void flash() {
+        BossBar.Color current = getBossBarColor();
+        BossBar.Color flashTo = BossBar.Color.RED;
+        if (current == BossBar.Color.GREEN)
+            flashTo = BossBar.Color.YELLOW;
+        bossBar.color(flashTo);
+        Bukkit.getServer().getScheduler().runTaskLater(UnitedWars.getInstance(), () -> bossBar.color(current), 10);
+    }
+
     private String getMainColor() {
         if (health > 60) {
             return "<green>";

@@ -33,6 +33,7 @@ import org.unitedlands.wars.war.entities.WarringEntity;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static org.unitedlands.wars.Utils.*;
+import static org.unitedlands.wars.war.WarUtil.getOpposingEntity;
 import static org.unitedlands.wars.war.WarUtil.hasSameWar;
 
 public class PlayerListener implements Listener {
@@ -121,35 +122,52 @@ public class PlayerListener implements Listener {
         Resident killer = getTownyResident(event.getKiller());
         Resident victim = getTownyResident(event.getVictim());
 
-        if (hasSameWar(killer, victim)) {
-            // Killer doesn't have lives, return
-            if (!WarDataController.hasResidentLives(killer))
-                return;
+        if (!hasSameWar(killer, victim))
+            return;
 
-            if (WarDataController.hasResidentLives(victim)) {
-                WarDataController.decrementResidentLives(victim);
-                WarringEntity warringEntity = WarDatabase.getWarringEntity(victim.getPlayer());
-                warringEntity.getWarHealth().decreaseHealth(5);
-                warringEntity.getWarHealth().decreaseMaxHealth(5);
+        // Killer doesn't have lives, return
+        if (!WarDataController.hasResidentLives(killer))
+            return;
 
-                Component message = getPlayerDeathMessage(warringEntity, killer, victim);
+        if (!WarDataController.hasResidentLives(victim))
+            return;
 
-                if (WarDataController.getResidentLives(victim) == 0) {
-                    notifyWarKick(victim.getPlayer(), warringEntity);
-                    return;
-                }
-                warringEntity.getWar().broadcast(message);
-            }
+        WarringEntity warringEntity = WarDatabase.getWarringEntity(victim.getPlayer());
+        if (warringEntity.getWar().hasActiveTimer())
+            return;
+
+        decreaseHealth(victim, warringEntity);
+
+        Component message = getPlayerDeathMessage(warringEntity, killer, victim);
+        playSounds(warringEntity);
+        if (WarDataController.getResidentLives(victim) == 0) {
+            notifyWarKick(victim.getPlayer(), warringEntity);
+            return;
         }
+        warringEntity.getWar().broadcast(message);
+
+    }
+
+    private void decreaseHealth(Resident victim, WarringEntity warringEntity) {
+        warringEntity.getWarHealth().decreaseHealth(5);
+        warringEntity.getWarHealth().decreaseMaxHealth(5);
+        warringEntity.getWarHealth().flash();
+        WarDataController.decrementResidentLives(victim);
+    }
+
+    private void playSounds(WarringEntity warringEntity) {
+        warringEntity.getOnlinePlayers().forEach(player -> player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1, 1));
+        WarringEntity enemy = getOpposingEntity(warringEntity);
+        enemy.getOnlinePlayers().forEach(player -> player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BIT, 1f, 1f));
     }
 
     private void notifyWarKick(Player player, WarringEntity warringEntity) {
-        Title title = getTitle("<dark_red><bold>OUT OF LIVES!", "<red>You've lost all your <yellow>3</yellow> lives!");
+        Title title = getTitle("<dark_red><bold>OUT OF LIVES!", "<red>You've lost all your lives!");
         player.showTitle(title);
         // player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1f, 1f);
 
         Component message = getMessage("removed-from-war",
-                component("victim-warrer", text(warringEntity.name())));
+                component("victim", text(player.getName())));
 
         warringEntity.getWar().broadcast(message);
     }
