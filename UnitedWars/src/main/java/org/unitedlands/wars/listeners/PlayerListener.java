@@ -71,6 +71,9 @@ public class PlayerListener implements Listener {
             return;
         if (cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT || cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL)
             return;
+        // they can bypass.
+        if (player.hasPermission("united.wars.bypass.tp"))
+            return;
 
         War war = WarDatabase.getWar(town);
         if (war == null)
