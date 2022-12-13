@@ -8,6 +8,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.unitedlands.wars.UnitedWars;
@@ -189,6 +190,22 @@ public class War {
         WarDatabase.removeWar(this);
     }
 
+    public void tieWar(WarringEntity first, WarringEntity second) {
+        // Remove health.
+        hideHealth(first);
+        hideHealth(second);
+
+        // Notify
+        notifyTie();
+        // Toggle active war
+        toggleActiveWar(false);
+
+        // Clear from database.
+        WarDatabase.removeWarringEntity(first);
+        WarDatabase.removeWarringEntity(second);
+        WarDatabase.removeWar(this);
+    }
+
     // Called inside WarTimer.
     public void endWarTimer() {
         for (Player player : getOnlinePlayers()) {
@@ -206,6 +223,16 @@ public class War {
 
     public void broadcast(Component message) {
         getOnlinePlayers().forEach(player -> player.sendMessage(message));
+    }
+
+    private void notifyTie() {
+        Component message = getMessage("war-end-tie");
+        Title title = getTitle("<gold><bold>TIE", "<yellow>No one won the war...");
+        getOnlinePlayers().forEach(player -> {
+            // player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1f, 1f);
+            player.sendMessage(message);
+            player.showTitle(title);
+        });
     }
 
     private void runPlayerProcedures() {
