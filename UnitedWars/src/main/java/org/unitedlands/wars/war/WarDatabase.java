@@ -81,11 +81,7 @@ public class WarDatabase {
 
             War war = new War(towns, nations, warResidents, warType, UUID.fromString(warUUID));
 
-            // Set war healths properly
-            List<WarringEntity> warringEntities = new ArrayList<>();
-            warringEntities.addAll(war.getWarringNations());
-            warringEntities.addAll(war.getWarringNations());
-            for (WarringEntity warringEntity : warringEntities) {
+            for (WarringEntity warringEntity : war.getWarringEntities()) {
                 ConfigurationSection savedHealth = section.getConfigurationSection(war.getUuid() + "." + warringEntity.getPath() + "." + warringEntity.getUUID() + ".health");
                 WarHealth warHealth = generateWarHealth(savedHealth, warringEntity.name());
                 copyHealth(warringEntity, warHealth);

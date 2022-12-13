@@ -29,12 +29,13 @@ public class War {
     private final List<WarringNation> warringNations;
     private final HashSet<UUID> residents;
     private final WarType warType;
-    private UUID uuid = UUID.randomUUID();
+    private final UUID uuid;
     private WarTimer warTimer = null;
     private WarringEntity winner;
     private WarringEntity loser;
 
     public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType) {
+        uuid = UUID.randomUUID();
         this.warringTowns = generateWarringTownList(warringTowns);
         this.warringNations = generateWarringNationList(warringNations);
         this.residents = Utils.toUUID(residents);
@@ -48,11 +49,11 @@ public class War {
 
     // Used for loading existing wars from the config.
     public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType, UUID uuid) {
+        this.uuid = uuid;
         this.warringTowns = generateWarringTownList(warringTowns);
         this.warringNations = generateWarringNationList(warringNations);
         this.residents = Utils.toUUID(residents);
         this.warType = warType;
-        this.uuid = uuid;
         // Save war to internal database
         WarDatabase.addWar(this);
     }
@@ -200,6 +201,7 @@ public class War {
             // Teleport them to spawn
             teleportPlayerToSpawn(player);
         }
+        warTimer = null;
     }
 
     public void broadcast(Component message) {

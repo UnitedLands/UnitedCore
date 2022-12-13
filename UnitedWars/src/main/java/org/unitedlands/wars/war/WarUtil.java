@@ -84,9 +84,11 @@ public class WarUtil {
 
     public static WarringEntity getOpposingEntity(WarringEntity entity) {
         War war = entity.getWar();
-        for (WarringEntity warringEntity : war.getWarringEntities())
-            return warringEntity != entity ? warringEntity : null;
-
+        for (WarringEntity warringEntity : war.getWarringEntities()) {
+            if (warringEntity.equals(entity))
+                continue;
+            return warringEntity;
+        }
         return null;
     }
 }
