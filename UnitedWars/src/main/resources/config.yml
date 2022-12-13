@@ -240,6 +240,14 @@ nationwar:
   delay: 1800
 alliancewar:
   delay: 1800
+breakable-blocks:
+  - TNT
+  - RESPAWN_ANCHOR
+  - OBSIDIAN
+  - CRYING_OBSIDIAN
+  - ENCHANTING_TABLE
+  - ENDER_CHEST
+  - ANVIL
 townwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Town War Declaration Scroll <color:#BEA50C>⬩'
 nationwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Nation War Declaration Scroll <color:#BEA50C>⬩'
 writable-declaration-lore:

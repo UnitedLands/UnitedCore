@@ -249,6 +249,8 @@ public class WarDatabase {
     }
 
     public static boolean hasWar(Player player) {
+        if (WARS.isEmpty())
+            return false;
         return getWar(player) != null;
     }
 
