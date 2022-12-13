@@ -7,6 +7,7 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -75,11 +76,13 @@ public class WarListener implements Listener {
             WarDataController.setTokens(town, currentTokens + earnedTokens);
         }
 
-        for (WarringEntity warringEntity : WarDatabase.getWarringEntities()) {
-            tryEndingWar(warringEntity);
-            // Add 3 lives for each resident, up to a max of 6.
-            addResidentLives(warringEntity);
-        }
+        Bukkit.getServer().getScheduler().runTask(UnitedWars.getInstance(), () -> {
+            for (WarringEntity warringEntity : WarDatabase.getWarringEntities()) {
+                tryEndingWar(warringEntity);
+                // Add 3 lives for each resident, up to a max of 6.
+                addResidentLives(warringEntity);
+            }
+        });
     }
 
     private void addResidentLives(WarringEntity warringEntity) {
