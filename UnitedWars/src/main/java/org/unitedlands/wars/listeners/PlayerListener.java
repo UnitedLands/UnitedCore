@@ -67,8 +67,6 @@ public class PlayerListener implements Listener {
         if (!town.hasActiveWar())
             return;
         PlayerTeleportEvent.TeleportCause cause = event.getCause();
-        if (event.willDismountPlayer())
-            return;
         if (!event.hasChangedBlock())
             return;
         if (cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT || cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL)
