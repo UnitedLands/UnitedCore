@@ -18,10 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityResurrectEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
@@ -217,5 +214,14 @@ public class PlayerListener implements Listener {
         if (hasSameWar(openingResident, graveResident)) {
             chest.setProtected(false);
         }
+    }
+
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        if (!WarDatabase.hasWar(player))
+            return;
+        if (isBannedWorld(event.getRespawnLocation().getWorld().getName()))
+            Utils.teleportPlayerToSpawn(player);
     }
 }
