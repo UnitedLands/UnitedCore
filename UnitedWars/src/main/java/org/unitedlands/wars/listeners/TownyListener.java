@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.*;
 import com.palmergames.bukkit.towny.event.actions.TownyBuildEvent;
 import com.palmergames.bukkit.towny.event.actions.TownyExplodingBlocksEvent;
+import com.palmergames.bukkit.towny.event.actions.TownySwitchEvent;
 import com.palmergames.bukkit.towny.event.damage.TownyExplosionDamagesEntityEvent;
 import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleNeutralEvent;
 import com.palmergames.bukkit.towny.event.town.TownLeaveEvent;
@@ -204,6 +205,25 @@ public class TownyListener implements Listener {
         toAllow.addAll(alreadyAllowed);
         event.setBlockList(toAllow);
 
+    }
+
+    @EventHandler
+    public void onSwitchUse(TownySwitchEvent event) {
+        Player player = event.getPlayer();
+        if (!WarDatabase.hasWar(player))
+            return;
+        Town town = event.getTownBlock().getTownOrNull();
+        if (town == null)
+            return;
+        War war = WarDatabase.getWar(town);
+        if (war == null)
+            return;
+        WarringEntity warringEntity = WarDatabase.getWarringEntity(player);
+        if (!war.equals(warringEntity.getWar()))
+            return;
+        String material = event.getMaterial().toString();
+        if (material.toLowerCase().contains("door") || material.toLowerCase().contains("gate"))
+            event.setCancelled(false);
     }
 
     @EventHandler
