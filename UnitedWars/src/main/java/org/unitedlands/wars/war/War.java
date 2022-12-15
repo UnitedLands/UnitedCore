@@ -92,6 +92,14 @@ public class War {
         if (entity != null) {
             entity.addResident(resident);
             WarDataController.setResidentLives(resident, 3);
+
+            Player player = resident.getPlayer();
+            if (player == null)
+                return;
+            if (hasActiveTimer())
+                warTimer.addViewer(player);
+
+            entity.getWarHealth().show(player);
         }
     }
 
