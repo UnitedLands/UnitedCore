@@ -17,7 +17,6 @@ import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.war.War;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.WarType;
-import org.unitedlands.wars.war.WarUtil;
 import org.unitedlands.wars.war.entities.WarringEntity;
 
 import java.util.Arrays;

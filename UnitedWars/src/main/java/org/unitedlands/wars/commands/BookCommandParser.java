@@ -6,7 +6,6 @@ import com.palmergames.bukkit.towny.object.*;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.books.TokenCostCalculator;
 import org.unitedlands.wars.books.data.Declarer;
@@ -20,12 +19,15 @@ import static org.unitedlands.wars.Utils.*;
 
 public class BookCommandParser {
     private final CommandSender sender;
-
-    public BookCommandParser(CommandSender sender) {
+    private final WarType type;
+    private final String target;
+    public BookCommandParser(CommandSender sender, WarType type, String target) {
         this.sender = sender;
+        this.type = type;
+        this.target = target;
     }
 
-    public void parseBookCreation(WarType type, String target) {
+    public void parse() {
         Player player = (Player) sender;
         Resident resident = getTownyResident(player);
 
@@ -46,10 +48,10 @@ public class BookCommandParser {
         }
 
         switch (type.name().toLowerCase()) {
-            case "townwar" -> parseTownBookCreationCommand(target);
+            case "townwar" -> parseTownBookCreationCommand();
             case "nationwar" -> {
                 if (resident.hasNation()) {
-                    parseNationBookCreationCommand(target);
+                    parseNationBookCreationCommand();
                 } else {
                     player.sendMessage(getMessage("must-have-nation"));
                 }
@@ -58,7 +60,7 @@ public class BookCommandParser {
     }
 
 
-    private void parseTownBookCreationCommand(@NotNull String target) {
+    private void parseTownBookCreationCommand() {
         Player player = (Player) sender;
         Town targetTown = UnitedWars.TOWNY_API.getTown(target);
 
@@ -99,10 +101,10 @@ public class BookCommandParser {
 
                 TownyMessaging.sendPrefixedTownMessage(declaringTown, getMessageRaw("town-purchased-declaration"));
             }
-        }).setTitle(getConfirmationTitle(type, cost)).sendTo(player);
+        }).setTitle(getConfirmationTitle(cost)).sendTo(player);
     }
 
-    private void parseNationBookCreationCommand(@NotNull String target) {
+    private void parseNationBookCreationCommand() {
         Player player = (Player) sender;
 
         Nation targetNation = UnitedWars.TOWNY_API.getNation(target);
@@ -141,7 +143,7 @@ public class BookCommandParser {
                 player.getInventory().addItem(writableDeclaration.getBook());
                 TownyMessaging.sendPrefixedNationMessage(declaringNation, getMessageRaw("nation-purchased-declaration"));
             }
-        }).setTitle(getConfirmationTitle(type, cost)).sendTo(player);
+        }).setTitle(getConfirmationTitle(cost)).sendTo(player);
     }
 
     private boolean takeTokens(TownyObject declarer, int cost) {
@@ -168,10 +170,10 @@ public class BookCommandParser {
         return resident.getTownOrNull().hasActiveWar();
     }
 
-    private Translatable getConfirmationTitle(WarType warType, int cost) {
+    private Translatable getConfirmationTitle(int cost) {
         String message = UnitedWars.getInstance().getConfig().getString("messages.war-confirmation")
                 .replace("<cost>", String.valueOf(cost))
-                .replace("<type>", warType.getFormattedName());
+                .replace("<type>", type.getFormattedName());
         return Translatable.of(message);
     }
 

@@ -43,7 +43,7 @@ public class DeclareCommandParser {
         this.sender = sender;
     }
 
-    public void parseDeclareCommand() {
+    public void parse() {
         WarType warType = getWarType();
         if (warType == null) {
             sender.sendMessage(getMessage("invalid-declaration-book"));

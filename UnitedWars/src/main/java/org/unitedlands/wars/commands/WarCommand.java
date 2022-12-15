@@ -41,8 +41,8 @@ public class WarCommand implements TabExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (commandSender instanceof Player) {
             if (args[0].equalsIgnoreCase("declare")) {
-                DeclareCommandParser parser = new DeclareCommandParser(commandSender);
-                parser.parseDeclareCommand();
+                DeclareCommandParser declareCommand = new DeclareCommandParser(commandSender);
+                declareCommand.parse();
             }
 
             if (args[0].equalsIgnoreCase("scroll")) {
@@ -50,9 +50,9 @@ public class WarCommand implements TabExecutor {
                     commandSender.sendMessage(getMessage("must-specify-target"));
                     return true;
                 }
-                BookCommandParser parser = new BookCommandParser(commandSender);
                 WarType warType = type.equals("n") ? WarType.NATIONWAR : WarType.TOWNWAR;
-                parser.parseBookCreation(warType, args[1]);
+                BookCommandParser bookCommand = new BookCommandParser(commandSender, warType, args[1]);
+                bookCommand.parse();
             }
         }
         return true;
