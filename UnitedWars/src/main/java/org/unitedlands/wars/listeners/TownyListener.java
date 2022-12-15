@@ -26,6 +26,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.events.WarDeclareEvent;
@@ -251,19 +252,20 @@ public class TownyListener implements Listener {
 
     }
     @EventHandler (priority = EventPriority.MONITOR)
-    public void onPlayerDamageEntity(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Player player))
-            return;
-        if (!WarDatabase.hasWar(player))
-            return;
+    public void onEntityDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
-        if (entity.getType() == EntityType.PLAYER)
-            return;
-        if (UnitedWars.TOWNY_API.isWilderness(entity.getLocation()))
+        if (entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.WOLF || entity.getType() == EntityType.ENDER_CRYSTAL)
             return;
         TownBlock townBlock = UnitedWars.TOWNY_API.getTownBlock(entity.getLocation());
-        if (isInvalidLocation(townBlock, player))
+        if (townBlock == null)
             return;
+        Town town = townBlock.getTownOrNull();
+        if (town == null)
+            return;
+
+        if (!WarDatabase.hasWar(town))
+            return;
+
         event.setCancelled(true);
     }
 
