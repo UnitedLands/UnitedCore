@@ -143,7 +143,6 @@ public class War {
     public void endWar(WarringEntity winner, WarringEntity loser) {
         this.winner = winner;
         this.loser = loser;
-        // Call event. Handle rewarding in WarListener
         WarEndEvent warEndEvent = new WarEndEvent(this, winner, loser);
         Bukkit.getServer().getPluginManager().callEvent(warEndEvent);
 
@@ -170,7 +169,6 @@ public class War {
     public void surrenderWar(WarringEntity winner, WarringEntity loser) {
         this.winner = winner;
         this.loser = loser;
-        // Call event. Handle rewarding in WarListener
         WarEndEvent warEndEvent = new WarEndEvent(this, winner, loser);
         Bukkit.getServer().getPluginManager().callEvent(warEndEvent);
 
@@ -191,6 +189,10 @@ public class War {
     }
 
     public void tieWar(WarringEntity first, WarringEntity second) {
+        // Call event
+        WarEndEvent warEndEvent = new WarEndEvent(this, first, second);
+        Bukkit.getServer().getPluginManager().callEvent(warEndEvent);
+
         // Remove health.
         hideHealth(first);
         hideHealth(second);

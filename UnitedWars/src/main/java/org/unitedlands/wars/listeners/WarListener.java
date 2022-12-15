@@ -98,19 +98,19 @@ public class WarListener implements Listener {
         int enemyCurrent = opposingEntity.getWarHealth().getValue();
 
         warringEntity.getWarHealth().setHealth(Math.max(0, current - 20));
-        if (warringEntity.getWarHealth().getValue() == 0) {
-            WarringEntity winner;
-            WarringEntity loser;
-            // If the original entity had less than the enemy, then they lost the war.
-            if (current < enemyCurrent) {
-                winner = opposingEntity;
-                loser = warringEntity;
-            } else {
-                winner = warringEntity;
-                loser = opposingEntity;
-            }
-            warringEntity.getWar().endWar(winner, loser);
-        }
+        if (warringEntity.getWarHealth().getValue() != 0)
+            return;
+
+        // They both reached 0 with no differences.
+        if (current == enemyCurrent)
+            warringEntity.getWar().tieWar(warringEntity, opposingEntity);
+
+        War war = warringEntity.getWar();
+        // If the original entity had less than the enemy, then they lost the war.
+        if (current < enemyCurrent)
+            war.endWar(opposingEntity, warringEntity);
+        else
+            war.endWar(warringEntity, opposingEntity);
     }
 
     @EventHandler
