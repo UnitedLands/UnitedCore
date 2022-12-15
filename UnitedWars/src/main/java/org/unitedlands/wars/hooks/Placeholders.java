@@ -39,7 +39,7 @@ public class Placeholders extends PlaceholderExpansion {
             String colorChar;
             int lives = WarDataController.getResidentLives(resident);
             colorChar = getColorChar(lives);
-            return colorChar + lives;
+            return colorChar + "§l" + lives + "§r" + colorChar + " ❤";
         }
         return null; // Not recognized.
     }
@@ -56,6 +56,6 @@ public class Placeholders extends PlaceholderExpansion {
         } else {
             colorChar = "§7"; // 0 lives, gray.
         }
-        return colorChar + "§l";
+        return colorChar;
     }
 }
