@@ -91,6 +91,7 @@ public class War {
 
         if (entity != null) {
             entity.addResident(resident);
+            WarDataController.setResidentLives(resident, 3);
         }
     }
 
