@@ -1,6 +1,5 @@
 package org.unitedlands.wars.listeners;
 
-import com.palmergames.bukkit.towny.event.player.PlayerKilledPlayerEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import de.jeff_media.angelchest.AngelChest;
@@ -12,13 +11,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
@@ -26,6 +28,8 @@ import org.unitedlands.wars.war.War;
 import org.unitedlands.wars.war.WarDataController;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.entities.WarringEntity;
+
+import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
@@ -115,9 +119,20 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerKillPlayer(PlayerKilledPlayerEvent event) {
-        Resident killer = getTownyResident(event.getKiller());
-        Resident victim = getTownyResident(event.getVictim());
+    public void onDeath(EntityDeathEvent event) {
+        LivingEntity dead = event.getEntity();
+
+        if (!(dead instanceof Player))
+            return;
+
+        Optional<Player> foundKiller = findKiller(dead);
+        if (foundKiller.isEmpty()) {
+            runRegularDeathProccess((Player) dead);
+            return;
+        }
+
+        Resident killer = getTownyResident(foundKiller.get());
+        Resident victim = getTownyResident((Player) dead);
 
         if (!hasSameWar(killer, victim))
             return;
@@ -142,6 +157,27 @@ public class PlayerListener implements Listener {
             return;
         }
         warringEntity.getWar().broadcast(message);
+
+    }
+
+    private void runRegularDeathProccess(Player dead) {
+        Resident resident = getTownyResident(dead);
+        if (!WarDatabase.hasWar(dead))
+            return;
+        if (!WarDataController.hasResidentLives(resident))
+            return;
+        WarringEntity warringEntity = WarDatabase.getWarringEntity(dead);
+        if (warringEntity.getWar().hasActiveTimer())
+            return;
+        // Decrease the health by 3
+        warringEntity.getWarHealth().decreaseHealth(3);
+        warringEntity.getWarHealth().flash();
+        warringEntity.getWar().broadcast(getMessage("regular-death",
+                component("victim",
+                        text(dead.getName())),
+                component("victim-warrer",
+                        text(warringEntity.name()))));
+        playSounds(warringEntity);
 
     }
 
@@ -171,7 +207,10 @@ public class PlayerListener implements Listener {
 
     @NotNull
     private Component getPlayerDeathMessage(WarringEntity entity, Resident killer, Resident victim) {
-        return Utils.getMessage("player-killed",
+        String message = "player-killed";
+        if (killer == victim)
+            message = "player-killed-self";
+        return Utils.getMessage(message,
                 component("victim",
                         text(victim.getName())),
                 component("killer",
@@ -223,5 +262,43 @@ public class PlayerListener implements Listener {
             return;
         if (isBannedWorld(event.getRespawnLocation().getWorld().getName()))
             Utils.teleportPlayerToSpawn(player);
+    }
+
+    public Optional<Player> findKiller(Entity dead) {
+        EntityDamageEvent entityDamageEvent = dead.getLastDamageCause();
+        if (!(entityDamageEvent instanceof EntityDamageByEntityEvent)) {
+            // Not damaged by entity, can't be a player
+            return Optional.empty();
+        }
+
+        Entity killer = ((EntityDamageByEntityEvent) entityDamageEvent).getDamager();
+        if (killer instanceof Player) return Optional.of((Player) killer);
+        if (killer instanceof Tameable) return getOwner((Tameable) killer);
+        if (killer instanceof Projectile) return getShooter((Projectile) killer);
+        if (killer instanceof EnderCrystal) return findKiller(killer); // Recursive call
+
+        return Optional.empty();
+    }
+
+    private Optional<Player> getShooter(Projectile projectile) {
+        ProjectileSource source = projectile.getShooter();
+        if (source instanceof Player) {
+            return Optional.of((Player) source);
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<Player> getOwner(Tameable tameable) {
+        if (!tameable.isTamed()) {
+            return Optional.empty();
+        }
+
+        AnimalTamer owner = tameable.getOwner();
+        if (owner instanceof Player) {
+            return Optional.of((Player) owner);
+        }
+
+        return Optional.empty();
     }
 }
