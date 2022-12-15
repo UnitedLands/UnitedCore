@@ -61,7 +61,7 @@ public class SurrenderCommand implements TabExecutor {
             player.sendMessage(getMessage("no-wars-found"));
             return true;
         }
-        WarringEntity enemy = WarUtil.getOpposingEntity(WarDatabase.getWarringEntity(player));
+        WarringEntity enemy = WarDatabase.getWarringEntity(player).getEnemy();
         Resident leader = enemy.getLeader();
         if (!leader.isOnline()) {
             player.sendMessage(getMessage("mayor-offline",
@@ -90,7 +90,7 @@ public class SurrenderCommand implements TabExecutor {
                     request.accept();
                     War war = WarDatabase.getWar(player);
                     WarringEntity winner = WarDatabase.getWarringEntity(player);
-                    war.surrenderWar(winner, WarUtil.getOpposingEntity(winner));
+                    war.surrenderWar(winner, winner.getEnemy());
                     SURRENDER_REQUESTS.remove(request);
                 })
                 .setTitle(request.getTitle())
@@ -106,8 +106,7 @@ public class SurrenderCommand implements TabExecutor {
                 player.sendMessage(getMessage("health-too-high-to-surrender"));
                 return;
             }
-            WarringEntity winner = WarUtil.getOpposingEntity(loser);
-            war.endWar(winner, loser);
+            war.endWar(loser.getEnemy(), loser);
                 }).setTitle("§cAre you sure you want to surrender without an offer? Confirming will end the war immediately.")
                 .sendTo(player);
     }
@@ -125,7 +124,7 @@ public class SurrenderCommand implements TabExecutor {
             player.sendMessage(getMessage("not-enough-money"));
             return;
         }
-        WarringEntity enemy = WarUtil.getOpposingEntity(WarDatabase.getWarringEntity(player));
+        WarringEntity enemy = WarDatabase.getWarringEntity(player).getEnemy();
         Resident leader = enemy.getLeader();
 
         Confirmation.runOnAccept(() -> {
@@ -157,7 +156,7 @@ public class SurrenderCommand implements TabExecutor {
             return;
         }
 
-        WarringEntity enemy = WarUtil.getOpposingEntity(WarDatabase.getWarringEntity(player));
+        WarringEntity enemy = WarDatabase.getWarringEntity(player).getEnemy();
         Resident leader = enemy.getLeader();
 
         Confirmation.runOnAccept(() -> {
@@ -169,7 +168,7 @@ public class SurrenderCommand implements TabExecutor {
     }
 
     private void parseWhitePeace() {
-        WarringEntity enemy = WarUtil.getOpposingEntity(WarDatabase.getWarringEntity(player));
+        WarringEntity enemy = WarDatabase.getWarringEntity(player).getEnemy();
         Resident leader = enemy.getLeader();
 
         Confirmation.runOnAccept(() -> {

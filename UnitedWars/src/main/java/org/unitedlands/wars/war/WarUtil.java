@@ -82,13 +82,4 @@ public class WarUtil {
         return first.getWar().equals(second.getWar());
     }
 
-    public static WarringEntity getOpposingEntity(WarringEntity entity) {
-        War war = entity.getWar();
-        for (WarringEntity warringEntity : war.getWarringEntities()) {
-            if (warringEntity.equals(entity))
-                continue;
-            return warringEntity;
-        }
-        return null;
-    }
 }

@@ -74,6 +74,16 @@ public class WarringNation implements WarringEntity {
     }
 
     @Override
+    public WarringEntity getEnemy() {
+        for (WarringEntity warringEntity : getWar().getWarringNations()) {
+            if (warringEntity.equals(this))
+                continue;
+            return warringEntity;
+        }
+        return null;
+    }
+
+    @Override
     public String name() {
         return getNation().getFormattedName();
     }

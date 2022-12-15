@@ -79,6 +79,16 @@ public class WarringTown implements WarringEntity {
     }
 
     @Override
+    public WarringEntity getEnemy() {
+        for (WarringEntity warringEntity : getWar().getWarringTowns()) {
+            if (warringEntity.equals(this))
+                continue;
+            return warringEntity;
+        }
+        return null;
+    }
+
+    @Override
     public String name() {
         return getTown().getFormattedName();
     }

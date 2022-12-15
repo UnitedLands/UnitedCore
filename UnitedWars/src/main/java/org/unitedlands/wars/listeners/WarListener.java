@@ -94,7 +94,7 @@ public class WarListener implements Listener {
 
     private void tryEndingWar(WarringEntity warringEntity) {
         int current = warringEntity.getWarHealth().getValue();
-        WarringEntity opposingEntity = WarUtil.getOpposingEntity(warringEntity);
+        WarringEntity opposingEntity = warringEntity.getEnemy();
         int enemyCurrent = opposingEntity.getWarHealth().getValue();
 
         warringEntity.getWarHealth().setHealth(Math.max(0, current - 20));
@@ -130,9 +130,7 @@ public class WarListener implements Listener {
                 return;
 
             War war = warringEntity.getWar();
-            WarringEntity enemy = WarUtil.getOpposingEntity(warringEntity);
-
-            war.endWar(enemy, warringEntity);
+            war.endWar(warringEntity.getEnemy(), warringEntity);
         }
 
     }

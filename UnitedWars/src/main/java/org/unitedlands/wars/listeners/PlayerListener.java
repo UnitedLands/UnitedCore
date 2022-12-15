@@ -34,7 +34,6 @@ import java.util.Optional;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static org.unitedlands.wars.Utils.*;
-import static org.unitedlands.wars.war.WarUtil.getOpposingEntity;
 import static org.unitedlands.wars.war.WarUtil.hasSameWar;
 
 public class PlayerListener implements Listener {
@@ -190,7 +189,7 @@ public class PlayerListener implements Listener {
 
     private void playSounds(WarringEntity warringEntity) {
         warringEntity.getOnlinePlayers().forEach(player -> player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1, 1));
-        WarringEntity enemy = getOpposingEntity(warringEntity);
+        WarringEntity enemy = warringEntity.getEnemy();
         enemy.getOnlinePlayers().forEach(player -> player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BIT, 1f, 1f));
     }
 

@@ -26,6 +26,7 @@ public interface WarringEntity {
     Resident getLeader();
 
     String getPath();
+    WarringEntity getEnemy();
 
     String name();
 }
