@@ -17,7 +17,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -26,6 +25,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.events.WarDeclareEvent;
@@ -38,6 +38,7 @@ import org.unitedlands.wars.war.entities.WarringEntity;
 import org.unitedlands.wars.war.entities.WarringNation;
 import org.unitedlands.wars.war.entities.WarringTown;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -182,7 +183,7 @@ public class TownyListener implements Listener {
             event.setCancelled(false);
         }
         if (mat == Material.OBSIDIAN)
-            removeBlockLater(event.getBlock(), 30 * 20); // 30 seconds * 20 ticks.
+            removeBlockLater(event.getBlock()); // 30 seconds * 20 ticks.
     }
 
     @EventHandler
@@ -249,6 +250,22 @@ public class TownyListener implements Listener {
         event.setBlockList(toAllow);
 
     }
+    @EventHandler (priority = EventPriority.MONITOR)
+    public void onPlayerDamageEntity(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player player))
+            return;
+        if (!WarDatabase.hasWar(player))
+            return;
+        Entity entity = event.getEntity();
+        if (entity.getType() == EntityType.PLAYER)
+            return;
+        if (UnitedWars.TOWNY_API.isWilderness(entity.getLocation()))
+            return;
+        TownBlock townBlock = UnitedWars.TOWNY_API.getTownBlock(entity.getLocation());
+        if (isInvalidLocation(townBlock, player))
+            return;
+        event.setCancelled(true);
+    }
 
     @EventHandler
     public void onSwitchUse(TownySwitchEvent event) {
@@ -307,7 +324,9 @@ public class TownyListener implements Listener {
     private static boolean isModifiableMaterial(Material mat) {
         return mat == Material.TNT || mat == Material.COBWEB || mat == Material.LADDER || mat == Material.SCAFFOLDING || mat == Material.OBSIDIAN || mat == Material.END_CRYSTAL;
     }
-    private boolean isInvalidLocation(TownBlock townBlock, Player player) {
+    private boolean isInvalidLocation(@Nullable TownBlock townBlock, Player player) {
+        if (townBlock == null)
+            return true;
         Town town = townBlock.getTownOrNull();
         if (town == null)
             return true;
@@ -321,10 +340,10 @@ public class TownyListener implements Listener {
         return !war.equals(warringEntity.getWar());
     }
 
-    private void removeBlockLater(Block block, int interval) {
+    private void removeBlockLater(Block block) {
         Bukkit.getServer().getScheduler().runTaskLater(UnitedWars.getInstance(), () -> {
             block.setType(Material.AIR);
-        }, interval);
+        }, 600);
     }
 
     private void toggleFreeze(Collection<TownBlock> blocks, boolean toggle) {
