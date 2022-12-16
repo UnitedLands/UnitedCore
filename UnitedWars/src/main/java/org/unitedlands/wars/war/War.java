@@ -158,6 +158,7 @@ public class War {
         // Remove health.
         hideHealth(winner);
         hideHealth(loser);
+        removeLives();
 
         // Notify entities
         notifyWin();
@@ -184,6 +185,7 @@ public class War {
         // Remove health.
         hideHealth(winner);
         hideHealth(loser);
+        removeLives();
 
         // Notify
         notifySurrenderAccepted();
@@ -205,6 +207,7 @@ public class War {
         // Remove health.
         hideHealth(first);
         hideHealth(second);
+        removeLives();
 
         // Notify
         notifyTie();
@@ -289,7 +292,6 @@ public class War {
     private void hideHealth(WarringEntity warringEntity) {
         WarHealth warHealth = warringEntity.getWarHealth();
         warringEntity.getOnlinePlayers().forEach(warHealth::hide);
-        warHealth.delete();
     }
 
     private void notifySurrendered() {
@@ -327,6 +329,10 @@ public class War {
          //   player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
             player.sendMessage(Utils.getMessage("war-lost", getWonAndLostPlaceholders()));
         });
+    }
+
+    private void removeLives() {
+        getWarParticipants().forEach(WarDataController::removeResidentLivesMeta);
     }
 
     private TagResolver.Single[] getWonAndLostPlaceholders() {
