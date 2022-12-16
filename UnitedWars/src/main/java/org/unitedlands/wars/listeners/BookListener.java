@@ -5,6 +5,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -85,7 +87,9 @@ public class BookListener implements Listener {
 
         // Replace the held item, the old book, with the new sealed book to be used for declaration.
         DeclarationWarBook finalDeclarationBook = declarationBook;
-        unitedWars.getServer().getScheduler().runTask(unitedWars, () -> event.getPlayer().getInventory().setItemInMainHand(finalDeclarationBook.getBook()));
+        Player player = event.getPlayer();
+        player.playSound(player, Sound.ITEM_BOOK_PAGE_TURN, 10f, 0.5f);
+        unitedWars.getServer().getScheduler().runTask(unitedWars, () -> player.getInventory().setItemInMainHand(finalDeclarationBook.getBook()));
     }
 
     private boolean canWriteBook(Resident resident, WritableDeclaration writableDeclaration) {
