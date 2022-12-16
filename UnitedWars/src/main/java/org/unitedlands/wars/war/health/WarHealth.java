@@ -15,7 +15,7 @@ public class WarHealth {
     private final String name;
     private int health = 100;
     private int maxHealth = 100;
-    private final BossBar bossBar = generateBossBar();
+    private BossBar bossBar = generateBossBar();
 
     public WarHealth(String name) {
         this.name = name;
@@ -72,8 +72,8 @@ public class WarHealth {
         player.showBossBar(getBossBar());
     }
 
-    public void hide(Player player) {
-        player.hideBossBar(getBossBar());
+    public void delete() {
+        bossBar = null;
     }
 
     public void increaseHealth(int increment) {

@@ -8,7 +8,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.unitedlands.wars.UnitedWars;
@@ -112,7 +111,7 @@ public class War {
             WarDataController.removeResidentLivesMeta(resident);
             // Remove UUIDs from list
             residents.remove(resident.getUUID());
-            if (resident.isOnline())
+            if (resident.getPlayer() != null)
                 resident.getPlayer().sendMessage(getMessage("town-deleted-removed-from-war"));
         });
     }
@@ -289,7 +288,7 @@ public class War {
     }
 
     private void hideHealth(WarringEntity warringEntity) {
-        warringEntity.getOnlinePlayers().forEach(player -> warringEntity.getWarHealth().hide(player));
+        warringEntity.getWarHealth().delete();
     }
 
     private void notifySurrendered() {
