@@ -18,6 +18,7 @@ import org.unitedlands.wars.war.entities.WarringNation;
 import org.unitedlands.wars.war.entities.WarringTown;
 import org.unitedlands.wars.war.health.WarHealth;
 
+import java.text.NumberFormat;
 import java.util.*;
 
 import static net.kyori.adventure.text.Component.text;
@@ -330,7 +331,7 @@ public class War {
 
     private TagResolver.Single[] getWonAndLostPlaceholders() {
         return new TagResolver.Single[] {
-                Placeholder.component("money-amount", text(calculateWonMoney())),
+                Placeholder.component("money-amount", text(NumberFormat.getInstance().format(calculateWonMoney()))),
                 Placeholder.component("bonus-claims", text(calculateBonusBlocks())),
                 Placeholder.component("winner", text(winner.name())),
                 Placeholder.component("loser", text(loser.name()))

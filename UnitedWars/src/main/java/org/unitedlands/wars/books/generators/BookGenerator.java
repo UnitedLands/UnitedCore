@@ -18,6 +18,7 @@ import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.warbooks.WarBook;
 import org.unitedlands.wars.war.WarType;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,7 +147,7 @@ public class BookGenerator {
         return switch (statName) {
             case "blocks" -> String.valueOf(town.getNumTownBlocks());
             case "residents" -> String.valueOf(town.getNumResidents());
-            case "balance" -> String.valueOf(town.getAccount().getHoldingBalance());
+            case "balance" -> NumberFormat.getInstance().format(town.getAccount().getHoldingBalance());
             default -> "0";
         };
     }
@@ -160,7 +161,7 @@ public class BookGenerator {
                 for (Town town : nation.getTowns()) {
                     totalBalance += town.getAccount().getHoldingBalance();
                 }
-                yield String.valueOf(totalBalance);
+                yield NumberFormat.getInstance().format(totalBalance);
             }
             default -> "0";
         };
