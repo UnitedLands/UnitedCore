@@ -17,12 +17,10 @@ import java.util.List;
 
 import static org.unitedlands.wars.Utils.getMessage;
 
-public class WarCommand implements TabExecutor {
-    private static final List<String> warTabCompletes = Arrays.asList("declare", "scroll");
-    private final String type;
-    public WarCommand(String type) {
-        this.type = type;
-        TownyCommandAddonAPI.CommandType commandType = type.equals("n") ? TownyCommandAddonAPI.CommandType.NATION : TownyCommandAddonAPI.CommandType.TOWN;
+public class NationWarCommand implements TabExecutor {
+    private static final List<String> warTabCompletes = Arrays.asList("declare", "scroll", "join");
+    public NationWarCommand() {
+        TownyCommandAddonAPI.CommandType commandType = TownyCommandAddonAPI.CommandType.NATION;
         AddonCommand warCommand = new AddonCommand(commandType, "war", this);
         TownyCommandAddonAPI.addSubCommand(warCommand);
     }
@@ -31,12 +29,8 @@ public class WarCommand implements TabExecutor {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (args[0].equalsIgnoreCase("scroll") || args[0].equalsIgnoreCase("join")) {
             if (args.length == 2) {
-                return BaseCommand.getTownyStartingWith(args[1], type);
+                return BaseCommand.getTownyStartingWith(args[1], "n");
             }
-        }
-        if (args.length == 1 && type.equals("n")) {
-            warTabCompletes.add("join");
-            return warTabCompletes;
         }
         return args.length == 1 ? warTabCompletes : Collections.emptyList();
     }
@@ -54,12 +48,11 @@ public class WarCommand implements TabExecutor {
                     commandSender.sendMessage(getMessage("must-specify-target"));
                     return true;
                 }
-                WarType warType = type.equals("n") ? WarType.NATIONWAR : WarType.TOWNWAR;
-                BookCommandParser bookCommand = new BookCommandParser(commandSender, warType, args[1]);
+                BookCommandParser bookCommand = new BookCommandParser(commandSender, WarType.NATIONWAR, args[1]);
                 bookCommand.parse();
             }
 
-            if (args[0].equalsIgnoreCase("join") && type.equals("n")) {
+            if (args[0].equalsIgnoreCase("join")) {
                 if (args.length < 2) {
                     commandSender.sendMessage(getMessage("must-specify-target"));
                     return true;

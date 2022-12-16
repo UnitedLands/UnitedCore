@@ -7,8 +7,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.unitedlands.wars.commands.WarCommand;
+import org.unitedlands.wars.commands.NationWarCommand;
+import org.unitedlands.wars.commands.TownWarCommand;
 import org.unitedlands.wars.commands.WarAdminCommand;
+import org.unitedlands.wars.commands.WarCommand;
 import org.unitedlands.wars.commands.surrender.SurrenderCommand;
 import org.unitedlands.wars.hooks.Placeholders;
 import org.unitedlands.wars.listeners.BookListener;
@@ -53,9 +55,9 @@ public final class UnitedWars extends JavaPlugin {
     }
     private void setCommandExecutors() {
         // Register war command for nations
-        new WarCommand("n");
+        getCommand("nationwar").setExecutor(new NationWarCommand());
         // Register war command for towns
-        new WarCommand("t");
+        getCommand("townwar").setExecutor(new TownWarCommand());
         getCommand("waradmin").setExecutor(new WarAdminCommand());
         getCommand("surrender").setExecutor(new SurrenderCommand());
     }

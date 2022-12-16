@@ -11,6 +11,8 @@ commands:
   war:
     description: Used to declare and start wars
     usage: "/war [declare/book] [town/nation] name"
+  nationwar:
+  townwar:
   waradmin:
     description: Used by admins to manage wars
     permission: united.wars.admin

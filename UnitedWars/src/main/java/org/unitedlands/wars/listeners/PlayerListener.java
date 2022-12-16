@@ -1,11 +1,13 @@
 package org.unitedlands.wars.listeners;
 
+import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import de.jeff_media.angelchest.AngelChest;
 import de.jeff_media.angelchest.AngelChestPlugin;
 import de.jeff_media.angelchest.events.AngelChestSpawnEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -49,13 +51,25 @@ public class PlayerListener implements Listener {
 
         Town town = getPlayerTown(player);
         if (town == null) return;
-        if (!town.hasActiveWar()) return;
+        if (!town.hasActiveWar()) {
+            Resident resident = getTownyResident(player);
+            if (!resident.isKing())
+                return;
+            notifyAllyWar(resident);
+        }
 
         if (isBannedWorld(player.getWorld().getName()))
             teleportPlayerToSpawn(player);
 
         for (String command : config.getStringList("commands-on-login"))
             player.performCommand(command);
+    }
+
+    private void notifyAllyWar(Resident resident) {
+        Nation nation = resident.getNationOrNull();
+        for (Nation ally: nation.getAllies())
+            if (WarDatabase.hasNation(ally))
+                resident.getPlayer().sendMessage(getMessage("ally-has-war", Placeholder.component("ally", text(ally.getFormattedName()))));
     }
 
 

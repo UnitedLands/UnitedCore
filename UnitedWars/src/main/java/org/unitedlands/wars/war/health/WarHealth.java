@@ -72,6 +72,9 @@ public class WarHealth {
         player.showBossBar(getBossBar());
     }
 
+    public void hide(Player player) {
+        player.hideBossBar(getBossBar());
+    }
     public void delete() {
         bossBar = null;
     }

@@ -67,13 +67,10 @@ public class WarDatabase {
                     Nation nation = UnitedWars.TOWNY_API.getNation(UUID.fromString(nationUUID));
                     if (nation == null)
                         continue;
-
                     List<Resident> nationResidents = nation.getResidents();
+                    ConfigurationSection nationSection = savedNations.getConfigurationSection(nationUUID);
                     // Add allied residents if any.
-                    for (Nation ally : nation.getAllies()) {
-                        nationResidents.addAll(ally.getResidents());
-                    }
-
+                    nationResidents.addAll(getAlliedResidents(nationSection));
                     warResidents.addAll(nationResidents);
                     nations.add(nation);
                 }
@@ -86,8 +83,39 @@ public class WarDatabase {
                 WarHealth warHealth = generateWarHealth(savedHealth, warringEntity.name());
                 copyHealth(warringEntity, warHealth);
             }
+
+            for (WarringNation warringNation: war.getWarringNations()) {
+                List<String> savedAllies = section.getStringList(war.getUuid() + "." + warringNation.getPath() + "." + warringNation.getUUID() + ".allies");
+                List<UUID> uuids = new ArrayList<>();
+                savedAllies.forEach(ally -> uuids.add(UUID.fromString(ally)));
+                warringNation.setAllies(uuids);
+            }
         }
         PLUGIN.getLogger().log(Level.INFO, "Loaded " + WARS.size() + " wars!");
+    }
+
+    private static List<UUID> getAllies(ConfigurationSection nationSection) {
+        List<UUID> allies = new ArrayList<>();
+        List<String> savedAllies = nationSection.getStringList("allies");
+        for (String uuid: savedAllies) {
+            Nation nation = UnitedWars.TOWNY_API.getNation(UUID.fromString(uuid));
+            if (nation == null)
+                continue;
+            allies.add(UUID.fromString(uuid));
+        }
+        return allies;
+    }
+    private static List<Resident> getAlliedResidents(ConfigurationSection nationSection) {
+        List<Resident> alliedResidents = new ArrayList<>();
+        List<UUID> joinedAllies = getAllies(nationSection);
+        if (!joinedAllies.isEmpty()) {
+            for (UUID uuid: joinedAllies) {
+                Nation ally = UnitedWars.TOWNY_API.getNation(uuid);
+                alliedResidents.addAll(ally.getResidents());
+            }
+        }
+
+        return alliedResidents;
     }
 
     public static void saveWarData() {
@@ -118,6 +146,11 @@ public class WarDatabase {
                 ConfigurationSection healthSection = entitySection.createSection("health");
                 healthSection.set("max", warringEntity.getWarHealth().getMaxHealth());
                 healthSection.set("current", warringEntity.getWarHealth().getValue());
+                if (warringEntity instanceof WarringNation warringNation) {
+                    if (warringNation.getJoinedAllies().isEmpty())
+                        return;
+                    entitySection.set("allies", warringNation.getJoinedAllies());
+                }
             }
 
         }
@@ -147,7 +180,6 @@ public class WarDatabase {
     public static void addWarringNation(WarringNation warringNation) {
         WARRING_NATIONS.add(warringNation);
     }
-
 
     public static void removeWar(War war) {
         WARS.remove(war);

@@ -269,10 +269,8 @@ public class War {
     private void toggleActiveWar(boolean toggle) {
         for (WarringEntity entity : getWarringEntities()) {
             entity.getGovernment().setActiveWar(toggle);
-            if (entity.getGovernment() instanceof Nation nation) {
+            if (entity.getGovernment() instanceof Nation nation)
                 nation.getTowns().forEach(town -> town.setActiveWar(toggle));
-                nation.getAllies().forEach(ally -> ally.setActiveWar(toggle));
-            }
         }
     }
 
@@ -289,7 +287,9 @@ public class War {
     }
 
     private void hideHealth(WarringEntity warringEntity) {
-        warringEntity.getWarHealth().delete();
+        WarHealth warHealth = warringEntity.getWarHealth();
+        warringEntity.getOnlinePlayers().forEach(warHealth::hide);
+        warHealth.delete();
     }
 
     private void notifySurrendered() {
@@ -381,10 +381,6 @@ public class War {
         for (Nation nation : nationList) {
             // Create a list with the nation residents
             List<Resident> warringResidents = new ArrayList<>(nation.getResidents());
-            // add all the allies
-            for (Nation ally : nation.getAllies()) {
-                warringResidents.addAll(ally.getResidents());
-            }
             generatedList.add(new WarringNation(nation, new WarHealth(nation), warringResidents, this));
         }
         return generatedList;

@@ -3,6 +3,9 @@ package org.unitedlands.wars.war.entities;
 import com.palmergames.bukkit.towny.object.Government;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.title.Title;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
@@ -12,9 +15,19 @@ import org.unitedlands.wars.war.health.WarHealth;
 
 import java.util.*;
 
+import static net.kyori.adventure.text.Component.text;
+import static org.unitedlands.wars.Utils.getMessage;
+import static org.unitedlands.wars.Utils.getTitle;
+
 public class WarringNation implements WarringEntity {
     private final UUID nationUUID;
     private final WarHealth warHealth;
+
+    public void setAllies(List<UUID> joinedAllies) {
+        this.joinedAllies = joinedAllies;
+    }
+
+    private List<UUID> joinedAllies = new ArrayList<>();
     private final HashSet<UUID> warringResidents;
     private final UUID warUUID;
 
@@ -81,6 +94,28 @@ public class WarringNation implements WarringEntity {
             return warringEntity;
         }
         return null;
+    }
+
+    public void addAlly(Nation ally) {
+        Title joinTitle = getTitle("<dark_red><bold>JOINED WAR", "<gold>You've joined the war as an ally!");
+        War war = getWar();
+        for (Resident resident : ally.getResidents()) {
+            war.addResident(resident, getNation().getCapital());
+            if (resident.getPlayer() == null)
+                continue;
+            resident.getPlayer().showTitle(joinTitle);
+            resident.getPlayer().playSound(resident.getPlayer(), Sound.EVENT_RAID_HORN, 75, 1);
+        }
+        war.broadcast(getMessage("ally-joined-war",
+                Placeholder.component("ally", text(ally.getName())),
+                Placeholder.component("nation", text(name()))));
+        ally.setActiveWar(true);
+        ally.getTowns().forEach(town -> town.setActiveWar(true));
+        joinedAllies.add(ally.getUUID());
+    }
+
+    public List<UUID> getJoinedAllies() {
+        return joinedAllies;
     }
 
     @Override
