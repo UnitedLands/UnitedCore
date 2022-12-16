@@ -27,16 +27,16 @@ public class DeclarationGenerator extends BookGenerator {
     @Override
     public ItemStack generateBook() {
         List<Component> pages = getPagesWithReason();
-
         BookMeta.BookMetaBuilder builder = bookMeta.toBuilder();
-        // add the pages to the book
+        // add pages
         pages.forEach(builder::addPage);
+
         bookMeta = builder
                 .author(text(getName("declarer")))
                 .title(text("War Declaration Book"))
                 .build();
         bookMeta.displayName(getDisplayName());
-        bookMeta.setCustomModelData(2);
+        bookMeta.setCustomModelData(-1);
         attachWarData();
         bookItem.setItemMeta(bookMeta);
         return bookItem;
