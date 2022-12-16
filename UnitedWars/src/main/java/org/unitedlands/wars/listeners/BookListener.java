@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.books.declaration.DeclarationWarBook;
 import org.unitedlands.wars.books.declaration.NationDeclarationBook;
 import org.unitedlands.wars.books.declaration.TownDeclarationBook;
@@ -32,13 +33,14 @@ import static org.unitedlands.wars.war.WarUtil.generateWritableDeclaration;
 
 public class BookListener implements Listener {
     private final UnitedWars unitedWars;
+    private final NamespacedKey TYPE_KEY = Utils.getKey("book.type");
 
     public BookListener(UnitedWars unitedWars) {
         this.unitedWars = unitedWars;
     }
 
-    private static boolean isWritableDeclaration(ItemMeta meta) {
-        return WritableDeclaration.isWritableDeclaration(meta.getPersistentDataContainer());
+    private static boolean isNormalBook(ItemMeta meta) {
+        return !WritableDeclaration.isWritableDeclaration(meta.getPersistentDataContainer());
     }
 
     @EventHandler
@@ -53,14 +55,14 @@ public class BookListener implements Listener {
             return;
 
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        if (pdc.has(NamespacedKey.fromString("unitedwars.book.type"), PersistentDataType.STRING)) {
+        if (pdc.has(TYPE_KEY, PersistentDataType.STRING)) {
             event.getInventory().setResult(new ItemStack(Material.AIR));
         }
     }
 
     @EventHandler
     public void onBookEdit(PlayerEditBookEvent event) {
-        if (!isWritableDeclaration(event.getPreviousBookMeta()))
+        if (isNormalBook(event.getPreviousBookMeta()))
             return;
         if (!event.isSigning())
             return;
@@ -94,7 +96,7 @@ public class BookListener implements Listener {
     public void onBookInteract(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
         if (item == null) return;
-        if (!isWritableDeclaration(item.getItemMeta())) return;
+        if (isNormalBook(item.getItemMeta())) return;
 
         Resident resident = getTownyResident(event.getPlayer());
         WritableDeclaration writableDeclaration = generateWritableDeclaration((BookMeta) item.getItemMeta());

@@ -19,6 +19,8 @@ import org.unitedlands.wars.war.entities.WarringEntity;
 
 import java.util.UUID;
 
+import static org.unitedlands.wars.Utils.getKey;
+
 public class WarUtil {
 
 
@@ -33,20 +35,23 @@ public class WarUtil {
     public static WritableDeclaration generateWritableDeclaration(BookMeta bookMeta) {
         PersistentDataContainer pdc = bookMeta.getPersistentDataContainer();
 
-        UUID declaringUUID = getUUID(pdc, "unitedwars.book.town");
+        UUID declaringUUID = getUUID(pdc, getKey("book.town"));
         Declarer declarer = new Declarer(UnitedWars.TOWNY_API.getTown(declaringUUID));
 
 
-        WarType warType = WarType.valueOf(pdc.get(NamespacedKey.fromString("unitedwars.book.type"), PersistentDataType.STRING).toUpperCase());
-        UUID targetUUID = getUUID(pdc, "unitedwars.book.target");
+        WarType warType = WarType.valueOf(pdc.get(getKey("book.type"), PersistentDataType.STRING).toUpperCase());
+        UUID targetUUID = getUUID(pdc, getKey("book.target"));
         WarTarget warTarget = getWarTarget(warType, targetUUID);
 
         return new WritableDeclaration(declarer, warTarget, warType);
     }
 
     @NotNull
-    private static UUID getUUID(PersistentDataContainer pdc, String key) {
-        return UUID.fromString(pdc.get(NamespacedKey.fromString(key), PersistentDataType.STRING));
+    private static UUID getUUID(PersistentDataContainer pdc, NamespacedKey key) {
+        String uuid = pdc.get(key, PersistentDataType.STRING);
+        if (uuid == null)
+            return UUID.randomUUID();
+        return UUID.fromString(uuid);
     }
 
 

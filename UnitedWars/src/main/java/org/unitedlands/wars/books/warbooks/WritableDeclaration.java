@@ -3,7 +3,6 @@ package org.unitedlands.wars.books.warbooks;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -12,7 +11,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
@@ -23,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static net.kyori.adventure.text.Component.text;
+import static org.unitedlands.wars.Utils.getKey;
 
 public class WritableDeclaration implements WarBook {
     private static final FileConfiguration CONFIG = UnitedWars.getInstance().getConfig();
@@ -39,13 +38,9 @@ public class WritableDeclaration implements WarBook {
         this.warType = warType;
     }
 
-    @Nullable
-    private static NamespacedKey key(String key) {
-        return NamespacedKey.fromString(key);
-    }
 
     public static boolean isWritableDeclaration(PersistentDataContainer container) {
-        return container.has(key("unitedwars.book.writable"));
+        return container.has(getKey("book.writable"));
     }
 
     public WarTarget getWarTarget() {
@@ -88,10 +83,10 @@ public class WritableDeclaration implements WarBook {
 
         ItemMeta meta = writableBook.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(key("unitedwars.book.town"), PersistentDataType.STRING, townUUID.toString());
-        pdc.set(key("unitedwars.book.type"), PersistentDataType.STRING, warType.name());
-        pdc.set(key("unitedwars.book.target"), PersistentDataType.STRING, targetUUID.toString());
-        pdc.set(key("unitedwars.book.writable"), PersistentDataType.INTEGER, 1); // 1 = true, 0 = false
+        pdc.set(getKey("book.town"), PersistentDataType.STRING, townUUID.toString());
+        pdc.set(getKey("book.type"), PersistentDataType.STRING, warType.name());
+        pdc.set(getKey("book.target"), PersistentDataType.STRING, targetUUID.toString());
+        pdc.set(getKey("book.writable"), PersistentDataType.INTEGER, 1); // 1 = true, 0 = false
 
         writableBook.setItemMeta(meta);
     }

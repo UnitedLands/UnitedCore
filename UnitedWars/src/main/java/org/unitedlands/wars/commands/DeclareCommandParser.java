@@ -32,11 +32,11 @@ import org.unitedlands.wars.war.WarType;
 import java.util.*;
 
 import static net.kyori.adventure.text.Component.text;
-import static org.unitedlands.wars.Utils.getMessage;
+import static org.unitedlands.wars.Utils.*;
 import static org.unitedlands.wars.war.WarUtil.*;
 
 public class DeclareCommandParser {
-    private static final NamespacedKey TYPE_KEY = NamespacedKey.fromString("unitedwars.book.type");
+    private static final NamespacedKey TYPE_KEY = getKey("book.type");
     private final CommandSender sender;
 
     public DeclareCommandParser(CommandSender sender) {
@@ -63,7 +63,7 @@ public class DeclareCommandParser {
            return;
         }
         Confirmation.runOnAccept(() -> {
-            if (!testBookRequirementsAreMet(WarType.TOWNWAR))
+            if (invalidBook(WarType.TOWNWAR))
                 return;
 
             if (targetTown.isNeutral()) {
@@ -110,7 +110,7 @@ public class DeclareCommandParser {
         }
 
         Confirmation.runOnAccept(() -> {
-            if (!testBookRequirementsAreMet(WarType.NATIONWAR))
+            if (invalidBook(WarType.NATIONWAR))
                 return;
 
             if (targetNation.isNeutral()) {
@@ -141,7 +141,7 @@ public class DeclareCommandParser {
 
     private WarTarget getTargetFromBook() {
         PersistentDataContainer pdc = getHeldBookData();
-        NamespacedKey targetKey = NamespacedKey.fromString("unitedwars.book.target");
+        NamespacedKey targetKey = getKey("book.target");
 
         if (pdc.has(targetKey)) {
             UUID targetUUID = UUID.fromString(pdc.get(targetKey, PersistentDataType.STRING));
@@ -202,49 +202,55 @@ public class DeclareCommandParser {
         return pdc.get(TYPE_KEY, PersistentDataType.STRING).equalsIgnoreCase("TOWNWAR");
     }
 
-    private boolean testBookRequirementsAreMet(WarType wartype) {
+    private boolean invalidBook(WarType wartype) {
         Player player = (Player) this.sender;
         Resident resident = UnitedWars.TOWNY_API.getResident(player);
+        if (resident == null)
+            return true;
         if (!resident.hasTown()) {
             player.sendMessage(getMessage("must-have-town"));
-            return false;
+            return true;
         }
         Town town = resident.getTownOrNull();
+        if (town == null)
+            return true;
         if (town.hasActiveWar()) {
             player.sendMessage(getMessage("ongoing-war"));
-            return false;
+            return true;
         } else if (!isNotOnCooldownForWar(WarType.TOWNWAR, town)) {
             player.sendMessage(getMessage("on-cooldown"));
-            return false;
+            return true;
         }
         ItemStack book = player.getInventory().getItemInMainHand();
         if (!book.getType().equals(Material.WRITTEN_BOOK)) {
             player.sendMessage(getMessage("invalid-held-book"));
-            return false;
+            return true;
         }
         PersistentDataContainer pdc = book.getItemMeta().getPersistentDataContainer();
         if (pdc.isEmpty()) {
             player.sendMessage(getMessage("invalid-held-book"));
-            return false;
+            return true;
         }
         if (!pdc.has(TYPE_KEY, PersistentDataType.STRING)) {
             player.sendMessage(getMessage("invalid-held-book"));
-            return false;
+            return true;
         }
         String type = pdc.get(TYPE_KEY, PersistentDataType.STRING);
+        if (type == null)
+            return true;
         if (!type.equalsIgnoreCase(wartype.name())) {
             player.sendMessage(getMessage("invalid-held-book"));
-            return false;
+            return true;
         }
-        Town townWhoBoughtDOW = getDOWPurchaser(player);
+        Town townWhoBoughtDOW = getDeclarationBuyer(player);
         if (townWhoBoughtDOW == null) {
             player.sendMessage(getMessage("invalid-held-book"));
-            return false;
+            return true;
         } else if (!resident.getTownOrNull().equals(townWhoBoughtDOW)) {
             player.sendMessage(getMessage("must-be-book-owner"));
-            return false;
+            return true;
         }
-        return true; // all checks passed.
+        return false; // all checks passed.
     }
 
     private void removeHeldBook(Player player) {
@@ -276,13 +282,14 @@ public class DeclareCommandParser {
         return nationHasEnoughOnline(targetNation) && nationHasEnoughOnline(nation);
     }
 
-    private Town getDOWPurchaser(Player player) {
+    private Town getDeclarationBuyer(Player player) {
         ItemMeta bookMeta = player.getInventory().getItemInMainHand().getItemMeta();
-        NamespacedKey townKey = NamespacedKey.fromString("unitedwars.book.town");
+        NamespacedKey townKey = getKey("book.town");
         return UnitedWars.TOWNY_API.getTown(UUID.fromString(bookMeta.getPersistentDataContainer().get(townKey, PersistentDataType.STRING)));
     }
+
     private Translatable getConfirmationTitle(WarType warType, String name) {
-        String message = UnitedWars.getInstance().getConfig().getString("messages.war-declare-confirmation")
+        String message = getMessageRaw("war-declare-confirmation")
                 .replace("<target>", String.valueOf(name))
                 .replace("<type>", warType.getFormattedName());
         return Translatable.of(message);
