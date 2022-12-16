@@ -128,6 +128,7 @@ public class DeclareCommandParser {
 
             residents.addAll(getResidents(declaringNation));
             residents.addAll(getResidents(targetNation));
+            residents.removeAll(getMutualAllyResidents(declaringNation, targetNation));
 
             new War(null, nations, residents, WarType.NATIONWAR);
 
@@ -168,9 +169,21 @@ public class DeclareCommandParser {
         }
     }
 
-    private List<Resident> getResidents(Nation nation) {
-        List<Resident> residents = new ArrayList<>(nation.getResidents());
-        nation.getAllies().forEach(ally -> {
+    private List<Resident> getMutualAllyResidents(Nation first, Nation second) {
+        List<Nation> mutual = new ArrayList<>();
+        for (Nation ally: first.getAllies()) {
+            if (second.hasAlly(ally))
+                mutual.add(ally);
+        }
+        List<Resident> mutualResidents = new ArrayList<>();
+        for (Nation nation: mutual) {
+            mutualResidents.addAll(nation.getResidents());
+        }
+        return mutualResidents;
+    }
+    private List<Resident> getResidents(Nation first) {
+        List<Resident> residents = new ArrayList<>(first.getResidents());
+        first.getAllies().forEach(ally -> {
             residents.addAll(ally.getResidents());
         });
         return residents;
