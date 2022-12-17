@@ -2,6 +2,7 @@ package org.unitedlands.pvp.listeners;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.player.PlayerKilledPlayerEvent;
+import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import de.jeff_media.angelchest.AngelChest;
@@ -74,18 +75,25 @@ public class PlayerListener implements Listener {
         Town town = towny.getResident(player.getUniqueId()).getTownOrNull();
         // Player doesn't have a town
         if (town == null) return;
-        // The town is already non-neutral, don't do anything
-        if (!town.isNeutral()) return;
         PvpPlayer pvpPlayer = new PvpPlayer(player);
         // Method was called, but player in question was not hostile.
         if (!pvpPlayer.isHostile()) return;
 
         // Kick them out and notify them
-        town.setNeutral(false);
-        if (town.hasNation())
-            town.getNationOrNull().setNeutral(false);
-        player.sendMessage(Utils.getMessage("kicked-out-of-neutrality"));
-
+        if (town.isNeutral()) {
+            town.setNeutral(false);
+            player.sendMessage(Utils.getMessage("kicked-out-of-neutrality"));
+        }
+        if (town.hasNation()) {
+            Nation nation = town.getNationOrNull();
+            if (nation.isNeutral()) {
+                nation.setNeutral(false);
+            }
+            Player king = nation.getKing().getPlayer();
+            if (king != null) {
+                king.sendMessage(Utils.getMessage("kicked-out-of-neutrality-king"));
+            }
+        }
         // Notify the mayor if they're online
         Player mayor = town.getMayor().getPlayer();
         if (mayor.isOnline()) {
