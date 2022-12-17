@@ -325,6 +325,7 @@ messages:
   lost-surrender-town: '<red>You''ve surrendered from the war... Your side has offered all of <yellow><town></yellow> to end the war, and the deal was accepted.'
   war-end-peace: '<green>The war has ended... Both sides agreed on a White Peace offer.'
   war-end-tie: '<green>The war has ended... Neither side won as they both reached 0 HP!'
+  war-started-broadcast: '<yellow><declarer><red> has declared a war on <yellow><victim><red>! May the victor bring glory to their side!'
   surrender-received: '<red>You received a surrender request from <yellow><requester></yellow>! They have offered <yellow><offer></yellow> in order to end this war! Do <yellow>/surrender accept</yellow> to accept!'
   request-sent: '<green>Surrender request successfully sent! You must now wait for the other side to accept or decline it!'
   health-too-high-to-surrender: '<red>You cannot surrender right now! Your health must be lower than or equal to <gold>65 HP</gold>!'

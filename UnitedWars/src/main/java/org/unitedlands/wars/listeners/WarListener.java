@@ -6,6 +6,7 @@ import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -28,6 +29,9 @@ import org.unitedlands.wars.war.entities.WarringEntity;
 
 import java.util.HashSet;
 import java.util.List;
+
+import static net.kyori.adventure.text.Component.text;
+import static org.unitedlands.wars.Utils.getMessage;
 
 public class WarListener implements Listener {
 
@@ -144,6 +148,10 @@ public class WarListener implements Listener {
         WarringEntity targetEntity = WarDatabase.getWarringEntity(target.targetMayor().getUniqueId());
 
         notifyDeclaration(targetEntity, declaringEntity);
+        // Global broadcast.
+        Bukkit.broadcast(getMessage("war-start-broadcast",
+                Placeholder.component("declarer", text(declaringEntity.name())),
+                Placeholder.component("victim", text(targetEntity.name()))));
     }
 
 
