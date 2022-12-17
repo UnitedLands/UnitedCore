@@ -330,6 +330,23 @@ messages:
   request-sent: '<green>Surrender request successfully sent! You must now wait for the other side to accept or decline it!'
   health-too-high-to-surrender: '<red>You cannot surrender right now! Your health must be lower than or equal to <gold>65 HP</gold>!'
   town-deleted-removed-from-war: '<red>Your town was deleted! You''ve been removed from the war and lost all your lives!'
+  # help commands
+  townwar-help:
+    - "<bold><red>United<white>Wars"
+    - "<yellow>/t war scroll <gray><name> <red>- Generates a town war scroll"
+    - "<yellow>/t war declare <red>- Declares a war on a town (must hold scroll)"
+  nationwar-help:
+    - "<bold><red>United<white>Wars"
+    - "<yellow>/n war scroll <gray><name> <red>- Generates a nation war scroll"
+    - "<yellow>/n war declare <red>- Declares a war on a nation (must hold scroll)"
+    - "<yellow>/n war join <red>- Joins another Nation's war, if allies"
+  surrender-help:
+    - "<bold><red>United<white>Wars"
+    - "<yellow>/surrender accept <red>- Accepts any incoming requests"
+    - "<yellow>/surrender money <amount> <red>- Sends a surrender request with money"
+    - "<yellow>/surrender town <town> <red>- Sends a surrender request with a town (nation wars)"
+    - "<yellow>/surrender whitepeace <red>- Sends a white peace request"
+    - "<yellow>/surrender none <red>- Surrenders immediately (must have 65 HP)"
   # Doesn't go through minimessage.
   cannot-do-in-war: '§cYou cannot use this command while in a war.'
   join-war-as-ally: '§cAre you sure you want to help <nation> in their war as an ally?'

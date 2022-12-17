@@ -47,6 +47,10 @@ public class SurrenderCommand implements TabExecutor {
             return true;
         }
         player = (Player) sender;
+        if (args.length == 1) {
+            getMessageList("surrender-help").forEach(player::sendMessage);
+            return true;
+        }
         Resident resident = getTownyResident(player);
         if (!resident.hasTown()) {
             player.sendMessage(getMessage("must-have-town"));

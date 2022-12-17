@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.unitedlands.wars.Utils.getMessage;
+import static org.unitedlands.wars.Utils.getMessageList;
 
 public class TownWarCommand implements TabExecutor {
     private static final List<String> warTabCompletes = Arrays.asList("declare", "scroll");
@@ -38,6 +39,10 @@ public class TownWarCommand implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (commandSender instanceof Player) {
+            if (args.length == 1) {
+                getMessageList("townwar-help").forEach(commandSender::sendMessage);
+                return true;
+            }
             if (args[0].equalsIgnoreCase("declare")) {
                 DeclareCommandParser declareCommand = new DeclareCommandParser(commandSender);
                 declareCommand.parse();

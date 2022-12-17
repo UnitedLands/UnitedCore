@@ -12,10 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.unitedlands.wars.UnitedWars.MINI_MESSAGE;
 
@@ -40,6 +37,13 @@ public class Utils {
             return MINI_MESSAGE.deserialize("<red>Message <yellow>" + message + "<red> could not be found in the config file!");
         }
         return MINI_MESSAGE.deserialize(prefix + configuredMessage, resolvers);
+    }
+
+    public static List<Component> getMessageList(String key) {
+        List<String> configuredMessages = CONFIG.getStringList("messages." + key);
+        List<Component> parsedMessages = new ArrayList<>();
+        configuredMessages.forEach(msg -> parsedMessages.add(MINI_MESSAGE.deserialize(msg)));
+        return parsedMessages;
     }
 
     public static String getMessageRaw(String message) {
