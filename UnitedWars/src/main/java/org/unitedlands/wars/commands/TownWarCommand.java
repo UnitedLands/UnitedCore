@@ -20,7 +20,7 @@ import static org.unitedlands.wars.Utils.getMessage;
 public class TownWarCommand implements TabExecutor {
     private static final List<String> warTabCompletes = Arrays.asList("declare", "scroll");
     public TownWarCommand() {
-        TownyCommandAddonAPI.CommandType commandType = TownyCommandAddonAPI.CommandType.NATION;
+        TownyCommandAddonAPI.CommandType commandType = TownyCommandAddonAPI.CommandType.TOWN;
         AddonCommand warCommand = new AddonCommand(commandType, "war", this);
         TownyCommandAddonAPI.addSubCommand(warCommand);
     }
