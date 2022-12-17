@@ -29,7 +29,7 @@ public class WarUtil {
     }
 
     public static boolean townHasEnoughOnline(Town town) {
-        return TownyAPI.getInstance().getOnlinePlayersInTown(town).size() >= 0;
+        return TownyAPI.getInstance().getOnlinePlayersInTown(town).size() >= 1;
     }
 
     public static WritableDeclaration generateWritableDeclaration(BookMeta bookMeta) {
