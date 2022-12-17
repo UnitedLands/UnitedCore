@@ -5,6 +5,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.WarType;
 
 import java.util.UUID;
@@ -47,5 +48,9 @@ public class WarTarget {
 
     public UUID uuid() {
         return type == WarType.NATIONWAR ? nation : town;
+    }
+
+    public String name() {
+        return WarDatabase.getWarringEntity(targetMayor).name();
     }
 }

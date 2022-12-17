@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
+import org.unitedlands.wars.war.WarDatabase;
 
 import java.util.UUID;
 
@@ -43,6 +44,10 @@ public class Declarer {
 
     public Nation nation() {
         return UnitedWars.TOWNY_API.getNation(nation);
+    }
+
+    public String name() {
+        return WarDatabase.getWarringEntity(declaringPlayer).name();
     }
 
 }
