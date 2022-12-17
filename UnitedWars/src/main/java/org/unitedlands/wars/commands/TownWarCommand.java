@@ -39,7 +39,7 @@ public class TownWarCommand implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (commandSender instanceof Player) {
-            if (args.length == 1) {
+            if (args.length == 0) {
                 getMessageList("townwar-help").forEach(commandSender::sendMessage);
                 return true;
             }

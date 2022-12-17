@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.war.War;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.WarType;
@@ -47,7 +48,7 @@ public class SurrenderCommand implements TabExecutor {
             return true;
         }
         player = (Player) sender;
-        if (args.length == 1) {
+        if (args.length == 0) {
             getMessageList("surrender-help").forEach(player::sendMessage);
             return true;
         }
@@ -78,6 +79,7 @@ public class SurrenderCommand implements TabExecutor {
             case "none" -> parseSurrender();
             case "town" -> parseSurrenderWithTown(args);
             case "whitepeace" -> parseWhitePeace();
+            default -> getMessageList("surrender-help").forEach(player::sendMessage);
         }
         return false;
     }

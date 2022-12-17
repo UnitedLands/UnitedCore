@@ -18,7 +18,6 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.books.data.WarTarget;
 import org.unitedlands.wars.books.declaration.DeclarationWarBook;
@@ -45,19 +44,24 @@ public class DeclareCommandParser {
 
     public void parse() {
         WarType warType = getWarType();
-        if (warType == null) {
-            sender.sendMessage(getMessage("invalid-declaration-book"));
+        if (warType == null)
             return;
-        }
+
         switch (warType.name().toLowerCase()) {
             case "townwar" -> parseTownWar();
             case "nationwar" -> parseNationWar();
+            default -> getMessageList("surrender-help").forEach(sender::sendMessage);
         }
     }
 
     private void parseTownWar() {
         Player player = (Player) this.sender;
-        Town targetTown = getTargetFromBook().town();
+        WarTarget target = getTargetFromBook();
+        if (target == null) {
+            player.sendMessage(getMessage("invalid-held-book"));
+            return;
+        }
+        Town targetTown = target.town();
         if (targetTown == null) {
            player.sendMessage(getMessage("invalid-town-name"));
            return;
@@ -103,7 +107,12 @@ public class DeclareCommandParser {
             return;
         }
         Nation declaringNation = resident.getNationOrNull();
-        Nation targetNation = getTargetFromBook().nation();
+        WarTarget target = getTargetFromBook();
+        if (target == null) {
+            player.sendMessage(getMessage("invalid-held-book"));
+            return;
+        }
+        Nation targetNation = target.nation();
         if (targetNation == null) {
             player.sendMessage(getMessage("invalid-nation-name"));
             return;
@@ -141,6 +150,8 @@ public class DeclareCommandParser {
 
     private WarTarget getTargetFromBook() {
         PersistentDataContainer pdc = getHeldBookData();
+        if (pdc == null)
+            return null;
         NamespacedKey targetKey = getKey("book.target");
 
         if (pdc.has(targetKey)) {
@@ -168,21 +179,35 @@ public class DeclareCommandParser {
         }
     }
 
-    @NotNull
     private PersistentDataContainer getHeldBookData() {
         Player player = (Player) this.sender;
-        ItemStack book = player.getInventory().getItemInMainHand();
-        return book.getItemMeta().getPersistentDataContainer();
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (item.getType() != Material.WRITTEN_BOOK) {
+            player.sendMessage(getMessage("invalid-held-book"));
+            return null;
+        }
+        if (item.getItemMeta() == null) {
+            player.sendMessage(getMessage("invalid-held-book"));
+            return null;
+        }
+        return item.getItemMeta().getPersistentDataContainer();
     }
 
     private WarType getWarType() {
         PersistentDataContainer pdc = getHeldBookData();
+        if (pdc == null) {
+            sender.sendMessage(getMessage("invalid-held-book"));
+            return null;
+        }
+
         String storedTypeName = pdc.get(TYPE_KEY, PersistentDataType.STRING);
         try {
             return WarType.valueOf(storedTypeName);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        sender.sendMessage(getMessage("invalid-declaration-book"));
         return null;
     }
 
