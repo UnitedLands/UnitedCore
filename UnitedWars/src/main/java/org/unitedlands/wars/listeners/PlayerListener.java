@@ -53,12 +53,14 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
 
         Town town = getPlayerTown(player);
-        if (town == null) return;
+        if (town == null)
+            return;
         if (!town.hasActiveWar()) {
             Resident resident = getTownyResident(player);
             if (!resident.isKing())
                 return;
             notifyAllyWar(resident);
+            return;
         }
 
         if (isBannedWorld(player.getWorld().getName()))
