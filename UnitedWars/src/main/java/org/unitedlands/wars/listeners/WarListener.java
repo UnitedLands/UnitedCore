@@ -1,7 +1,7 @@
 package org.unitedlands.wars.listeners;
 
 import com.palmergames.bukkit.towny.event.NewDayEvent;
-import com.palmergames.bukkit.towny.event.damage.TownBlockPVPTestEvent;
+import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.unitedlands.wars.UnitedWars;
@@ -31,16 +32,15 @@ import java.util.List;
 public class WarListener implements Listener {
 
 
-    @EventHandler
-    public void onTownBlockPVPTest(TownBlockPVPTestEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerDamagePlayer(TownyPlayerDamagePlayerEvent event) {
         if (WarDatabase.getWars().isEmpty())
             return;
 
-        Town town = event.getTown();
-        if (WarDatabase.getWarringTown(town) != null
-                || WarDatabase.getWarringNation(town.getNationOrNull()) != null) {
-            event.setPvp(true);
-        }
+        if (event.getAttackingResident() == null || event.getVictimResident() == null)
+            return;
+        if (WarUtil.hasSameWar(event.getAttackingResident(), event.getVictimResident()))
+            event.setCancelled(false);
 
     }
 
