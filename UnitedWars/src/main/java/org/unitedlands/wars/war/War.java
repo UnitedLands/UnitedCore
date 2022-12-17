@@ -8,6 +8,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.unitedlands.wars.UnitedWars;
@@ -243,7 +244,7 @@ public class War {
         Component message = getMessage("war-end-tie");
         Title title = getTitle("<gold><bold>TIE", "<yellow>No one won the war...");
         getOnlinePlayers().forEach(player -> {
-            // player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1f, 1f);
+            player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1f, 1f);
             player.sendMessage(message);
             player.showTitle(title);
         });
@@ -298,7 +299,7 @@ public class War {
         Title title = Utils.getTitle("<dark_red><bold>WAR LOST!", "<red>You've surrendered from the war!");
         loser.getOnlinePlayers().forEach(player -> {
             player.showTitle(title);
-            //   player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
+            player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
             player.sendMessage(Utils.getMessage("war-lost-surrender", getWonAndLostPlaceholders()));
         });
     }
@@ -307,7 +308,7 @@ public class War {
         Title title = Utils.getTitle("<dark_green><bold>VICTORY!", "<green>Your enemy has surrendered!");
         winner.getOnlinePlayers().forEach(player -> {
             player.showTitle(title);
-            //   player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_1, 1F, 1F);
+            player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_1, 1F, 1F);
             player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
         });
     }
@@ -316,7 +317,7 @@ public class War {
         Title title = Utils.getTitle("<dark_green><bold>VICTORY!", "<green>The war has ended!");
         winner.getOnlinePlayers().forEach(player -> {
             player.showTitle(title);
-         //   player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_1, 1F, 1F);
+            player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_1, 1F, 1F);
             player.getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
             player.sendMessage(Utils.getMessage("war-won", getWonAndLostPlaceholders()));
         });
@@ -326,7 +327,7 @@ public class War {
         Title title = Utils.getTitle("<dark_red><bold>WAR LOST!", "<red>The war has ended!");
         loser.getOnlinePlayers().forEach(player -> {
             player.showTitle(title);
-         //   player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
+            player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1F, 1F);
             player.sendMessage(Utils.getMessage("war-lost", getWonAndLostPlaceholders()));
         });
     }

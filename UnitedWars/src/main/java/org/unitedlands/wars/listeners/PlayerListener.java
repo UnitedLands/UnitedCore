@@ -220,7 +220,7 @@ public class PlayerListener implements Listener {
     private void notifyWarKick(Player player, WarringEntity warringEntity) {
         Title title = getTitle("<dark_red><bold>OUT OF LIVES!", "<red>You've lost all your lives!");
         player.showTitle(title);
-        // player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1f, 1f);
+        player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1f, 1f);
 
         Component message = getMessage("removed-from-war",
                 component("victim", text(player.getName())));
