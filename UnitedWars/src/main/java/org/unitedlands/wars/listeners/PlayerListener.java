@@ -76,7 +76,10 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
-        Town town = getPlayerTown(player);
+        Resident resident = getTownyResident(player);
+        if (resident == null)
+            return;
+        Town town = resident.getTownOrNull();
         if (town == null)
             return;
         if (!town.hasActiveWar())
