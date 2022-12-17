@@ -10,7 +10,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.wars.commands.NationWarCommand;
 import org.unitedlands.wars.commands.TownWarCommand;
 import org.unitedlands.wars.commands.WarAdminCommand;
-import org.unitedlands.wars.commands.WarCommand;
 import org.unitedlands.wars.commands.surrender.SurrenderCommand;
 import org.unitedlands.wars.hooks.Placeholders;
 import org.unitedlands.wars.listeners.BookListener;
