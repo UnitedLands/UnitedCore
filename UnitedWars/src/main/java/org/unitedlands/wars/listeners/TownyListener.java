@@ -116,7 +116,7 @@ public class TownyListener implements Listener {
         WarringEntity deleted = WarDatabase.getWarringEntity(town.getMayor());
         if (deleted == null)
             return;
-        if (war.getWarType() == WarType.TOWNWAR) {
+        if (war.getWarType() == WarType.TOWNWAR || town.isCapital()) {
             WarringEntity winner = deleted.getEnemy();
             war.endWar(deleted, winner);
         } else {
