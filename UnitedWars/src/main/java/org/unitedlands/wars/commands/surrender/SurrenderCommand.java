@@ -83,7 +83,7 @@ public class SurrenderCommand implements TabExecutor {
     }
 
     private void acceptPendingRequests() {
-        SurrenderRequest request = getRequest(player);
+        SurrenderRequest request = getPendingRequest(player);
         if (request == null) {
             player.sendMessage(getMessage("no-pending-requests"));
             return;
@@ -131,11 +131,18 @@ public class SurrenderCommand implements TabExecutor {
         Resident leader = enemy.getLeader();
 
         Confirmation.runOnAccept(() -> {
+            removeOldRequests();
             SurrenderRequest request = new SurrenderRequest(player.getUniqueId(), leader.getUUID(), SurrenderRequest.SurrenderType.MONEY, amount);
             SURRENDER_REQUESTS.add(request);
             player.sendMessage(getMessage("request-sent"));
         }).setTitle(getSurrenderTitle(enemy))
                 .sendTo(player);
+    }
+
+    private void removeOldRequests() {
+        SurrenderRequest sent = getSentRequest(player);
+        if (sent != null)
+            SURRENDER_REQUESTS.remove(sent);
     }
 
     private void parseSurrenderWithTown(@NotNull String[] args) {
@@ -163,11 +170,11 @@ public class SurrenderCommand implements TabExecutor {
         Resident leader = enemy.getLeader();
 
         Confirmation.runOnAccept(() -> {
-                    SurrenderRequest request = new SurrenderRequest(player.getUniqueId(), leader.getUUID(), SurrenderRequest.SurrenderType.TOWN, town);
-                    SURRENDER_REQUESTS.add(request);
-                    player.sendMessage(getMessage("request-sent"));
-                }).setTitle(getSurrenderTitle(enemy))
-                .sendTo(player);
+            removeOldRequests();
+            SurrenderRequest request = new SurrenderRequest(player.getUniqueId(), leader.getUUID(), SurrenderRequest.SurrenderType.TOWN, town);
+            SURRENDER_REQUESTS.add(request);
+            player.sendMessage(getMessage("request-sent"));
+        }).setTitle(getSurrenderTitle(enemy)).sendTo(player);
     }
 
     private void parseWhitePeace() {
@@ -175,11 +182,11 @@ public class SurrenderCommand implements TabExecutor {
         Resident leader = enemy.getLeader();
 
         Confirmation.runOnAccept(() -> {
-                    SurrenderRequest request = new SurrenderRequest(player.getUniqueId(), leader.getUUID(), SurrenderRequest.SurrenderType.WHITEPEACE);
-                    SURRENDER_REQUESTS.add(request);
-                    player.sendMessage(getMessage("request-sent"));
-                }).setTitle(getSurrenderTitle(enemy))
-                .sendTo(player);
+            removeOldRequests();
+            SurrenderRequest request = new SurrenderRequest(player.getUniqueId(), leader.getUUID(), SurrenderRequest.SurrenderType.WHITEPEACE);
+            SURRENDER_REQUESTS.add(request);
+            player.sendMessage(getMessage("request-sent"));
+        }).setTitle(getSurrenderTitle(enemy)).sendTo(player);
     }
 
     @NotNull
@@ -187,10 +194,19 @@ public class SurrenderCommand implements TabExecutor {
         return getMessageRaw("surrender-confirm").replace("<warring-name>", enemy.name());
     }
 
-    private SurrenderRequest getRequest(Player player) {
+    private SurrenderRequest getPendingRequest(Player player) {
         for (SurrenderRequest request : SURRENDER_REQUESTS) {
             if (request.getTarget().getUniqueId().equals(player.getUniqueId()))
                 return request;
+        }
+        return null;
+    }
+
+    private SurrenderRequest getSentRequest(Player player) {
+        for (SurrenderRequest request : SURRENDER_REQUESTS) {
+            if (request.getRequester().getUniqueId().equals(player.getUniqueId())) {
+                return request;
+            }
         }
         return null;
     }
