@@ -14,7 +14,7 @@ banned-commands:
   - "/tfly"
 commands-on-war-start:
   - "mapshow"
-  - "towny war hud"
+  - "tfly"
 commands-on-login:
   - "mapshow"
 townwar-declaration-book:

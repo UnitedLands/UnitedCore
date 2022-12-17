@@ -109,6 +109,16 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onFlight(PlayerToggleFlightEvent event) {
+        if (!WarDatabase.hasWar(event.getPlayer()))
+            return;
+        if (event.getPlayer().hasPermission("united.wars.bypass.fly"))
+            return;
+        event.setCancelled(true);
+        event.getPlayer().setFlying(false);
+        event.getPlayer().setAllowFlight(false);
+    }
+    @EventHandler
     public void onCommandExecute(PlayerCommandPreprocessEvent event) {
         if (!config.getStringList("banned-commands").contains(event.getMessage())) return;
         Player player = event.getPlayer();
