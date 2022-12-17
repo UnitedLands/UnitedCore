@@ -8,11 +8,12 @@ authors: [ Maroon28 ]
 description: A plugin which hooks into EventWar to achieve custom war behaviour!
 website: unitedlands.org
 commands:
-  war:
-    description: Used to declare and start wars
-    usage: "/war [declare/book] [town/nation] name"
   nationwar:
+    description: "Used to declare nation wars"
+    usage: "/nationwar [scroll/declare]"
   townwar:
+    description: "Used to declare town wars"
+    usage: "/townwar [scroll/declare]"
   waradmin:
     description: Used by admins to manage wars
     permission: united.wars.admin
