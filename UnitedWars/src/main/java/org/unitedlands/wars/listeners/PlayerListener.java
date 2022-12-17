@@ -1,8 +1,11 @@
 package org.unitedlands.wars.listeners;
 
+import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.jail.Jail;
+import com.palmergames.bukkit.towny.utils.SpawnUtil;
 import de.jeff_media.angelchest.AngelChest;
 import de.jeff_media.angelchest.AngelChestPlugin;
 import de.jeff_media.angelchest.events.AngelChestSpawnEvent;
@@ -175,15 +178,40 @@ public class PlayerListener implements Listener {
             return;
 
         decreaseHealth(victim, warringEntity);
-
-        Component message = getPlayerDeathMessage(warringEntity, killer, victim);
         playSounds(warringEntity);
         if (WarDataController.getResidentLives(victim) == 0) {
             notifyWarKick(victim.getPlayer(), warringEntity);
+            jailResident(victim, warringEntity);
             return;
         }
+        Component message = getPlayerDeathMessage(warringEntity, killer, victim);
         warringEntity.getWar().broadcast(message);
 
+    }
+
+    private void jailResident(Resident victim, WarringEntity warringEntity) {
+        Jail jail = getJail(warringEntity);
+        if (jail == null)
+            return;
+        victim.setJail(jail);
+        victim.setJailCell(0);
+        victim.setJailHours(3);
+        victim.save();
+        TownyUniverse.getInstance().getJailedResidentMap().add(victim);
+        SpawnUtil.jailTeleport(victim);
+        victim.getPlayer().sendMessage(getMessage("you-were-jailed"));
+    }
+
+    private Jail getJail(WarringEntity warringEntity) {
+        if (warringEntity.getGovernment() instanceof Town town)
+            if (town.hasJails())
+                return town.getPrimaryJail();
+        else {
+            Nation nation = (Nation) warringEntity.getGovernment();
+            if (nation.getCapital().hasJails())
+                return nation.getCapital().getPrimaryJail();
+        }
+        return null;
     }
 
     private void runRegularDeathProccess(Player dead) {
@@ -226,7 +254,8 @@ public class PlayerListener implements Listener {
         player.playSound(player, Sound.ITEM_GOAT_HORN_SOUND_7, 1f, 1f);
 
         Component message = getMessage("removed-from-war",
-                component("victim", text(player.getName())));
+                component("victim", text(player.getName())),
+                component("jailer", text(warringEntity.getEnemy().name())));
 
         warringEntity.getWar().broadcast(message);
     }
