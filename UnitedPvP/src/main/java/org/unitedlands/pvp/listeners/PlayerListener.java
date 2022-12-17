@@ -27,7 +27,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.jetbrains.annotations.NotNull;
 import org.unitedlands.pvp.UnitedPvP;
 import org.unitedlands.pvp.player.PvpPlayer;
 import org.unitedlands.pvp.util.Utils;
@@ -57,7 +56,7 @@ public class PlayerListener implements Listener {
             return; // No need to run the rest of the logic here, so just move on.
         }
 
-        tryTownNeutralityRemoval(player);
+        tryNeutralityRemoval(player);
 
         long lastChangeTime = pvpPlayer.getLastHostilityChangeTime();
         int dayDifference = getDaysPassed(lastChangeTime);
@@ -71,7 +70,7 @@ public class PlayerListener implements Listener {
 
     }
 
-    private void tryTownNeutralityRemoval(Player player) {
+    private void tryNeutralityRemoval(Player player) {
         Town town = towny.getResident(player.getUniqueId()).getTownOrNull();
         // Player doesn't have a town
         if (town == null) return;
@@ -83,6 +82,8 @@ public class PlayerListener implements Listener {
 
         // Kick them out and notify them
         town.setNeutral(false);
+        if (town.hasNation())
+            town.getNationOrNull().setNeutral(false);
         player.sendMessage(Utils.getMessage("kicked-out-of-neutrality"));
 
         // Notify the mayor if they're online
@@ -155,13 +156,13 @@ public class PlayerListener implements Listener {
         // that signifies a higher level of hostility, therefore increase by 2 points.
         if ((killerPvP.isAggressive() || killerPvP.isHostile()) && victimPvP.isDefensive()) {
             killerPvP.setHostility(killerPvP.getHostility() + 2);
-            tryTownNeutralityRemoval(killer);
+            tryNeutralityRemoval(killer);
             return;
         }
         // if the killer is aggressive or hostile, killer becomes more hostile.
         if (killerPvP.isAggressive() || killerPvP.isHostile()) {
             killerPvP.setHostility(killerPvP.getHostility() + 1);
-            tryTownNeutralityRemoval(killer);
+            tryNeutralityRemoval(killer);
         }
     }
 

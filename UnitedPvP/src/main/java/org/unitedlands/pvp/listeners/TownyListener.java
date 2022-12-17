@@ -3,7 +3,9 @@ package org.unitedlands.pvp.listeners;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.NewDayEvent;
 import com.palmergames.bukkit.towny.event.PlayerEnterTownEvent;
+import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleNeutralEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownToggleNeutralEvent;
+import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.bossbar.BossBar;
@@ -69,6 +71,27 @@ public class TownyListener implements Listener {
                 .replacement(String.join("<light_gray>,<yellow> ", hostileResidents))
                 .build();
         event.getPlayer().sendMessage(Utils.getMessage("cannot-be-neutral").replaceText(playerReplacer));
+    }
+
+    @EventHandler
+    public void onNationNeutralityChange(NationToggleNeutralEvent event) {
+        Nation nation = event.getNation();
+        List<String> hostileTowns = new ArrayList<>();
+        for (Town town: nation.getTowns()) {
+            if (!town.isNeutral())
+                hostileTowns.add(town.getFormattedName());
+        }
+        if (hostileTowns.isEmpty())
+            return;
+        TextReplacementConfig townReplacer = TextReplacementConfig
+                .builder()
+                .match("<towns>")
+                // Join all found hostile residents in the list.
+                .replacement(String.join("<light_gray>,<yellow> ", hostileTowns))
+                .build();
+        event.getPlayer().sendMessage(Utils.getMessage("cannot-be-neutral-towns").replaceText(townReplacer));
+        nation.setNeutral(false);
+        event.setCancelled(true);
     }
 
     @EventHandler
