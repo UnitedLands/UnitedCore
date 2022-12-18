@@ -1,6 +1,7 @@
 package org.unitedlands.pvp.listeners;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.event.NewDayEvent;
 import com.palmergames.bukkit.towny.event.PlayerEnterTownEvent;
 import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleNeutralEvent;
@@ -45,6 +46,10 @@ public class TownyListener implements Listener {
         unitedPvP.saveConfig();
         // Force update the hostilities of any new players online.
         unitedPvP.getServer().getScheduler().runTask(unitedPvP, this::updatePlayerHostilities);
+        TownyUniverse.getInstance().getTowns().forEach(town -> {
+            tryNeutralityRemoval(town);
+            tryNationNeutralityRemoval(town);
+        });
     }
 
     @EventHandler
@@ -118,6 +123,35 @@ public class TownyListener implements Listener {
             }
             bossBar.progress((float) Math.max(0.0, bossBar.progress() - timeDecrease));
         }, 0, 20L);
+    }
+
+    private void tryNeutralityRemoval(Town town) {
+        if (!town.isNeutral())
+            return;
+
+        town.getResidents().forEach(resident -> {
+            if (!town.isNeutral())
+                return;
+            PvpPlayer pvpPlayer = new PvpPlayer(Bukkit.getOfflinePlayer(resident.getUUID()));
+            if (!pvpPlayer.isHostile())
+                return;
+            town.setNeutral(false);
+            if (town.getMayor().isOnline()) {
+                town.getMayor().getPlayer().sendMessage(Utils.getMessage("kicked-out-of-neutrality-mayor"));
+            }
+        });
+    }
+    private void tryNationNeutralityRemoval(Town town) {
+        if (!town.isNeutral() && town.hasNation()) {
+            Nation nation = town.getNationOrNull();
+            if (nation.isNeutral()) {
+                nation.setNeutral(false);
+                Player king = nation.getKing().getPlayer();
+                if (king != null) {
+                    king.sendMessage(Utils.getMessage("kicked-out-of-neutrality-king"));
+                }
+            }
+        }
     }
 
     private void updatePlayerHostilities() {
