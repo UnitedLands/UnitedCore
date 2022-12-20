@@ -53,6 +53,8 @@ public class BookListener implements Listener {
         if (copy.getType() != Material.WRITTEN_BOOK)
             return;
         ItemMeta meta = copy.getItemMeta();
+        if (meta == null)
+            return;
         if (meta.getPersistentDataContainer().isEmpty())
             return;
 
