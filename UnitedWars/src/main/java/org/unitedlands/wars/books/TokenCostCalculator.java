@@ -81,8 +81,11 @@ public class TokenCostCalculator {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(resident.getUUID());
             PvpPlayer pvpPlayer = new PvpPlayer(offlinePlayer);
 
+            if (!pvpPlayer.getPlayerFile().exists())
+                continue;
             int hostility = pvpPlayer.getHostility();
-            if (hostility == 1) continue;
+            if (hostility == 1)
+                continue;
 
             totalHostility += hostility;
         }
