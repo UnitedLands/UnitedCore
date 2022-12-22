@@ -1,6 +1,7 @@
 package org.unitedlands.wars;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.TownyCommandAddonAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -79,6 +80,8 @@ public final class UnitedWars extends JavaPlugin {
     @Override
     public void onDisable() {
         WarDatabase.saveWarData();
+        TownyCommandAddonAPI.removeSubCommand(TownyCommandAddonAPI.CommandType.TOWN, "war");
+        TownyCommandAddonAPI.removeSubCommand(TownyCommandAddonAPI.CommandType.NATION, "war");
     }
 
     public FileConfiguration getWarConfig() {
