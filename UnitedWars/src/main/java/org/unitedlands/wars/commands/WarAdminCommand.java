@@ -36,8 +36,7 @@ public class WarAdminCommand implements TabExecutor {
             if (args.length == 2) {
                 return optionsTabCompletes;
             }
-            // Two entities needed to end war.
-            if (args.length == 3 || args.length == 4) {
+            if (args.length == 3) {
                 if (args[1].equalsIgnoreCase("town")) {
                     return BaseCommand.getTownyStartingWith(args[2], "t");
                 }
@@ -61,13 +60,12 @@ public class WarAdminCommand implements TabExecutor {
         if (args[0].equalsIgnoreCase("end")) {
             if (args[1].equalsIgnoreCase("town")) {
                 Town winner = UnitedWars.TOWNY_API.getTown(args[2]);
-                Town loser = UnitedWars.TOWNY_API.getTown(args[3]);
-                if (winner == null || loser == null) {
-                    sender.sendMessage(Component.text("One of the towns doesn't exist... Are you sure the names are correct?").color(NamedTextColor.RED));
+                if (winner == null) {
+                    sender.sendMessage(Component.text("Invalid Town!").color(NamedTextColor.RED));
                     return true;
                 }
                 WarringTown winningWarTown = WarDatabase.getWarringTown(winner);
-                WarringTown losingWarTown = WarDatabase.getWarringTown(loser);
+                WarringTown losingWarTown = (WarringTown) winningWarTown.getEnemy();
 
                 // Delegate the rest of the logic to the function.
                 parseEndCommand(winningWarTown, losingWarTown);
@@ -81,7 +79,7 @@ public class WarAdminCommand implements TabExecutor {
                     return true;
                 }
                 WarringNation winningWarNation = WarDatabase.getWarringNation(winner);
-                WarringNation losingWarNation = WarDatabase.getWarringNation(loser);
+                WarringNation losingWarNation = (WarringNation) winningWarNation.getEnemy();
 
                 // Delegate the rest of the logic to the function.
                 parseEndCommand(winningWarNation, losingWarNation);
@@ -119,11 +117,6 @@ public class WarAdminCommand implements TabExecutor {
     private void parseEndCommand(WarringEntity winner, WarringEntity loser) {
         if (winner == null || loser == null) {
             sender.sendMessage(Component.text("One of the towns doesn't have a war! Are you sure the names are correct?").color(NamedTextColor.RED));
-            return;
-        }
-
-        if (!WarUtil.hasSameWar(winner, loser)) {
-            sender.sendMessage(Component.text("Towns don't have the same war!").color(NamedTextColor.RED));
             return;
         }
 
