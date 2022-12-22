@@ -95,9 +95,9 @@ public class PlayerListener implements Listener {
             }
         }
         // Notify the mayor if they're online
-        Player mayor = town.getMayor().getPlayer();
+        Resident mayor = town.getMayor();
         if (mayor.isOnline()) {
-            mayor.sendMessage(Utils.getMessage("kicked-out-of-neutrality-mayor"));
+            mayor.getPlayer().sendMessage(Utils.getMessage("kicked-out-of-neutrality-mayor"));
         }
 
     }
