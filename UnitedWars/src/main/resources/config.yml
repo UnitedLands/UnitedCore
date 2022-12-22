@@ -269,6 +269,7 @@ breakable-blocks:
   - ENCHANTING_TABLE
   - ENDER_CHEST
   - ANVIL
+declaration-book-name: '<color:#BEA50C>⬩ <color:#AD240C>Writable Declaration Scroll <gray>(Write Reasoning!) <color:#BEA50C>⬩'
 townwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Town War Declaration Scroll <color:#BEA50C>⬩'
 nationwar-declaration-name: '<color:#BEA50C>⬩ <color:#AD240C>Nation War Declaration Scroll <color:#BEA50C>⬩'
 writable-declaration-lore:
