@@ -78,7 +78,8 @@ public class PvpPlayer {
         try {
             fileConfiguration.load(playerStatsFile);
         } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
+            createFile();
+            return getFileConfiguration();
         }
         return fileConfiguration;
     }
