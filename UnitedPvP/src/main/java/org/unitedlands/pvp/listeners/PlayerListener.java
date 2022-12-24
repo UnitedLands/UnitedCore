@@ -83,23 +83,22 @@ public class PlayerListener implements Listener {
         if (town.isNeutral()) {
             town.setNeutral(false);
             player.sendMessage(Utils.getMessage("kicked-out-of-neutrality"));
+            // Notify the mayor if they're online
+            Resident mayor = town.getMayor();
+            if (mayor.isOnline()) {
+                mayor.getPlayer().sendMessage(Utils.getMessage("kicked-out-of-neutrality-mayor"));
+            }
         }
         if (town.hasNation()) {
             Nation nation = town.getNationOrNull();
             if (nation.isNeutral()) {
                 nation.setNeutral(false);
-            }
-            Player king = nation.getKing().getPlayer();
-            if (king != null) {
-                king.sendMessage(Utils.getMessage("kicked-out-of-neutrality-king"));
+                Player king = nation.getKing().getPlayer();
+                if (king != null) {
+                    king.sendMessage(Utils.getMessage("kicked-out-of-neutrality-king"));
+                }
             }
         }
-        // Notify the mayor if they're online
-        Resident mayor = town.getMayor();
-        if (mayor.isOnline()) {
-            mayor.getPlayer().sendMessage(Utils.getMessage("kicked-out-of-neutrality-mayor"));
-        }
-
     }
 
     @EventHandler
