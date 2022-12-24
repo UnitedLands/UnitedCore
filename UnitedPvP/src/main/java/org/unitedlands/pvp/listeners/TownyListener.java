@@ -59,7 +59,7 @@ public class TownyListener implements Listener {
         for (var resident: residents) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(resident.getUUID());
             PvpPlayer pvpPlayer = new PvpPlayer(offlinePlayer);
-            if (pvpPlayer.isHostile()) {
+            if (pvpPlayer.isHostile() || pvpPlayer.isAggressive()) {
                 hostileResidents.add(offlinePlayer.getName());
             }
         }

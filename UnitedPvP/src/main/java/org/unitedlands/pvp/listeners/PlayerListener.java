@@ -77,7 +77,7 @@ public class PlayerListener implements Listener {
         if (town == null) return;
         PvpPlayer pvpPlayer = new PvpPlayer(player);
         // Method was called, but player in question was not hostile.
-        if (!pvpPlayer.isHostile()) return;
+        if (!pvpPlayer.isHostile() || !pvpPlayer.isAggressive()) return;
 
         // Kick them out and notify them
         if (town.isNeutral()) {
