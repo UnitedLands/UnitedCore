@@ -16,6 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.unitedlands.wars.UnitedWars;
+import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.books.TokenCostCalculator;
 import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
@@ -32,6 +33,7 @@ import java.util.List;
 
 import static net.kyori.adventure.text.Component.text;
 import static org.unitedlands.wars.Utils.getMessage;
+import static org.unitedlands.wars.Utils.getTitle;
 
 public class WarListener implements Listener {
 
@@ -163,11 +165,5 @@ public class WarListener implements Listener {
             player.showTitle(title);
             player.playSound(player, Sound.EVENT_RAID_HORN, 75, 1);
         }
-    }
-
-    private Title getTitle(String main, String sub) {
-        Component mainTitle = UnitedWars.MINI_MESSAGE.deserialize(main);
-        Component subTitle = UnitedWars.MINI_MESSAGE.deserialize(sub);
-        return Title.title(mainTitle, subTitle);
     }
 }
