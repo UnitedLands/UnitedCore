@@ -293,29 +293,14 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onWarStart(WarDeclareEvent event) {
-        WarType type = event.getDeclarationWarBook().getType();
-        if (type == WarType.TOWNWAR) {
-            toggleFreeze(event.getTarget().town().getTownBlocks(), false);
-            toggleFreeze(event.getDeclarer().town().getTownBlocks(), false);
-        }
-        if (type == WarType.NATIONWAR) {
-            toggleFreeze(event.getTarget().nation().getTownBlocks(), false);
-            toggleFreeze(event.getDeclarer().nation().getTownBlocks(), false);
-        }
+        toggleFreeze(event.getTargetEntity().getGovernment().getTownBlocks(), false);
+        toggleFreeze(event.getDeclaringEntity().getGovernment().getTownBlocks(), false);
     }
 
     @EventHandler
     public void onWarEnd(WarEndEvent event) {
-        if (event.getWinner() instanceof WarringTown town) {
-            toggleFreeze(town.getTown().getTownBlocks(), true);
-            WarringTown otherTown = (WarringTown) event.getLoser();
-            toggleFreeze(otherTown.getTown().getTownBlocks(), true);
-        } else {
-            WarringNation nation = (WarringNation) event.getWinner();
-            WarringNation otherNation = (WarringNation) event.getLoser();
-            toggleFreeze(nation.getNation().getTownBlocks(), true);
-            toggleFreeze(otherNation.getNation().getTownBlocks(), true);
-        }
+        toggleFreeze(event.getWinner().getGovernment().getTownBlocks(), true);
+        toggleFreeze(event.getLoser().getGovernment().getTownBlocks(), true);
     }
 
     private static boolean isModifiableMaterial(Material mat) {
