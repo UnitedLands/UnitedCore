@@ -141,11 +141,8 @@ public class WarListener implements Listener {
 
     @EventHandler
     public void onWarDeclaration(WarDeclareEvent event) {
-        Declarer declarer = event.getDeclarer();
-        WarTarget target = event.getTarget();
-
-        WarringEntity declaringEntity = WarDatabase.getWarringEntity(declarer.player());
-        WarringEntity targetEntity = WarDatabase.getWarringEntity(target.targetMayor().getUniqueId());
+        WarringEntity declaringEntity = event.getDeclaringEntity();
+        WarringEntity targetEntity = event.getTargetEntity();
 
         notifyDeclaration(targetEntity, declaringEntity);
         // Global broadcast.
