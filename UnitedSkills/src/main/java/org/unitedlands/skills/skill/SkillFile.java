@@ -21,14 +21,14 @@ public class SkillFile {
     }
 
     public void createSkillsFile() {
-        File breweryDataFile = getSkillsFile();
-        if (!breweryDataFile.exists()) {
-            breweryDataFile.getParentFile().mkdirs();
+        File skillsFile = getSkillsFile();
+        if (!skillsFile.exists()) {
+            skillsFile.getParentFile().mkdirs();
             unitedSkills.saveResource("skills.yml", false);
         }
         skillsConfig = new YamlConfiguration();
         try {
-            skillsConfig.load(breweryDataFile);
+            skillsConfig.load(skillsFile);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
