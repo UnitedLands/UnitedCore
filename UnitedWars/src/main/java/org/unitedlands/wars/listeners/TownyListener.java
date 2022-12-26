@@ -17,10 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -352,11 +349,11 @@ public class TownyListener implements Listener {
             for (Entity entity: chunk.getEntities()) {
                 if (entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.WOLF)
                     continue;
+                entity.setInvulnerable(toggle);
+                entity.setGravity(toggle);
                 if (entity instanceof LivingEntity living) {
                     living.setAI(toggle);
-                    living.setGravity(toggle);
                     living.setCollidable(toggle);
-                    living.setInvulnerable(toggle);
                 }
             }
         }
