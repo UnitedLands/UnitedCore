@@ -104,12 +104,12 @@ public class PlayerListener implements Listener {
         // Allow teleportation during war prep time.
         if (war.hasActiveTimer())
             return;
-
-        double distance = event.getFrom().distance(event.getTo());
-        // Too small, don't bother.
-        if (distance <= 50)
-            return;
-
+        if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
+            double distance = event.getFrom().distance(event.getTo());
+            // Too small, don't bother.
+            if (distance <= 50)
+                return;
+        }
         event.setCancelled(true);
         player.sendMessage(Utils.getMessage("teleport-cancelled"));
         player.playSound(player, Sound.BLOCK_NOTE_BLOCK_DIDGERIDOO, 1, 0.6F);
