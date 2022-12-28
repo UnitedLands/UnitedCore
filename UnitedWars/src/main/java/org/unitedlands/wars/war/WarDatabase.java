@@ -122,6 +122,7 @@ public class WarDatabase {
         PLUGIN.getLogger().log(Level.INFO, "Saving war data...");
         FileConfiguration warConfig = PLUGIN.getWarConfig();
         if (warConfig == null) {
+            PLUGIN.getLogger().log(Level.INFO, "War config is null!");
             return;
         }
 
@@ -147,9 +148,9 @@ public class WarDatabase {
                 healthSection.set("max", warringEntity.getWarHealth().getMaxHealth());
                 healthSection.set("current", warringEntity.getWarHealth().getValue());
                 if (warringEntity instanceof WarringNation warringNation) {
-                    if (warringNation.getJoinedAllies().isEmpty())
-                        return;
-                    entitySection.set("allies", warringNation.getJoinedAllies());
+                    if (!warringNation.getJoinedAllies().isEmpty()) {
+                        entitySection.set("allies", warringNation.getJoinedAllies());
+                    }
                 }
             }
 
