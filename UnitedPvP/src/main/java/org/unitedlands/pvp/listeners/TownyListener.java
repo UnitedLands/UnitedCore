@@ -16,11 +16,16 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 import org.unitedlands.pvp.UnitedPvP;
 import org.unitedlands.pvp.player.PvpPlayer;
 import org.unitedlands.pvp.util.Utils;
@@ -39,6 +44,28 @@ public class TownyListener implements Listener {
 
 
     @EventHandler
+    public void onLeaderJoin(PlayerJoinEvent event) {
+        this.player = event.getPlayer();
+        Resident resident = towny.getResident(player);
+        if (!resident.hasTown())
+            return;
+
+        if (!hasNotification(player))
+            return;
+
+        if (resident.isMayor()) {
+            List<String> hostilePlayers = getHostileResidents(resident.getTownOrNull().getResidents());
+            if (!hostilePlayers.isEmpty())
+                sendListedMessage("cannot-be-neutral", "<players>", hostilePlayers);
+        }
+        if (resident.isKing()) {
+            List<String> hostileTowns = getHostileTowns(resident.getNationOrNull());
+            if (!hostileTowns.isEmpty())
+                sendListedMessage("cannot-be-neutral-nation", "<towns>", hostileTowns);
+        }
+    }
+
+    @EventHandler
     public void onNewTownyDay(NewDayEvent event) {
         // Save the time stamp for the towny day.
         // Used for comparison in the future.
@@ -55,6 +82,28 @@ public class TownyListener implements Listener {
     @EventHandler
     public void onTownNeutralityChange(TownToggleNeutralEvent event) {
         List<Resident> residents = event.getTown().getResidents();
+        List<String> hostileResidents = getHostileResidents(residents);
+
+        // No hostile residents in the list, so they're viable to toggle neutrality
+        if (hostileResidents.isEmpty()) return;
+
+        event.setCancelled(true);
+        event.getTown().setNeutral(false);
+        sendListedMessage("cannot-be-neutral", "<players>", hostileResidents);
+    }
+
+    private void sendListedMessage(String message, String pattern, List<String> list) {
+        TextReplacementConfig playerReplacer = TextReplacementConfig
+                .builder()
+                .match(pattern)
+                // Join all found hostile residents in the list.
+                .replacement(String.join("<light_gray>,<yellow> ", list))
+                .build();
+        player.sendMessage(Utils.getMessage(message).replaceText(playerReplacer));
+    }
+
+    @NotNull
+    private List<String> getHostileResidents(List<Resident> residents) {
         List<String> hostileResidents = new ArrayList<>();
         for (var resident: residents) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(resident.getUUID());
@@ -63,40 +112,38 @@ public class TownyListener implements Listener {
                 hostileResidents.add(offlinePlayer.getName());
             }
         }
+        return hostileResidents;
+    }
 
-        // No hostile residents in the list, so they're viable to toggle neutrality
-        if (hostileResidents.isEmpty()) return;
-
-        event.setCancelled(true);
-        event.getTown().setNeutral(false);
-        TextReplacementConfig playerReplacer = TextReplacementConfig
-                .builder()
-                .match("<players>")
-                // Join all found hostile residents in the list.
-                .replacement(String.join("<light_gray>,<yellow> ", hostileResidents))
-                .build();
-        event.getPlayer().sendMessage(Utils.getMessage("cannot-be-neutral").replaceText(playerReplacer));
+    private boolean hasNotification(Player player) {
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        NamespacedKey key = new NamespacedKey(Utils.getUnitedPvP(), "neutrality-notif");
+        if (pdc.has(key)) {
+            byte stored = pdc.get(key, PersistentDataType.BYTE);
+            return stored == 1; // 1 is on, 0 is off.
+        }
+        return true; // true by default.
     }
 
     @EventHandler
     public void onNationNeutralityChange(NationToggleNeutralEvent event) {
         Nation nation = event.getNation();
+        List<String> hostileTowns = getHostileTowns(nation);
+        if (hostileTowns.isEmpty())
+            return;
+        sendListedMessage("cannot-be-neutral-nation", "<towns>", hostileTowns);
+        nation.setNeutral(false);
+        event.setCancelled(true);
+    }
+
+    @NotNull
+    private List<String> getHostileTowns(Nation nation) {
         List<String> hostileTowns = new ArrayList<>();
         for (Town town: nation.getTowns()) {
             if (!town.isNeutral())
                 hostileTowns.add(town.getFormattedName());
         }
-        if (hostileTowns.isEmpty())
-            return;
-        TextReplacementConfig townReplacer = TextReplacementConfig
-                .builder()
-                .match("<towns>")
-                // Join all found hostile residents in the list.
-                .replacement(String.join("<light_gray>,<yellow> ", hostileTowns))
-                .build();
-        event.getPlayer().sendMessage(Utils.getMessage("cannot-be-neutral-towns").replaceText(townReplacer));
-        nation.setNeutral(false);
-        event.setCancelled(true);
+        return hostileTowns;
     }
 
     @EventHandler

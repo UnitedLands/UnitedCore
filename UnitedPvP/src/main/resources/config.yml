@@ -19,8 +19,10 @@ messages:
   you-are-not-immune: '<red>You are not immune to attacks!'
   kicked-out-of-neutrality-mayor: '<red>Your town is no longer neutral! You cannot change this as long as you have hostile residents in your town!'
   kicked-out-of-neutrality-king: '<red>Your nation is no longer neutral! You cannot change this as long as you have hostile towns in your nation!'
-  cannot-be-neutral: '<red>You cannot toggle your town neutrality! You have <yellow>hostile<red> players in your town, found players: <yellow><players>'
-  cannot-be-neutral-nation: '<red>You cannot toggle your nation neutrality! You have the following hostile towns in your nation: <towns> '
+  cannot-be-neutral: '<red>You cannot toggle your town neutrality! You have <yellow>hostile<red> players in your town, found players: <yellow><players>. <light_gray>You may mute this message using /pvp mute'
+  cannot-be-neutral-nation: '<red>You cannot toggle your nation neutrality! You have the following hostile towns in your nation: <towns>. <light_gray>You may mute this message using /pvp mute'
+  muted-notif: '<red>Neutrality warning notifications have been muted! Run <yellow>/pvp mute</yellow> again to unmute!'
+  unmuted-notif: '<green>Neutrality warning notifications unmuted! Run <yellow>/pvp mute</yellow> to mute them again.'
   kicked-out-of-neutrality: '<red>Your town has lost neutrality due to your actions!'
 hostility-color-stages:
   0: '#E6850B'
