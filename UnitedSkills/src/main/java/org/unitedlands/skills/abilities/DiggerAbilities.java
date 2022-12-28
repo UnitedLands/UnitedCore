@@ -219,7 +219,7 @@ public class DiggerAbilities implements Listener {
 
             spawnBlockBreakParticles(blockAdd);
             Jobs.action(Jobs.getPlayerManager().getJobsPlayer(player), new BlockActionInfo(block, ActionType.BREAK), block);
-            blockAdd.breakNaturally();
+            player.breakBlock(block);
         }
     }
 
