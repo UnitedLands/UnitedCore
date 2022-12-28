@@ -57,18 +57,17 @@ public class ActiveSkill extends Skill {
             notifyOnCooldown();
             return false;
         }
+        SkillActivateEvent event = new SkillActivateEvent(player, this);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (event.isCancelled())
+            return false;
         notifyActivation();
         addTime(durationTime, activeDurations);
         addTime(cooldownTime, cooldowns);
         sendBossBar();
-        callEvent();
         return true;
     }
 
-    private void callEvent() {
-        SkillActivateEvent event = new SkillActivateEvent(player, this);
-        Bukkit.getServer().getPluginManager().callEvent(event);
-    }
 
     private void sendBossBar() {
         final Component name = Component.text(getFormattedName() + ": ", NamedTextColor.YELLOW);
