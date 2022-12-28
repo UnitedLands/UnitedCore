@@ -25,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.FluidLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.events.WarDeclareEvent;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static org.unitedlands.wars.UnitedWars.TOWNY_API;
 import static org.unitedlands.wars.Utils.getTownyResident;
 
 public class TownyListener implements Listener {
@@ -206,11 +208,11 @@ public class TownyListener implements Listener {
     @EventHandler
     public void onBlockDrop(BlockDropItemEvent event) {
         Player player = event.getPlayer();
-        if (UnitedWars.TOWNY_API.isWilderness(event.getBlock()))
+        if (TOWNY_API.isWilderness(event.getBlock()))
             return;
         if (!WarDatabase.hasWar(player))
             return;
-        if (isInvalidLocation(UnitedWars.TOWNY_API.getTownBlock(event.getBlock().getLocation()), player))
+        if (isInvalidLocation(TOWNY_API.getTownBlock(event.getBlock().getLocation()), player))
             return;
         event.setCancelled(true);
     }
@@ -229,7 +231,7 @@ public class TownyListener implements Listener {
         int count = 0;
 
         for (Block block : event.getVanillaBlockList()) {
-            Town town = UnitedWars.TOWNY_API.getTown(block.getLocation());
+            Town town = TOWNY_API.getTown(block.getLocation());
             if (town == null)
                 continue;
             if (!WarDatabase.hasWar(town))
@@ -253,7 +255,7 @@ public class TownyListener implements Listener {
         Entity entity = event.getEntity();
         if (entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.WOLF || entity.getType() == EntityType.ENDER_CRYSTAL)
             return;
-        TownBlock townBlock = UnitedWars.TOWNY_API.getTownBlock(entity.getLocation());
+        TownBlock townBlock = TOWNY_API.getTownBlock(entity.getLocation());
         if (townBlock == null)
             return;
         Town town = townBlock.getTownOrNull();
@@ -281,6 +283,18 @@ public class TownyListener implements Listener {
     }
 
     @EventHandler
+    public void onLecternTake(PlayerTakeLecternBookEvent event) {
+        Location location = event.getLectern().getLocation();
+        if (TOWNY_API.isWilderness(location))
+            return;
+        TownBlock townBlock = TOWNY_API.getTownBlock(location);
+        if (townBlock == null)
+            return;
+        if (!isInvalidLocation(townBlock, event.getPlayer()))
+            event.setCancelled(true);
+    }
+
+    @EventHandler
     public void onExplosionDamagingEntity(TownyExplosionDamagesEntityEvent event) {
         if (WarDatabase.getWars().isEmpty())
             return;
@@ -296,9 +310,9 @@ public class TownyListener implements Listener {
     @EventHandler
     public void onLiquidFlow(FluidLevelChangeEvent event) {
         Location location = event.getBlock().getLocation();
-        if (UnitedWars.TOWNY_API.isWilderness(location))
+        if (TOWNY_API.isWilderness(location))
             return;
-        TownBlock townBlock = UnitedWars.TOWNY_API.getTownBlock(location);
+        TownBlock townBlock = TOWNY_API.getTownBlock(location);
         if (townBlock == null)
             return;
         Town town = townBlock.getTownOrNull();
