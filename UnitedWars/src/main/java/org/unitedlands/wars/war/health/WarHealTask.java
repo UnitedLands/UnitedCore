@@ -14,7 +14,7 @@ public class WarHealTask extends BukkitRunnable {
             int amount = 0;
             for (Resident resident: warringEntity.getWarParticipants()) {
                 if (!resident.isOnline())
-                    return;
+                    continue;
                 if (WarDataController.hasResidentLives(resident))
                     amount++;
             }
