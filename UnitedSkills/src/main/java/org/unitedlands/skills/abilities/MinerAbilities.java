@@ -1,4 +1,4 @@
-package org.unitedlands.skills.jobs;
+package org.unitedlands.skills.abilities;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

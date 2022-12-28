@@ -1,4 +1,4 @@
-package org.unitedlands.skills.jobs;
+package org.unitedlands.skills.abilities;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import dev.lone.itemsadder.api.CustomStack;

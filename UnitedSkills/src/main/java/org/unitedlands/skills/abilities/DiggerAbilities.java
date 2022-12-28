@@ -1,4 +1,4 @@
-package org.unitedlands.skills.jobs;
+package org.unitedlands.skills.abilities;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import com.gamingmesh.jobs.Jobs;
@@ -11,7 +11,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
