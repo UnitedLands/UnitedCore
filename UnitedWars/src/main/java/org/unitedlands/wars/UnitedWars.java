@@ -17,6 +17,7 @@ import org.unitedlands.wars.listeners.BookListener;
 import org.unitedlands.wars.listeners.PlayerListener;
 import org.unitedlands.wars.listeners.TownyListener;
 import org.unitedlands.wars.listeners.WarListener;
+import org.unitedlands.wars.war.War;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.health.WarHealTask;
 
@@ -45,6 +46,7 @@ public final class UnitedWars extends JavaPlugin {
         runTasks();
         load();
         registerPlaceholders();
+        displayWars();
     }
 
     private void registerListeners() {
@@ -79,6 +81,7 @@ public final class UnitedWars extends JavaPlugin {
     }
     @Override
     public void onDisable() {
+        hideCurrentWars();
         WarDatabase.saveWarData();
         TownyCommandAddonAPI.removeSubCommand(TownyCommandAddonAPI.CommandType.TOWN, "war");
         TownyCommandAddonAPI.removeSubCommand(TownyCommandAddonAPI.CommandType.NATION, "war");
@@ -106,5 +109,21 @@ public final class UnitedWars extends JavaPlugin {
 
     private void registerListener(Listener listener) {
         getServer().getPluginManager().registerEvents(listener, this);
+    }
+
+    private void hideCurrentWars() {
+        for (War war: WarDatabase.getWars()) {
+            war.getWarringEntities().forEach(entity -> {
+                entity.getOnlinePlayers().forEach(p -> entity.getWarHealth().hide(p));
+            });
+        }
+    }
+
+    private void displayWars() {
+        for (War war: WarDatabase.getWars()) {
+            war.getWarringEntities().forEach(entity -> {
+                entity.getOnlinePlayers().forEach(p -> entity.getWarHealth().show(p));
+            });
+        }
     }
 }
