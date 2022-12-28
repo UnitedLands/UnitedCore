@@ -12,10 +12,12 @@ import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
 import org.unitedlands.wars.books.warbooks.WritableDeclaration;
 import org.unitedlands.wars.war.WarDataController;
+import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.WarType;
 
 import static net.kyori.adventure.text.Component.text;
 import static org.unitedlands.wars.Utils.*;
+import static org.unitedlands.wars.war.WarDatabase.hasWar;
 
 public class BookCommandParser {
     private final CommandSender sender;
@@ -43,7 +45,7 @@ public class BookCommandParser {
             player.sendMessage(getMessage("must-not-be-neutral"));
             return;
         }
-        if (hasActiveWar(resident)) {
+        if (hasWar(player)) {
             player.sendMessage(getMessage("ongoing-war"));
         }
 
@@ -80,7 +82,7 @@ public class BookCommandParser {
             return;
         }
 
-        if (targetTown.hasActiveWar()) {
+        if (hasWar(targetTown)) {
             player.sendMessage(getMessage("ongoing-war-target"));
             return;
         }
@@ -128,7 +130,7 @@ public class BookCommandParser {
             return;
         }
 
-        if (targetNation.hasActiveWar()) {
+        if (hasWar(targetNation.getCapital())) {
             player.sendMessage(getMessage("ongoing-war-target"));
             return;
         }
@@ -161,13 +163,6 @@ public class BookCommandParser {
             return resident.getNationOrNull().isNeutral();
         }
         return resident.getTownOrNull().isNeutral();
-    }
-
-    private boolean hasActiveWar(Resident resident) {
-        if (resident.getTownOrNull().hasNation()) {
-            return resident.getNationOrNull().hasActiveWar();
-        }
-        return resident.getTownOrNull().hasActiveWar();
     }
 
     private Translatable getConfirmationTitle(int cost) {

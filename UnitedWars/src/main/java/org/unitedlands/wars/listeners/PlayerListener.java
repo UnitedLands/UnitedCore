@@ -36,6 +36,7 @@ import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.entities.WarringEntity;
 
 import java.util.Optional;
+import java.util.logging.Level;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
@@ -56,7 +57,7 @@ public class PlayerListener implements Listener {
         Town town = getPlayerTown(player);
         if (town == null)
             return;
-        if (!town.hasActiveWar()) {
+        if (!WarDatabase.hasWar(town)) {
             Resident resident = getTownyResident(player);
             if (!resident.isKing())
                 return;
@@ -88,7 +89,7 @@ public class PlayerListener implements Listener {
         Town town = resident.getTownOrNull();
         if (town == null)
             return;
-        if (!town.hasActiveWar())
+        if (!WarDatabase.hasWar(town))
             return;
         PlayerTeleportEvent.TeleportCause cause = event.getCause();
         if (!event.hasChangedBlock())
@@ -96,8 +97,9 @@ public class PlayerListener implements Listener {
         if (cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT || cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL)
             return;
         // they can bypass.
-        if (player.hasPermission("united.wars.bypass.tp"))
+        if (player.hasPermission("united.wars.bypass.tp")) {
             return;
+        }
 
         War war = WarDatabase.getWar(town);
         if (war == null)
@@ -142,7 +144,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         Town town = getPlayerTown(player);
         if (town == null) return;
-        if (town.hasActiveWar()) {
+        if (WarDatabase.hasWar(town)) {
             player.sendMessage(Utils.getMessage("banned-command"));
             event.setCancelled(true);
         }
@@ -153,7 +155,7 @@ public class PlayerListener implements Listener {
         Resident resident = getTownyResident(event.getAngelChest().getPlayer().getUniqueId());
         if (resident == null) return;
         if (resident.hasTown()) {
-            if (resident.getTownOrNull().hasActiveWar()) {
+            if (WarDatabase.hasWar(resident.getPlayer())) {
                 event.getAngelChest().setProtected(false);
             }
         }

@@ -26,6 +26,7 @@ import org.unitedlands.wars.books.declaration.TownDeclarationBook;
 import org.unitedlands.wars.books.warbooks.WritableDeclaration;
 import org.unitedlands.wars.events.WarDeclareEvent;
 import org.unitedlands.wars.war.War;
+import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.WarType;
 
 import java.util.*;
@@ -231,7 +232,7 @@ public class DeclareCommandParser {
         Town town = resident.getTownOrNull();
         if (town == null)
             return true;
-        if (town.hasActiveWar()) {
+        if (WarDatabase.hasWar(town)) {
             player.sendMessage(getMessage("ongoing-war"));
             return true;
         } else if (!isNotOnCooldownForWar(WarType.TOWNWAR, town)) {

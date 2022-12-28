@@ -44,12 +44,13 @@ import java.util.List;
 
 import static org.unitedlands.wars.UnitedWars.TOWNY_API;
 import static org.unitedlands.wars.Utils.getTownyResident;
+import static org.unitedlands.wars.war.WarDatabase.hasWar;
 
 public class TownyListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onJoinTown(TownPreAddResidentEvent event) {
-        if (event.getTown().hasActiveWar()) {
+        if (hasWar(event.getTown())) {
             War war = WarDatabase.getWar(event.getTown());
             if (war == null) {
                 return;
@@ -60,7 +61,7 @@ public class TownyListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onJoinNation(NationPreAddTownEvent event) {
-        if (event.getNation().hasActiveWar()) {
+        if (hasWar(event.getNation().getCapital())) {
             event.setCancelled(true);
             event.setCancelMessage(Utils.getMessageRaw("cannot-do-in-war"));
         }
@@ -68,7 +69,7 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onTownLeave(TownLeaveEvent event) {
-        if (event.getTown().hasActiveWar()) {
+        if (hasWar(event.getTown())) {
             event.setCancelled(true);
             event.setCancelMessage(Utils.getMessageRaw("cannot-do-in-war"));
         }
@@ -76,7 +77,7 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onTownClaim(TownPreClaimEvent event) {
-        if (event.getTown().hasActiveWar()) {
+        if (hasWar(event.getTown())) {
             event.setCancelled(true);
             event.setCancelMessage(Utils.getMessageRaw("cannot-do-in-war"));
         }
@@ -85,7 +86,7 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onTownUnclaim(TownPreUnclaimCmdEvent event) {
-        if (event.getTown().hasActiveWar()) {
+        if (hasWar(event.getTown())) {
             event.setCancelled(true);
             event.setCancelMessage(Utils.getMessageRaw("cannot-do-in-war"));
         }
@@ -93,21 +94,21 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onTownToggleNeutral(TownToggleNeutralEvent event) {
-        if (event.getTown().hasActiveWar() && event.getFutureState()) {
+        if (hasWar(event.getTown()) && event.getFutureState()) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onNationToggleNeutral(NationToggleNeutralEvent event) {
-        if (event.getNation().hasActiveWar() && event.getFutureState()) {
+        if (hasWar(event.getNation().getCapital()) && event.getFutureState()) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTownDeleted(PreDeleteTownEvent event) {
-        if (!event.getTown().hasActiveWar())
+        if (!hasWar(event.getTown()))
             return;
         Town town = event.getTown();
         War war = WarDatabase.getWar(town);
@@ -127,7 +128,7 @@ public class TownyListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onNationDelete(PreDeleteNationEvent event) {
-        if (!event.getNation().hasActiveWar())
+        if (!hasWar(event.getNation().getCapital()))
             return;
 
         Nation nation = event.getNation();
@@ -145,7 +146,7 @@ public class TownyListener implements Listener {
     @EventHandler
     public void onTownTransaction(TownPreTransactionEvent event) {
         TransactionType type = event.getTransaction().getType();
-        if (!event.getTown().hasActiveWar())
+        if (!hasWar(event.getTown()))
             return;
 
         if (type.equals(TransactionType.WITHDRAW)) {
@@ -158,7 +159,7 @@ public class TownyListener implements Listener {
     @EventHandler
     public void onNationTransaction(NationPreTransactionEvent event) {
         TransactionType type = event.getTransaction().getType();
-        if (!event.getNation().hasActiveWar())
+        if (!hasWar(event.getNation().getCapital()))
             return;
 
         if (type.equals(TransactionType.WITHDRAW)) {
@@ -173,7 +174,7 @@ public class TownyListener implements Listener {
         Player player = event.getPlayer();
         if (event.isInWilderness())
             return;
-        if (!WarDatabase.hasWar(player))
+        if (!hasWar(player))
             return;
         if (isInvalidLocation(event.getTownBlock(), player))
             return;
@@ -191,7 +192,7 @@ public class TownyListener implements Listener {
         Player player = event.getPlayer();
         if (event.isInWilderness())
             return;
-        if (!WarDatabase.hasWar(player))
+        if (!hasWar(player))
             return;
         if (isInvalidLocation(event.getTownBlock(), player))
             return;
@@ -210,7 +211,7 @@ public class TownyListener implements Listener {
         Player player = event.getPlayer();
         if (TOWNY_API.isWilderness(event.getBlock()))
             return;
-        if (!WarDatabase.hasWar(player))
+        if (!hasWar(player))
             return;
         if (isInvalidLocation(TOWNY_API.getTownBlock(event.getBlock().getLocation()), player))
             return;
@@ -234,7 +235,7 @@ public class TownyListener implements Listener {
             Town town = TOWNY_API.getTown(block.getLocation());
             if (town == null)
                 continue;
-            if (!WarDatabase.hasWar(town))
+            if (!hasWar(town))
                 continue;
 
             alreadyAllowed.remove(block);
@@ -262,7 +263,7 @@ public class TownyListener implements Listener {
         if (town == null)
             return;
 
-        if (!WarDatabase.hasWar(town))
+        if (!hasWar(town))
             return;
 
         event.setCancelled(true);
@@ -273,7 +274,7 @@ public class TownyListener implements Listener {
         Player player = event.getPlayer();
         if (event.isInWilderness())
             return;
-        if (!WarDatabase.hasWar(player))
+        if (!hasWar(player))
             return;
         if (isInvalidLocation(event.getTownBlock(), player))
             return;
@@ -303,7 +304,7 @@ public class TownyListener implements Listener {
         if (event.getEntity().getType().equals(EntityType.PLAYER))
             return;
         // Don't damage mobs.
-        if (WarDatabase.hasWar(event.getTown()))
+        if (hasWar(event.getTown()))
             event.setCancelled(true);
     }
 
@@ -318,7 +319,7 @@ public class TownyListener implements Listener {
         Town town = townBlock.getTownOrNull();
         if (town == null)
             return;
-        if (WarDatabase.hasWar(town))
+        if (hasWar(town))
             event.setCancelled(true);
     }
 

@@ -10,6 +10,7 @@ import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.entities.WarringNation;
 
 import static org.unitedlands.wars.Utils.*;
+import static org.unitedlands.wars.war.WarDatabase.hasWar;
 
 public class JoinCommandParser {
     private final CommandSender sender;
@@ -51,7 +52,7 @@ public class JoinCommandParser {
             player.sendMessage(getMessage("must-not-be-neutral"));
             return;
         }
-        if (playerNation.hasActiveWar()) {
+        if (hasWar(playerNation.getCapital())) {
             player.sendMessage(getMessage("must-not-have-war"));
             return;
         }
