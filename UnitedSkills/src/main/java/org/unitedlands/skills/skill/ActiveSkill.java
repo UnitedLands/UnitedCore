@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.unitedlands.skills.UnitedSkills;
+import org.unitedlands.skills.events.SkillActivateEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +61,13 @@ public class ActiveSkill extends Skill {
         addTime(durationTime, activeDurations);
         addTime(cooldownTime, cooldowns);
         sendBossBar();
+        callEvent();
         return true;
+    }
+
+    private void callEvent() {
+        SkillActivateEvent event = new SkillActivateEvent(player, this);
+        Bukkit.getServer().getPluginManager().callEvent(event);
     }
 
     private void sendBossBar() {
