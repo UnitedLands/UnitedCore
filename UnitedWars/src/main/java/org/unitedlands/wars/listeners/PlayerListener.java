@@ -27,6 +27,7 @@ import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
+import org.unitedlands.skills.events.SkillActivateEvent;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.war.War;
@@ -125,6 +126,15 @@ public class PlayerListener implements Listener {
         event.setCancelled(true);
         event.getPlayer().setFlying(false);
         event.getPlayer().setAllowFlight(false);
+    }
+
+    @EventHandler
+    public void onSkillActivate(SkillActivateEvent event) {
+        Player player = event.getPlayer();
+        if (!WarDatabase.hasWar(player))
+            return;
+        player.sendMessage(getMessage("cannot-use-skills-in-war"));
+        event.setCancelled(true);
     }
     @EventHandler
     public void onCommandExecute(PlayerCommandPreprocessEvent event) {

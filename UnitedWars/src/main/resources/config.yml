@@ -280,6 +280,7 @@ writable-declaration-lore:
 messages:
   prefix: "<bold><red>U<white>L</bold> <gray>» "
   teleport-cancelled: '<red>You have an ongoing war! You cannot teleport anywhere!'
+  cannot-use-skills-in-war: '<red>You cannot use active skills during a war!'
   banned-command: '<red>You may not use this command during wars!'
   must-specify-target: '<red>No target found! Please write the target''s name in order to create a war scroll!'
   not-enough-arguments: '<red>You must specify <args>'

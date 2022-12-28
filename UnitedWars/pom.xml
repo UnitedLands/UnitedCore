@@ -114,5 +114,11 @@
             <version>2.10.10</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.unitedlands.skills</groupId>
+            <artifactId>unitedskills</artifactId>
+            <version>3.4.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
