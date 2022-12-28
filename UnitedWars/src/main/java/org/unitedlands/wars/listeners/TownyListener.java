@@ -15,6 +15,7 @@ import com.palmergames.bukkit.towny.object.*;
 import com.palmergames.bukkit.towny.regen.TownyRegenAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -22,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.block.FluidLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
@@ -288,6 +290,21 @@ public class TownyListener implements Listener {
             return;
         // Don't damage mobs.
         if (WarDatabase.hasWar(event.getTown()))
+            event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onLiquidFlow(FluidLevelChangeEvent event) {
+        Location location = event.getBlock().getLocation();
+        if (UnitedWars.TOWNY_API.isWilderness(location))
+            return;
+        TownBlock townBlock = UnitedWars.TOWNY_API.getTownBlock(location);
+        if (townBlock == null)
+            return;
+        Town town = townBlock.getTownOrNull();
+        if (town == null)
+            return;
+        if (WarDatabase.hasWar(town))
             event.setCancelled(true);
     }
 
