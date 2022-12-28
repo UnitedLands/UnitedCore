@@ -17,12 +17,14 @@ import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.war.War;
 import org.unitedlands.wars.war.WarDataController;
 import org.unitedlands.wars.war.WarDatabase;
+import org.unitedlands.wars.war.WarType;
 import org.unitedlands.wars.war.entities.WarringEntity;
 import org.unitedlands.wars.war.entities.WarringNation;
 import org.unitedlands.wars.war.entities.WarringTown;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 public class WarAdminCommand implements TabExecutor {
@@ -82,6 +84,34 @@ public class WarAdminCommand implements TabExecutor {
                 case "add" -> parseAddTokensCommand(town, amount);
                 case "remove" -> parseRemoveTokensCommand(town, amount);
                 case "set" -> parseSetTokensCommand(town, amount);
+            }
+        }
+        if (args[0].equalsIgnoreCase("start")) {
+            if (args[1].equalsIgnoreCase("town")) {
+                Town first = UnitedWars.TOWNY_API.getTown(args[2]);
+                Town second = UnitedWars.TOWNY_API.getTown(args[3]);
+                if (first == null || second == null) {
+                    sender.sendMessage("Invalid towns.");
+                    return true;
+                }
+                HashSet<Resident> residents = new HashSet<>();
+                residents.addAll(first.getResidents());
+                residents.addAll(second.getResidents());
+                new War(List.of(first, second), null,  residents, WarType.TOWNWAR);
+                sender.sendMessage("War between " + first.getFormattedName() + " and " + second.getFormattedName() + " force started!");
+            }
+            if (args[1].equalsIgnoreCase("nation")) {
+                Nation first = UnitedWars.TOWNY_API.getNation(args[2]);
+                Nation second = UnitedWars.TOWNY_API.getNation(args[3]);
+                if (first == null || second == null) {
+                    sender.sendMessage("Invalid towns.");
+                    return true;
+                }
+                HashSet<Resident> residents = new HashSet<>();
+                residents.addAll(first.getResidents());
+                residents.addAll(second.getResidents());
+                new War(null, List.of(first, second),  residents, WarType.NATIONWAR);
+                sender.sendMessage("War between " + first.getFormattedName() + " and " + second.getFormattedName() + " force started!");
             }
         }
         if (args[0].equalsIgnoreCase("end")) {
