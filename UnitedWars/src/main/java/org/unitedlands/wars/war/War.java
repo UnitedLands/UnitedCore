@@ -348,6 +348,7 @@ public class War {
 
     private void giveWarEarnings() {
         winner.getGovernment().getAccount().deposit(calculateWonMoney(), "Won a war against" + loser.name());
+        loser.getGovernment().getAccount().withdraw(calculateWonMoney(), "Lost a war against " + winner.name());
         if (winner instanceof WarringTown town)
             town.getTown().addBonusBlocks(calculateBonusBlocks());
         else if (winner instanceof WarringNation nation)
