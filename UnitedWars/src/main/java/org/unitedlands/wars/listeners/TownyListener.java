@@ -18,13 +18,15 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.FluidLevelChangeEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
@@ -34,8 +36,6 @@ import org.unitedlands.wars.war.War;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.WarType;
 import org.unitedlands.wars.war.entities.WarringEntity;
-import org.unitedlands.wars.war.entities.WarringNation;
-import org.unitedlands.wars.war.entities.WarringTown;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -251,23 +251,21 @@ public class TownyListener implements Listener {
         event.setBlockList(toAllow);
 
     }
-    @EventHandler (priority = EventPriority.MONITOR)
-    public void onEntityDamage(EntityDamageEvent event) {
-        Entity entity = event.getEntity();
-        if (entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.WOLF || entity.getType() == EntityType.ENDER_CRYSTAL)
-            return;
-        TownBlock townBlock = TOWNY_API.getTownBlock(entity.getLocation());
-        if (townBlock == null)
-            return;
-        Town town = townBlock.getTownOrNull();
-        if (town == null)
-            return;
-
-        if (!hasWar(town))
-            return;
-
-        event.setCancelled(true);
-    }
+//    @EventHandler (priority = EventPriority.MONITOR)
+//    public void onEntityDamage(EntityDamageByEntityEvent event) {
+//        Entity entity = event.getEntity();
+//        if (entity.getType() == EntityType.PLAYER ||
+//                entity.getType() == EntityType.WOLF ||
+//                entity.getType() == EntityType.ENDER_CRYSTAL)
+//            return;
+//        Entity damager = event.getDamager();
+//        if (!(damager instanceof Player player))
+//            return;
+//        TownBlock townBlock = TOWNY_API.getTownBlock(entity.getLocation());
+//        if (isInvalidLocation(townBlock, player))
+//            return;
+//        event.setCancelled(true);
+//    }
 
     @EventHandler
     public void onSwitchUse(TownySwitchEvent event) {
