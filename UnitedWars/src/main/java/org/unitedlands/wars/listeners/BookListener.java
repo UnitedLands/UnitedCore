@@ -42,6 +42,8 @@ public class BookListener implements Listener {
     }
 
     private static boolean isNormalBook(ItemMeta meta) {
+        if (meta == null)
+            return true;
         return !WritableDeclaration.isWritableDeclaration(meta.getPersistentDataContainer());
     }
 
