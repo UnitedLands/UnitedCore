@@ -251,21 +251,6 @@ public class TownyListener implements Listener {
         event.setBlockList(toAllow);
 
     }
-//    @EventHandler (priority = EventPriority.MONITOR)
-//    public void onEntityDamage(EntityDamageByEntityEvent event) {
-//        Entity entity = event.getEntity();
-//        if (entity.getType() == EntityType.PLAYER ||
-//                entity.getType() == EntityType.WOLF ||
-//                entity.getType() == EntityType.ENDER_CRYSTAL)
-//            return;
-//        Entity damager = event.getDamager();
-//        if (!(damager instanceof Player player))
-//            return;
-//        TownBlock townBlock = TOWNY_API.getTownBlock(entity.getLocation());
-//        if (isInvalidLocation(townBlock, player))
-//            return;
-//        event.setCancelled(true);
-//    }
 
     @EventHandler
     public void onSwitchUse(TownySwitchEvent event) {
