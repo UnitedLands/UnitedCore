@@ -323,14 +323,14 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onWarStart(WarDeclareEvent event) {
-        toggleFreeze(event.getTargetEntity().getGovernment().getTownBlocks(), false);
-        toggleFreeze(event.getDeclaringEntity().getGovernment().getTownBlocks(), false);
+        setFrozen(event.getTargetEntity().getGovernment().getTownBlocks(), false);
+        setFrozen(event.getDeclaringEntity().getGovernment().getTownBlocks(), false);
     }
 
     @EventHandler
     public void onWarEnd(WarEndEvent event) {
-        toggleFreeze(event.getWinner().getGovernment().getTownBlocks(), true);
-        toggleFreeze(event.getLoser().getGovernment().getTownBlocks(), true);
+        setFrozen(event.getWinner().getGovernment().getTownBlocks(), true);
+        setFrozen(event.getLoser().getGovernment().getTownBlocks(), true);
     }
 
     private static boolean isModifiableMaterial(Material mat) {
@@ -358,17 +358,17 @@ public class TownyListener implements Listener {
         }, 600);
     }
 
-    private void toggleFreeze(Collection<TownBlock> blocks, boolean toggle) {
+    private void setFrozen(Collection<TownBlock> blocks, boolean toggle) {
         for (TownBlock block: blocks) {
             Chunk chunk = block.getWorldCoord().getBukkitWorld().getChunkAt(block.getX(), block.getZ());
             for (Entity entity: chunk.getEntities()) {
                 if (entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.WOLF)
                     continue;
                 entity.setInvulnerable(toggle);
-                entity.setGravity(toggle);
+                entity.setGravity(!toggle);
                 if (entity instanceof LivingEntity living) {
-                    living.setAI(toggle);
-                    living.setCollidable(toggle);
+                    living.setAI(!toggle);
+                    living.setCollidable(!toggle);
                 }
             }
         }
