@@ -29,8 +29,6 @@ class Healer {
     void start() {
         // No need to do anything if its already healing
         WarringEntity warringEntity = WarDatabase.getWarringEntity(warHealth);
-        int delay = warHealth.getHealingRate() * 60;
-        float decrease = (float) 1 / delay;
 
         PLUGIN.getServer().getScheduler().runTaskTimer(PLUGIN, task -> {
             if (isFull()) {
@@ -54,6 +52,8 @@ class Healer {
                 task.cancel();
                 return;
             }
+            int delay = warHealth.getHealingRate() * 60;
+            float decrease = (float) 1 / delay;
             updateTimer(decrease);
         }, 0, 20L);
     }
