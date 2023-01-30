@@ -51,6 +51,8 @@ class Healer {
                     regenBossbar.progress(1.0F); // Refill timer bar
                     start(); // Start healing again
                 }
+                task.cancel();
+                return;
             }
             updateTimer(decrease);
         }, 0, 20L);
