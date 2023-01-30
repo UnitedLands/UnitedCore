@@ -29,4 +29,5 @@ public interface WarringEntity {
     WarringEntity getEnemy();
 
     String name();
+    void setWarHealth(WarHealth health);
 }

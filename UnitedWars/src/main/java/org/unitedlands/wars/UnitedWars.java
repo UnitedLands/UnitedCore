@@ -19,7 +19,6 @@ import org.unitedlands.wars.listeners.TownyListener;
 import org.unitedlands.wars.listeners.WarListener;
 import org.unitedlands.wars.war.War;
 import org.unitedlands.wars.war.WarDatabase;
-import org.unitedlands.wars.war.health.WarHealTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +42,6 @@ public final class UnitedWars extends JavaPlugin {
     public void onEnable() {
         registerListeners();
         setCommandExecutors();
-        runTasks();
         load();
         registerPlaceholders();
         displayWars();
@@ -62,10 +60,6 @@ public final class UnitedWars extends JavaPlugin {
         getCommand("townwar").setExecutor(new TownWarCommand());
         getCommand("waradmin").setExecutor(new WarAdminCommand());
         getCommand("surrender").setExecutor(new SurrenderCommand());
-    }
-    private void runTasks() {
-        WarHealTask warHealTask = new WarHealTask();
-        warHealTask.runTaskTimer(this, 0, 60 * 20 * 20);
     }
 
     private void load() {

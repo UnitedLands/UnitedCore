@@ -5,7 +5,6 @@ import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -14,12 +13,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent.Cause;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.books.TokenCostCalculator;
-import org.unitedlands.wars.books.data.Declarer;
-import org.unitedlands.wars.books.data.WarTarget;
 import org.unitedlands.wars.events.WarDeclareEvent;
 import org.unitedlands.wars.events.WarHealthChangeEvent;
 import org.unitedlands.wars.war.War;
@@ -68,6 +69,47 @@ public class WarListener implements Listener {
             return;
 
         warringEntity.getWarHealth().show(player);
+
+        // Player who joined isn't invisible, so they should count towards healing.
+        if (!player.isInvisible()) {
+            // No lives, don't bother.
+            if (!WarDataController.hasResidentLives(Utils.getTownyResident(player)))
+                return;
+            warringEntity.getWarHealth().incrementPlayers();
+        }
+    }
+
+    @EventHandler
+    public void onPlayerTurnInvisible(EntityPotionEffectEvent event) {
+        if (!(event.getEntity() instanceof Player player))
+            return;
+        if (!WarDatabase.hasWar(player))
+            return;
+        PotionEffect effect = event.getNewEffect();
+        if (effect == null)
+            return;
+        if (!effect.getType().equals(PotionEffectType.INVISIBILITY))
+            return;
+        WarringEntity entity = WarDatabase.getWarringEntity(player);
+        entity.getWarHealth().decrementPlayers();
+    }
+
+    @EventHandler
+    public void onPlayerTurnVisible(EntityPotionEffectEvent event) {
+        if (!(event.getEntity() instanceof Player player))
+            return;
+        if (!WarDatabase.hasWar(player))
+            return;
+        PotionEffect effect = event.getOldEffect();
+        if (effect == null)
+            return;
+        Cause c = event.getCause();
+        if (c.equals(Cause.EXPIRATION) || c.equals(Cause.DEATH) || c.equals(Cause.MILK)) {
+            if (!event.getOldEffect().getType().equals(PotionEffectType.INVISIBILITY))
+                return;
+            WarringEntity entity = WarDatabase.getWarringEntity(player);
+            entity.getWarHealth().incrementPlayers();
+        }
     }
 
     @EventHandler

@@ -81,7 +81,10 @@ public class WarDatabase {
             for (WarringEntity warringEntity : war.getWarringEntities()) {
                 ConfigurationSection savedHealth = section.getConfigurationSection(war.getUuid() + "." + warringEntity.getPath() + "." + warringEntity.getUUID() + ".health");
                 WarHealth warHealth = generateWarHealth(savedHealth, warringEntity.name());
-                copyHealth(warringEntity, warHealth);
+                warringEntity.setWarHealth(warHealth);
+                // Resume any previous healing
+                if (warHealth.isHealing())
+                    warHealth.heal();
             }
 
             for (WarringNation warringNation: war.getWarringNations()) {
@@ -145,8 +148,13 @@ public class WarDatabase {
                 ConfigurationSection entitySection = warSection.createSection(warringEntity.getPath() + "." + warringEntity.getUUID());
                 // Create an inner health section to save health data.
                 ConfigurationSection healthSection = entitySection.createSection("health");
-                healthSection.set("max", warringEntity.getWarHealth().getMaxHealth());
-                healthSection.set("current", warringEntity.getWarHealth().getValue());
+                WarHealth health = warringEntity.getWarHealth();
+                healthSection.set("max", health.getMaxHealth());
+                healthSection.set("current", health.getValue());
+                if (health.isHealing()) {
+                    healthSection.set("healing", true);
+                    healthSection.set("start-time", health.getHealerStartTime());
+                }
                 if (warringEntity instanceof WarringNation warringNation) {
                     if (!warringNation.getJoinedAllies().isEmpty()) {
                         entitySection.set("allies", warringNation.getJoinedAllies());
@@ -335,11 +343,8 @@ public class WarDatabase {
         WarHealth warHealth = new WarHealth(name);
         warHealth.setMaxHealth(healthSection.getInt("max"));
         warHealth.setHealth(healthSection.getInt("current"));
+        warHealth.setHealing(healthSection.getBoolean("healing"));
+        warHealth.setHealerStartTime(healthSection.getLong("start-time"));
         return warHealth;
-    }
-
-    private static void copyHealth(WarringEntity entity, WarHealth warHealth) {
-        entity.getWarHealth().setMaxHealth(warHealth.getMaxHealth());
-        entity.getWarHealth().setHealth(warHealth.getValue());
     }
 }
