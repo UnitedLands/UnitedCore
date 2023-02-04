@@ -21,7 +21,7 @@ import static org.unitedlands.wars.Utils.getTitle;
 
 public class WarringNation implements WarringEntity {
     private final UUID nationUUID;
-    private final WarHealth warHealth;
+    private WarHealth warHealth;
 
     public void setAllies(List<UUID> joinedAllies) {
         this.joinedAllies = joinedAllies;
@@ -121,6 +121,11 @@ public class WarringNation implements WarringEntity {
     @Override
     public String name() {
         return getNation().getFormattedName();
+    }
+
+    @Override
+    public void setWarHealth(WarHealth health) {
+        this.warHealth = health;
     }
 
     public Nation getNation() {

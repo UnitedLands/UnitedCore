@@ -7,9 +7,11 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.unitedlands.wars.UnitedWars;
@@ -68,6 +70,12 @@ public class WarAdminCommand implements TabExecutor {
         if (args[0].equalsIgnoreCase("purge")) {
             parsePurgeCommand();
             return true;
+        }
+        if (args[0].equalsIgnoreCase("damage")) {
+            Player player = Bukkit.getPlayer(args[1]);
+            WarringEntity entity = WarDatabase.getWarringEntity(player);
+            int amount = Integer.parseInt(args[2]);
+            entity.getWarHealth().decreaseHealth(amount);
         }
         if (args[0].equalsIgnoreCase("tokens")) {
             Town town = UnitedWars.TOWNY_API.getTown(args[2]);

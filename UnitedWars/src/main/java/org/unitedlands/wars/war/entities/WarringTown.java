@@ -14,7 +14,7 @@ import java.util.*;
 
 public class WarringTown implements WarringEntity {
     private final UUID townUUID;
-    private final WarHealth warHealth;
+    private WarHealth warHealth;
     private final HashSet<UUID> warringResidents;
     private final UUID warUUID;
 
@@ -92,6 +92,12 @@ public class WarringTown implements WarringEntity {
     public String name() {
         return getTown().getFormattedName();
     }
+
+    @Override
+    public void setWarHealth(WarHealth health) {
+        this.warHealth = health;
+    }
+
 
     public Town getTown() {
         return UnitedWars.TOWNY_API.getTown(townUUID);

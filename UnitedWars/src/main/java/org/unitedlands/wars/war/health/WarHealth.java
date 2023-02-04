@@ -15,7 +15,10 @@ public class WarHealth {
     private final String name;
     private int health = 100;
     private int maxHealth = 100;
-    private BossBar bossBar = generateBossBar();
+    private int validPlayers = 0;
+    private boolean isHealing = false;
+    Healer healer = new Healer(this);
+    private final BossBar bossBar = generateBossBar();
 
     public WarHealth(String name) {
         this.name = name;
@@ -34,6 +37,15 @@ public class WarHealth {
         // make sure the health bar is updated
         updateHealthBar();
         return bossBar;
+    }
+
+
+    public boolean isHealing() {
+        return isHealing;
+    }
+
+    public void setHealing(boolean healing) {
+        isHealing = healing;
     }
 
     private BossBar generateBossBar() {
@@ -67,16 +79,26 @@ public class WarHealth {
         return health;
     }
 
+    public long getHealerStartTime() {
+        return healer.getStartTime();
+    }
+
+    public void setHealerStartTime(long t) {
+        healer.setStartTime(t);
+    }
 
     public void show(Player player) {
         player.showBossBar(getBossBar());
+        if (isHealing) {
+            getHealer().showTimer(player);
+        }
     }
 
     public void hide(Player player) {
         player.hideBossBar(getBossBar());
-    }
-    public void delete() {
-        bossBar = null;
+        if (isHealing) {
+            getHealer().hideTimer(player);
+        }
     }
 
     public void increaseHealth(int increment) {
@@ -93,11 +115,17 @@ public class WarHealth {
         Bukkit.getServer().getPluginManager().callEvent(whce);
         this.health = newHealth;
         updateHealthBar();
+        if (!isHealing())
+            heal();
     }
 
     public void setHealth(int health) {
         this.health = health;
         updateHealthBar();
+    }
+
+    private Healer getHealer() {
+        return this.healer;
     }
 
     private Component getTitle(String message) {
@@ -117,9 +145,30 @@ public class WarHealth {
         this.maxHealth = Math.max(0, maxHealth);
         updateHealthBar();
     }
+    public int getHealingRate() {
+        if (validPlayers == 0)
+            return 0;
+        return 20 / validPlayers;
+    }
+
+    public void setValidPlayers(int validPlayers) {
+        this.validPlayers = validPlayers;
+    }
+
+    public void incrementPlayers() {
+        if (validPlayers == 0)
+            heal();
+        validPlayers++;
+    }
+
+    public void decrementPlayers() {
+        validPlayers--;
+    }
 
     public void decreaseMaxHealth(int decrease) {
         setMaxHealth(this.maxHealth - decrease);
+        if (!isHealing())
+            heal();
     }
 
     public void flash() {
@@ -171,5 +220,9 @@ public class WarHealth {
         result = 31 * result + name.hashCode();
         result = 31 * result + bossBar.hashCode();
         return result;
+    }
+
+    public void heal() {
+        healer.start();
     }
 }
