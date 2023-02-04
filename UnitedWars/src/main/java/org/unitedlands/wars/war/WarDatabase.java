@@ -81,6 +81,7 @@ public class WarDatabase {
             for (WarringEntity warringEntity : war.getWarringEntities()) {
                 ConfigurationSection savedHealth = section.getConfigurationSection(war.getUuid() + "." + warringEntity.getPath() + "." + warringEntity.getUUID() + ".health");
                 WarHealth warHealth = generateWarHealth(savedHealth, warringEntity.name());
+                warHealth.setValidPlayers(getValidHealingPlayers(warringEntity));
                 warringEntity.setWarHealth(warHealth);
                 // Resume any previous healing
                 if (warHealth.isHealing())
@@ -346,5 +347,16 @@ public class WarDatabase {
         warHealth.setHealing(healthSection.getBoolean("healing"));
         warHealth.setHealerStartTime(healthSection.getLong("start-time"));
         return warHealth;
+    }
+
+    private static int getValidHealingPlayers(WarringEntity entity) {
+        int amount = 0;
+        for (Player p : entity.getOnlinePlayers()) {
+            if (!WarDataController.hasResidentLives(Utils.getTownyResident(p)) || p.isInvisible())
+                continue;
+            amount++;
+        }
+        System.out.println(amount);
+        return amount;
     }
 }
