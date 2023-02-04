@@ -146,8 +146,9 @@ public class WarHealth {
         updateHealthBar();
     }
     public int getHealingRate() {
-        return 1;
-        // return 20D / Math.max(validPlayers, 1);
+        if (validPlayers == 0)
+            return 0;
+        return 20 / validPlayers;
     }
 
     public void setValidPlayers(int validPlayers) {
@@ -156,6 +157,8 @@ public class WarHealth {
 
     public void incrementPlayers() {
         validPlayers++;
+        if (validPlayers > 0 && !isHealing())
+            heal();
     }
 
     public void decrementPlayers() {
