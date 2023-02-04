@@ -156,9 +156,9 @@ public class WarHealth {
     }
 
     public void incrementPlayers() {
-        validPlayers++;
-        if (validPlayers > 0 && !isHealing())
+        if (validPlayers == 0)
             heal();
+        validPlayers++;
     }
 
     public void decrementPlayers() {
