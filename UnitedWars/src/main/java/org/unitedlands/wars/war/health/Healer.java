@@ -52,7 +52,6 @@ class Healer {
                 return;
             }
 
-            System.out.println(task.getTaskId() + " ID");
             int delay = warHealth.getHealingRate() * 60;
             float decrease = (float) 1 / delay;
             updateTimer(decrease);
