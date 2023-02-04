@@ -4,7 +4,6 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -21,18 +20,18 @@ class Healer {
     private long startTime;
 
     public Healer(WarHealth warHealth) {
-        this.startTime = (long) (System.currentTimeMillis() + warHealth.getHealingRate() * 60_000L);
         this.warHealth = warHealth;
         this.regenBossbar = getRegenBossbar();
+        this.startTime = System.currentTimeMillis();
     }
 
     void start() {
-        // No need to do anything if its already healing
         WarringEntity warringEntity = WarDatabase.getWarringEntity(warHealth);
 
         PLUGIN.getServer().getScheduler().runTaskTimer(PLUGIN, task -> {
-            if (isFull()) {
+            if (isFull() || warHealth.getHealingRate() == 0) {
                 hideTimer();
+                task.cancel();
                 return;
             }
             // Show the timer and set to healing
@@ -40,7 +39,7 @@ class Healer {
             warHealth.setHealing(true);
 
             if (getRemainingSeconds() <= 0) {
-                startTime = System.currentTimeMillis() + warHealth.getHealingRate() * 60_000L;
+                startTime = System.currentTimeMillis();
                 warHealth.increaseHealth(1);
                 warHealth.setHealing(false);
                 warringEntity.getOnlinePlayers().forEach(p -> p.playSound(p, Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1));
@@ -52,6 +51,8 @@ class Healer {
                 task.cancel();
                 return;
             }
+
+            System.out.println(task.getTaskId() + " ID");
             int delay = warHealth.getHealingRate() * 60;
             float decrease = (float) 1 / delay;
             updateTimer(decrease);
@@ -62,12 +63,9 @@ class Healer {
         return startTime;
     }
     private void updateTimer(float decrease) {
-        System.out.println(decrease + " decrease");
-        System.out.println(regenBossbar.progress() + " current prog");
-        System.out.println(regenBossbar.progress() - decrease + " actual");
         Component name = Component.text("NEXT HEAL IN: ", NamedTextColor.DARK_GREEN, TextDecoration.BOLD);
         regenBossbar.name(name.append(Component.text(getFormattedTime(), NamedTextColor.GREEN).decoration(TextDecoration.BOLD, false)));
-        regenBossbar.progress(Math.max(0.0F, regenBossbar.progress() - decrease));
+        regenBossbar.progress(Math.max(0.0F, decrease * getRemainingSeconds()));
     }
 
     private String getFormattedTime() {
@@ -77,7 +75,8 @@ class Healer {
 
     private int getRemainingSeconds() {
         long currentTimeStamp = System.currentTimeMillis();
-        return (int) (Math.max(0, Math.floor(startTime - currentTimeStamp) / 1000));
+        long finalStartTime = startTime + warHealth.getHealingRate() * 60_000L;
+        return (int) (Math.max(0, Math.floor(finalStartTime - currentTimeStamp) / 1000));
     }
 
     @NotNull
