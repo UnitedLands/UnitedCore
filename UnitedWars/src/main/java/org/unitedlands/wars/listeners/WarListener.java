@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent.Cause;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.unitedlands.wars.UnitedWars;
@@ -28,13 +29,13 @@ import org.unitedlands.wars.war.WarDataController;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.WarUtil;
 import org.unitedlands.wars.war.entities.WarringEntity;
+import org.unitedlands.wars.war.health.WarHealth;
 
 import java.util.HashSet;
 import java.util.List;
 
 import static net.kyori.adventure.text.Component.text;
-import static org.unitedlands.wars.Utils.getMessage;
-import static org.unitedlands.wars.Utils.getTitle;
+import static org.unitedlands.wars.Utils.*;
 
 public class WarListener implements Listener {
 
@@ -80,6 +81,19 @@ public class WarListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        WarringEntity warringEntity = WarDatabase.getWarringEntity(player);
+        if (warringEntity == null)
+            return;
+        if (player.isInvisible())
+            return;
+        if (!WarDataController.hasResidentLives(getTownyResident(player)))
+            return;
+        WarHealth warHealth = warringEntity.getWarHealth();
+        warHealth.decrementPlayers();
+    }
+    @EventHandler
     public void onPlayerTurnInvisible(EntityPotionEffectEvent event) {
         if (!(event.getEntity() instanceof Player player))
             return;
@@ -90,6 +104,8 @@ public class WarListener implements Listener {
             return;
         if (!effect.getType().equals(PotionEffectType.INVISIBILITY))
             return;
+        if (player.isInvisible())
+            return; // Already invisible, don't check again
         WarringEntity entity = WarDatabase.getWarringEntity(player);
         entity.getWarHealth().decrementPlayers();
     }
@@ -104,7 +120,7 @@ public class WarListener implements Listener {
         if (effect == null)
             return;
         Cause c = event.getCause();
-        if (c.equals(Cause.EXPIRATION) || c.equals(Cause.DEATH) || c.equals(Cause.MILK)) {
+        if (c.equals(Cause.EXPIRATION) || c.equals(Cause.DEATH) || c.equals(Cause.MILK) || c.equals(Cause.COMMAND) || c.equals(Cause.UNKNOWN)) {
             if (!event.getOldEffect().getType().equals(PotionEffectType.INVISIBILITY))
                 return;
             WarringEntity entity = WarDatabase.getWarringEntity(player);
