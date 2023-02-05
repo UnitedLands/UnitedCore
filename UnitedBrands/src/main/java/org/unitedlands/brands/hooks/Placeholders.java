@@ -10,13 +10,6 @@ import org.unitedlands.brands.stats.PlayerStatsFile;
 
 public class Placeholders extends PlaceholderExpansion {
 
-    private PlayerStatsFile playerStatsFile;
-    private final UnitedBrands unitedBrands;
-
-    public Placeholders(UnitedBrands unitedBrands) {
-        this.unitedBrands = unitedBrands;
-    }
-
     @Override
     public String getAuthor() {
         return "Maroon28";
@@ -41,22 +34,30 @@ public class Placeholders extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, String params) {
         if (player.getPlayer() != null) {
             switch (params) {
-                case "brewery-name":
+                case "brewery-name" -> {
                     return Util.getPlayerBrewery(player).getBreweryName();
-                case "personal_brews-made":
+                }
+                case "personal_brews-made" -> {
                     return getPlayerStat(player, "brews-made");
-                case "personal_brews-drunk":
+                }
+                case "personal_brews-drunk" -> {
                     return getPlayerStat(player, "brews-drunk");
-                case "personal_average-stars":
+                }
+                case "personal_average-stars" -> {
                     return getPlayerStat(player, "average-stars");
-                case "brewery_brews-made":
+                }
+                case "brewery_brews-made" -> {
                     return getBreweryStat(player, "brews-made");
-                case "brewery_brews-drunk":
+                }
+                case "brewery_brews-drunk" -> {
                     return getBreweryStat(player, "brews-drunk");
-                case "brewery_average-stars":
+                }
+                case "brewery_average-stars" -> {
                     return getBreweryStat(player, "average-stars");
-                case "has-brewery":
+                }
+                case "has-brewery" -> {
                     return String.valueOf(Util.hasBrewery(player));
+                }
             }
         }
 
@@ -65,7 +66,7 @@ public class Placeholders extends PlaceholderExpansion {
 
     @NotNull
     private String getPlayerStat(OfflinePlayer player, String stat) {
-        playerStatsFile = new PlayerStatsFile(unitedBrands, player.getPlayer());
+        PlayerStatsFile playerStatsFile = new PlayerStatsFile(player.getPlayer());
         return String.valueOf(playerStatsFile.getStatsConfig().getInt(stat));
     }
 

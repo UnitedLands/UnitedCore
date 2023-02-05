@@ -13,7 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.unitedlands.brands.UnitedBrands;
 import org.unitedlands.brands.Util;
 import org.unitedlands.brands.brewery.Brewery;
 import org.unitedlands.brands.stats.PlayerStatsFile;
@@ -23,20 +22,15 @@ import java.util.List;
 
 public class PlayerListener implements Listener {
     private PlayerStatsFile playerStatsFile;
-    private final UnitedBrands unitedBrands;
     private Player player;
     private Brewery brewery;
-
-    public PlayerListener(UnitedBrands unitedBrands) {
-        this.unitedBrands = unitedBrands;
-    }
 
     @EventHandler
     public void onPlayerFillBottle(PlayerFillBottleEvent event) {
         player = event.getPlayer();
-        playerStatsFile = new PlayerStatsFile(unitedBrands, player);
+        playerStatsFile = new PlayerStatsFile(player);
         ItemStack bottle = event.getBottle();
-        addBrandToFilledBottle(bottle);
+        brandBottle(bottle);
     }
 
     @EventHandler
@@ -49,7 +43,7 @@ public class PlayerListener implements Listener {
         if (player.equals(getPlayerFromItemMeta(itemMeta))) {
             return;
         } else {
-            playerStatsFile = new PlayerStatsFile(unitedBrands, player);
+            playerStatsFile = new PlayerStatsFile(player);
             playerStatsFile.increaseStat( "total-stars", starAmount);
             playerStatsFile.increaseStat("brews-drunk", 1);
             playerStatsFile.updateAverageStars();
@@ -71,7 +65,7 @@ public class PlayerListener implements Listener {
         return brewery.getBreweryOwner().getUniqueId().toString().equals(playerUUID);
     }
 
-    private void addBrandToFilledBottle(ItemStack bottle) {
+    private void brandBottle(ItemStack bottle) {
         ItemMeta bottleMeta = bottle.getItemMeta();
         List<Component> bottleLore = bottle.lore();
 

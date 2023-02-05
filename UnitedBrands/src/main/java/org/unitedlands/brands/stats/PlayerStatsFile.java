@@ -11,12 +11,11 @@ import java.io.File;
 import java.io.IOException;
 
 public class PlayerStatsFile {
-    private final UnitedBrands ub;
+    private static final UnitedBrands PLUGIN = UnitedBrands.getInstance();
     private FileConfiguration statsConfig;
     private final Player player;
 
-    public PlayerStatsFile(UnitedBrands ub, Player player) {
-        this.ub = ub;
+    public PlayerStatsFile(Player player) {
         this.player = player;
     }
 
@@ -24,7 +23,7 @@ public class PlayerStatsFile {
         File playerDataFile = getStatsFile();
         if (!playerDataFile.exists()) {
             playerDataFile.getParentFile().mkdirs();
-            ub.saveResource(getFilePath(), false);
+            PLUGIN.saveResource(getFilePath(), false);
         }
         statsConfig = new YamlConfiguration();
         try {
@@ -93,6 +92,6 @@ public class PlayerStatsFile {
 
     @NotNull
     private File getStatsFile() {
-        return new File(ub.getDataFolder(), getFilePath());
+        return new File(PLUGIN.getDataFolder(), getFilePath());
     }
 }

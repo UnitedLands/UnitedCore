@@ -13,18 +13,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class BreweriesFile {
-    private final UnitedBrands ub;
+    private static final UnitedBrands PLUGIN = UnitedBrands.getInstance();
     private FileConfiguration breweryConfig;
 
-    public BreweriesFile(UnitedBrands ub) {
-        this.ub = ub;
+    public BreweriesFile() {
     }
 
     public void createBreweriesFile() {
         File breweryDataFile = getBreweriesFile();
         if (!breweryDataFile.exists()) {
             breweryDataFile.getParentFile().mkdirs();
-            ub.saveResource("breweries.yml", false);
+            PLUGIN.saveResource("breweries.yml", false);
         }
         breweryConfig = new YamlConfiguration();
         try {
@@ -56,7 +55,7 @@ public class BreweriesFile {
     public void reloadConfig() {
         FileConfiguration newConfig = YamlConfiguration.loadConfiguration(getBreweriesFile());
 
-        final InputStream defConfigStream = ub.getResource("breweries.yml");
+        final InputStream defConfigStream = PLUGIN.getResource("breweries.yml");
         if (defConfigStream == null) {
             return;
         }
@@ -66,6 +65,6 @@ public class BreweriesFile {
 
     @NotNull
     private File getBreweriesFile() {
-        return new File(ub.getDataFolder(), "breweries.yml");
+        return new File(PLUGIN.getDataFolder(), "breweries.yml");
     }
 }

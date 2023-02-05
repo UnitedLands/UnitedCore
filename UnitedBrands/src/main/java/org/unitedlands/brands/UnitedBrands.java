@@ -10,7 +10,7 @@ import org.unitedlands.brands.listeners.PlayerListener;
 
 public final class UnitedBrands extends JavaPlugin {
     private static UnitedBrands plugin;
-    BreweriesFile breweriesFile = new BreweriesFile(this);
+    BreweriesFile breweriesFile = new BreweriesFile();
     public UnitedBrands() {
         plugin = this;
     }
@@ -28,18 +28,18 @@ public final class UnitedBrands extends JavaPlugin {
     }
 
     private void registerListener() {
-        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
     }
 
     private void registerPlaceholderExpansion() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new Placeholders(this).register();
+            new Placeholders().register();
         }
     }
 
     private void registerCommands() {
-        getCommand("brewery").setExecutor(new BreweryCommand(this));
-        getCommand("breweryadmin").setExecutor(new BreweryAdminCommand(this, breweriesFile));
+        getCommand("brewery").setExecutor(new BreweryCommand());
+        getCommand("breweryadmin").setExecutor(new BreweryAdminCommand(breweriesFile));
     }
 
     private void generateFiles() {

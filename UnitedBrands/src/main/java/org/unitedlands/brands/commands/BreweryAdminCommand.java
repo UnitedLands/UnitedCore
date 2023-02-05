@@ -18,13 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BreweryAdminCommand implements CommandExecutor {
-    private final UnitedBrands unitedBrands;
+    private static final UnitedBrands PLUGIN = UnitedBrands.getInstance();
     private final BreweriesFile breweriesFile;
     private CommandSender sender;
     private Brewery brewery;
 
-    public BreweryAdminCommand(UnitedBrands unitedBrands, BreweriesFile breweriesFile) {
-        this.unitedBrands = unitedBrands;
+    public BreweryAdminCommand(BreweriesFile breweriesFile) {
         this.breweriesFile = breweriesFile;
     }
 
@@ -97,14 +96,14 @@ public class BreweryAdminCommand implements CommandExecutor {
     }
 
     private void sendHelpMessage() {
-        List<String> helpMessage = unitedBrands.getConfig().getStringList("messages.help-command-admin");
+        List<String> helpMessage = PLUGIN.getConfig().getStringList("messages.help-command-admin");
         for (String message : helpMessage) {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
         }
     }
 
     private void reloadPlugin() {
-        unitedBrands.reloadConfig();
+        PLUGIN.reloadConfig();
         breweriesFile.reloadConfig();
         sender.sendMessage(Component.text("All configurations and data reloaded!", NamedTextColor.GREEN));
     }

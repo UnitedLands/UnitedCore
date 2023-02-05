@@ -3,10 +3,7 @@ package org.unitedlands.brands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -66,7 +63,7 @@ public class Util {
                     UUID ownerUUID = UUID.fromString(breweriesConfig.getString(breweryName + ".owner-uuid"));
                     List<String> members = breweriesConfig.getStringList(breweryName + ".members");
                     try {
-                        return new Brewery(UnitedBrands.getInstance(), breweryName, Bukkit.getOfflinePlayer(ownerUUID), members);
+                        return new Brewery(breweryName, Bukkit.getOfflinePlayer(ownerUUID), members);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -84,7 +81,7 @@ public class Util {
             if (name.equalsIgnoreCase(breweryName)) {
                 UUID ownerUUID = UUID.fromString(breweriesConfig.getString(breweryName + ".owner-uuid"));
                 List<String> members = breweriesConfig.getStringList(breweryName + ".members");
-                return new Brewery(UnitedBrands.getInstance(), breweryName, Bukkit.getOfflinePlayer(ownerUUID), members);
+                return new Brewery(breweryName, Bukkit.getOfflinePlayer(ownerUUID), members);
             }
         }
         return null;
@@ -107,7 +104,7 @@ public class Util {
     }
 
     private static FileConfiguration getBreweriesConfig() {
-        BreweriesFile breweriesFile = new BreweriesFile(UnitedBrands.getInstance());
+        BreweriesFile breweriesFile = new BreweriesFile();
         return breweriesFile.getBreweriesConfig();
     }
 

@@ -12,14 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Brewery {
-
-    private final UnitedBrands ub;
     private final String name;
     private final OfflinePlayer owner;
     private final List<String> members;
 
-    public Brewery(UnitedBrands ub, String name, OfflinePlayer owner, List<String> members) {
-        this.ub = ub;
+    public Brewery(String name, OfflinePlayer owner, List<String> members) {
         this.name = name;
         this.owner = owner;
         this.members = members;
@@ -111,7 +108,7 @@ public class Brewery {
     }
 
     private BreweriesFile getBreweriesFile() {
-        return new BreweriesFile(ub);
+        return new BreweriesFile();
     }
 
     public List<String> getBreweryMembers() {

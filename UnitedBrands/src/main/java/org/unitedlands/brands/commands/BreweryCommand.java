@@ -32,15 +32,11 @@ import static org.unitedlands.brands.Util.*;
 
 public class BreweryCommand implements CommandExecutor {
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
-    private final UnitedBrands unitedBrands;
+    private static final UnitedBrands PLUGIN = UnitedBrands.getInstance();
     Set<InviteRequest> inviteRequests = new HashSet<>();
     private Brewery brewery;
     private Player player;
     private int page;
-
-    public BreweryCommand(UnitedBrands unitedBrands) {
-        this.unitedBrands = unitedBrands;
-    }
 
     // TODO- Add tab completion
 
@@ -118,7 +114,7 @@ public class BreweryCommand implements CommandExecutor {
     }
 
     private void sendHelpMessage() {
-        List<String> helpMessage = unitedBrands.getConfig().getStringList("messages.help-command");
+        List<String> helpMessage = PLUGIN.getConfig().getStringList("messages.help-command");
         for (String message : helpMessage) {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
         }
@@ -274,7 +270,7 @@ public class BreweryCommand implements CommandExecutor {
         }
 
         String breweryName = String.join(" ", extractMultiWordString(args));
-        brewery = new Brewery(unitedBrands, breweryName, player, null);
+        brewery = new Brewery(breweryName, player, null);
 
         if (Util.hasBrewery(player)) {
             player.sendMessage(getMessage("in-a-brewery", Util.getPlayerBrewery(player).getBreweryName()));
