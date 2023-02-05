@@ -23,7 +23,7 @@ public class Util {
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public static Component getMessage(String message) {
-        message = getUnitedBrands().getConfig().getString("messages." + message);
+        message = UnitedBrands.getInstance().getConfig().getString("messages." + message);
         return miniMessage.deserialize(message);
     }
 
@@ -52,10 +52,6 @@ public class Util {
     }
 
 
-    private static UnitedBrands getUnitedBrands() {
-        return (UnitedBrands) Bukkit.getPluginManager().getPlugin("UnitedBrands");
-    }
-
     public static Brewery getPlayerBrewery(OfflinePlayer player) {
         FileConfiguration breweriesConfig = getBreweriesConfig();
         String uuid = player.getUniqueId().toString();
@@ -70,7 +66,7 @@ public class Util {
                     UUID ownerUUID = UUID.fromString(breweriesConfig.getString(breweryName + ".owner-uuid"));
                     List<String> members = breweriesConfig.getStringList(breweryName + ".members");
                     try {
-                        return new Brewery(getUnitedBrands(), breweryName, Bukkit.getOfflinePlayer(ownerUUID), members);
+                        return new Brewery(UnitedBrands.getInstance(), breweryName, Bukkit.getOfflinePlayer(ownerUUID), members);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -88,7 +84,7 @@ public class Util {
             if (name.equalsIgnoreCase(breweryName)) {
                 UUID ownerUUID = UUID.fromString(breweriesConfig.getString(breweryName + ".owner-uuid"));
                 List<String> members = breweriesConfig.getStringList(breweryName + ".members");
-                return new Brewery(getUnitedBrands(), breweryName, Bukkit.getOfflinePlayer(ownerUUID), members);
+                return new Brewery(UnitedBrands.getInstance(), breweryName, Bukkit.getOfflinePlayer(ownerUUID), members);
             }
         }
         return null;
@@ -111,7 +107,7 @@ public class Util {
     }
 
     private static FileConfiguration getBreweriesConfig() {
-        BreweriesFile breweriesFile = new BreweriesFile(getUnitedBrands());
+        BreweriesFile breweriesFile = new BreweriesFile(UnitedBrands.getInstance());
         return breweriesFile.getBreweriesConfig();
     }
 

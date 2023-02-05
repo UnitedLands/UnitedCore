@@ -9,7 +9,15 @@ import org.unitedlands.brands.hooks.Placeholders;
 import org.unitedlands.brands.listeners.PlayerListener;
 
 public final class UnitedBrands extends JavaPlugin {
+    private static UnitedBrands plugin;
     BreweriesFile breweriesFile = new BreweriesFile(this);
+    public UnitedBrands() {
+        plugin = this;
+    }
+
+    public static UnitedBrands getInstance() {
+        return plugin;
+    }
 
     @Override
     public void onEnable() {
