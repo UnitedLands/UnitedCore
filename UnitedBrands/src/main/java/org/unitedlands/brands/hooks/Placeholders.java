@@ -3,8 +3,7 @@ package org.unitedlands.brands.hooks;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.brands.UnitedBrands;
-import org.unitedlands.brands.Util;
+import org.unitedlands.brands.BreweryDatabase;
 import org.unitedlands.brands.brewery.Brewery;
 import org.unitedlands.brands.stats.PlayerStatsFile;
 
@@ -35,7 +34,7 @@ public class Placeholders extends PlaceholderExpansion {
         if (player.getPlayer() != null) {
             switch (params) {
                 case "brewery-name" -> {
-                    return Util.getPlayerBrewery(player).getBreweryName();
+                    return BreweryDatabase.getPlayerBrewery(player.getUniqueId()).getName();
                 }
                 case "personal_brews-made" -> {
                     return getPlayerStat(player, "brews-made");
@@ -56,7 +55,7 @@ public class Placeholders extends PlaceholderExpansion {
                     return getBreweryStat(player, "average-stars");
                 }
                 case "has-brewery" -> {
-                    return String.valueOf(Util.hasBrewery(player));
+                    return String.valueOf(BreweryDatabase.isInBrewery(player.getUniqueId()));
                 }
             }
         }
@@ -71,7 +70,7 @@ public class Placeholders extends PlaceholderExpansion {
     }
 
     private String getBreweryStat(OfflinePlayer player, String stat) {
-        Brewery brewery = Util.getPlayerBrewery(player);
+        Brewery brewery = BreweryDatabase.getPlayerBrewery(player.getUniqueId());
         return String.valueOf(brewery.getBreweryStat(stat));
     }
 

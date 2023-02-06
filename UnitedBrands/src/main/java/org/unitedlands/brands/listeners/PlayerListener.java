@@ -13,7 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.unitedlands.brands.Util;
+import org.unitedlands.brands.BreweryDatabase;
 import org.unitedlands.brands.brewery.Brewery;
 import org.unitedlands.brands.stats.PlayerStatsFile;
 
@@ -53,7 +53,7 @@ public class PlayerListener implements Listener {
         if (brewery == null) {
             return;
         }
-        if (brewery.getBreweryMembers().contains(playerUUID) || isBreweryOwner(playerUUID)) {
+        if (brewery.getMembers().contains(playerUUID) || isBreweryOwner(playerUUID)) {
             return;
         }
         brewery.increaseStat("total-stars", starAmount);
@@ -62,14 +62,14 @@ public class PlayerListener implements Listener {
     }
 
     private boolean isBreweryOwner(String playerUUID) {
-        return brewery.getBreweryOwner().getUniqueId().toString().equals(playerUUID);
+        return brewery.getOwner().getUniqueId().toString().equals(playerUUID);
     }
 
     private void brandBottle(ItemStack bottle) {
         ItemMeta bottleMeta = bottle.getItemMeta();
         List<Component> bottleLore = bottle.lore();
 
-        brewery = Util.getPlayerBrewery(player);
+        brewery = BreweryDatabase.getPlayerBrewery(player);
 
         if (bottleLore == null) {
             bottleLore = new ArrayList<>();
@@ -78,7 +78,7 @@ public class PlayerListener implements Listener {
         if (brewery != null) {
             bottleLore.add(0, getBreweryComponent());
             bottleLore.add(1, getBrewedByComponentInBrewery());
-            if (brewery.getBrewerySlogan() != null) {
+            if (!brewery.getSlogan().equals("")) {
                 bottleLore.add(1, getSloganComponent());
                 bottleLore.add(3, Component.text(""));
             }
@@ -93,7 +93,7 @@ public class PlayerListener implements Listener {
     }
 
     private Component getBreweryComponent() {
-        String name = brewery.getBreweryName();
+        String name = brewery.getName();
         return Component
                 .text("Product Of ", NamedTextColor.YELLOW)
                 .append(Component.text(name, NamedTextColor.GOLD))
@@ -108,7 +108,7 @@ public class PlayerListener implements Listener {
     }
 
     private Component getSloganComponent() {
-        String slogan = brewery.getBrewerySlogan();
+        String slogan = brewery.getSlogan();
         return Component
                 .text("» ", NamedTextColor.DARK_GRAY)
                 .append(Component.text('"' + slogan + '"', NamedTextColor.GRAY, TextDecoration.UNDERLINED))
@@ -135,7 +135,7 @@ public class PlayerListener implements Listener {
             if (line.contains("Product Of ")) {
                 // "Product Of Brewery" -> "Brewery"
                 String breweryName = line.replace("Product Of ", "");
-                return Util.getBreweryFromName(ChatColor.stripColor(breweryName));
+                return BreweryDatabase.getBreweryFromName(ChatColor.stripColor(breweryName));
             }
         }
 

@@ -40,7 +40,7 @@ public class PlayerStatsFile {
     }
 
     private String getFilePath() {
-        return File.separator + "players" + File.separator + player.getUniqueId().toString() + ".yml";
+        return File.separator + "players" + File.separator + player.getUniqueId() + ".yml";
     }
 
     public void saveConfig(FileConfiguration statsConfig) {

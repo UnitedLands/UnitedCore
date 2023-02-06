@@ -16,19 +16,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.unitedlands.brands.BreweryDatabase;
 import org.unitedlands.brands.InviteRequest;
 import org.unitedlands.brands.UnitedBrands;
-import org.unitedlands.brands.Util;
 import org.unitedlands.brands.brewery.Brewery;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
-import static org.unitedlands.brands.Util.*;
+import static org.unitedlands.brands.BreweryDatabase.getPlayerBrewery;
+import static org.unitedlands.brands.Util.getMessage;
 
 public class BreweryCommand implements CommandExecutor {
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -74,13 +70,13 @@ public class BreweryCommand implements CommandExecutor {
                 kickPlayerFromBrewery(Bukkit.getPlayer(args[1]));
             }
             case "upgrade" -> {
-                brewery = Util.getPlayerBrewery(player);
+                brewery = getPlayerBrewery(player);
                 upgradeBrewery();
             }
             case "leave" -> leaveBrewery();
             case "deny" -> denyRequest();
             case "slogan" -> {
-                brewery = Util.getPlayerBrewery(player);
+                brewery = getPlayerBrewery(player);
                 String slogan = extractMultiWordString(args);
                 changeBrewerySlogan(slogan);
             }
@@ -96,7 +92,7 @@ public class BreweryCommand implements CommandExecutor {
                 sendBreweriesList();
             }
             case "info" -> {
-                brewery = getBreweryFromName(extractMultiWordString(args));
+                brewery = BreweryDatabase.getBreweryFromName(extractMultiWordString(args));
                 // /brewery info. Returns the info for your brewery
                 if (args.length == 1) {
                     brewery = getPlayerBrewery(player);
@@ -140,7 +136,7 @@ public class BreweryCommand implements CommandExecutor {
     private void sendOwnerComponent() {
         player.sendMessage(Component
                 .text("Owner: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text(brewery.getBreweryOwner().getName(), NamedTextColor.GRAY)
+                .append(Component.text(brewery.getOwner().getName(), NamedTextColor.GRAY)
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
@@ -155,7 +151,7 @@ public class BreweryCommand implements CommandExecutor {
     }
 
     private void sendSloganComponent() {
-        String slogan = brewery.getBrewerySlogan();
+        String slogan = brewery.getSlogan();
         if (slogan == null) {
             slogan = "None";
         }
@@ -169,7 +165,7 @@ public class BreweryCommand implements CommandExecutor {
     private void sendBreweryNameComponent() {
         player.sendMessage(Component
                 .text("Name: ", NamedTextColor.RED, TextDecoration.BOLD)
-                .append(Component.text(brewery.getBreweryName(), NamedTextColor.GRAY)
+                .append(Component.text(brewery.getName(), NamedTextColor.GRAY)
                         .decoration(TextDecoration.BOLD, false))
                 .append(Component.newline()));
     }
@@ -177,11 +173,11 @@ public class BreweryCommand implements CommandExecutor {
     private void sendMembersComponent() {
         Component membersPrefix = Component.text("Members: ", NamedTextColor.RED, TextDecoration.BOLD);
         ArrayList<String> memberNames = new ArrayList<>();
-        for (String playerUUIDString : brewery.getBreweryMembers()) {
+        for (String playerUUIDString : brewery.getMembers()) {
             UUID uuid = UUID.fromString(playerUUIDString);
             memberNames.add(Bukkit.getOfflinePlayer(uuid).getName());
         }
-        if (!brewery.getBreweryMembers().isEmpty()) {
+        if (!brewery.getMembers().isEmpty()) {
             String BreweryMembers = String.join("&7, &e", memberNames);
             Component membersList = LegacyComponentSerializer.legacyAmpersand()
                     .deserialize(BreweryMembers).decoration(TextDecoration.BOLD, false);
@@ -194,7 +190,7 @@ public class BreweryCommand implements CommandExecutor {
     }
 
     private void sendBreweriesList() {
-        ArrayList<Brewery> breweries = Util.getAllBreweries();
+        ArrayList<Brewery> breweries = getAllBreweries();
         player.sendMessage(getMessage("list-header"));
         for (int i = 0; i < 10; i++) {
             int index = i + (9 * page);
@@ -210,9 +206,13 @@ public class BreweryCommand implements CommandExecutor {
 
         player.sendMessage(
                 getPreviousPageComponent()
-                .append(getPageComponent())
-                .append(getNextPageComponent()));
+                        .append(getPageComponent())
+                        .append(getNextPageComponent()));
         player.sendMessage(getMessage("footer"));
+    }
+
+    private ArrayList<Brewery> getAllBreweries() {
+        return new ArrayList<>(BreweryDatabase.getBreweries());
     }
 
     private @NotNull Component getPageComponent() {
@@ -233,9 +233,9 @@ public class BreweryCommand implements CommandExecutor {
     }
 
     private Component getBreweryComponent() {
-        String BreweryName = brewery.getBreweryName();
+        String BreweryName = brewery.getName();
         return miniMessage.deserialize("<hover:show_text:'Click for more info!'><gold>" +
-                BreweryName + " - " + brewery.getBreweryMembers().size() +
+                BreweryName + " - " + brewery.getMembers().size() +
                 "</gold></hover>").clickEvent(ClickEvent.runCommand("/brewery info " + BreweryName));
     }
 
@@ -255,7 +255,7 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
         brewery.increaseStat("level", 1);
-        player.sendMessage(getMessage("brewery-upgraded", brewery.getBreweryName())
+        player.sendMessage(getMessage("brewery-upgraded", brewery.getName())
                 .replaceText(TextReplacementConfig
                         .builder()
                         .match("<level>")
@@ -272,30 +272,30 @@ public class BreweryCommand implements CommandExecutor {
         String breweryName = String.join(" ", extractMultiWordString(args));
         brewery = new Brewery(breweryName, player, null);
 
-        if (Util.hasBrewery(player)) {
-            player.sendMessage(getMessage("in-a-brewery", Util.getPlayerBrewery(player).getBreweryName()));
+        if (BreweryDatabase.isInBrewery(player)) {
+            player.sendMessage(getMessage("in-a-brewery", getPlayerBrewery(player).getName()));
             return;
         }
 
-        if (Util.breweryExists(brewery)) {
+        if (BreweryDatabase.hasBrewery(breweryName)) {
             player.sendMessage(getMessage("brewery-already-exists", breweryName));
             return;
         }
-        brewery.createBrewery();
+        BreweryDatabase.createBrewery(breweryName, player);
     }
 
     private void deletePlayerBrewery() {
-        brewery = Util.getPlayerBrewery(player);
+        brewery = getPlayerBrewery(player);
 
         if (brewery == null) {
             player.sendMessage(getMessage("must-own-brewery"));
             return;
         }
 
-        String breweryName = brewery.getBreweryName();
+        String breweryName = brewery.getName();
 
-        if (Util.hasBrewery(player) && isBreweryOwner()) {
-            brewery.deleteBrewery();
+        if (BreweryDatabase.isInBrewery(player) && isBreweryOwner()) {
+            BreweryDatabase.delete(brewery);
             player.sendMessage(getMessage("brewery-deleted", breweryName));
             return;
         }
@@ -310,14 +310,14 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        brewery = Util.getPlayerBrewery(player);
+        brewery = getPlayerBrewery(player);
 
         if (brewery == null) {
             player.sendMessage(getMessage("must-own-brewery"));
             return;
         }
 
-        String breweryName = brewery.getBreweryName();
+        String breweryName = brewery.getName();
 
         if (player == inviteReceiver) {
             player.sendMessage(getMessage("cannot-invite-self", breweryName));
@@ -347,14 +347,14 @@ public class BreweryCommand implements CommandExecutor {
         Player receiver = request.receiver();
         Player sender = request.sender();
 
-        if (Util.getPlayerBrewery(receiver) != null) {
+        if (getPlayerBrewery(receiver) != null) {
             player.sendMessage(getMessage("already-in-a-brewery"));
             return;
         }
 
-        brewery = Util.getPlayerBrewery(sender);
-        String breweryName = brewery.getBreweryName();
-        brewery.addMemberToBrewery(player);
+        brewery = getPlayerBrewery(sender);
+        String breweryName = brewery.getName();
+        brewery.addMember(player);
 
         sender.sendMessage(getMessage("brewery-join-sender", player));
         receiver.sendMessage(getMessage("brewery-join", breweryName));
@@ -368,8 +368,8 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        brewery = Util.getPlayerBrewery(player);
-        String breweryName = brewery.getBreweryName();
+        brewery = getPlayerBrewery(player);
+        String breweryName = brewery.getName();
 
         if (!isBreweryOwner()) {
             player.sendMessage(getMessage("must-own-brewery", breweryName));
@@ -381,28 +381,28 @@ public class BreweryCommand implements CommandExecutor {
             return;
         }
 
-        brewery.removeMemberFromBrewery(kickedPlayer);
+        brewery.removeMember(kickedPlayer);
         kickedPlayer.sendMessage(getMessage("kicked-from-brewery", breweryName));
         player.sendMessage(getMessage("player-kicked", breweryName));
     }
 
     private void leaveBrewery() {
-        brewery = Util.getPlayerBrewery(player);
+        brewery = getPlayerBrewery(player);
         if (brewery == null) {
             player.sendMessage(getMessage("must-have-brewery", ""));
             return;
         }
 
-        String breweryName = brewery.getBreweryName();
+        String breweryName = brewery.getName();
 
         if (isBreweryOwner()) {
             player.sendMessage(getMessage("must-delete-brewery", breweryName));
             return;
         }
 
-        if (Util.hasBrewery(player)) {
-            OfflinePlayer BreweryOwner = brewery.getBreweryOwner();
-            brewery.removeMemberFromBrewery(player);
+        if (BreweryDatabase.isInBrewery(player)) {
+            OfflinePlayer BreweryOwner = brewery.getOwner();
+            brewery.removeMember(player);
             player.sendMessage(getMessage("brewery-leave", breweryName));
             if (BreweryOwner.isOnline()) {
                 BreweryOwner.getPlayer().sendMessage(getMessage("player-left-brewery", breweryName, player));
@@ -413,7 +413,7 @@ public class BreweryCommand implements CommandExecutor {
 
     private void denyRequest() {
         InviteRequest request = getRequest(player);
-        String breweryName = Util.getPlayerBrewery(player).getBreweryName();
+        String breweryName = getPlayerBrewery(player).getName();
 
         if (request != null) {
             request.sender().sendMessage(getMessage("Brewery-deny-sender", player));
@@ -440,12 +440,12 @@ public class BreweryCommand implements CommandExecutor {
         }
 
         brewery.setSlogan(slogan);
-        player.sendMessage(getMessage("slogan-changed", brewery.getBreweryName()));
+        player.sendMessage(getMessage("slogan-changed", brewery.getName()));
     }
 
     private boolean isBreweryOwner() {
-        if (Util.hasBrewery(player)) {
-            return brewery.getBreweryOwner().equals(player);
+        if (BreweryDatabase.isInBrewery(player)) {
+            return brewery.getOwner().equals(player);
         }
         return false;
     }

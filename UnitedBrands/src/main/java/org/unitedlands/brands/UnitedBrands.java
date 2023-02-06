@@ -1,6 +1,7 @@
 package org.unitedlands.brands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.brands.brewery.BreweriesFile;
 import org.unitedlands.brands.commands.BreweryAdminCommand;
@@ -45,6 +46,10 @@ public final class UnitedBrands extends JavaPlugin {
     private void generateFiles() {
         breweriesFile.createBreweriesFile();
         saveDefaultConfig();
+    }
+
+    public FileConfiguration getBreweriesConfig() {
+        return breweriesFile.getBreweriesConfig();
     }
 
 }

@@ -16,9 +16,6 @@ public class BreweriesFile {
     private static final UnitedBrands PLUGIN = UnitedBrands.getInstance();
     private FileConfiguration breweryConfig;
 
-    public BreweriesFile() {
-    }
-
     public void createBreweriesFile() {
         File breweryDataFile = getBreweriesFile();
         if (!breweryDataFile.exists()) {
