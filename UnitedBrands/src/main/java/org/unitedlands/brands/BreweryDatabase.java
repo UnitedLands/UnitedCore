@@ -153,7 +153,8 @@ public class BreweryDatabase {
 
             UUID ownerUUID = UUID.fromString(config.getString(uuid + ".owner-uuid"));
             List<String> members = config.getStringList(uuid + ".members");
-            Brewery brewery = new Brewery(uuid, Bukkit.getOfflinePlayer(ownerUUID), members, UUID.fromString(uuid));
+            String name = config.getString(uuid + ".name");
+            Brewery brewery = new Brewery(name, Bukkit.getOfflinePlayer(ownerUUID), members, UUID.fromString(uuid));
             brewery.setBrewsDrunk(getStat(brewery, "brews-drunk"));
             brewery.setBrewsMade(getStat(brewery, "brews-made"));
             brewery.setAverageStars(getStat(brewery, "average-stars"));
