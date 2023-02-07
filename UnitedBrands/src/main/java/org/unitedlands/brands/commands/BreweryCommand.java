@@ -276,7 +276,6 @@ public class BreweryCommand implements TabExecutor {
         }
 
         String breweryName = String.join(" ", extractMultiWordString(args));
-        brewery = new Brewery(breweryName, player, null);
 
         if (BreweryDatabase.isInBrewery(player)) {
             player.sendMessage(getMessage("in-a-brewery", getPlayerBrewery(player).getName()));
