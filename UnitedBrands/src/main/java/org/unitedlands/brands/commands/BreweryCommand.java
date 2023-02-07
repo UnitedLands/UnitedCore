@@ -14,8 +14,10 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.unitedlands.brands.BreweryDatabase;
 import org.unitedlands.brands.InviteRequest;
 import org.unitedlands.brands.UnitedBrands;
@@ -26,15 +28,19 @@ import java.util.*;
 import static org.unitedlands.brands.BreweryDatabase.getPlayerBrewery;
 import static org.unitedlands.brands.Util.getMessage;
 
-public class BreweryCommand implements CommandExecutor {
+public class BreweryCommand implements TabExecutor {
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
     private static final UnitedBrands PLUGIN = UnitedBrands.getInstance();
     Set<InviteRequest> inviteRequests = new HashSet<>();
     private Brewery brewery;
     private Player player;
     private int page;
+    private static final List<String> BREWERY_TAB_COMPLETES = Arrays.asList("help", "create", "slogan", "delete", "invite", "kick", "accept", "deny", "leave");
 
-    // TODO- Add tab completion
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        return args.length == 1 ? BREWERY_TAB_COMPLETES : Collections.emptyList();
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
@@ -463,5 +469,4 @@ public class BreweryCommand implements CommandExecutor {
         String[] arrayWithoutFirstArgument = Arrays.copyOfRange(args, 1, args.length);
         return String.join(" ", arrayWithoutFirstArgument);
     }
-
 }
