@@ -12,13 +12,17 @@ import org.unitedlands.brands.stats.PlayerStatsFile;
 
 public final class UnitedBrands extends JavaPlugin {
     private static UnitedBrands plugin;
+    private final BreweriesFile breweriesFile;
+    private final PlayerStatsFile playersFile;
+    private final FileConfiguration playersConfig;
+    private final FileConfiguration breweriesConfig;
     public UnitedBrands() {
         plugin = this;
+        this.breweriesFile = new BreweriesFile();
+        this.playersFile = new PlayerStatsFile();
+        this.playersConfig = breweriesFile.getBreweriesConfig();
+        this.breweriesConfig = playersFile.getStatsConfig();
     }
-    private final BreweriesFile breweriesFile = new BreweriesFile();
-    private final PlayerStatsFile playersFile = new PlayerStatsFile();
-    private final FileConfiguration playersConfig = playersFile.getStatsConfig();
-    private final FileConfiguration breweriesConfig = breweriesFile.getBreweriesConfig();
 
     public static UnitedBrands getInstance() {
         return plugin;
