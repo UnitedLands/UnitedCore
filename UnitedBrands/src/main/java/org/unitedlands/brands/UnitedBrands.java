@@ -20,8 +20,8 @@ public final class UnitedBrands extends JavaPlugin {
         plugin = this;
         this.breweriesFile = new BreweriesFile();
         this.playersFile = new PlayerStatsFile();
-        this.playersConfig = breweriesFile.getBreweriesConfig();
-        this.breweriesConfig = playersFile.getStatsConfig();
+        this.breweriesConfig = breweriesFile.getBreweriesConfig();
+        this.playersConfig = playersFile.getStatsConfig();
     }
 
     public static UnitedBrands getInstance() {
