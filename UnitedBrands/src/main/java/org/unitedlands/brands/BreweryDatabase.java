@@ -55,7 +55,7 @@ public class BreweryDatabase {
             ConfigurationSection section = breweriesConfig.createSection(brewery.getUUID().toString());
             // Set the data for each object
             section.set("name", brewery.getName());
-            section.set("owner-uuid", brewery.getOwner().getUniqueId());
+            section.set("owner-uuid", brewery.getOwner().getUniqueId().toString());
             section.set("slogan", brewery.getSlogan());
             section.set("members", brewery.getMembers());
             section.set("level", brewery.getLevel());
