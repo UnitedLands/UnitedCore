@@ -54,7 +54,7 @@ public final class UnitedBrands extends JavaPlugin {
 
     private void registerCommands() {
         getCommand("brewery").setExecutor(new BreweryCommand());
-        getCommand("breweryadmin").setExecutor(new BreweryAdminCommand(breweriesFile));
+        getCommand("breweryadmin").setExecutor(new BreweryAdminCommand());
     }
 
     private void generateFiles() {

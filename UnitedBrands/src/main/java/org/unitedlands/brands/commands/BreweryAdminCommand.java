@@ -20,13 +20,8 @@ import java.util.List;
 
 public class BreweryAdminCommand implements CommandExecutor {
     private static final UnitedBrands PLUGIN = UnitedBrands.getInstance();
-    private final BreweriesFile breweriesFile;
     private CommandSender sender;
     private Brewery brewery;
-
-    public BreweryAdminCommand(BreweriesFile breweriesFile) {
-        this.breweriesFile = breweriesFile;
-    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -105,7 +100,8 @@ public class BreweryAdminCommand implements CommandExecutor {
 
     private void reloadPlugin() {
         PLUGIN.reloadConfig();
-        breweriesFile.reloadConfig();
+        BreweryDatabase.save();
+        BreweryDatabase.load();
         sender.sendMessage(Component.text("All configurations and data reloaded!", NamedTextColor.GREEN));
     }
 
