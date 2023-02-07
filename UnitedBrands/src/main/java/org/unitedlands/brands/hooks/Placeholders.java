@@ -71,6 +71,7 @@ public class Placeholders extends PlaceholderExpansion {
             case "brews-drunk" -> brandPlayer.getBrewsDrunk();
             case "total-stars" -> brandPlayer.getTotalStars();
             case "average-stars" -> brandPlayer.getAverageStars();
+            default -> 0;
         };
         return String.valueOf(value);
     }
