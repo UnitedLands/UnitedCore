@@ -9,8 +9,9 @@ public class Util {
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     public static Component getMessage(String message) {
+        String prefix = UnitedBrands.getInstance().getConfig().getString("messages.prefix");
         message = UnitedBrands.getInstance().getConfig().getString("messages." + message);
-        return miniMessage.deserialize(message);
+        return miniMessage.deserialize(prefix + message);
     }
 
     public static Component getMessage(String message, String breweryName) {
