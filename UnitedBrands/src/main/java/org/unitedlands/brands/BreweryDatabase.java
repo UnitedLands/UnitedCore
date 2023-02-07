@@ -160,7 +160,7 @@ public class BreweryDatabase {
             brewery.setAverageStars(getStat(brewery, "average-stars"));
             brewery.setLevel(getStat(brewery, "level"));
             brewery.setTotalStars(getStat(brewery, "total-stars"));
-            brewery.setSlogan(config.getString(uuid + "slogan"));
+            brewery.setSlogan(config.getString(uuid + ".slogan"));
             return brewery;
         }
         return null;
