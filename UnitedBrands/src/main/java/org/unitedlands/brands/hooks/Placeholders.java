@@ -5,7 +5,7 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.brands.BreweryDatabase;
 import org.unitedlands.brands.brewery.Brewery;
-import org.unitedlands.brands.stats.PlayerStatsFile;
+import org.unitedlands.brands.stats.BrandPlayer;
 
 public class Placeholders extends PlaceholderExpansion {
 
@@ -65,8 +65,14 @@ public class Placeholders extends PlaceholderExpansion {
 
     @NotNull
     private String getPlayerStat(OfflinePlayer player, String stat) {
-        PlayerStatsFile playerStatsFile = new PlayerStatsFile(player.getPlayer());
-        return String.valueOf(playerStatsFile.getStatsConfig().getInt(stat));
+        BrandPlayer brandPlayer = BreweryDatabase.getBrandPlayer(player.getUniqueId());
+        int value = switch (stat) {
+            case "brews-made" -> brandPlayer.getBrewsMade();
+            case "brews-drunk" -> brandPlayer.getBrewsDrunk();
+            case "total-stars" -> brandPlayer.getTotalStars();
+            case "average-stars" -> brandPlayer.getAverageStars();
+        };
+        return String.valueOf(value);
     }
 
     private String getBreweryStat(OfflinePlayer player, String stat) {

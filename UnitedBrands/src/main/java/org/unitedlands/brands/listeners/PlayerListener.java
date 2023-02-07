@@ -11,24 +11,25 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.unitedlands.brands.BreweryDatabase;
 import org.unitedlands.brands.brewery.Brewery;
-import org.unitedlands.brands.stats.PlayerStatsFile;
+import org.unitedlands.brands.stats.BrandPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerListener implements Listener {
-    private PlayerStatsFile playerStatsFile;
+    private BrandPlayer brandPlayer;
     private Player player;
     private Brewery brewery;
 
     @EventHandler
     public void onPlayerFillBottle(PlayerFillBottleEvent event) {
         player = event.getPlayer();
-        playerStatsFile = new PlayerStatsFile(player);
+        brandPlayer = BreweryDatabase.getBrandPlayer(player);
         ItemStack bottle = event.getBottle();
         brandBottle(bottle);
     }
@@ -43,10 +44,10 @@ public class PlayerListener implements Listener {
         if (player.equals(getPlayerFromItemMeta(itemMeta))) {
             return;
         } else {
-            playerStatsFile = new PlayerStatsFile(player);
-            playerStatsFile.increaseStat( "total-stars", starAmount);
-            playerStatsFile.increaseStat("brews-drunk", 1);
-            playerStatsFile.updateAverageStars();
+            brandPlayer = BreweryDatabase.getBrandPlayer(player);
+            brandPlayer.increaseStat( "total-stars", starAmount);
+            brandPlayer.increaseStat("brews-drunk", 1);
+            brandPlayer.updateAverageStars();
         }
 
         brewery = getBreweryFromItemMeta(itemMeta);
@@ -87,7 +88,7 @@ public class PlayerListener implements Listener {
             bottleLore.add(0, getBrewedByComponent());
         }
 
-        playerStatsFile.increaseStat( "brews-made", 1);
+        brandPlayer.increaseStat( "brews-made", 1);
         bottleMeta.lore(bottleLore);
         bottle.setItemMeta(bottleMeta);
     }

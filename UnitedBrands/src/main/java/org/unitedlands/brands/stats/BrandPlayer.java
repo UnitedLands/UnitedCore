@@ -1,5 +1,8 @@
 package org.unitedlands.brands.stats;
 
+import org.unitedlands.brands.BreweryDatabase;
+
+import java.util.Objects;
 import java.util.UUID;
 
 public class BrandPlayer {
@@ -11,9 +14,10 @@ public class BrandPlayer {
 
     public BrandPlayer(UUID uuid) {
         this.uuid = uuid;
+        BreweryDatabase.addPlayer(this);
     }
 
-    public UUID getUuid() {
+    public UUID getUUID() {
         return uuid;
     }
 
@@ -47,5 +51,32 @@ public class BrandPlayer {
 
     public void setAverageStars(int averageStars) {
         this.averageStars = averageStars;
+    }
+    public void updateAverageStars() {
+        averageStars =  totalStars / brewsDrunk;
+    }
+
+    public void increaseStat(String statName, int increment) {
+        switch (statName) {
+            case "brews-drunk" -> brewsDrunk += increment;
+            case "brews-made" -> brewsMade += increment;
+            case "average-stars" -> averageStars += increment;
+            case "total-stars" -> totalStars += increment;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BrandPlayer that = (BrandPlayer) o;
+
+        return Objects.equals(uuid, that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid != null ? uuid.hashCode() : 0;
     }
 }

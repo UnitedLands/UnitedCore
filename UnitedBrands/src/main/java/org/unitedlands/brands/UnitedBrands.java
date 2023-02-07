@@ -8,10 +8,14 @@ import org.unitedlands.brands.commands.BreweryAdminCommand;
 import org.unitedlands.brands.commands.BreweryCommand;
 import org.unitedlands.brands.hooks.Placeholders;
 import org.unitedlands.brands.listeners.PlayerListener;
+import org.unitedlands.brands.stats.PlayerStatsFile;
 
 public final class UnitedBrands extends JavaPlugin {
     private static UnitedBrands plugin;
-    BreweriesFile breweriesFile = new BreweriesFile();
+    private final BreweriesFile breweriesFile = new BreweriesFile();
+    private final PlayerStatsFile playersFile = new PlayerStatsFile();
+    private final FileConfiguration playersConfig = playersFile.getStatsConfig();
+    private final FileConfiguration breweriesConfig = breweriesFile.getBreweriesConfig();
     public UnitedBrands() {
         plugin = this;
     }
@@ -26,6 +30,12 @@ public final class UnitedBrands extends JavaPlugin {
         registerCommands();
         registerPlaceholderExpansion();
         registerListener();
+        BreweryDatabase.load();
+    }
+
+    @Override
+    public void onDisable() {
+        BreweryDatabase.save();
     }
 
     private void registerListener() {
@@ -45,11 +55,16 @@ public final class UnitedBrands extends JavaPlugin {
 
     private void generateFiles() {
         breweriesFile.createBreweriesFile();
+        playersFile.createStatsFile();
         saveDefaultConfig();
     }
 
     public FileConfiguration getBreweriesConfig() {
-        return breweriesFile.getBreweriesConfig();
+        return breweriesConfig;
+    }
+
+    public FileConfiguration getPlayerStatsConfig() {
+        return playersConfig;
     }
 
 }
