@@ -1,5 +1,8 @@
 package org.unitedlands.brands.commands;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.confirmations.Confirmation;
+import com.palmergames.bukkit.towny.object.Resident;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -286,7 +289,12 @@ public class BreweryCommand implements TabExecutor {
             player.sendMessage(getMessage("brewery-already-exists", breweryName));
             return;
         }
-        BreweryDatabase.createBrewery(breweryName, player);
+        Resident resident = TownyAPI.getInstance().getResident(player.getUniqueId());
+        if (resident.getAccount().canPayFromHoldings(10_000)) {
+            Confirmation.runOnAccept(() -> BreweryDatabase.createBrewery(breweryName, player)).setTitle("§cAre you sure you want to create a new §ebrewery§c? This will cost you §610,000 Gold!").sendTo(player);
+        } else {
+            player.sendMessage(getMessage("not-enough-money"));
+        }
     }
 
     private void deletePlayerBrewery() {
