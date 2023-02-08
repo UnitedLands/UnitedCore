@@ -3,6 +3,8 @@ package org.unitedlands.brands.commands;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.economy.Account;
+import com.palmergames.bukkit.towny.object.economy.BankAccount;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -39,7 +41,7 @@ public class BreweryCommand implements TabExecutor {
     private Brewery brewery;
     private Player player;
     private int page;
-    private static final List<String> BREWERY_TAB_COMPLETES = Arrays.asList("help", "create", "slogan", "delete", "invite", "kick", "accept", "deny", "leave");
+    private static final List<String> BREWERY_TAB_COMPLETES = Arrays.asList("help", "create", "slogan", "upgrade", "delete", "invite", "kick", "accept", "deny", "leave");
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
@@ -255,23 +257,32 @@ public class BreweryCommand implements TabExecutor {
             player.sendMessage(getMessage("must-own-brewery"));
             return;
         }
-        if (!player.hasPermission("united.brewery.upgrade")) {
-            player.sendMessage(Component.text("You do not have permission to execute this command!", NamedTextColor.RED));
-            return;
-        }
 
         int level = brewery.getBreweryStat("level");
         if (level == 5) {
             player.sendMessage(getMessage("max-brewery-level"));
             return;
         }
-        brewery.increaseStat("level", 1);
-        player.sendMessage(getMessage("brewery-upgraded", brewery.getName())
-                .replaceText(TextReplacementConfig
-                        .builder()
-                        .match("<level>")
-                        .replacement(String.valueOf(level))
-                        .build()));
+        int price = (level + 1) * 15_000;
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        Account account = resident.getAccount();
+        if (!account.canPayFromHoldings(price)) {
+            player.sendMessage(getMessage("not-enough-to-upgrade").replaceText(TextReplacementConfig.builder()
+                    .match("<amount>")
+                    .replacement(String.valueOf(price))
+                    .build()));
+            return;
+        }
+        Confirmation.runOnAccept(() -> {
+            brewery.increaseStat("level", 1);
+            player.sendMessage(getMessage("brewery-upgraded", brewery.getName())
+                    .replaceText(TextReplacementConfig
+                            .builder()
+                            .match("<level>")
+                            .replacement(String.valueOf(level + 1))
+                            .build()));
+        }).setTitle("§cAre you sure you want to upgrade your brewery to level " + (level + 1) + "? This upgrade will cost you §6" + price + " Gold!")
+                .sendTo(player);
     }
 
     private void createBrewery(String[] args) {
