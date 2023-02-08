@@ -4,7 +4,6 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.economy.Account;
-import com.palmergames.bukkit.towny.object.economy.BankAccount;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -14,10 +13,8 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
@@ -41,7 +38,7 @@ public class BreweryCommand implements TabExecutor {
     private Brewery brewery;
     private Player player;
     private int page;
-    private static final List<String> BREWERY_TAB_COMPLETES = Arrays.asList("help", "create", "slogan", "upgrade", "delete", "invite", "kick", "accept", "deny", "leave");
+    private static final List<String> BREWERY_TAB_COMPLETES = Arrays.asList("help", "list", "create", "slogan", "upgrade", "delete", "invite", "kick", "accept", "deny", "leave");
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
@@ -134,7 +131,7 @@ public class BreweryCommand implements TabExecutor {
             player.sendMessage(getMessage("brewery-does-not-exist"));
             return;
         }
-        player.sendMessage(getMessage("info-header"));
+        player.sendMessage(getNoPrefixMessage("info-header"));
         sendOwnerComponent();
         sendBreweryNameComponent();
         sendSloganComponent();
@@ -143,7 +140,7 @@ public class BreweryCommand implements TabExecutor {
         sendStatComponent("brews-made");
         sendStatComponent("brews-drunk");
         sendMembersComponent();
-        player.sendMessage(getMessage("footer"));
+        player.sendMessage(getNoPrefixMessage("footer"));
     }
 
     private void sendOwnerComponent() {
@@ -246,10 +243,10 @@ public class BreweryCommand implements TabExecutor {
     }
 
     private Component getBreweryComponent() {
-        String BreweryName = brewery.getName();
+        String name = brewery.getName();
         return miniMessage.deserialize("<hover:show_text:'Click for more info!'><gold>" +
-                BreweryName + " - " + brewery.getMembers().size() +
-                "</gold></hover>").clickEvent(ClickEvent.runCommand("/brewery info " + BreweryName));
+                name + " - " + (brewery.getMembers().size() + 1) +
+                "</gold></hover>").clickEvent(ClickEvent.runCommand("/brewery info " + name));
     }
 
     private void upgradeBrewery() {
