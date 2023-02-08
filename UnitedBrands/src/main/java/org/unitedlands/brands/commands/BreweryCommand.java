@@ -305,15 +305,15 @@ public class BreweryCommand implements TabExecutor {
             return;
         }
 
-        String breweryName = brewery.getName();
-
-        if (BreweryDatabase.isInBrewery(player) && isBreweryOwner()) {
-            BreweryDatabase.delete(brewery);
-            player.sendMessage(getMessage("brewery-deleted", breweryName));
+        if (!(BreweryDatabase.isInBrewery(player) && isBreweryOwner())) {
+            player.sendMessage(getMessage("brewery-cannot-be-deleted", brewery.getName()));
             return;
         }
-
-        player.sendMessage(getMessage("brewery-cannot-be-deleted", breweryName));
+        Confirmation.runOnAccept(() -> {
+            BreweryDatabase.delete(brewery);
+            player.sendMessage(getMessage("brewery-deleted", brewery.getName()));
+        }).setTitle("§cAre you sure you want to delete §e" + brewery.getName() + "§c? This action is irreversible!")
+                .sendTo(player);
     }
 
     private void invitePlayerToBrewery(Player inviteReceiver) {
