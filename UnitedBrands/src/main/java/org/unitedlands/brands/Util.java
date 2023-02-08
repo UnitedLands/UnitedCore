@@ -14,6 +14,11 @@ public class Util {
         return miniMessage.deserialize(prefix + message);
     }
 
+    public static Component getNoPrefixMessage(String message) {
+        message = UnitedBrands.getInstance().getConfig().getString("messages." + message);
+        return miniMessage.deserialize(message);
+    }
+
     public static Component getMessage(String message, String breweryName) {
         TextReplacementConfig breweryReplacer = TextReplacementConfig.builder()
                 .match("<brewery>")

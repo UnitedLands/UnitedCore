@@ -30,6 +30,7 @@ import java.util.*;
 
 import static org.unitedlands.brands.BreweryDatabase.getPlayerBrewery;
 import static org.unitedlands.brands.Util.getMessage;
+import static org.unitedlands.brands.Util.getNoPrefixMessage;
 
 public class BreweryCommand implements TabExecutor {
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -201,12 +202,12 @@ public class BreweryCommand implements TabExecutor {
 
     private void sendBreweriesList() {
         ArrayList<Brewery> breweries = getAllBreweries();
-        player.sendMessage(getMessage("list-header"));
+        player.sendMessage(getNoPrefixMessage("list-header"));
         for (int i = 0; i < 10; i++) {
             int index = i + (9 * page);
             if (index >= breweries.size()) {
                 player.sendMessage(getPreviousPageComponent().append(getPageComponent()));
-                player.sendMessage(getMessage("footer"));
+                player.sendMessage(getNoPrefixMessage("footer"));
                 return;
             }
             brewery = breweries.get(index);
@@ -218,7 +219,7 @@ public class BreweryCommand implements TabExecutor {
                 getPreviousPageComponent()
                         .append(getPageComponent())
                         .append(getNextPageComponent()));
-        player.sendMessage(getMessage("footer"));
+        player.sendMessage(getNoPrefixMessage("footer"));
     }
 
     private ArrayList<Brewery> getAllBreweries() {
