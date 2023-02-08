@@ -293,7 +293,11 @@ public class BreweryCommand implements TabExecutor {
         }
         Resident resident = TownyAPI.getInstance().getResident(player.getUniqueId());
         if (resident.getAccount().canPayFromHoldings(10_000)) {
-            Confirmation.runOnAccept(() -> BreweryDatabase.createBrewery(breweryName, player)).setTitle("§cAre you sure you want to create a new §ebrewery§c? This will cost you §610,000 Gold!").sendTo(player);
+            Confirmation.runOnAccept(() -> {
+                BreweryDatabase.createBrewery(breweryName, player);
+                resident.getAccount().withdraw(10_000, "Created Brewery");
+            }
+            ).setTitle("§cAre you sure you want to create a new §ebrewery§c? This will cost you §610,000 Gold!").sendTo(player);
         } else {
             player.sendMessage(getMessage("not-enough-money"));
         }
