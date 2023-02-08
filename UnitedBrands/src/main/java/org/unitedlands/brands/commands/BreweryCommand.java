@@ -337,15 +337,15 @@ public class BreweryCommand implements TabExecutor {
             return;
         }
 
-        if (isBreweryOwner()) {
-            InviteRequest inviteRequest = new InviteRequest(player, inviteReceiver);
-            inviteRequests.add(inviteRequest);
-            player.sendMessage(getMessage("player-invited", breweryName));
-            inviteReceiver.sendMessage(getMessage("brewery-invite", breweryName));
+        if (!isBreweryOwner()) {
+            player.sendMessage(getMessage("must-own-brewery"));
             return;
         }
 
-        player.sendMessage(getMessage("must-own-brewery"));
+        InviteRequest inviteRequest = new InviteRequest(player, inviteReceiver);
+        inviteRequests.add(inviteRequest);
+        player.sendMessage(getMessage("player-invited", breweryName));
+        inviteReceiver.sendMessage(getMessage("brewery-invite", breweryName));
 
     }
 
