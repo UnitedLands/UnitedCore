@@ -180,7 +180,7 @@ public class BreweryDatabase {
     }
 
     private static int getPlayerStat(String uuid, String name) {
-        return PLUGIN.getPlayerStatsConfig().getInt(uuid + ".name");
+        return PLUGIN.getPlayerStatsConfig().getInt(uuid + "." + name);
     }
 
     public static void delete(Brewery brewery) {
