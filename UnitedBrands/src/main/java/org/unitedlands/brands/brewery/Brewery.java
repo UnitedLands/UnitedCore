@@ -1,120 +1,136 @@
 package org.unitedlands.brands.brewery;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.unitedlands.brands.UnitedBrands;
-import org.unitedlands.brands.Util;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Brewery {
-
-    private final UnitedBrands ub;
     private final String name;
     private final OfflinePlayer owner;
     private final List<String> members;
+    private final UUID uuid;
+    private String slogan;
+    private int level;
+    private int brewsMade;
+    private int brewsDrunk;
+    private int totalStars;
+    private int averageStars;
 
-    public Brewery(UnitedBrands ub, String name, OfflinePlayer owner, List<String> members) {
-        this.ub = ub;
+
+    public Brewery(String name, OfflinePlayer owner, List<String> members, UUID uuid) {
         this.name = name;
         this.owner = owner;
         this.members = members;
+        this.uuid = uuid;
+    }
+
+    public Brewery(String name, OfflinePlayer owner, List<String> members) {
+        this.name = name;
+        this.owner = owner;
+        this.members = members;
+        uuid = UUID.randomUUID();
     }
 
     @NotNull
-    public OfflinePlayer getBreweryOwner() {
+    public OfflinePlayer getOwner() {
         return owner;
     }
 
     @NotNull
-    public String getBreweryName() {
+    public String getName() {
         return name;
     }
 
-    public String getBrewerySlogan() {
-        FileConfiguration breweriesConfig = getBreweriesConfig();
-        return breweriesConfig.getString(name + ".slogan");
-    }
-
-    public void setSlogan(String slogan) {
-        FileConfiguration breweriesConfig = getBreweriesConfig();
-        breweriesConfig.set(name + ".slogan", slogan);
-        getBreweriesFile().saveConfig(breweriesConfig);
-    }
-
-    public void createBrewery() {
-        FileConfiguration breweriesConfig = getBreweriesConfig();
-        breweriesConfig.createSection(name);
-        ConfigurationSection brewerySection = breweriesConfig.getConfigurationSection(name);
-        brewerySection.set("name", name);
-        brewerySection.set("owner-uuid", owner.getUniqueId().toString());
-        brewerySection.set("level", 0);
-        brewerySection.set("brews-made", 0);
-        brewerySection.set("brews-drunk", 0);
-        brewerySection.set("total-stars", 0);
-        brewerySection.set("average-stars", 0);
-        brewerySection.set("members", new ArrayList<String>());
-        getBreweriesFile().saveConfig(breweriesConfig);
-        owner.getPlayer().sendMessage(Util.getMessage("brewery-created", name));
-    }
-
     public void updateAverageStars() {
-        FileConfiguration breweriesConfig = getBreweriesConfig();
-        int totalStars = getBreweryStat("total-stars");
-        int brewsDrunk = getBreweryStat("brews-drunk");
-        double newAverage = (double) totalStars / brewsDrunk;
-        breweriesConfig.set(name + ".average-stars", Math.round(newAverage));
-        getBreweriesFile().saveConfig(breweriesConfig);
+        averageStars = totalStars / brewsDrunk;
     }
 
-    public void addMemberToBrewery(Player player) {
-        FileConfiguration breweriesConfig = getBreweriesConfig();
-        @NotNull List<String> members = getBreweryMembers();
+    public void addMember(Player player) {
         members.add(player.getUniqueId().toString());
-        breweriesConfig.set(name + ".members", members);
-        getBreweriesFile().saveConfig(breweriesConfig);
     }
 
-    public void removeMemberFromBrewery(Player player) {
-        FileConfiguration breweriesConfig = getBreweriesConfig();
-        @NotNull List<String> members = getBreweryMembers();
-
+    public void removeMember(Player player) {
         members.remove(player.getUniqueId().toString());
-        breweriesConfig.set(name + ".members", members);
-        getBreweriesFile().saveConfig(breweriesConfig);
     }
 
-    public void deleteBrewery() {
-        FileConfiguration breweriesConfig = getBreweriesConfig();
-        breweriesConfig.set(name, null);
-        getBreweriesFile().saveConfig(breweriesConfig);
-    }
-
-    public int getBreweryStat(String statName) {
-        return getBreweriesConfig().getInt(name + "." + statName);
+    public int getBreweryStat(String name) {
+        return switch (name) {
+            case "brews-made" -> brewsMade;
+            case "brews-drunk" -> brewsDrunk;
+            case "total-stars" -> totalStars;
+            case "average-stars" -> averageStars;
+            case "level" -> level;
+            default -> 0;
+        };
     }
 
     public void increaseStat(String statName, int increment) {
-        FileConfiguration breweriesConfig = getBreweriesConfig();
-        String statPath = name + "." + statName;
-        int currentAmount = breweriesConfig.getInt(statPath);
-        breweriesConfig.set(statPath, currentAmount + increment);
-        getBreweriesFile().saveConfig(breweriesConfig);
+        switch (statName) {
+            case "brews-made" -> brewsMade += increment;
+            case "brews-drunk" -> brewsDrunk += increment;
+            case "total-stars" -> totalStars += increment;
+            case "average-stars" -> averageStars += increment;
+            case "level" -> level += increment;
+        }
     }
 
-    private FileConfiguration getBreweriesConfig() {
-        return getBreweriesFile().getBreweriesConfig();
+    public UUID getUUID() {
+        return uuid;
     }
 
-    private BreweriesFile getBreweriesFile() {
-        return new BreweriesFile(ub);
-    }
-
-    public List<String> getBreweryMembers() {
+    public List<String> getMembers() {
         return members;
     }
+
+    public int getBrewsMade() {
+        return brewsMade;
+    }
+
+    public void setBrewsMade(int brewsMade) {
+        this.brewsMade = brewsMade;
+    }
+
+    public int getBrewsDrunk() {
+        return brewsDrunk;
+    }
+
+    public void setBrewsDrunk(int brewsDrunk) {
+        this.brewsDrunk = brewsDrunk;
+    }
+
+    public int getTotalStars() {
+        return totalStars;
+    }
+
+    public void setTotalStars(int totalStars) {
+        this.totalStars = totalStars;
+    }
+
+    public int getAverageStars() {
+        return averageStars;
+    }
+
+    public void setAverageStars(int averageStars) {
+        this.averageStars = averageStars;
+    }
+
+    public String getSlogan() {
+        return slogan;
+    }
+
+    public void setSlogan(String slogan) {
+        this.slogan = slogan;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
 }

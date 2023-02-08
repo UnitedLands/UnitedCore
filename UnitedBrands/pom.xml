@@ -6,7 +6,7 @@
 
     <groupId>org.unitedlands.brands</groupId>
     <artifactId>UnitedBrands</artifactId>
-    <version>3.1</version>
+    <version>4.0</version>
     <packaging>jar</packaging>
 
     <name>UnitedBrands</name>
@@ -82,6 +82,12 @@
             <groupId>com.github.UnitedLands</groupId>
             <artifactId>UnitedBrewery</artifactId>
             <version>090b090b34</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.TownyAdvanced</groupId>
+            <artifactId>Towny</artifactId>
+            <version>0.98.3.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
