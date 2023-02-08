@@ -120,8 +120,9 @@ public class BreweryCommand implements TabExecutor {
 
     private void sendHelpMessage() {
         List<String> helpMessage = PLUGIN.getConfig().getStringList("messages.help-command");
+        MiniMessage mm = MiniMessage.miniMessage();
         for (String message : helpMessage) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+            player.sendMessage(mm.deserialize(message));
         }
     }
 

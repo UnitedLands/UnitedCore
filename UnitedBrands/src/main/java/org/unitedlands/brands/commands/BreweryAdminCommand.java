@@ -2,6 +2,7 @@ package org.unitedlands.brands.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -93,8 +94,9 @@ public class BreweryAdminCommand implements CommandExecutor {
 
     private void sendHelpMessage() {
         List<String> helpMessage = PLUGIN.getConfig().getStringList("messages.help-command-admin");
+        MiniMessage mm = MiniMessage.miniMessage();
         for (String message : helpMessage) {
-            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+            sender.sendMessage(mm.deserialize(message));
         }
     }
 
