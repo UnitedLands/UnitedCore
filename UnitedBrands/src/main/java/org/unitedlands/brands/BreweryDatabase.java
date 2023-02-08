@@ -184,6 +184,7 @@ public class BreweryDatabase {
     }
 
     public static void delete(Brewery brewery) {
+        BREWERIES.remove(brewery);
         FileConfiguration breweriesConfig = PLUGIN.getBreweriesConfig();
         breweriesConfig.set(brewery.getUUID().toString(), null);
         BREWERIES_FILE.saveConfig(breweriesConfig);
