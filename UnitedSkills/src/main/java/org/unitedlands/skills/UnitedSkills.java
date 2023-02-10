@@ -5,18 +5,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.unitedlands.skills.abilities.*;
 import org.unitedlands.skills.commands.BlendCommand;
 import org.unitedlands.skills.commands.PointsCommand;
 import org.unitedlands.skills.commands.UnitedSkillsComand;
 import org.unitedlands.skills.guis.BiomeKit;
 import org.unitedlands.skills.hooks.UnitedSkillsPlaceholders;
-import org.unitedlands.skills.abilities.BrewerAbilities;
-import org.unitedlands.skills.abilities.DiggerAbilities;
-import org.unitedlands.skills.abilities.FarmerAbilities;
-import org.unitedlands.skills.abilities.FishermanAbilities;
-import org.unitedlands.skills.abilities.HunterAbilities;
-import org.unitedlands.skills.abilities.MinerAbilities;
-import org.unitedlands.skills.abilities.WoodcutterAbilities;
 import org.unitedlands.skills.points.JobsListener;
 import org.unitedlands.skills.safarinets.SafariNetListener;
 import org.unitedlands.skills.skill.SkillFile;
@@ -49,6 +43,7 @@ public final class UnitedSkills extends JavaPlugin {
                 new FishermanAbilities(this),
                 new MinerAbilities(this),
                 new BiomeKit(this),
+                new MasterworkListener(this),
         };
 
         registerEvents(listeners);
