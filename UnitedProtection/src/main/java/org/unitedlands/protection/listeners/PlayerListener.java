@@ -23,6 +23,7 @@ public class PlayerListener implements Listener {
 
     private final TownyAPI towny = TownyAPI.getInstance();
     private final UnitedProtection unitedProtection;
+    private Player player;
 
     public PlayerListener(UnitedProtection unitedProtection) {
         this.unitedProtection = unitedProtection;
@@ -30,10 +31,10 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
+        player = event.getPlayer();
         Block block = event.getBlock();
 
-        if (!canModifyBlock(player, block)) {
+        if (isProtectedBlock(block)) {
             player.sendMessage(getMessage("break-deny-message"));
             event.setCancelled(true);
         }
@@ -41,10 +42,10 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        Player player = event.getPlayer();
+        player = event.getPlayer();
         Block block = event.getBlock();
 
-        if (!canModifyBlock(player, block)) {
+        if (isProtectedBlock(block)) {
             player.sendMessage(getMessage("place-deny-message"));
             event.setCancelled(true);
         }
@@ -67,20 +68,20 @@ public class PlayerListener implements Listener {
         return getWhitelistedBlocks().contains(block.getType().toString());
     }
 
-    private boolean isInTown(Block block, Player player) {
-        Location playerLocation = player.getLocation();
-        if (towny.isWilderness(playerLocation)) {
+    private boolean isInTown(Block block) {
+        Location blockLocation = block.getLocation();
+        if (towny.isWilderness(blockLocation)) {
             return false;
         }
+
         Resident resident = towny.getResident(player);
-        Location blockLocation = block.getLocation();
         @Nullable TownBlock townBlock = towny.getTownBlock(blockLocation);
         if (townBlock == null) return false;
         Town town = townBlock.getTownOrNull();
         if (town == null || !resident.hasTown()) {
             return false;
         }
-        return resident.getTownOrNull().equals(town);
+        return resident.getTownOrNull().equals(town) || town.getTrustedResidents().contains(resident);
     }
 
     private String getMessage(String message) {
@@ -88,23 +89,23 @@ public class PlayerListener implements Listener {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    private boolean canModifyBlock(Player player, Block block) {
+    private boolean isProtectedBlock(Block block) {
         Resident resident = towny.getResident(player.getUniqueId());
         int blockY = block.getLocation().getBlockY();
         String worldName = block.getWorld().getName();
 
         if (!worldName.equals("world_earth")) {
-            return true;
+            return false;
         }
 
         if (isWhitelistedBlock(block)) {
-            return true;
+            return false;
         }
 
         if (player.hasPermission("united.protection.bypass")) {
-            return true;
+            return false;
         }
 
-        return blockY >= getProtectedY() || isInTown(block, player);
+        return blockY < getProtectedY() && !isInTown(block);
     }
 }
