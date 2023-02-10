@@ -278,6 +278,7 @@ public class BreweryCommand implements TabExecutor {
                             .match("<level>")
                             .replacement(String.valueOf(level + 1))
                             .build()));
+            account.withdraw(price, "upgraded brewery");
         }).setTitle("§cAre you sure you want to upgrade your brewery to level " + (level + 1) + "? This upgrade will cost you §6" + price + " Gold!")
                 .sendTo(player);
     }
