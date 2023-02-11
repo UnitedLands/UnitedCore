@@ -8,10 +8,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.unitedlands.skills.UnitedSkills;
 
-import java.util.List;
-
-import static dev.lone.itemsadder.api.CustomStack.getInstance;
-
 public class MasterworkListener implements Listener {
 
     private final UnitedSkills unitedSkills;
@@ -19,11 +15,7 @@ public class MasterworkListener implements Listener {
     public MasterworkListener(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
     }
-    private static final List<String> MASTERWORK_GEAR = List.of(
-            getInstance("unitedlands:masterwork_helmet").getId(),
-            getInstance("unitedlands:masterwork_chestplate").getId(),
-            getInstance("unitedlands:masterwork_leggings").getId(),
-            getInstance("unitedlands:masterwork_boots").getId());
+
     @EventHandler
     public void onMasterworkAttack(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player damager))
@@ -52,7 +44,7 @@ public class MasterworkListener implements Listener {
             CustomStack customStack = CustomStack.byItemStack(piece);
             if (customStack == null)
                 continue;
-            if (!MASTERWORK_GEAR.contains(customStack.getId()))
+            if (customStack.getId().contains("masterwork"))
                 continue;
             switch (customStack.getItemStack().getType()) {
                 case LEATHER_HELMET, LEATHER_BOOTS ->  {
