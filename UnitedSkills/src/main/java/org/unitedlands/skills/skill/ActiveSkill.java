@@ -81,7 +81,7 @@ public class ActiveSkill extends Skill {
                 return;
             }
             bossBar.name(name.append(Component.text(getSecondsLeft() + "s", NamedTextColor.GOLD)));
-            bossBar.progress((float) getSecondsLeft() / getDuration());
+            bossBar.progress(Math.max(0.0F, (float) getSecondsLeft() / getDuration()));
         }, 0, 20L);
     }
 
@@ -123,11 +123,15 @@ public class ActiveSkill extends Skill {
     }
 
     private long getRemainingCooldownTime() {
+        if (player == null)
+            return 0;
         UUID uuid = player.getUniqueId();
         return (cooldowns.get(uuid) - System.currentTimeMillis()) / 1000;
     }
 
     public long getSecondsLeft() {
+        if (player == null)
+            return 0;
         UUID uuid = player.getUniqueId();
         return (activeDurations.get(uuid) - System.currentTimeMillis()) / 1000;
     }
