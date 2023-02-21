@@ -1,3 +1,6 @@
+earth-edges:
+  x: 36800
+  y: 18430
 horse-speed-modifier:
   - SAND;-0.2
   - DIRT_PATH;0.3

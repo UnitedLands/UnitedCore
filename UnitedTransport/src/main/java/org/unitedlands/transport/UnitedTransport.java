@@ -8,7 +8,7 @@ public final class UnitedTransport extends JavaPlugin {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new HorseListener(this), this);
-        getServer().getPluginManager().registerEvents(new MiscListener(), this);
+        getServer().getPluginManager().registerEvents(new MiscListener(this), this);
         saveDefaultConfig();
     }
 }
