@@ -45,6 +45,8 @@ public class MiscListener implements Listener {
             Location newLoc = player.getLocation();
             newLoc.setZ(loc.getZ() * -1);
             player.teleportAsync(newLoc);
+        } else {
+            return;
         }
         player.setFlying(player.isFlying());
         player.setVelocity(player.getVelocity());
@@ -82,12 +84,12 @@ public class MiscListener implements Listener {
 
     private boolean isHorizontalEdge(Location location) {
         int x = Math.abs(location.getBlockX());
-        return unitedTransport.getConfig().getInt("earth-edges.x") == x;
+        return unitedTransport.getConfig().getInt("earth-edges.x") <= x;
     }
 
     private boolean isVerticalEdge(Location location) {
         int z = Math.abs(location.getBlockZ());
-        return unitedTransport.getConfig().getInt("earth-edges.z") == z;
+        return unitedTransport.getConfig().getInt("earth-edges.z") <= z;
     }
 
     private boolean isCorner(Location loc) {
