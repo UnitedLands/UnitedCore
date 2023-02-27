@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.items.commands.TreeCmd;
+import org.unitedlands.items.listeners.FoodListener;
 import org.unitedlands.items.sapling.AncientOak;
 import org.unitedlands.items.sapling.MidasJungle;
 import org.unitedlands.items.sapling.MidasOak;
@@ -23,6 +24,7 @@ public class UnitedItems extends JavaPlugin {
     public void onEnable() {
 
         this.getCommand("tree").setExecutor(new TreeCmd());
+        getServer().getPluginManager().registerEvents(new FoodListener(),this);
         getServer().getPluginManager().registerEvents(new Tree(this),this);
         saveDefaultConfig();
 
