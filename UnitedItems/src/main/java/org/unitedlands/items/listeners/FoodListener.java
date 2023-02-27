@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -48,6 +49,15 @@ public class FoodListener implements Listener {
         player.setFireTicks(2 * 20);
 
     }
+    @EventHandler
+    public void onCornPlant(PlayerInteractEvent event) {
+        ItemStack item = event.getItem();
+        if (item == null)
+            return;
+        ItemStack corn = CustomStack.getInstance("unitedlands:corn").getItemStack();
+        if (item.equals(corn))
+            event.setCancelled(true);
 
+    }
 
 }
