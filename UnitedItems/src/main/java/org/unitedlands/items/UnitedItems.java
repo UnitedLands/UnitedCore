@@ -24,7 +24,7 @@ public class UnitedItems extends JavaPlugin {
     public void onEnable() {
 
         this.getCommand("tree").setExecutor(new TreeCmd());
-        getServer().getPluginManager().registerEvents(new FoodListener(),this);
+        getServer().getPluginManager().registerEvents(new FoodListener(this),this);
         getServer().getPluginManager().registerEvents(new Tree(this),this);
         saveDefaultConfig();
 
