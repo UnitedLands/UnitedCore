@@ -84,10 +84,10 @@ public class Skill {
         if (player.hasPermission("united.skills." + name + ".3") && type.getMaxLevel() == 3) {
             return 3;
         }
-        if (player.hasPermission("united.skills." + name + ".2")) {
+        if (player.hasPermission("united.skills." + name + ".2") && type.getMaxLevel() >= 2) {
             return 2;
         }
-        if (player.hasPermission("united.skills." + name + ".1")) {
+        if (player.hasPermission("united.skills." + name + ".1") && type.getMaxLevel() >= 1) {
             return 1;
         }
         return 0;

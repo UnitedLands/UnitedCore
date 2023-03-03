@@ -77,7 +77,7 @@ public class HunterAbilities implements Listener {
         if (entity.getType().equals(EntityType.ENDER_DRAGON)) {
             Skill leatherworking = new Skill(player, SkillType.LEATHERWORKING);
             if (leatherworking.isSuccessful()) {
-                CustomStack dragonScale = CustomStack.getInstance("dragon_scale");
+                CustomStack dragonScale = CustomStack.getInstance("unitedlands:dragon_scale");
                 player.getInventory().addItem(dragonScale.getItemStack());
                 leatherworking.notifyActivation();
             }
