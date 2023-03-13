@@ -5,12 +5,17 @@ import com.palmergames.bukkit.towny.command.BaseCommand;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownBlock;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,10 +29,7 @@ import org.unitedlands.wars.war.entities.WarringEntity;
 import org.unitedlands.wars.war.entities.WarringNation;
 import org.unitedlands.wars.war.entities.WarringTown;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class WarAdminCommand implements TabExecutor {
     private static final List<String> MAIN_TAB_COMPLETES = Arrays.asList("end", "purge", "tokens");
@@ -77,6 +79,11 @@ public class WarAdminCommand implements TabExecutor {
             int amount = Integer.parseInt(args[2]);
             entity.getWarHealth().decreaseHealth(amount);
         }
+        if (args[0].equalsIgnoreCase("life")) {
+            Resident player = Utils.getTownyResident(Bukkit.getPlayer(args[1]));
+            int amount = Integer.parseInt(args[2]);
+            WarDataController.setResidentLives(player, amount);
+        }
         if (args[0].equalsIgnoreCase("tokens")) {
             Town town = UnitedWars.TOWNY_API.getTown(args[2]);
             int amount = Integer.parseInt(args[3]);
@@ -105,8 +112,9 @@ public class WarAdminCommand implements TabExecutor {
                 HashSet<Resident> residents = new HashSet<>();
                 residents.addAll(first.getResidents());
                 residents.addAll(second.getResidents());
-                new War(List.of(first, second), null,  residents, WarType.TOWNWAR);
+                War war = new War(List.of(first, second), null,  residents, WarType.TOWNWAR);
                 sender.sendMessage("War between " + first.getFormattedName() + " and " + second.getFormattedName() + " force started!");
+                war.endWarTimer();
             }
             if (args[1].equalsIgnoreCase("nation")) {
                 Nation first = UnitedWars.TOWNY_API.getNation(args[2]);
@@ -118,9 +126,16 @@ public class WarAdminCommand implements TabExecutor {
                 HashSet<Resident> residents = new HashSet<>();
                 residents.addAll(first.getResidents());
                 residents.addAll(second.getResidents());
-                new War(null, List.of(first, second),  residents, WarType.NATIONWAR);
+                War war = new War(null, List.of(first, second),  residents, WarType.NATIONWAR);
                 sender.sendMessage("War between " + first.getFormattedName() + " and " + second.getFormattedName() + " force started!");
+                war.endWarTimer();
             }
+        }
+        if (args[0].equalsIgnoreCase("unfreeze")) {
+            Nation target = UnitedWars.TOWNY_API.getNation(args[2]);
+            if (target == null)
+                return true;
+            setFrozen(target.getTownBlocks(), false);
         }
         if (args[0].equalsIgnoreCase("end")) {
             if (args[1].equalsIgnoreCase("town")) {
@@ -202,5 +217,21 @@ public class WarAdminCommand implements TabExecutor {
 
         War war = winner.getWar();
         war.endWar(winner, loser);
+    }
+
+    private void setFrozen(Collection<TownBlock> blocks, boolean toggle) {
+        for (TownBlock block: blocks) {
+            Chunk chunk = block.getWorldCoord().getBukkitWorld().getChunkAt(block.getX(), block.getZ());
+            for (Entity entity: chunk.getEntities()) {
+                if (entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.WOLF)
+                    continue;
+                entity.setInvulnerable(toggle);
+                entity.setGravity(!toggle);
+                if (entity instanceof LivingEntity living) {
+                    living.setAI(!toggle);
+                    living.setCollidable(!toggle);
+                }
+            }
+        }
     }
 }
