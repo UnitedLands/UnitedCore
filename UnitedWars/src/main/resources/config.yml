@@ -328,11 +328,18 @@ messages:
   lost-surrender-town: '<red>You''ve surrendered from the war... Your side has offered all of <yellow><town></yellow> to end the war, and the deal was accepted.'
   war-end-peace: '<green>The war has ended... Both sides agreed on a White Peace offer.'
   war-end-tie: '<green>The war has ended... Neither side won as they both reached 0 HP!'
-  war-started-broadcast: '<yellow><declarer><red> has declared a war on <yellow><victim><red>! May the victor bring glory to their side!'
+  war-start-broadcast: '<yellow><declarer><red> has declared a war on <yellow><victim><red>! May the victor bring glory to their side!'
   surrender-received: '<red>You received a surrender request from <yellow><requester></yellow>! They have offered <yellow><offer></yellow> in order to end this war! Do <yellow>/surrender accept</yellow> to accept!'
   request-sent: '<green>Surrender request successfully sent! You must now wait for the other side to accept or decline it!'
   health-too-high-to-surrender: '<red>You cannot surrender right now! Your health must be lower than or equal to <gold>65 HP</gold>!'
   town-deleted-removed-from-war: '<red>Your town was deleted! You''ve been removed from the war and lost all your lives!'
+  mercenary-in-war: '<red>That player is already in a war and cannot be hired as a mercenary!'
+  mercenary-request-sent: '<green>Mercenary request successfully sent!'
+  no-pending-requests-mercenary: '<red>You don''t have any pending mercenary requests!'
+  mercenary-not-online: '<red>That player is offline! You can only hire mercenaries while they''re online!'
+  must-specify-money: '<red>You need to specify the money amount for the mercenary!'
+  mercenary-hired: '<yellow><mercenary><red> has joined <yellow><entity><red> as a mercenary! They can now participate in the war!'
+  mercenary-received: '<yellow><requester><red> has offered you <gold><amount> Gold<red> to join their war as a <yellow>mercenary!<red> Do <yellow>/mercenary accept<red> to accept the offer!'
   # help commands
   townwar-help:
     - "<bold><red>United<white>Wars"
@@ -350,6 +357,9 @@ messages:
     - "<yellow>/surrender town <town> <red>- Sends a surrender request with a town (nation wars)"
     - "<yellow>/surrender whitepeace <red>- Sends a white peace request"
     - "<yellow>/surrender none <red>- Surrenders immediately (must have 65 HP)"
+  mercenary-help:
+    - "<bold><red>United<white>Wars"
+    - "<yellow>/mercenary hire <amount> <red>- Hires a mercenary for the given amount of money"
   # Doesn't go through minimessage.
   cannot-do-in-war: '§cYou cannot use this command while in a war.'
   join-war-as-ally: '§cAre you sure you want to help <nation> in their war as an ally?'

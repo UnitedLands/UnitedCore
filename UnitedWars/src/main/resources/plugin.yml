@@ -19,3 +19,5 @@ commands:
     permission: united.wars.admin
   surrender:
     description: Used to surrender from wars or accept surrender requests
+  mercenary:
+    description: Used to hire mercenaries to wars, or accept a mercenary request.

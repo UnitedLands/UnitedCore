@@ -16,13 +16,15 @@ public class WarringTown implements WarringEntity {
     private final UUID townUUID;
     private WarHealth warHealth;
     private final HashSet<UUID> warringResidents;
+    private final List<UUID> mercenaries;
     private final UUID warUUID;
 
-    public WarringTown(Town town, WarHealth warHealth, List<Resident> warringResidents, War war) {
+    public WarringTown(Town town, WarHealth warHealth, List<Resident> warringResidents, List<UUID> mercenaries,  War war) {
         this.townUUID = town.getUUID();
         this.warHealth = warHealth;
         this.warringResidents = Utils.toUUID(warringResidents);
         this.warUUID = war.getUuid();
+        this.mercenaries = mercenaries;
         if (townUUID != null && warHealth != null && warUUID != null) {
             WarDatabase.addWarringTown(this);
         }
@@ -58,6 +60,17 @@ public class WarringTown implements WarringEntity {
     @Override
     public void addResident(Resident resident) {
         warringResidents.add(resident.getUUID());
+    }
+
+    @Override
+    public void addMercenary(Resident resident) {
+        mercenaries.add(resident.getUUID());
+        warringResidents.add(resident.getUUID());
+    }
+
+    @Override
+    public List<UUID> getMercenaries() {
+        return mercenaries;
     }
 
     @Override

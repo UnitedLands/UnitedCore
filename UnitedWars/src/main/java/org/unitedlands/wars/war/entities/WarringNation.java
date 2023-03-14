@@ -1,5 +1,6 @@
 package org.unitedlands.wars.war.entities;
 
+import com.google.common.base.MoreObjects;
 import com.palmergames.bukkit.towny.object.Government;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -22,20 +23,17 @@ import static org.unitedlands.wars.Utils.getTitle;
 public class WarringNation implements WarringEntity {
     private final UUID nationUUID;
     private WarHealth warHealth;
-
-    public void setAllies(List<UUID> joinedAllies) {
-        this.joinedAllies = joinedAllies;
-    }
-
+    private final List<UUID> mercenaries;
     private List<UUID> joinedAllies = new ArrayList<>();
     private final HashSet<UUID> warringResidents;
     private final UUID warUUID;
 
-    public WarringNation(Nation nation, WarHealth warHealth, List<Resident> warringResidents, War war) {
+    public WarringNation(Nation nation, WarHealth warHealth, List<Resident> warringResidents, List<UUID> mercenaries, War war) {
         this.nationUUID = nation.getUUID();
         this.warHealth = warHealth;
         this.warringResidents = Utils.toUUID(warringResidents);
         this.warUUID = war.getUuid();
+        this.mercenaries = mercenaries;
         WarDatabase.addWarringNation(this);
     }
 
@@ -67,6 +65,17 @@ public class WarringNation implements WarringEntity {
     @Override
     public void addResident(Resident resident) {
         warringResidents.add(resident.getUUID());
+    }
+
+    @Override
+    public void addMercenary(Resident resident) {
+        mercenaries.add(resident.getUUID());
+        warringResidents.add(resident.getUUID());
+    }
+
+    @Override
+    public List<UUID> getMercenaries() {
+        return mercenaries;
     }
 
     @Override
@@ -112,6 +121,10 @@ public class WarringNation implements WarringEntity {
         ally.setActiveWar(true);
         ally.getTowns().forEach(town -> town.setActiveWar(true));
         joinedAllies.add(ally.getUUID());
+    }
+
+    public void setAllies(List<UUID> joinedAllies) {
+        this.joinedAllies = joinedAllies;
     }
 
     public List<UUID> getJoinedAllies() {

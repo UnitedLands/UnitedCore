@@ -376,7 +376,7 @@ public class War {
 
         List<WarringTown> generatedList = new ArrayList<>();
         for (Town town : townList) {
-            WarringTown entity = new WarringTown(town, new WarHealth(town), town.getResidents(), this);
+            WarringTown entity = new WarringTown(town, new WarHealth(town), town.getResidents(), new ArrayList<>(), this);
             entity.getWarHealth().setValidPlayers(entity.getOnlinePlayers().size());
             generatedList.add(entity);
         }
@@ -391,7 +391,7 @@ public class War {
         for (Nation nation : nationList) {
             // Create a list with the nation residents
             List<Resident> warringResidents = new ArrayList<>(nation.getResidents());
-            WarringNation entity = new WarringNation(nation, new WarHealth(nation), warringResidents, this);
+            WarringNation entity = new WarringNation(nation, new WarHealth(nation), warringResidents, new ArrayList<>(), this);
             entity.getWarHealth().setValidPlayers(entity.getOnlinePlayers().size());
             generatedList.add(entity);
         }

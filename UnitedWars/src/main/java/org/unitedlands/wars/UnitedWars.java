@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.wars.commands.NationWarCommand;
 import org.unitedlands.wars.commands.TownWarCommand;
 import org.unitedlands.wars.commands.WarAdminCommand;
+import org.unitedlands.wars.commands.mercenary.MercenaryCommand;
 import org.unitedlands.wars.commands.surrender.SurrenderCommand;
 import org.unitedlands.wars.hooks.Placeholders;
 import org.unitedlands.wars.listeners.BookListener;
@@ -60,6 +61,7 @@ public final class UnitedWars extends JavaPlugin {
         getCommand("townwar").setExecutor(new TownWarCommand());
         getCommand("waradmin").setExecutor(new WarAdminCommand());
         getCommand("surrender").setExecutor(new SurrenderCommand());
+        getCommand("mercenary").setExecutor(new MercenaryCommand());
     }
 
     private void load() {
