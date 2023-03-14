@@ -356,7 +356,6 @@ public class WarDatabase {
                 continue;
             amount++;
         }
-        System.out.println(amount);
         return amount;
     }
 }

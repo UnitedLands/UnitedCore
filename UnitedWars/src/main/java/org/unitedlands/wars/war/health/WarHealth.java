@@ -17,7 +17,7 @@ public class WarHealth {
     private int maxHealth = 100;
     private int validPlayers = 0;
     private boolean isHealing = false;
-    Healer healer = new Healer(this);
+    private final Healer healer = new Healer(this);
     private final BossBar bossBar = generateBossBar();
 
     public WarHealth(String name) {
