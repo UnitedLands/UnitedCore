@@ -27,11 +27,13 @@ class Healer {
 
     void start() {
         WarringEntity warringEntity = WarDatabase.getWarringEntity(warHealth);
+        startTime = System.currentTimeMillis();
 
         PLUGIN.getServer().getScheduler().runTaskTimer(PLUGIN, task -> {
             if (isFull() || warHealth.getHealingRate() == 0) {
                 hideTimer();
                 task.cancel();
+                warHealth.setHealing(false);
                 return;
             }
             // Show the timer and set to healing
@@ -39,7 +41,6 @@ class Healer {
             warHealth.setHealing(true);
 
             if (getRemainingSeconds() <= 0) {
-                startTime = System.currentTimeMillis();
                 warHealth.increaseHealth(1);
                 warHealth.setHealing(false);
                 warringEntity.getOnlinePlayers().forEach(p -> p.playSound(p, Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1));
