@@ -9,6 +9,7 @@ import com.palmergames.bukkit.towny.utils.SpawnUtil;
 import de.jeff_media.angelchest.AngelChest;
 import de.jeff_media.angelchest.AngelChestPlugin;
 import de.jeff_media.angelchest.events.AngelChestSpawnEvent;
+import de.jeff_media.angelchest.events.AngelChestSpawnPrepareEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.Title;
@@ -31,16 +32,15 @@ import org.unitedlands.skills.events.SkillActivateEvent;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.war.War;
-import org.unitedlands.wars.war.WarDataController;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.entities.WarringEntity;
 
 import java.util.Optional;
-import java.util.logging.Level;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static org.unitedlands.wars.Utils.*;
+import static org.unitedlands.wars.war.WarDataController.*;
 import static org.unitedlands.wars.war.WarUtil.hasSameWar;
 
 public class PlayerListener implements Listener {
@@ -94,7 +94,9 @@ public class PlayerListener implements Listener {
         PlayerTeleportEvent.TeleportCause cause = event.getCause();
         if (!event.hasChangedBlock())
             return;
-        if (cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT || cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL)
+        if (cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT
+                || cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL
+                || cause == PlayerTeleportEvent.TeleportCause.SPECTATE)
             return;
         // they can bypass.
         if (player.hasPermission("united.wars.bypass.tp")) {
@@ -140,10 +142,12 @@ public class PlayerListener implements Listener {
     }
     @EventHandler
     public void onCommandExecute(PlayerCommandPreprocessEvent event) {
-        if (!config.getStringList("banned-commands").contains(event.getMessage())) return;
+        if (!config.getStringList("banned-commands").contains(event.getMessage()))
+            return;
         Player player = event.getPlayer();
         Town town = getPlayerTown(player);
-        if (town == null) return;
+        if (town == null)
+            return;
         if (WarDatabase.hasWar(town)) {
             player.sendMessage(Utils.getMessage("banned-command"));
             event.setCancelled(true);
@@ -151,13 +155,26 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onGravePrepare(AngelChestSpawnPrepareEvent event) {
+        Resident resident = getTownyResident(event.getPlayer().getUniqueId());
+        if (resident == null)
+            return;
+        if (!resident.hasTown())
+            return;
+        if (!WarDatabase.hasWar(event.getPlayer()))
+            return;
+        if (hasResidentLives(resident))
+            event.setCancelled(true);
+    }
+    @EventHandler
     public void onGraveCreation(AngelChestSpawnEvent event) {
         Resident resident = getTownyResident(event.getAngelChest().getPlayer().getUniqueId());
-        if (resident == null) return;
-        if (resident.hasTown()) {
-            if (WarDatabase.hasWar(resident.getPlayer())) {
-                event.getAngelChest().setProtected(false);
-            }
+        if (resident == null)
+            return;
+        if (!resident.hasTown())
+            return;
+        if (WarDatabase.hasWar(resident.getPlayer()) && getResidentLives(resident) == 0) {
+            event.getAngelChest().setProtected(false);
         }
     }
 
@@ -181,10 +198,7 @@ public class PlayerListener implements Listener {
             return;
 
         // Killer doesn't have lives, return
-        if (!WarDataController.hasResidentLives(killer))
-            return;
-
-        if (!WarDataController.hasResidentLives(victim))
+        if (!hasResidentLives(killer) || !hasResidentLives(victim))
             return;
 
         WarringEntity warringEntity = WarDatabase.getWarringEntity(victim.getPlayer());
@@ -193,7 +207,7 @@ public class PlayerListener implements Listener {
 
         decreaseHealth(victim, warringEntity);
         playSounds(warringEntity);
-        if (WarDataController.getResidentLives(victim) == 0) {
+        if (getResidentLives(victim) == 0) {
             notifyWarKick(victim.getPlayer(), warringEntity);
             jailResident(victim, warringEntity);
             return;
@@ -201,6 +215,8 @@ public class PlayerListener implements Listener {
         Component message = getPlayerDeathMessage(warringEntity, killer, victim);
         warringEntity.getWar().broadcast(message);
 
+        event.setCancelled(true);
+        Utils.teleportPlayerToSpawn(victim.getPlayer());
     }
 
     private void jailResident(Resident victim, WarringEntity warringEntity) {
@@ -232,7 +248,7 @@ public class PlayerListener implements Listener {
         Resident resident = getTownyResident(dead);
         if (!WarDatabase.hasWar(dead))
             return;
-        if (!WarDataController.hasResidentLives(resident))
+        if (!hasResidentLives(resident))
             return;
         WarringEntity warringEntity = WarDatabase.getWarringEntity(dead);
         if (warringEntity.getWar().hasActiveTimer())
@@ -253,7 +269,7 @@ public class PlayerListener implements Listener {
         warringEntity.getWarHealth().decreaseHealth(5);
         warringEntity.getWarHealth().decreaseMaxHealth(5);
         warringEntity.getWarHealth().flash();
-        WarDataController.decrementResidentLives(victim);
+        decrementResidentLives(victim);
     }
 
     private void playSounds(WarringEntity warringEntity) {

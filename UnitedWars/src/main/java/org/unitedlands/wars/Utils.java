@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -58,7 +59,7 @@ public class Utils {
     public static void teleportPlayerToSpawn(Player player) {
         Location spawn = TOWNY_API.getResident(player).getTownOrNull().getSpawnOrNull();
         if (spawn == null) return;
-        player.teleportAsync(spawn);
+        player.teleportAsync(spawn, PlayerTeleportEvent.TeleportCause.SPECTATE);
     }
 
     public static Town getPlayerTown(Player player) {
