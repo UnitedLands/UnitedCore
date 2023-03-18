@@ -214,11 +214,15 @@ public class PlayerListener implements Listener {
         }
         Component message = getPlayerDeathMessage(warringEntity, killer, victim);
         warringEntity.getWar().broadcast(message);
-
-        event.setCancelled(true);
-        Utils.teleportPlayerToSpawn(victim.getPlayer());
+        if (!isHoldingTotem(victim.getPlayer())) {
+            event.setCancelled(true);
+            Utils.teleportPlayerToSpawn(victim.getPlayer());
+        }
     }
 
+    private boolean isHoldingTotem(Player player) {
+        return player.getInventory().getItemInMainHand().getType() == Material.TOTEM_OF_UNDYING || player.getInventory().getItemInOffHand().getType() == Material.TOTEM_OF_UNDYING;
+    }
     private void jailResident(Resident victim, WarringEntity warringEntity) {
         Jail jail = getJail(warringEntity);
         if (jail == null)
