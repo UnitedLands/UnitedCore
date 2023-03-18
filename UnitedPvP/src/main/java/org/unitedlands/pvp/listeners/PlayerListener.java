@@ -145,9 +145,9 @@ public class PlayerListener implements Listener {
 
         PvpPlayer killerPvP = new PvpPlayer(killer);
         PvpPlayer victimPvP = new PvpPlayer(victim);
-        // If both players are townmates, it was likely just a small quarrel or a duel
+        // If both players are town mates or nation mates, it was likely just a small quarrel or a duel
         // No need to do anything.
-        if (areInSameTown(killer, victim))
+        if (areRelated(killer, victim))
             return;
 
         // If an outlaw is killed, don't increase the hostility
@@ -287,11 +287,13 @@ public class PlayerListener implements Listener {
         return Math.toIntExact(TimeUnit.MILLISECONDS.toDays(timeDifference));
     }
 
-    private boolean areInSameTown(Player first, Player second) {
+    private boolean areRelated(Player first, Player second) {
         var firstTown = towny.getResident(first).getTownOrNull();
         var secondTown = towny.getResident(second).getTownOrNull();
         if (firstTown == null || secondTown == null) return false;
-
+        if (firstTown.hasNation() && secondTown.hasNation()) {
+            return firstTown.getNationOrNull().equals(secondTown.getNationOrNull());
+        }
         return firstTown.equals(secondTown);
     }
 
