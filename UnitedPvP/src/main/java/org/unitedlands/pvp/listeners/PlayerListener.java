@@ -129,12 +129,8 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerExplosionDamage(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof Player player
-                && event.getDamager() instanceof EnderCrystal crystal) {
-            PvpPlayer pvpPlayer = new PvpPlayer(player);
-            if (pvpPlayer.isImmune() && crystalMap.containsKey(crystal)) {
-                event.setCancelled(true);
-            }
+        if (event.getEntity() instanceof Player && event.getDamager() instanceof EnderCrystal) {
+            event.setDamage(event.getDamage() * 0.1);
         }
     }
 
