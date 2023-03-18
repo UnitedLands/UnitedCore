@@ -23,7 +23,7 @@ public class FoodListener implements Listener {
     public void onDonutEat(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
         ItemStack cosmicDonut = CustomStack.getInstance("unitedlands:cosmic_donut").getItemStack();
-        if (!item.equals(cosmicDonut))
+        if (!item.isSimilar(cosmicDonut))
             return; // The item is not a cosmic donut, return and end the code here.
 
         Player player = event.getPlayer();
@@ -41,7 +41,7 @@ public class FoodListener implements Listener {
     public void onPepperEat(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
         ItemStack hotPepper = CustomStack.getInstance("unitedlands:hot_pepper").getItemStack();
-        if (!item.equals(hotPepper))
+        if (!item.isSimilar(hotPepper))
             return; // The item is not a hot pepper, return and end the code here.
         Player player = event.getPlayer();
         player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 5 * 20, 1));
@@ -55,7 +55,7 @@ public class FoodListener implements Listener {
         if (item == null)
             return;
         ItemStack corn = CustomStack.getInstance("unitedlands:corn").getItemStack();
-        if (item.equals(corn))
+        if (item.isSimilar(corn))
             event.setCancelled(true);
 
     }
