@@ -5,6 +5,8 @@ import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.unitedlands.upkeep.UnitedUpkeep;
 
+import static org.unitedlands.upkeep.util.NationMetaController.isOfficialNation;
+
 public class TownUpkeepCalculator {
 
     private final UnitedUpkeep unitedUpkeep;
@@ -17,17 +19,27 @@ public class TownUpkeepCalculator {
 
     public double calculateNationDiscountedTownUpkeep() {
         double upkeepPerPlot = (getBaseTownUpkeepPrice() * getRiseMod()) / (getFallMod() + calculateNationDiscount());
-        return Math.floor((upkeepPerPlot * getTownPlotCount()));
+        double upkeep = Math.floor((upkeepPerPlot * getTownPlotCount()));
+        return addOfficialNationDiscountOrNone(upkeep);
 
     }
 
     public double calculateTownUpkeep() {
         double upkeepPerPlot = (getBaseTownUpkeepPrice() * getRiseMod()) / getFallMod();
-        return Math.floor((upkeepPerPlot * getTownPlotCount()));
+        double upkeep = Math.floor((upkeepPerPlot * getTownPlotCount()));
+        return addOfficialNationDiscountOrNone(upkeep);
+    }
+
+
+    private double addOfficialNationDiscountOrNone(double upkeep) {
+        if (town.hasNation()) {
+            if (isOfficialNation(town.getNationOrNull()))
+                return Math.floor(upkeep * 0.05);
+        }
+        return upkeep;
     }
 
     public double calculateBonusBlockDiscount() {
-
         int totalBlocks = getTownPlotCount();
         int bonusBlocks = town.getBonusBlocks();
         double upkeepPerPlot = Math.floor(calculateTownUpkeep() / totalBlocks);

@@ -5,16 +5,22 @@ import com.palmergames.adventure.text.TextComponent;
 import com.palmergames.adventure.text.event.HoverEvent;
 import com.palmergames.adventure.text.format.NamedTextColor;
 import com.palmergames.adventure.text.format.TextDecoration;
+import com.palmergames.adventure.text.minimessage.MiniMessage;
+import com.palmergames.bukkit.towny.event.statusscreen.NationStatusScreenEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.statusscreens.StatusScreen;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 import org.unitedlands.upkeep.UnitedUpkeep;
 import org.unitedlands.upkeep.calculators.TownUpkeepCalculator;
 
+import static org.unitedlands.upkeep.util.NationMetaController.isOfficialNation;
+
 public class StatusScreenListener implements Listener {
     private final UnitedUpkeep unitedUpkeep;
+    private final @NotNull MiniMessage miniMessage = MiniMessage.miniMessage();
     private Town town;
     private StatusScreen screen;
 
@@ -23,13 +29,38 @@ public class StatusScreenListener implements Listener {
     }
 
     @EventHandler
-    public void sendStatusScreen(TownStatusScreenEvent event) {
+    public void onStatusScreen(NationStatusScreenEvent event) {
+        screen = event.getStatusScreen();
+        if (isOfficialNation(event.getNation())) {
+            addOfficialNationComponent();
+        }
+    }
+    @EventHandler
+    public void onStatusScreen(TownStatusScreenEvent event) {
         screen = event.getStatusScreen();
         town = event.getTown();
         replaceTownSizeComponent();
         replaceUpkeepComponent();
+        if (town.hasNation()) {
+            if (isOfficialNation(town.getNationOrNull()))
+                addOfficialTownComponent();
+        }
         // Remove the default neutrality cost.
         screen.removeStatusComponent("neutralityCost");
+    }
+
+    private void addOfficialTownComponent() {
+        Component subtitle = screen.getComponentOrNull("subtitle");
+        if (subtitle == null)
+            return;
+        screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(getOfficialTownComponent())));
+    }
+
+    private void addOfficialNationComponent() {
+        Component subtitle = screen.getComponentOrNull("subtitle");
+        if (subtitle == null)
+            return;
+        screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(getOfficialNationComponent())));
     }
 
     private TownUpkeepCalculator getTownUpkeepCalculator() {
@@ -61,6 +92,12 @@ public class StatusScreenListener implements Listener {
         screen.replaceComponent("townblocks", townSizeComponent);
     }
 
+    private TextComponent getOfficialNationComponent() {
+        return (TextComponent) miniMessage.deserialize("                          <gradient:#D4AF37:#FCFDD3><bold>OFFICIAL NATION</gradient>");
+    }
+    private TextComponent getOfficialTownComponent() {
+        return (TextComponent) miniMessage.deserialize("                  <gradient:#D4AF37:#FCFDD3><bold>OFFICIAL NATION MEMBER</gradient>");
+    }
     private TextComponent getComponentWithAllDiscounts() {
         return Component.text("")
                 .append(getNationDiscountComponent())

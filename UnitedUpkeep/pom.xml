@@ -6,7 +6,7 @@
 
     <groupId>org.unitedlands.upkeep</groupId>
     <artifactId>UnitedUpkeep</artifactId>
-    <version>2.1</version>
+    <version>2.2</version>
     <packaging>jar</packaging>
 
     <name>UnitedUpkeep</name>
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>com.github.TownyAdvanced</groupId>
             <artifactId>Towny</artifactId>
-            <version>0.98.3.6</version>
+            <version>0.98.5.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

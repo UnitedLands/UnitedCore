@@ -4,6 +4,8 @@ import com.palmergames.bukkit.towny.object.Nation;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.unitedlands.upkeep.UnitedUpkeep;
 
+import static org.unitedlands.upkeep.util.NationMetaController.isOfficialNation;
+
 public class NationUpkeepCalculator {
     private final UnitedUpkeep unitedUpkeep;
     private final Nation nation;
@@ -19,7 +21,11 @@ public class NationUpkeepCalculator {
 
         double upkeepPerPlot = Math.floor(((getNationBaseUpkeep() * getRiseMod()) / getFallMod()) * townCountMod);
 
-        return Math.floor(upkeepPerPlot * getNationPlotCount());
+        double upkeep = Math.floor(upkeepPerPlot * getNationPlotCount());
+        if (isOfficialNation(nation)) {
+            return Math.floor(upkeep * 0.05);
+        }
+        return upkeep;
     }
 
     private double getRiseMod() {
