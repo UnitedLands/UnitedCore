@@ -51,15 +51,21 @@ public class StatusScreenListener implements Listener {
 
     private void addOfficialTownComponent() {
         Component subtitle = screen.getComponentOrNull("subtitle");
-        if (subtitle == null)
+        if (subtitle == null) {
+            subtitle = screen.getComponentOrNull("title");
+            screen.replaceComponent("title", subtitle.append(Component.newline().append(getOfficialTownComponent())));
             return;
+        }
         screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(getOfficialTownComponent())));
     }
 
     private void addOfficialNationComponent() {
         Component subtitle = screen.getComponentOrNull("subtitle");
-        if (subtitle == null)
+        if (subtitle == null) {
+            subtitle = screen.getComponentOrNull("nation_title");
+            screen.replaceComponent("nation_title", subtitle.append(Component.newline().append(getOfficialNationComponent())));
             return;
+        }
         screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(getOfficialNationComponent())));
     }
 
