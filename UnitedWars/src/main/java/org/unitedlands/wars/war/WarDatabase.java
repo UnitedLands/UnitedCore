@@ -69,12 +69,11 @@ public class WarDatabase {
                     Nation nation = UnitedWars.TOWNY_API.getNation(UUID.fromString(nationUUID));
                     if (nation == null)
                         continue;
-                    List<Resident> nationResidents = nation.getResidents();
                     ConfigurationSection nationSection = savedNations.getConfigurationSection(nationUUID);
-                    // Add allied residents if any.
-                    nationResidents.addAll(getAlliedResidents(nationSection));
-                    nationResidents.addAll(getMercenaries(nationSection));
-                    warResidents.addAll(nationResidents);
+                    // Add nation residents
+                    warResidents.addAll(nation.getResidents());
+                    warResidents.addAll(getAlliedResidents(nationSection));
+                    warResidents.addAll(getMercenaries(nationSection));
                     nations.add(nation);
                 }
             }
@@ -87,15 +86,10 @@ public class WarDatabase {
                 getMercenaries(entitySection).forEach(warringEntity::addMercenary);
 
                 // Set up all the health stuff from the saved data
-                WarHealth warHealth = generateWarHealth(entitySection.getConfigurationSection("health"), warringEntity.name());
-                warHealth.setValidPlayers(getValidHealingPlayers(warringEntity));
-                warringEntity.setWarHealth(warHealth);
-                // Resume any previous healing
-                if (warHealth.isHealing())
-                    warHealth.heal();
+                loadHealth(warringEntity, entitySection);
             }
 
-            for (WarringNation warringNation: war.getWarringNations()) {
+            for (WarringNation warringNation : war.getWarringNations()) {
                 List<String> savedAllies = section.getStringList(war.getUuid() + "." + warringNation.getPath() + "." + warringNation.getUUID() + ".allies");
                 List<UUID> uuids = new ArrayList<>();
                 savedAllies.forEach(ally -> uuids.add(UUID.fromString(ally)));
@@ -105,27 +99,28 @@ public class WarDatabase {
         PLUGIN.getLogger().log(Level.INFO, "Loaded " + WARS.size() + " wars!");
     }
 
-    private static List<UUID> getAllies(ConfigurationSection nationSection) {
-        List<UUID> allies = new ArrayList<>();
-        List<String> savedAllies = nationSection.getStringList("allies");
-        for (String uuid: savedAllies) {
-            Nation nation = UnitedWars.TOWNY_API.getNation(UUID.fromString(uuid));
-            if (nation == null)
-                continue;
-            allies.add(UUID.fromString(uuid));
-        }
-        return allies;
+    private static void loadHealth(WarringEntity entity, ConfigurationSection entitySection) {
+        ConfigurationSection healthSection = entitySection.getConfigurationSection("health");
+        WarHealth warHealth = new WarHealth(entity.name());
+        warHealth.setMaxHealth(healthSection.getInt("max"));
+        warHealth.setHealth(healthSection.getInt("current"));
+        warHealth.setHealing(healthSection.getBoolean("healing"));
+        warHealth.setHealerStartTime(healthSection.getLong("start-time"));
+        warHealth.setValidPlayers(getValidHealingPlayers(entity));
+        entity.setWarHealth(warHealth);
+        // Resume any previous healing
+        if (warHealth.isHealing())
+            warHealth.heal();
     }
+
     private static List<Resident> getAlliedResidents(ConfigurationSection nationSection) {
         List<Resident> alliedResidents = new ArrayList<>();
-        List<UUID> joinedAllies = getAllies(nationSection);
-        if (!joinedAllies.isEmpty()) {
-            for (UUID uuid: joinedAllies) {
-                Nation ally = UnitedWars.TOWNY_API.getNation(uuid);
-                alliedResidents.addAll(ally.getResidents());
-            }
+        for (String uuid : nationSection.getStringList("allies")) {
+            Nation ally = UnitedWars.TOWNY_API.getNation(UUID.fromString(uuid));
+            if (ally == null)
+                continue;
+            alliedResidents.addAll(ally.getResidents());
         }
-
         return alliedResidents;
     }
 
@@ -155,12 +150,12 @@ public class WarDatabase {
             warSection.set("type", war.getWarType().toString());
             // Create a unified list of all war participants.
             List<WarringEntity> warringEntities = new ArrayList<>();
-            if (war.getWarType() == WarType.TOWNWAR) {
+            if (war.getWarType() == WarType.TOWNWAR)
                 warringEntities.addAll(war.getWarringTowns());
-            }
-            if (war.getWarType() == WarType.NATIONWAR) {
+
+            if (war.getWarType() == WarType.NATIONWAR)
                 warringEntities.addAll(war.getWarringNations());
-            }
+
             // Loop through each involved Entity in the war.
             for (WarringEntity warringEntity : warringEntities) {
                 // Create a section for that entity
@@ -168,12 +163,12 @@ public class WarDatabase {
                 saveHealth(warringEntity, entitySection);
 
                 if (!warringEntity.getMercenaries().isEmpty()) {
-                    entitySection.set("mercenaries", convertUUIDToString(warringEntity.getMercenaries()));
+                    entitySection.set("mercenaries", convertUUIDsToString(warringEntity.getMercenaries()));
                 }
 
                 if (warringEntity instanceof WarringNation warringNation) {
                     if (!warringNation.getJoinedAllies().isEmpty()) {
-                        entitySection.set("allies", convertUUIDToString(warringNation.getJoinedAllies()));
+                        entitySection.set("allies", convertUUIDsToString(warringNation.getJoinedAllies()));
                     }
                 }
 
@@ -192,15 +187,17 @@ public class WarDatabase {
         } catch (IOException e) {
             PLUGIN.getLogger().log(Level.INFO, "Failed to save data!");
         }
+        PLUGIN.getLogger().log(Level.INFO, "Saved all war data! (" + WARS.size() + ")");
     }
 
-    private static List<String> convertUUIDToString(List<UUID> list) {
+    private static List<String> convertUUIDsToString(List<UUID> list) {
         List<String> strings = new ArrayList<>(list.size());
-        for (UUID uuid: list)
+        for (UUID uuid : list)
             strings.add(uuid.toString());
 
         return strings;
     }
+
     private static void saveHealth(WarringEntity warringEntity, ConfigurationSection entitySection) {
         // Create an inner health section to save health data.
         ConfigurationSection healthSection = entitySection.createSection("health");
@@ -334,15 +331,6 @@ public class WarDatabase {
         return hasTown(town) || hasNation(town.getNationOrNull());
     }
 
-
-    public static HashSet<WarringTown> getWarringTowns() {
-        return WARRING_TOWNS;
-    }
-
-    public static HashSet<WarringNation> getWarringNations() {
-        return WARRING_NATIONS;
-    }
-
     public static HashSet<War> getWars() {
         return WARS;
     }
@@ -372,15 +360,6 @@ public class WarDatabase {
         WARRING_NATIONS.clear();
         WARS_TO_REMOVE.addAll(WARS);
         WARS.clear();
-    }
-
-    private static WarHealth generateWarHealth(ConfigurationSection healthSection, String name) {
-        WarHealth warHealth = new WarHealth(name);
-        warHealth.setMaxHealth(healthSection.getInt("max"));
-        warHealth.setHealth(healthSection.getInt("current"));
-        warHealth.setHealing(healthSection.getBoolean("healing"));
-        warHealth.setHealerStartTime(healthSection.getLong("start-time"));
-        return warHealth;
     }
 
     private static int getValidHealingPlayers(WarringEntity entity) {
