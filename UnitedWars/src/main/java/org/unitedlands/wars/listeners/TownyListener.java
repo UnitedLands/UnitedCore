@@ -2,10 +2,7 @@ package org.unitedlands.wars.listeners;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.*;
-import com.palmergames.bukkit.towny.event.actions.TownyBuildEvent;
-import com.palmergames.bukkit.towny.event.actions.TownyDestroyEvent;
-import com.palmergames.bukkit.towny.event.actions.TownyExplodingBlocksEvent;
-import com.palmergames.bukkit.towny.event.actions.TownySwitchEvent;
+import com.palmergames.bukkit.towny.event.actions.*;
 import com.palmergames.bukkit.towny.event.damage.TownyExplosionDamagesEntityEvent;
 import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleNeutralEvent;
 import com.palmergames.bukkit.towny.event.town.TownLeaveEvent;
@@ -252,6 +249,17 @@ public class TownyListener implements Listener {
 
     }
 
+    @EventHandler
+    public void onItemUse(TownyItemuseEvent event) {
+        Player player = event.getPlayer();
+        if (event.isInWilderness())
+            return;
+        if (!hasWar(player))
+            return;
+        Material material = event.getMaterial();
+        if (material == Material.ENDER_PEARL || material == Material.CHORUS_FRUIT)
+            event.setCancelled(false);
+    }
     @EventHandler
     public void onSwitchUse(TownySwitchEvent event) {
         Player player = event.getPlayer();
