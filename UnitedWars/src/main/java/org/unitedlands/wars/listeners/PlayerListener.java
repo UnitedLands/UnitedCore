@@ -151,7 +151,7 @@ public class PlayerListener implements Listener {
             return;
         if (!resident.hasTown())
             return;
-        if (WarDatabase.hasWar(resident.getPlayer())) {
+        if (WarDatabase.hasWar(resident.getPlayer()) && getResidentLives(resident) == 0) {
             event.getAngelChest().setProtected(false);
         }
     }
@@ -313,7 +313,7 @@ public class PlayerListener implements Listener {
 
         Resident openingResident = getTownyResident(event.getPlayer());
         Resident graveResident = getTownyResident(chest.getPlayer().getUniqueId());
-        if (hasSameWar(openingResident, graveResident)) {
+        if (hasSameWar(openingResident, graveResident) && getResidentLives(graveResident) == 0) {
             chest.setProtected(false);
         }
     }
