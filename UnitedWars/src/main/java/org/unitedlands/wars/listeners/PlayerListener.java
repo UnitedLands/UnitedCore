@@ -83,13 +83,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
-        Resident resident = getTownyResident(player);
-        if (resident == null)
-            return;
-        Town town = resident.getTownOrNull();
-        if (town == null)
-            return;
-        if (!WarDatabase.hasWar(town))
+        if (!WarDatabase.hasWar(player))
             return;
         PlayerTeleportEvent.TeleportCause cause = event.getCause();
         if (!event.hasChangedBlock())
@@ -103,7 +97,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        War war = WarDatabase.getWar(town);
+        War war = WarDatabase.getWar(player);
         if (war == null)
             return;
         // Allow teleportation during war prep time.
@@ -145,26 +139,10 @@ public class PlayerListener implements Listener {
         if (!config.getStringList("banned-commands").contains(event.getMessage()))
             return;
         Player player = event.getPlayer();
-        Town town = getPlayerTown(player);
-        if (town == null)
-            return;
-        if (WarDatabase.hasWar(town)) {
+        if (WarDatabase.hasWar(player)) {
             player.sendMessage(Utils.getMessage("banned-command"));
             event.setCancelled(true);
         }
-    }
-
-    @EventHandler
-    public void onGravePrepare(AngelChestSpawnPrepareEvent event) {
-        Resident resident = getTownyResident(event.getPlayer().getUniqueId());
-        if (resident == null)
-            return;
-        if (!resident.hasTown())
-            return;
-        if (!WarDatabase.hasWar(event.getPlayer()))
-            return;
-        if (hasResidentLives(resident))
-            event.setCancelled(true);
     }
     @EventHandler
     public void onGraveCreation(AngelChestSpawnEvent event) {
@@ -173,7 +151,7 @@ public class PlayerListener implements Listener {
             return;
         if (!resident.hasTown())
             return;
-        if (WarDatabase.hasWar(resident.getPlayer()) && getResidentLives(resident) == 0) {
+        if (WarDatabase.hasWar(resident.getPlayer())) {
             event.getAngelChest().setProtected(false);
         }
     }
@@ -214,10 +192,6 @@ public class PlayerListener implements Listener {
         }
         Component message = getPlayerDeathMessage(warringEntity, killer, victim);
         warringEntity.getWar().broadcast(message);
-        if (!isHoldingTotem(victim.getPlayer())) {
-            event.setCancelled(true);
-            Utils.teleportPlayerToSpawn(victim.getPlayer());
-        }
     }
 
     private boolean isHoldingTotem(Player player) {
