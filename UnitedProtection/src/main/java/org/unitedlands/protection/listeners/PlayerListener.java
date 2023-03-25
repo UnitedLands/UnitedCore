@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.unitedlands.protection.UnitedProtection;
+import org.unitedlands.wars.war.WarDatabase;
 
 import java.util.List;
 
@@ -81,6 +82,9 @@ public class PlayerListener implements Listener {
         if (town == null || !resident.hasTown()) {
             return false;
         }
+        if (WarDatabase.hasWar(town)) {
+            return false;
+        }
         return resident.getTownOrNull().equals(town) || town.getTrustedResidents().contains(resident);
     }
 
@@ -90,7 +94,6 @@ public class PlayerListener implements Listener {
     }
 
     private boolean isProtectedBlock(Block block) {
-        Resident resident = towny.getResident(player.getUniqueId());
         int blockY = block.getLocation().getBlockY();
         String worldName = block.getWorld().getName();
 
