@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -36,15 +37,15 @@ public class MiscListener implements Listener {
             Location newLoc = player.getLocation();
             newLoc.setZ(loc.getZ() * -1);
             newLoc.setX(loc.getX() * -1);
-            player.teleportAsync(newLoc);
+            player.teleportAsync(newLoc, PlayerTeleportEvent.TeleportCause.SPECTATE);
         } else if (isHorizontalEdge(loc)) {
             Location newLoc = player.getLocation();
             newLoc.setX(loc.getX() * -1);
-            player.teleportAsync(newLoc);
+            player.teleportAsync(newLoc, PlayerTeleportEvent.TeleportCause.SPECTATE);
         } else if (isVerticalEdge(loc)) {
             Location newLoc = player.getLocation();
             newLoc.setZ(loc.getZ() * -1);
-            player.teleportAsync(newLoc);
+            player.teleportAsync(newLoc, PlayerTeleportEvent.TeleportCause.SPECTATE);
         } else {
             return;
         }
