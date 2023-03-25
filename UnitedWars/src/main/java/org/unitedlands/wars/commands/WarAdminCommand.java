@@ -79,6 +79,12 @@ public class WarAdminCommand implements TabExecutor {
             int amount = Integer.parseInt(args[2]);
             entity.getWarHealth().decreaseHealth(amount);
         }
+        if (args[0].equalsIgnoreCase("damagemax")) {
+            Player player = Bukkit.getPlayer(args[1]);
+            WarringEntity entity = WarDatabase.getWarringEntity(player);
+            int amount = Integer.parseInt(args[2]);
+            entity.getWarHealth().decreaseMaxHealth(amount);
+        }
         if (args[0].equalsIgnoreCase("life")) {
             Resident player = Utils.getTownyResident(Bukkit.getPlayer(args[1]));
             int amount = Integer.parseInt(args[2]);
@@ -131,11 +137,11 @@ public class WarAdminCommand implements TabExecutor {
                 war.endWarTimer();
             }
         }
-        if (args[0].equalsIgnoreCase("unfreeze")) {
-            Nation target = UnitedWars.TOWNY_API.getNation(args[2]);
+        if (args[0].equalsIgnoreCase("freeze")) {
+            Nation target = UnitedWars.TOWNY_API.getNation(args[1]);
             if (target == null)
                 return true;
-            setFrozen(target.getTownBlocks(), false);
+            setFrozen(target.getTownBlocks(), Boolean.parseBoolean(args[2]));
         }
         if (args[0].equalsIgnoreCase("end")) {
             if (args[1].equalsIgnoreCase("town")) {
@@ -233,5 +239,6 @@ public class WarAdminCommand implements TabExecutor {
                 }
             }
         }
+        System.out.println("Set frozen blocks to: " + toggle);
     }
 }
