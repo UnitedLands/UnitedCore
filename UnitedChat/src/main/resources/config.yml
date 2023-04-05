@@ -11,25 +11,26 @@ Presets:
   magic: "#59C173:#a17fe0:#5D26C1"
   redsunset: "#355C7D:#6C5B7B:#C06C84"
 messages:
-  Motd:
+  motd:
     - '<gradient:#ffffff:#ff5555>------------------------------</gradient>'
     - '                     <red><bold>UNITED<white><bold>LANDS     '
     - '                <red>Welcome back <yellow><italics>%player_name%<red>!'
     - '    <red>There are currently <white>%server_online% <red>players online.'
     - '<gradient:#ffffff:#ff5555>------------------------------</gradient>'
-  FirstJoinMotd:
+  first-join-motd:
     - '<gradient:#ffffff:#ff5555>------------------------------</gradient>'
     - '                     <red><bold>UNITED<white><bold>LANDS     '
     - '             <red>Welcome to <red><bold>United<white><bold>Lands <yellow><italic>%player_name%&c!'
     - '    <red>There are currently <white>%server_online% <red>players online.'
     - '<gradient:#ffffff:#ff5555>------------------------------</gradient>'
-  ChatCleared: '&c&lU&f&lL &cChat &8&l» &cGlobal Chat Cleared.'
-  GradientChanged: '&c&lU&f&lL &cChat &8&l» &aGradient changed.'
-  GradientOn: '&c&lU&f&lL &cChat &8&l» &aGradient enabled.'
-  GradCommand: '&c&lU&f&lL &cChat &8&l» &eUse /gradient [toggle] | [preset] | [hexcolor1] [hexcolor2] %player_name%'
-  GradAdminCommand: '&c&lU&f&lL &cChat &8&l» &eUse /gradient [toggle] | [preset] | [hexcolor1] [hexcolor] |[player]'
-  GradientOff: '&c&lU&f&lL &cChat &8&l» &cGradient disabled.'
-  GradientUnknownPreset: '&c&lU&f&lL &cChat &8&l» &cPreset not recognized.'
-  GradientIsOff: '&c&lU&f&lL &cChat &8&l» &cYour gradient is disabled.'
-  GradientIsOn: '&c&lU&f&lL &cChat &8&l» &cYour gradient is enabled.'
-  NoPerm: '&c&lU&f&lL &8&l» &cYou don''t have permission.'
+  chat-cleared: '&c&lU&f&lL &cChat &8&l» &cGlobal Chat Cleared.'
+  gradient-changed: '&c&lU&f&lL &cChat &8&l» &aGradient changed.'
+  gradient-on: '&c&lU&f&lL &cChat &8&l» &aGradient enabled.'
+  gradient-command: '&c&lU&f&lL &cChat &8&l» &eUse /gradient [toggle] | [preset] | [hexcolor1] [hexcolor2] %player_name%'
+  gradient-admin-command: '&c&lU&f&lL &cChat &8&l» &eUse /gradient [toggle] | [preset] | [hexcolor1] [hexcolor] |[player]'
+  gradient-off: '&c&lU&f&lL &cChat &8&l» &cGradient disabled.'
+  gradient-unknown-preset: '&c&lU&f&lL &cChat &8&l» &cPreset not recognized.'
+  gradient-is-off: '&c&lU&f&lL &cChat &8&l» &cYour gradient is disabled.'
+  gradient-is-on: '&c&lU&f&lL &cChat &8&l» &cYour gradient is enabled.'
+  current-gradient: '&c&lU&f&lL &cChat &8&l» &cYour current gradient is: <gradient>'
+  no-perm: '&c&lU&f&lL &8&l» &cYou don''t have permission.'
