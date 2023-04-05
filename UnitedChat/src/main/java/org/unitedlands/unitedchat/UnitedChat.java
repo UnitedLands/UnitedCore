@@ -41,7 +41,11 @@ public class UnitedChat extends JavaPlugin {
         File playerDataFile = new File(getDataFolder(), getFilePath(player));
         if (!playerDataFile.exists()) {
             playerDataFile.getParentFile().mkdirs();
-            saveResource(getFilePath(player), false);
+            try {
+                playerDataFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         playerDataConfig = new YamlConfiguration();
         try {
