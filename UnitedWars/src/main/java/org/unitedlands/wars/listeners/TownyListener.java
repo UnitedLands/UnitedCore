@@ -318,14 +318,14 @@ public class TownyListener implements Listener {
 
     @EventHandler
     public void onWarStart(WarDeclareEvent event) {
-        setFrozen(event.getTargetEntity().getGovernment().getTownBlocks(), false);
-        setFrozen(event.getDeclaringEntity().getGovernment().getTownBlocks(), false);
+        setFrozen(event.getTargetEntity().getGovernment().getTownBlocks(), true);
+        setFrozen(event.getDeclaringEntity().getGovernment().getTownBlocks(), true);
     }
 
     @EventHandler
     public void onWarEnd(WarEndEvent event) {
-        setFrozen(event.getWinner().getGovernment().getTownBlocks(), true);
-        setFrozen(event.getLoser().getGovernment().getTownBlocks(), true);
+        setFrozen(event.getWinner().getGovernment().getTownBlocks(), false);
+        setFrozen(event.getLoser().getGovernment().getTownBlocks(), false);
     }
 
     private static boolean isModifiableMaterial(Material mat) {
