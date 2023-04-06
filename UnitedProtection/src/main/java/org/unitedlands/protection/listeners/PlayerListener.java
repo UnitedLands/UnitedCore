@@ -82,10 +82,13 @@ public class PlayerListener implements Listener {
         if (town == null || !resident.hasTown()) {
             return false;
         }
-        if (WarDatabase.hasWar(town)) {
+        return resident.getTownOrNull().equals(town) || town.getTrustedResidents().contains(resident) || isInWarringTown(resident, town);
+    }
+
+    private boolean isInWarringTown(Resident resident, Town town) {
+        if (!WarDatabase.hasWar(town) || !WarDatabase.hasWar(resident.getPlayer()))
             return false;
-        }
-        return resident.getTownOrNull().equals(town) || town.getTrustedResidents().contains(resident);
+        return WarDatabase.getWar(town) == WarDatabase.getWar(resident.getPlayer());
     }
 
     private String getMessage(String message) {
