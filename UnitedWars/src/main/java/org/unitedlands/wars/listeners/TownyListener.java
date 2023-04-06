@@ -25,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.FluidLevelChangeEvent;
 import org.bukkit.event.player.PlayerTakeLecternBookEvent;
+import org.jetbrains.annotations.NotNull;
 import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.events.WarDeclareEvent;
@@ -38,6 +39,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.unitedlands.wars.UnitedWars.TOWNY_API;
 import static org.unitedlands.wars.Utils.getTownyResident;
@@ -353,16 +355,20 @@ public class TownyListener implements Listener {
 
     private void setFrozen(Collection<TownBlock> blocks, boolean toggle) {
         for (TownBlock block: blocks) {
-            Chunk chunk = block.getWorldCoord().getBukkitWorld().getChunkAt(block.getX(), block.getZ());
-            for (Entity entity: chunk.getEntities()) {
-                if (entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.WOLF)
-                    continue;
-                entity.setInvulnerable(toggle);
-                entity.setGravity(!toggle);
-                if (entity instanceof LivingEntity living) {
-                    living.setAI(!toggle);
-                    living.setCollidable(!toggle);
-                }
+            @NotNull CompletableFuture<Chunk> future = block.getWorldCoord().getBukkitWorld().getChunkAtAsync(block.getX(), block.getZ());
+            future.thenAcceptAsync(chunk -> freezeChunkEntities(toggle, chunk));
+        }
+    }
+
+    private void freezeChunkEntities(boolean toggle, Chunk chunk) {
+        for (Entity entity: chunk.getEntities()) {
+            if (entity.getType() == EntityType.PLAYER || entity.getType() == EntityType.WOLF)
+                continue;
+            entity.setInvulnerable(toggle);
+            entity.setGravity(!toggle);
+            if (entity instanceof LivingEntity living) {
+                living.setAI(!toggle);
+                living.setCollidable(!toggle);
             }
         }
     }
