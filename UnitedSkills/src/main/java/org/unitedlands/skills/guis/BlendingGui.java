@@ -90,7 +90,10 @@ public class BlendingGui {
             event.setCancelled(true);
             potion = event.getInventory().getItem(11);
             otherPotion = event.getInventory().getItem(15);
-
+            if(potion == null || otherPotion == null) {
+                 player.sendMessage(Component.text("You must have two potions in the slots!", NamedTextColor.RED));
+                return;
+            }
             if (!slotsArePotions()) {
                 player.sendMessage(Component.text("You can only blend potions!", NamedTextColor.RED));
             }
@@ -153,8 +156,8 @@ public class BlendingGui {
 
         PotionMeta blendedPotionMeta = getPotionMeta(blendedPotion);
 
-        if (hasCustomEffects() && !hasBothCustomPotions()) {
-            if (potionMeta.getCustomEffects().size() + otherPotionMeta.getCustomEffects().size() >= 3) {
+        if (hasCustomEffects() && hasOneDoublePotion()) {
+            if (potionMeta.getCustomEffects().size() + otherPotionMeta.getCustomEffects().size() > 3) {
                 player.sendMessage(Component.text("You've reached the max effects on this potion!", NamedTextColor.RED));
                 return null;
             }
@@ -307,8 +310,8 @@ public class BlendingGui {
         return getPotionMeta(potion).getCustomEffects().size() == 1 || getPotionMeta(otherPotion).getCustomEffects().size() == 1;
     }
 
-    private boolean hasBothCustomPotions() {
-        return getPotionMeta(potion).getCustomEffects().size() == 1 && getPotionMeta(otherPotion).getCustomEffects().size() == 1;
+    private boolean hasOneDoublePotion() {
+        return getPotionMeta(potion).getCustomEffects().size() >= 1 || getPotionMeta(otherPotion).getCustomEffects().size() >= 1;
     }
 
     private int getExtraEffects() {
