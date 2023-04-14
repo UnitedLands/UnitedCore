@@ -9,7 +9,6 @@ import com.palmergames.bukkit.towny.utils.SpawnUtil;
 import de.jeff_media.angelchest.AngelChest;
 import de.jeff_media.angelchest.AngelChestPlugin;
 import de.jeff_media.angelchest.events.AngelChestSpawnEvent;
-import de.jeff_media.angelchest.events.AngelChestSpawnPrepareEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.Title;
@@ -23,8 +22,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityResurrectEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
@@ -157,20 +156,18 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onDeath(EntityDeathEvent event) {
-        LivingEntity dead = event.getEntity();
-
-        if (!(dead instanceof Player))
-            return;
+    public void onDeath(PlayerDeathEvent event) {
+        Player dead = event.getPlayer();
 
         Optional<Player> foundKiller = findKiller(dead);
         if (foundKiller.isEmpty()) {
-            runRegularDeathProccess((Player) dead);
+            runRegularDeathProccess(dead);
+            cancelDeath(event);
             return;
         }
 
         Resident killer = getTownyResident(foundKiller.get());
-        Resident victim = getTownyResident((Player) dead);
+        Resident victim = getTownyResident(dead);
 
         if (!hasSameWar(killer, victim))
             return;
@@ -192,6 +189,17 @@ public class PlayerListener implements Listener {
         }
         Component message = getPlayerDeathMessage(warringEntity, killer, victim);
         warringEntity.getWar().broadcast(message);
+        if (!isHoldingTotem(dead)) {
+            cancelDeath(event);
+        }
+    }
+
+    private void cancelDeath(PlayerDeathEvent event) {
+        event.setCancelled(true);
+        Player dead = event.getPlayer();
+        dead.setHealth(20D);
+        dead.setFoodLevel(20);
+        Utils.teleportPlayerToSpawn(dead);
     }
 
     private boolean isHoldingTotem(Player player) {
@@ -240,7 +248,6 @@ public class PlayerListener implements Listener {
                 component("victim-warrer",
                         text(warringEntity.name()))));
         playSounds(warringEntity);
-
     }
 
     private void decreaseHealth(Resident victim, WarringEntity warringEntity) {
@@ -270,9 +277,7 @@ public class PlayerListener implements Listener {
 
     @NotNull
     private Component getPlayerDeathMessage(WarringEntity entity, Resident killer, Resident victim) {
-        String message = "player-killed";
-        if (killer == victim)
-            message = "player-killed-self";
+        String message = killer == victim ? "player-killed-self" : "player-killed";
         return Utils.getMessage(message,
                 component("victim",
                         text(victim.getName())),
