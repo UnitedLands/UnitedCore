@@ -54,3 +54,4 @@ messages:
   invalid-player: '<red>A player with that name does not exist!'
   brewery-upgraded: '<yellow><brewery><red> has been upgraded to level <yellow><level>!'
   max-brewery-level: '<red>Your brewery has reached the max level!'
+  player-inBrewery: '<yellow><player><red> is already in a brewery!'
