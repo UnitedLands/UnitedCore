@@ -12,7 +12,6 @@ import org.unitedlands.wars.books.data.Declarer;
 import org.unitedlands.wars.books.data.WarTarget;
 import org.unitedlands.wars.books.warbooks.WritableDeclaration;
 import org.unitedlands.wars.war.WarDataController;
-import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.WarType;
 
 import static net.kyori.adventure.text.Component.text;
@@ -117,6 +116,10 @@ public class BookCommandParser {
         Nation declaringNation = getPlayerTown(player).getNationOrNull();
         if (targetNation.equals(declaringNation)) {
             player.sendMessage(getMessage("cannot-declare-on-self"));
+            return;
+        }
+        if (!declaringNation.getKing().getPlayer().equals(player)) {
+            player.sendMessage(getMessage("must-be-mayor"));
             return;
         }
 

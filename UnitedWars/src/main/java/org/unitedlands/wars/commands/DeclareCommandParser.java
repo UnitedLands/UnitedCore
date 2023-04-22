@@ -67,6 +67,11 @@ public class DeclareCommandParser {
            player.sendMessage(getMessage("invalid-town-name"));
            return;
         }
+        Resident resident = UnitedWars.TOWNY_API.getResident(player);
+        if (!resident.isMayor()) {
+            player.sendMessage(getMessage("must-be-mayor"));
+            return;
+        }
         Confirmation.runOnAccept(() -> {
             if (invalidBook(WarType.TOWNWAR))
                 return;
@@ -75,7 +80,6 @@ public class DeclareCommandParser {
                 player.sendMessage(getMessage("must-not-be-neutral-target"));
                 return;
             }
-            Resident resident = UnitedWars.TOWNY_API.getResident(player);
             Town town = resident.getTownOrNull();
             if (!townsHaveEnoughOnline(targetTown, town)) {
                 player.sendMessage(getMessage("must-have-online-player"));
@@ -107,6 +111,10 @@ public class DeclareCommandParser {
             player.sendMessage(getMessage("must-have-nation"));
             return;
         }
+        if (!resident.isKing()) {
+            player.sendMessage(getMessage("must-be-mayor"));
+            return;
+        }
         Nation declaringNation = resident.getNationOrNull();
         WarTarget target = getTargetFromBook();
         if (target == null) {
@@ -118,7 +126,6 @@ public class DeclareCommandParser {
             player.sendMessage(getMessage("invalid-nation-name"));
             return;
         }
-
         Confirmation.runOnAccept(() -> {
             if (invalidBook(WarType.NATIONWAR))
                 return;
