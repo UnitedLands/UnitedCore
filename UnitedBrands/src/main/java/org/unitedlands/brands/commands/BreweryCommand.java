@@ -356,6 +356,10 @@ public class BreweryCommand implements TabExecutor {
             player.sendMessage(getMessage("must-own-brewery"));
             return;
         }
+        if(getPlayerBrewery(inviteReceiver) != null) {
+            player.sendMessage(getMessage("player-in-brewery", inviteReceiver));
+            return;
+        }
 
         InviteRequest inviteRequest = new InviteRequest(player, inviteReceiver);
         inviteRequests.add(inviteRequest);
