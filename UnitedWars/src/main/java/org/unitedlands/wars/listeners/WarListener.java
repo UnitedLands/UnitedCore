@@ -152,7 +152,7 @@ public class WarListener implements Listener {
     private void addResidentLives(WarringEntity warringEntity) {
         for (Resident resident: warringEntity.getWarParticipants()) {
             int currentLives = WarDataController.getResidentLives(resident);
-            WarDataController.setResidentLives(resident, Math.min(6, currentLives + 3));
+            WarDataController.setResidentLives(resident, Math.min(3, currentLives + 3));
         }
     }
 
