@@ -161,7 +161,7 @@ public class WarListener implements Listener {
         WarringEntity enemy = warringEntity.getEnemy();
         int enemyCurrent = enemy.getWarHealth().getValue();
 
-        warringEntity.getWarHealth().setHealth(Math.max(0, current - 20));
+        warringEntity.getWarHealth().decreaseHealth(20);
         if (warringEntity.getWarHealth().getValue() != 0)
             return;
 
