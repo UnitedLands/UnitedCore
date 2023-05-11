@@ -86,8 +86,6 @@ public class WarListener implements Listener {
         WarringEntity warringEntity = WarDatabase.getWarringEntity(player);
         if (warringEntity == null)
             return;
-        if (!WarDataController.hasResidentLives(getTownyResident(player)))
-            return;
         WarHealth warHealth = warringEntity.getWarHealth();
         warHealth.removeHealingPlayer(player.getUniqueId());
     }
