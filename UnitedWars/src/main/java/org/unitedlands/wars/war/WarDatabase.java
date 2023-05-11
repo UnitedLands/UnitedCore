@@ -362,13 +362,13 @@ public class WarDatabase {
         WARS.clear();
     }
 
-    private static int getValidHealingPlayers(WarringEntity entity) {
-        int amount = 0;
+    private static HashSet<UUID> getValidHealingPlayers(WarringEntity entity) {
+        HashSet<UUID> players = new HashSet<>();
         for (Player p : entity.getOnlinePlayers()) {
             if (!WarDataController.hasResidentLives(Utils.getTownyResident(p)) || p.isInvisible())
                 continue;
-            amount++;
+            players.add(p.getUniqueId());
         }
-        return amount;
+        return players;
     }
 }

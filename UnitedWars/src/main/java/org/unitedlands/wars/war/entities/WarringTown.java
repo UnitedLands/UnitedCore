@@ -22,7 +22,7 @@ public class WarringTown implements WarringEntity {
     public WarringTown(Town town, WarHealth warHealth, List<Resident> warringResidents, List<UUID> mercenaries,  War war) {
         this.townUUID = town.getUUID();
         this.warHealth = warHealth;
-        this.warringResidents = Utils.toUUID(warringResidents);
+        this.warringResidents = Utils.residentToUUID(warringResidents);
         this.warUUID = war.getUuid();
         this.mercenaries = mercenaries;
         if (townUUID != null && warHealth != null && warUUID != null) {

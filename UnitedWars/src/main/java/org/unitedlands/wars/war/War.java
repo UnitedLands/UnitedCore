@@ -40,7 +40,7 @@ public class War {
         uuid = UUID.randomUUID();
         this.warringTowns = generateWarringTownList(warringTowns);
         this.warringNations = generateWarringNationList(warringNations);
-        this.residents = Utils.toUUID(residents);
+        this.residents = Utils.residentToUUID(residents);
         this.warType = warType;
         warTimer = new WarTimer(this);
         // Start the war immediately, since this is the first time.
@@ -54,7 +54,7 @@ public class War {
         this.uuid = uuid;
         this.warringTowns = generateWarringTownList(warringTowns);
         this.warringNations = generateWarringNationList(warringNations);
-        this.residents = Utils.toUUID(residents);
+        this.residents = Utils.residentToUUID(residents);
         this.warType = warType;
         // Save war to internal database
         WarDatabase.addWar(this);
@@ -377,7 +377,7 @@ public class War {
         List<WarringTown> generatedList = new ArrayList<>();
         for (Town town : townList) {
             WarringTown entity = new WarringTown(town, new WarHealth(town), town.getResidents(), new ArrayList<>(), this);
-            entity.getWarHealth().setValidPlayers(entity.getOnlinePlayers().size());
+            entity.getWarHealth().setValidPlayers(Utils.playerToUUID(entity.getOnlinePlayers()));
             generatedList.add(entity);
         }
         return generatedList;
@@ -392,7 +392,7 @@ public class War {
             // Create a list with the nation residents
             List<Resident> warringResidents = new ArrayList<>(nation.getResidents());
             WarringNation entity = new WarringNation(nation, new WarHealth(nation), warringResidents, new ArrayList<>(), this);
-            entity.getWarHealth().setValidPlayers(entity.getOnlinePlayers().size());
+            entity.getWarHealth().setValidPlayers(Utils.playerToUUID(entity.getOnlinePlayers()));
             generatedList.add(entity);
         }
         return generatedList;

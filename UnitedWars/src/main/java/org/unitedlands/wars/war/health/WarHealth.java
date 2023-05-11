@@ -10,15 +10,17 @@ import org.unitedlands.wars.UnitedWars;
 import org.unitedlands.wars.events.WarHealthChangeEvent;
 
 import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.UUID;
 
 public class WarHealth {
     private final String name;
     private int health = 100;
     private int maxHealth = 100;
-    private int validPlayers = 0;
     private boolean isHealing = false;
     private final Healer healer = new Healer(this);
     private final BossBar bossBar = generateBossBar();
+    private HashSet<UUID> healingPlayers = new HashSet<>();
 
     public WarHealth(String name) {
         this.name = name;
@@ -145,24 +147,30 @@ public class WarHealth {
         this.maxHealth = Math.max(0, maxHealth);
         updateHealthBar();
     }
+    public HashSet<UUID> getHealingPlayers() {
+        if (healingPlayers == null) {
+            healingPlayers = new HashSet<>();
+        }
+        return healingPlayers;
+    }
     public int getHealingRate() {
-        if (validPlayers == 0)
+        if (getHealingPlayers().size() == 0)
             return 0;
-        return 20 / validPlayers;
+        return 20 / getHealingPlayers().size();
     }
 
-    public void setValidPlayers(int validPlayers) {
-        this.validPlayers = validPlayers;
+    public void setValidPlayers(HashSet<UUID> healingPlayers) {
+        this.healingPlayers.addAll(healingPlayers);
     }
 
-    public void incrementPlayers() {
-        if (validPlayers == 0)
+    public void addHealingPlayer(UUID uuid) {
+        if (healingPlayers.size() == 0)
             heal();
-        validPlayers++;
+        healingPlayers.add(uuid);
     }
 
-    public void decrementPlayers() {
-        validPlayers--;
+    public void removeHealingPlayer(UUID uuid) {
+        healingPlayers.remove(uuid);
     }
 
     public void decreaseMaxHealth(int decrease) {
