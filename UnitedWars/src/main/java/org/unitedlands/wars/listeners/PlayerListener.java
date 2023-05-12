@@ -91,8 +91,10 @@ public class PlayerListener implements Listener {
             return;
         if (cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT
                 || cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL
-                || cause == PlayerTeleportEvent.TeleportCause.SPECTATE)
+                || cause == PlayerTeleportEvent.TeleportCause.SPECTATE) {
+            event.setCancelled(false);
             return;
+        }
         // they can bypass.
         if (player.hasPermission("united.wars.bypass.tp")) {
             return;
