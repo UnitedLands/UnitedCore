@@ -179,11 +179,12 @@ public class TownyListener implements Listener {
             return;
 
         Material mat = event.getMaterial();
-        if (isModifiableMaterial(mat)) {
+        if (isModifiableMaterial(mat))
             event.setCancelled(false);
-        }
         if (mat == Material.OBSIDIAN)
-            removeBlockLater(event.getBlock()); // 30 seconds * 20 ticks.
+            removeBlockLater(event.getBlock(), 30); // 30 secs
+        else
+            removeBlockLater(event.getBlock(), 60 * 5); // 5 mins
     }
 
     @EventHandler
@@ -347,10 +348,10 @@ public class TownyListener implements Listener {
         return !war.equals(warringEntity.getWar());
     }
 
-    private void removeBlockLater(Block block) {
+    private void removeBlockLater(Block block, int time) {
         Bukkit.getServer().getScheduler().runTaskLater(UnitedWars.getInstance(), () -> {
             block.setType(Material.AIR);
-        }, 600);
+        }, time * 20);
     }
 
     private void setFrozen(Collection<TownBlock> blocks, boolean toggle) {
