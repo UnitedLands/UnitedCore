@@ -341,6 +341,8 @@ public class TownyListener implements Listener {
         Resident resident = getTownyResident(player);
         if (resident.getTownOrNull().equals(town))
             return true;
+        if (town.getTrustedResidents().contains(resident))
+            return true;
         War war = WarDatabase.getWar(town);
         if (war == null)
             return true;
