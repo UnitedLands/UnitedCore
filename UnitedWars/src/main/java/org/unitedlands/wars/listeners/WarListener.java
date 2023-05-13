@@ -71,7 +71,7 @@ public class WarListener implements Listener {
 
         warringEntity.getWarHealth().show(player);
 
-        if (player.isInvisible())
+        if (player.hasPotionEffect(PotionEffectType.INVISIBILITY))
             return;
         // No lives, don't bother.
         if (!WarDataController.hasResidentLives(Utils.getTownyResident(player)))
