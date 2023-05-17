@@ -1,5 +1,6 @@
 package org.unitedlands.wars.war;
 
+import com.palmergames.bukkit.towny.object.Government;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -347,12 +348,28 @@ public class War {
 
 
     private void giveWarEarnings() {
-        winner.getGovernment().getAccount().deposit(calculateWonMoney(), "Won a war against" + loser.name());
-        loser.getGovernment().getAccount().withdraw(calculateWonMoney(), "Lost a war against " + winner.name());
-        if (winner instanceof WarringTown town)
+        double totalMoney = 0;
+        Government loserGov = loser.getGovernment();
+        totalMoney += loserGov.getAccount().getHoldingBalance() * 0.5;
+
+        if (loserGov instanceof Nation loserNation) {
+            for (Town town : loserNation.getTowns()) {
+                double townAmount = town.getAccount().getHoldingBalance() * 0.5;
+                town.getAccount().withdraw(townAmount, "Lost a war");
+                totalMoney += townAmount;
+            }
+        }
+
+        Government winnerGov = winner.getGovernment();
+        winnerGov.getAccount().deposit(totalMoney, "Won a war against " + loser.name());
+
+        if (winner instanceof WarringTown) {
+            WarringTown town = (WarringTown) winner;
             town.getTown().addBonusBlocks(calculateBonusBlocks());
-        else if (winner instanceof WarringNation nation)
+        } else if (winner instanceof WarringNation) {
+            WarringNation nation = (WarringNation) winner;
             nation.getNation().getCapital().addBonusBlocks(calculateBonusBlocks());
+        }
     }
 
     private int calculateBonusBlocks() {
