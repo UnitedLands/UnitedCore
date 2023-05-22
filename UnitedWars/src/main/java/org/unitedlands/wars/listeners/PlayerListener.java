@@ -185,7 +185,15 @@ public class PlayerListener implements Listener {
         Resident killer = getTownyResident(foundKiller.get());
         Resident victim = getTownyResident(dead);
 
-        if (!hasSameWar(killer, victim) || !hasResidentLives(killer) || !hasResidentLives(victim))
+        if (!WarDatabase.hasWar(dead))
+            return;
+
+        if (!hasSameWar(victim, killer)) {
+            cancelDeath(event);
+            return;
+        }
+
+        if (!hasResidentLives(killer) || !hasResidentLives(victim))
             return;
 
         WarringEntity warringEntity = WarDatabase.getWarringEntity(victim.getPlayer());
