@@ -361,7 +361,7 @@ public class War {
         if (loserGov instanceof Nation loserNation) {
             for (Town town : loserNation.getTowns()) {
                 double townAmount = town.getAccount().getHoldingBalance() * 0.5;
-                town.getAccount().payTo(townAmount, loserGov.getAccount(), "Lost a war");
+                town.getAccount().payTo(townAmount, winner.getGovernment().getAccount(), "Lost a war");
             }
         }
 
