@@ -355,13 +355,13 @@ public class War {
 
     private void giveWarEarnings() {
         Government loserGov = loser.getGovernment();
-        double lostMoney = loserGov.getAccount().getHoldingBalance() * 0.5;;
-        loserGov.getAccount().payTo(lostMoney,  winner.getGovernment().getAccount(), "Won a war against" + loser.name());
+        double lostMoney = loserGov.getAccount().getHoldingBalance() * 0.5;
+        loserGov.getAccount().payTo(lostMoney,  winner.getGovernment().getAccount(), "Won a war against " + loser.name());
 
         if (loserGov instanceof Nation loserNation) {
             for (Town town : loserNation.getTowns()) {
                 double townAmount = town.getAccount().getHoldingBalance() * 0.5;
-                town.getAccount().payTo(townAmount, winner.getGovernment().getAccount(), "Lost a war");
+                town.getAccount().payTo(townAmount, winner.getGovernment().getAccount(), "Lost a war against " + winner.name());
             }
         }
 
