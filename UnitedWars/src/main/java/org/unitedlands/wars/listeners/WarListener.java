@@ -159,7 +159,7 @@ public class WarListener implements Listener {
         WarringEntity enemy = warringEntity.getEnemy();
         int enemyCurrent = enemy.getWarHealth().getValue();
 
-        warringEntity.getWarHealth().decreaseHealth(20);
+        warringEntity.getWarHealth().decreaseHealth(calculateDailyHealthDecrease(warringEntity));
         if (warringEntity.getWarHealth().getValue() != 0)
             return;
 
@@ -172,6 +172,20 @@ public class WarListener implements Listener {
             war.endWar(enemy, warringEntity);
         else
             war.endWar(warringEntity, enemy);
+    }
+
+    private int calculateDailyHealthDecrease(WarringEntity entity) {
+        War war = entity.getWar();
+        // Get the current timestamp
+        long currentTimestamp = System.currentTimeMillis();
+
+        // Calculate the number of milliseconds elapsed
+        long millisecondsPassed = currentTimestamp - war.getStartTime();
+
+        // Convert milliseconds to days
+        long daysPassed = (long) Math.floor(millisecondsPassed / (1000.0 * 60 * 60 * 24));
+
+        return Math.toIntExact(10 + (daysPassed * 5));
     }
 
     @EventHandler
