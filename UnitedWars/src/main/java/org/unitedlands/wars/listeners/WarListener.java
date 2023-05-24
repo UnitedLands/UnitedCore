@@ -185,7 +185,8 @@ public class WarListener implements Listener {
         // Convert milliseconds to days
         long daysPassed = (long) Math.floor(millisecondsPassed / (1000.0 * 60 * 60 * 24));
 
-        return Math.toIntExact(10 + (daysPassed * 5));
+        int damageAmount = Math.toIntExact(10 + (daysPassed * 5));
+        return Math.min(80, damageAmount);
     }
 
     @EventHandler
