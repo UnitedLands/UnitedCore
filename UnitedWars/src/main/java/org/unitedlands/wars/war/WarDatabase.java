@@ -78,7 +78,8 @@ public class WarDatabase {
                 }
             }
 
-            War war = new War(towns, nations, warResidents, warType, UUID.fromString(warUUID));
+            long startTime = warSection.getLong("start-time");
+            War war = new War(towns, nations, warResidents, warType, startTime, UUID.fromString(warUUID));
 
             for (WarringEntity warringEntity : war.getWarringEntities()) {
                 ConfigurationSection entitySection = section.getConfigurationSection(war.getUuid() + "." + warringEntity.getPath() + "." + warringEntity.getUUID());
@@ -148,6 +149,7 @@ public class WarDatabase {
             ConfigurationSection warSection = warConfig.createSection("wars." + war.getUuid().toString());
             // Save the War type
             warSection.set("type", war.getWarType().toString());
+            warSection.set("start-time", war.getStartTime());
             // Create a unified list of all war participants.
             List<WarringEntity> warringEntities = new ArrayList<>();
             if (war.getWarType() == WarType.TOWNWAR)

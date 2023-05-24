@@ -33,6 +33,7 @@ public class War {
     private final HashSet<UUID> residents;
     private final WarType warType;
     private final UUID uuid;
+    private final long startTime;
     private WarTimer warTimer = null;
     private WarringEntity winner;
     private WarringEntity loser;
@@ -43,6 +44,7 @@ public class War {
         this.warringNations = generateWarringNationList(warringNations);
         this.residents = Utils.residentToUUID(residents);
         this.warType = warType;
+        this.startTime = System.currentTimeMillis();
         warTimer = new WarTimer(this);
         // Start the war immediately, since this is the first time.
         startWar();
@@ -51,12 +53,13 @@ public class War {
     }
 
     // Used for loading existing wars from the config.
-    public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType, UUID uuid) {
+    public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType, long startTime, UUID uuid) {
         this.uuid = uuid;
         this.warringTowns = generateWarringTownList(warringTowns);
         this.warringNations = generateWarringNationList(warringNations);
         this.residents = Utils.residentToUUID(residents);
         this.warType = warType;
+        this.startTime = startTime;
         // Save war to internal database
         WarDatabase.addWar(this);
     }
@@ -123,6 +126,9 @@ public class War {
         return warType;
     }
 
+    public long getStartTime() {
+        return startTime;
+    }
     public UUID getUuid() {
         return uuid;
     }
