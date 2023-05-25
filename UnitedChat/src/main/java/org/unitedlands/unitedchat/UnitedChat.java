@@ -35,8 +35,9 @@ public class UnitedChat extends JavaPlugin {
     }
 
     public static Component getMessage(String name) {
+        String prefix = PLUGIN.getConfig().getString("messages.prefix");
         String message = PLUGIN.getConfig().getString("messages." + name);
-        return MiniMessage.miniMessage().deserialize(message);
+        return MiniMessage.miniMessage().deserialize(prefix + message);
     }
 
     public static Component getMessage(String message, TagResolver.Single... resolvers) {
