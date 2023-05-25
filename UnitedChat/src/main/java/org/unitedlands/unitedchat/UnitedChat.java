@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.unitedchat.commands.ChatToggleCommand;
 import org.unitedlands.unitedchat.commands.ClearChatCommand;
 import org.unitedlands.unitedchat.commands.GradientCommand;
+import org.unitedlands.unitedchat.hooks.Placeholders;
 import org.unitedlands.unitedchat.player.PlayerListener;
 
 public class UnitedChat extends JavaPlugin {
@@ -28,6 +29,7 @@ public class UnitedChat extends JavaPlugin {
             getLogger().warning("[Exception] PlaceholderAPI is required!");
             Bukkit.getPluginManager().disablePlugin(this);
         }
+        new Placeholders().register();
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getCommand("gradient").setExecutor(new GradientCommand());
         getCommand("cc").setExecutor(new ClearChatCommand());
