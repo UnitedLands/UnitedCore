@@ -50,6 +50,7 @@ public class GradientCommand implements CommandExecutor {
     private void setGradient(String arg) {
         if (getPresetSection().contains(arg)) {
             setGradientPreset(arg);
+            return;
         }
         if (arg.contains("#")) {
             if (player.hasPermission("unitedchat.gradient.all")) {
