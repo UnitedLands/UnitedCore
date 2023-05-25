@@ -1,8 +1,13 @@
 package org.unitedlands.unitedchat.player;
 
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.unitedlands.unitedchat.UnitedChat;
 
 import java.io.File;
@@ -39,6 +44,30 @@ public class ChatPlayer {
         return getPlayerConfig().getBoolean("gradient-enabled");
     }
 
+    public void toggleChatFeature(ChatFeature feature, boolean toggle) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null)
+            return;
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        NamespacedKey key = new NamespacedKey(UnitedChat.getPlugin(), feature.toString());
+        if (toggle) {
+            pdc.set(key, PersistentDataType.INTEGER, 1); // 1 == true, 0 == false
+        } else {
+            pdc.set(key, PersistentDataType.INTEGER, 0);
+        }
+    }
+
+    public boolean isChatFeatureEnabled(ChatFeature feature) {
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null)
+            return false;
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        NamespacedKey key = new NamespacedKey(UnitedChat.getPlugin(), feature.toString());
+        // features are on by default, which means it wasn't ever toggled before if there is no key.
+        if (!pdc.has(key))
+            return true;
+        return pdc.get(key, PersistentDataType.INTEGER) == 1;
+    }
     public void setGradientEnabled(boolean toggle) {
         FileConfiguration playerConfig = getPlayerConfig();
         File file = getPlayerFile();
@@ -92,4 +121,5 @@ public class ChatPlayer {
     private String getFilePath() {
         return "players" + File.separator + uuid.toString() + ".yml";
     }
+
 }
