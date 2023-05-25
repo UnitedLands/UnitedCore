@@ -57,17 +57,6 @@ public class ChatPlayer {
         }
     }
 
-    public boolean isChatFeatureEnabled(ChatFeature feature) {
-        Player player = Bukkit.getPlayer(uuid);
-        if (player == null)
-            return false;
-        PersistentDataContainer pdc = player.getPersistentDataContainer();
-        NamespacedKey key = new NamespacedKey(UnitedChat.getPlugin(), feature.toString());
-        // features are on by default, which means it wasn't ever toggled before if there is no key.
-        if (!pdc.has(key))
-            return true;
-        return pdc.get(key, PersistentDataType.INTEGER) == 1;
-    }
     public void setGradientEnabled(boolean toggle) {
         FileConfiguration playerConfig = getPlayerConfig();
         File file = getPlayerFile();
