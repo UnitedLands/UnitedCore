@@ -57,6 +57,7 @@ public class PlayerListener implements Listener {
 
         ChatPlayer chatPlayer = new ChatPlayer(player.getUniqueId());
         String message = event.getMessage();
+        message = message.replace("§f", ""); // looks like there's a random color here for some reason that needs to be removed
         String finalizedMessage = formatter.finalizeMessage(player, message);
 
         if (chatPlayer.getPlayerConfig() == null) {
@@ -67,7 +68,7 @@ public class PlayerListener implements Listener {
             event.setMessage(formatter.gradientMessage(finalizedMessage, chatPlayer.getGradient()));
             return;
         }
-        event.setMessage(formatter.gradientMessage(finalizedMessage, "#FFFFFF:#FFFFFF"));
+        event.setMessage(formatter.colorMessage(finalizedMessage));
     }
 
 }
