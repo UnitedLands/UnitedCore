@@ -5,6 +5,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.unitedlands.unitedchat.commands.ChatToggleCommand;
 import org.unitedlands.unitedchat.commands.ClearChatCommand;
 import org.unitedlands.unitedchat.commands.GradientCommand;
 import org.unitedlands.unitedchat.player.PlayerListener;
@@ -28,8 +29,9 @@ public class UnitedChat extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         }
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        this.getCommand("gradient").setExecutor(new GradientCommand());
-        this.getCommand("cc").setExecutor(new ClearChatCommand());
+        getCommand("gradient").setExecutor(new GradientCommand());
+        getCommand("cc").setExecutor(new ClearChatCommand());
+        getCommand("chat").setExecutor(new ChatToggleCommand());
         saveDefaultConfig();
 
     }

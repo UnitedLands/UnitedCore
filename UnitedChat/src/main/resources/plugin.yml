@@ -19,3 +19,5 @@ commands:
     permission-message: '&c&lU&f&lL &8&l» &cYou don''t have permission.'
     aliases:
       - clearchat
+  chat:
+    description: Toggles chat features
