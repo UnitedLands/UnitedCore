@@ -89,6 +89,10 @@ public class ChatPlayer {
     }
 
     public FileConfiguration getPlayerConfig() {
+        if (playerDataConfig != null) {
+            return playerDataConfig;
+        }
+
         File playerDataFile = new File(dataFolder, getFilePath());
         playerDataConfig = new YamlConfiguration();
         if (!playerDataFile.exists()) {
