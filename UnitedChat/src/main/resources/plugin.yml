@@ -1,9 +1,9 @@
 name: UnitedChat
 version: '1.0'
 main: org.unitedlands.unitedchat.UnitedChat
-api-version: 1.17
-authors: [ Obito17 ]
-depend: [Towny, TownyChat]
+api-version: 1.19
+authors: [ Maroon28 ]
+depend: [ Towny ]
 softdepend: [PlaceholderAPI]
 commands:
   gradient:
