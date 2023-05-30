@@ -12,8 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.unitedlands.unitedchat.UnitedChat;
 import org.unitedlands.unitedchat.player.ChatFeature;
 
-import java.util.Arrays;
-
 public class Placeholders extends PlaceholderExpansion implements Relational {
     @Override
     public @NotNull String getIdentifier() {
