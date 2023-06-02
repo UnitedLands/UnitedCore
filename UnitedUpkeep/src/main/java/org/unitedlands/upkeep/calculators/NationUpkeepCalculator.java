@@ -23,7 +23,7 @@ public class NationUpkeepCalculator {
 
         double upkeep = Math.floor(upkeepPerPlot * getNationPlotCount());
         if (isOfficialNation(nation)) {
-            return Math.floor(upkeep * 0.05);
+            return Math.floor(upkeep * 0.2);
         }
         return upkeep;
     }
