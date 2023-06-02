@@ -32,6 +32,7 @@ import org.unitedlands.wars.war.WarType;
 import java.util.*;
 
 import static net.kyori.adventure.text.Component.text;
+import static org.unitedlands.upkeep.util.NationMetaController.isOfficialNation;
 import static org.unitedlands.wars.Utils.*;
 import static org.unitedlands.wars.war.WarUtil.*;
 
@@ -126,6 +127,11 @@ public class DeclareCommandParser {
             player.sendMessage(getMessage("invalid-nation-name"));
             return;
         }
+        if ((isOfficialNation(declaringNation) && !isOfficialNation(targetNation))) {
+            player.sendMessage(getMessage("cannot-declare-official-nation"));
+            return;
+        }
+
         Confirmation.runOnAccept(() -> {
             if (invalidBook(WarType.NATIONWAR))
                 return;
