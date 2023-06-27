@@ -122,8 +122,7 @@ public class StatusScreenListener implements Listener {
     private TextComponent getBonusDiscountComponent() {
         return Component
                 .text("[Bonus Discount: ", NamedTextColor.DARK_GREEN)
-                .append(Component.text(getBonusBlockDiscount() + " Gold", NamedTextColor.GREEN))
-                .append(Component.text("(" + town.getBonusBlocks() + ")", NamedTextColor.AQUA))
+                .append(Component.text(getBonusBlockDiscount() + " Gold (" + town.getBonusBlocks() + ")", NamedTextColor.GREEN))
                 .append(Component.text("]", NamedTextColor.DARK_GREEN));
     }
 
