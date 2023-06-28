@@ -65,8 +65,8 @@ public class DeclareCommandParser {
         }
         Town targetTown = target.town();
         if (targetTown == null) {
-           player.sendMessage(getMessage("invalid-town-name"));
-           return;
+            player.sendMessage(getMessage("invalid-town-name"));
+            return;
         }
         Resident resident = UnitedWars.TOWNY_API.getResident(player);
         if (!resident.isMayor()) {
