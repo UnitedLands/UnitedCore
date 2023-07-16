@@ -97,7 +97,7 @@ public class TownyListener implements Listener {
                 .builder()
                 .match(pattern)
                 // Join all found hostile residents in the list.
-                .replacement(String.join("<light_gray>,<yellow> ", list))
+                .replacement(String.join("<gray>,<yellow> ", list))
                 .build();
         player.sendMessage(Utils.getMessage(message).replaceText(playerReplacer));
     }
