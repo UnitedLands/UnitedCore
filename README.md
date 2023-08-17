@@ -1,6 +1,6 @@
-# UnitedCore
+# UnitedPush
 
-**UnitedCore** is a custom-made plugin for UnitedLands, which has most of our custom made features spread out over multiple 'nodes'. Info detailing each node is provided below. The current working nodes are:
+**UnitedCore** is a fork of UnitedCore which is a custom-made plugin for UnitedLands, which has most of our custom made features spread out over multiple 'nodes'. Info detailing each node is provided below. The current working nodes are:
   1. UnitedPvP
   2. UnitedChat
   3. UnitedItems
@@ -34,7 +34,7 @@ A custom-made pvp manager that handles the pvp status of players. It also has a 
 - `/pvp on/off <player>` - Admin command, force sets the pvp status of <player>
 
 ### Permissions
-  - `united.pvp.toggle` Gives permissions to use the `/pvp on/off` command
+  - `united.pvp.toggle` Gives permissions to run the `/pvp on/off` command
   - `united.pvp.cooldown.ignore` Allows you to ignore the pvp toggle command cooldown (120 seconds by default)
   - `united.pvp.admin` Allows you to set the status of other players. 
   
