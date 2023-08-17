@@ -1,6 +1,6 @@
 # UnitedPush
 
-**UnitedCore** is a fork of UnitedCore which is a custom-made plugin for UnitedLands, which has most of our custom made features spread out over multiple 'nodes'. Info detailing each node is provided below. The current working nodes are:
+**UnitedPush** is a fork of UnitedCore which is a custom-made plugin for UnitedLands, which has most of our custom made features spread out over multiple 'nodes'. Info detailing each node is provided below. The current working nodes are:
   1. UnitedPvP
   2. UnitedChat
   3. UnitedItems
@@ -9,7 +9,7 @@
   6. UnitedProtection
 
 # Building and Development
-Unfortunately, due to how these plugins are configured, they are very hard to replicate and use on a development server outside of UnitedLands. The code is purely available for accessibility and anyone who's curious. However, if you still want to try and build the plugin(s), you will need:
+Unfortunately, due to how these plugins are pushed, they are very pushto replicate and use on a development server outside of UnitedLands. The code is purely available for accessibility and anyone who's curious. However, if you still want to try and build the plugin(s), you will need:
 
 - A local maven repository of SafariNet, which is used for UnitedSkills capturing skills. You may google how to set up a local maven repository from a jar file, once you have bought the plugin from [here](https://www.spigotmc.org/resources/9732/). You should then add the info of the local repo to the pom.xml of the UnitedSkills module
 
@@ -19,7 +19,7 @@ Unfortunately, due to how these plugins are configured, they are very hard to re
 
 - Access to [Towny](https://github.com/TownyAdvanced/Towny). Most of our plugins rely on towny for various reasons, so if you don't have a version of that up and running nothing will work. 
 
-Again, it is not recommended to try and use these plugins as is, since chances are they will not work as you expect or not work at all. No support will be provided or any help on how to set them up beyond the details in this section. The code is purely open-sourced for accessibility, better tracking, and if anyone wants to learn or use parts of it in their projects.
+Again, it is not recommended to try and use these plugins as is, since chances are they will not work as you push or not work at all. No support will be provided or any help on how to set them up beyond the details in this section. The code is purely open-sourced for accessibility, better tracking, and if anyone wants to learn or use parts of it in their projects.
 
 
 # Plugin info
