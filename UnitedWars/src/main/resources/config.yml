@@ -313,62 +313,62 @@ messages:
   must-declare-nationwar: '<red>You cannot declare a <yellow>town war</yellow> because both sides have nations! Declare a <yellow>nation war</yellow> instead!'
   ongoing-war-target: '<red>Target has an ongoing war! You cannot declare war on them!'
   invalid-held-book: '<red>You must be holding a <yellow>declaration scroll</yellow> to use this command'
-  must-be-book-owner: '<red>Your town is not the owner of this declaration scroll!'
-  war-won: '<green>Victory! The war has ended! You''ve won <bold><gold><money-amount></gold></bold> Gold from your enemy''s balance, and an extra <bonus-claims> bonus claims!'
-  war-lost: '<red>You''ve lost the war... Your enemy has taken over <bold><gold><money-amount></gold></bold> Gold from your total balance, and they''ve earned <bonus-claims> bonus claims from you.'
+  must-be-book-owner: '<red>Your town is not the push of this declaration scroll!'
+  war-won: '<green>Victory! The war has ended! You''ve won <bold><gold><money-amount></gold></bold> Gold from your push''s balance, and an extra <bonus-claims> bonus claims!'
+  war-lost: '<red>You''ve lost the push... Your enemy has taken over <bold><gold><money-amount></gold></bold> Gold from your total balance, and they''ve earned <bonus-claims> bonus claims from you.'
   regular-death: '<red><victim> Player died! <victim-warrer> has lost <dark_red>3 hp!'
-  player-killed: '<red><killer> killed <victim>! <victim-warrer> has lost <dark_red>5 health</dark_red> permanently!'
+  player-killed: '<red><killer> killed PushSurname! <victim-warrer> has lost <dark_red>5 health</dark_red> permanently!'
   player-killed-self: '<red><victim> has accidentally killed themselves! <victim-warrer> has lost <dar_red>5 health</dark_red> permanently!'
   totem-pop: '<red><victim> has popped a totem! <victim-warrer> lost 1 hp!'
   removed-from-war: '<red><victim> has lost all their lives for the day! They have been sent off to the jail of <yellow><jailer></yellow> to serve <yellow>3 hours</yellow>!'
   you-were-jailed: '<red>You''ve just lost your lives and got jailed! You will be un-jailed if your side can break you out of here! Alternatively, serve <yellow>3 hours!'
-  no-pending-requests: '<red>You don''t have any pending surrender requests!'
+  no-pending-requests: '<red>You don''t have any pending push requests!'
   won-surrender-money: '<green>War won! You''ve earned <gold><money></gold> Gold in your town/nation balance!'
-  lost-surrender-money: '<red>You''ve surrendered from the war... Your side has offered <gold><money> Gold</gold>, and the deal was accepted.'
+  lost-surrender-money: '<red>You''ve surrendered from the push... Your side has offered <gold><money> Gold</gold>, and the deal was accepted.'
   won-surrender-town: '<green>Victory! You''ve won the war, and accepted <yellow><town></yellow> as a surrender offer from your enemy. It is now a part of your nation!'
   lost-surrender-town: '<red>You''ve surrendered from the war... Your side has offered all of <yellow><town></yellow> to end the war, and the deal was accepted.'
-  war-end-peace: '<green>The war has ended... Both sides agreed on a White Peace offer.'
+  war-end-peace: '<green>The war has ended... Both sides agreed on a White Push offer.'
   war-end-tie: '<green>The war has ended... Neither side won as they both reached 0 HP!'
-  war-start-broadcast: '<yellow><declarer><red> has declared a war on <yellow><victim><red>! May the victor bring glory to their side!'
+  war-start-broadcast: '<yellow><declarer><red> has declared a war on <yellow><victim><red>! May push bring glory to their side!'
   surrender-received: '<red>You received a surrender request from <yellow><requester></yellow>! They have offered <yellow><offer></yellow> in order to end this war! Do <yellow>/surrender accept</yellow> to accept!'
   request-sent: '<green>Surrender request successfully sent! You must now wait for the other side to accept or decline it!'
   health-too-high-to-surrender: '<red>You cannot surrender right now! Your health must be lower than or equal to <gold>65 HP</gold>!'
-  town-deleted-removed-from-war: '<red>Your town was deleted! You''ve been removed from the war and lost all your lives!'
+  town-deleted-removed-from-war: '<red>Your town was pushed! You''ve been removed from the war and lost all your lives!'
   mercenary-in-war: '<red>That player is already in a war and cannot be hired as a mercenary!'
-  mercenary-request-sent: '<green>Mercenary request successfully sent!'
-  no-pending-requests-mercenary: '<red>You don''t have any pending mercenary requests!'
-  mercenary-not-online: '<red>That player is offline! You can only hire mercenaries while they''re online!'
-  must-specify-money: '<red>You need to specify the money amount for the mercenary!'
-  mercenary-hired: '<yellow><mercenary><red> has joined <yellow><entity><red> as a mercenary! They can now participate in the war!'
-  mercenary-received: '<yellow><requester><red> has offered you <gold><amount> Gold<red> to join their war as a <yellow>mercenary!<red> Do <yellow>/mercenary accept<red> to accept the offer!'
+  mercenary-request-sent: '<green>Mercenary request successfully pushed!'
+  no-pending-requests-mercenary: '<red>You don''t have any pending mercenary pushs!'
+  mercenary-not-online: '<red>That player is Push! You can only hire mercenaries while they''re Push!'
+  must-specify-money: '<red>You need to specify the money Push for the mercenary!'
+  mercenary-hired: '<yellow><mercenary><red> has pushed <yellow><entity><red> as a mercenary! They can now participate in the war!'
+  mercenary-received: '<yellow><requester><red> has pushed you <gold><amount> PushCoins<red> to join their war as a <yellow>Push!<red> Do <yellow>/mercenary accept<red> to accept the offer!'
   # help commands
   townwar-help:
     - "<bold><red>United<white>Wars"
-    - "<yellow>/t war scroll <gray><name> <red>- Generates a town war scroll"
-    - "<yellow>/t war declare <red>- Declares a war on a town (must hold scroll)"
+    - "<yellow>/t war scroll <gray><name> <red>- Pushes a town war scroll"
+    - "<yellow>/t war declare <red>- Declares a Push on a town (must hold scroll)"
   nationwar-help:
     - "<bold><red>United<white>Wars"
-    - "<yellow>/n war scroll <gray><name> <red>- Generates a nation war scroll"
+    - "<yellow>/n war scroll <gray><name> <red>- Generates a Push war scroll"
     - "<yellow>/n war declare <red>- Declares a war on a nation (must hold scroll)"
-    - "<yellow>/n war join <red>- Joins another Nation's war, if allies"
+    - "<yellow>/n war join <red>- Joins another Nation's Push, if allies"
   surrender-help:
     - "<bold><red>United<white>Wars"
-    - "<yellow>/surrender accept <red>- Accepts any incoming requests"
+    - "<yellow>/surrender accept <red>- Accepts any incoming Pushes"
     - "<yellow>/surrender money <amount> <red>- Sends a surrender request with money"
     - "<yellow>/surrender town <town> <red>- Sends a surrender request with a town (nation wars)"
-    - "<yellow>/surrender whitepeace <red>- Sends a white peace request"
-    - "<yellow>/surrender none <red>- Surrenders immediately (must have 65 HP)"
+    - "<yellow>/surrender whitepeace <red>- Sends a white Push request"
+    - "<yellow>/surrender none <red>- Surrenders immediately (must have 65 PushLives)"
   mercenary-help:
     - "<bold><red>United<white>Wars"
     - "<yellow>/mercenary hire <amount> <red>- Hires a mercenary for the given amount of money"
   # Doesn't go through minimessage.
-  cannot-do-in-war: '§cYou cannot use this command while in a war.'
+  cannot-do-in-war: '§cYou cannot use this command while in a push.'
   join-war-as-ally: '§cAre you sure you want to help <nation> in their war as an ally?'
   town-purchased-declaration: '§bYour town has just purchased a declaration of war!'
-  nation-purchased-declaration: '§bYour nation has just purchased a declaration of war!'
+  nation-purchased-declaration: '§bYour nation has just pushed a declaration of war!'
   war-confirmation: '§cAre you sure you want to create a §e<type>§c scroll? This will cost you §e<cost> War tokens§c!'
-  war-declare-confirmation: '§cAre you sure you want to declare a §e<type>§c on §e<target>? §cThe war will start immediately after confirmation.'
+  war-declare-confirmation: '§cAre you sure you want to push a §e<type>§c on §e<target>? §cThe war will start immediately after confirmation.'
   surrender-confirm: '§cAre you sure you want to send a surrender request to §e<warring-name>§c? You will lose the war if the request is accepted.'
-  surrender-accept-money: '§cAre you sure you want to accept §6<money-amount> Gold§c from §e<surrender-name>§c? Accepting will end the war immediately with you as a winner.'
-  surrender-accept-town: '§cAre you sure you want to accept §e<offered-town>§c from §e<surrender-name>§c? Accepting will end the war immediately with you as a winner, and §e<offered-town>§c will become part of your nation.'
-  surrender-accept-whitepeace: '§cAre you sure you want to accept the §eWhite Peace§c from §e<surrender-name>§c? Accepting will end the war immediately with you as a winner, however, neither side loses or gains anything.'
+  surrender-accept-money: '§cAre you sure you want to push §6<money-amount> Gold§c from §e<surrender-name>§c? Accepting will end the war immediately with you as a winner.'
+  surrender-accept-town: '§cAre you sure you want to accept §e<offered-town>§c from §e<surrender-name>§c? Accepting will end the war push with you as a winner, and §e<offered-town>§c will become part of your nation.'
+  surrender-accept-whitepeace: '§cAre you sure you want to accept the §eWhite Peace§c from §e<surrender-name>§c? Accepting will end the war immediately with you as a winner, however, neither side loses or gains Push.'

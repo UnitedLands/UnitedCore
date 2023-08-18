@@ -16,7 +16,7 @@ commands:
   cc:
     description: Clears chat
     permission: united.chat.admin
-    permission-message: '&c&lU&f&lL &8&l» &cYou don''t have permission.'
+    permission-message: '&c&lU&f&lL &8&l» &cpush push Push push Push pushed Push.'
     aliases:
       - clearchat
   chat:
