@@ -32,7 +32,7 @@ import org.unitedlands.wars.war.entities.WarringTown;
 import java.util.*;
 
 public class WarAdminCommand implements TabExecutor {
-    private static final List<String> MAIN_TAB_COMPLETES = Arrays.asList("end", "purge", "tokens");
+    private static final List<String> MAIN_TAB_COMPLETES = Arrays.asList("end", "purge", "tokens", "freeze", "damage", "damagemax", "life");
     private static final List<String> END_TAB_COMPLETES = Arrays.asList("town", "nation");
     private static final List<String> TOKENS_TAB_COMPLETES = List.of("add", "remove", "set");
     private CommandSender sender;
@@ -48,7 +48,7 @@ public class WarAdminCommand implements TabExecutor {
                 return BaseCommand.getTownyStartingWith(args[2], "t");
             }
         }
-        if (args[0].equalsIgnoreCase("end")) {
+        if (args[0].equalsIgnoreCase("end") || args[0].equalsIgnoreCase("start")) {
             if (args.length == 2) {
                 return END_TAB_COMPLETES;
             }
