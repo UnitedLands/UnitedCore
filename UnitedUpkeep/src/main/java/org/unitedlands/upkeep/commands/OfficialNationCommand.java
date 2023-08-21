@@ -36,12 +36,12 @@ public class OfficialNationCommand implements TabExecutor {
             sender.sendMessage("No permission to use this command!");
             return true;
         }
-        Nation nation = TownyAPI.getInstance().getNation(args[1]);
+        Nation nation = TownyAPI.getInstance().getNation(args[0]);
         if (nation == null) {
             sender.sendMessage("Invalid nation name!");
             return true;
         }
-        setOfficialNation(nation, args[2].equalsIgnoreCase("true"));
+        setOfficialNation(nation, args[1].equalsIgnoreCase("true"));
         sender.sendMessage("Successfully set " + args[1] + " as an official nation!");
         return true;
     }
