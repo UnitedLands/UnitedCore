@@ -270,10 +270,9 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onArrowShot(EntityShootBowEvent event) {
+    public void onArrowShoot(EntityShootBowEvent event) {
         if (!(event.getProjectile() instanceof Arrow arrow)) return;
         if(arrow.getCustomEffects().size() > 1) arrow.clearCustomEffects();
-
     }
 
     private Player getAttacker(Entity damager) {
