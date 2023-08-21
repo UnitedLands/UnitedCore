@@ -1,12 +1,13 @@
 package org.unitedlands.unitedchat.commands;
 
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class ClearChatCmd implements CommandExecutor {
+public class ClearChatCommand implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
@@ -15,7 +16,9 @@ public class ClearChatCmd implements CommandExecutor {
             return false;
         }
 
-        Bukkit.broadcastMessage(StringUtils.repeat(" \n", 150));
+        for (int i = 0; i < 150; i++) {
+            Bukkit.broadcast(Component.newline());
+        }
 
         return true;
     }
