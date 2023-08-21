@@ -19,10 +19,12 @@ import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Arrow;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -265,6 +267,13 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onArrowShot(EntityShootBowEvent event) {
+        if (!(event.getProjectile() instanceof Arrow arrow)) return;
+        if(arrow.getCustomEffects().size() > 1) arrow.clearCustomEffects();
+
     }
 
     private Player getAttacker(Entity damager) {
