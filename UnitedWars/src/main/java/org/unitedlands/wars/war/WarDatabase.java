@@ -163,7 +163,8 @@ public class WarDatabase {
                 // Create a section for that entity
                 ConfigurationSection entitySection = warSection.createSection(warringEntity.getPath() + "." + warringEntity.getUUID());
                 saveHealth(warringEntity, entitySection);
-
+                entitySection.set("name", warringEntity.name());
+                
                 if (!warringEntity.getMercenaries().isEmpty()) {
                     entitySection.set("mercenaries", convertUUIDsToString(warringEntity.getMercenaries()));
                 }
