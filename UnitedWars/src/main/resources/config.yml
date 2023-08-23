@@ -1,5 +1,5 @@
 banned-worlds:
-  - spawn
+  - world
   - world_resource
   - world_the_end
   - world_nether
