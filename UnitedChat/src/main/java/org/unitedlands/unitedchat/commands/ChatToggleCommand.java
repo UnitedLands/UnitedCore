@@ -18,7 +18,7 @@ import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.comp
 import static org.unitedlands.unitedchat.UnitedChat.getMessage;
 
 public class ChatToggleCommand implements TabExecutor {
-    private static final List<String> CHAT_FEATURE_TAB_COMPLETES = Arrays.asList("prefixes", "ranks", "broadcasts", "games");
+    private static final List<String> CHAT_FEATURE_TAB_COMPLETES = Arrays.asList("prefixes", "ranks", "broadcasts", "games", "gradients");
     private static final List<String> TOGGLES = Arrays.asList("on", "off");
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {

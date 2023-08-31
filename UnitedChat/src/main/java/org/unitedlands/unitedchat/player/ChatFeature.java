@@ -4,5 +4,6 @@ public enum ChatFeature {
     PREFIXES,
     RANKS,
     BROADCASTS,
-    GAMES
+    GAMES,
+    GRADIENTS
 }

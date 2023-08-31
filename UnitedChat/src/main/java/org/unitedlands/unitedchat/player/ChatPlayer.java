@@ -2,53 +2,55 @@ package org.unitedlands.unitedchat.player;
 
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.unitedlands.unitedchat.UnitedChat;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
 
 public class ChatPlayer {
     private final UUID uuid;
-    private final File dataFolder = UnitedChat.getPlugin().getDataFolder();
-    private FileConfiguration playerDataConfig;
 
     public ChatPlayer(UUID uuid) {
         this.uuid = uuid;
     }
 
     public String getGradient() {
-        return getPlayerConfig().getString("gradient");
+        Player player = getPlayer();
+        PersistentDataContainer pdc = getPDC(player);
+        if (!pdc.has(getKey("gradient"))) {
+            return null;
+        }
+        return pdc.get(getKey("gradient"), PersistentDataType.STRING);
     }
 
     public void setGradient(String gradient) {
-        FileConfiguration playerConfig = getPlayerConfig();
-        File file = getPlayerFile();
-        playerConfig.set("gardient", gradient);
-        try {
-            playerConfig.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Player player = getPlayer();
+        player.getPersistentDataContainer().set(getKey("gradient"), PersistentDataType.STRING, gradient);
     }
 
     public boolean isGradientEnabled() {
-        if (getGradient() == null)
+        Player player = getPlayer();
+        PersistentDataContainer pdc = getPDC(player);
+        if (getGradient() == null) {
             return false;
-        return getPlayerConfig().getBoolean("gradient-enabled");
+        }
+        if (!pdc.has(getKey("gradient-enabled"))) {
+            return false;
+        }
+        return Boolean.parseBoolean(pdc.get(getKey("gradient-enabled"), PersistentDataType.STRING));
     }
 
     public void toggleChatFeature(ChatFeature feature, boolean toggle) {
-        Player player = Bukkit.getPlayer(uuid);
+        Player player = getPlayer();
         if (player == null)
             return;
-        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        PersistentDataContainer pdc = getPDC(player);
         NamespacedKey key = new NamespacedKey(UnitedChat.getPlugin(), feature.toString());
         if (toggle) {
             pdc.set(key, PersistentDataType.INTEGER, 1); // 1 == true, 0 == false
@@ -57,62 +59,26 @@ public class ChatPlayer {
         }
     }
 
+    @NotNull
+    private static PersistentDataContainer getPDC(Player player) {
+        PersistentDataContainer pdc = player.getPersistentDataContainer();
+        return pdc;
+    }
+
+    @Nullable
+    private Player getPlayer() {
+        Player player = Bukkit.getPlayer(uuid);
+        return player;
+    }
+
     public void setGradientEnabled(boolean toggle) {
-        FileConfiguration playerConfig = getPlayerConfig();
-        File file = getPlayerFile();
-        playerConfig.set("gradient-enabled", toggle);
-        try {
-            playerConfig.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void createPlayerFile() {
-        File playerDataFile = new File(dataFolder, getFilePath());
-        if (!playerDataFile.exists()) {
-            playerDataFile.getParentFile().mkdirs();
-            try {
-                playerDataFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        playerDataConfig = new YamlConfiguration();
-        try {
-            playerDataConfig.load(playerDataFile);
-            playerDataConfig.set("gradient-enabled", false);
-            playerDataConfig.set("gradient", "#ffffff:#ffffff");
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public FileConfiguration getPlayerConfig() {
-        if (playerDataConfig != null) {
-            return playerDataConfig;
-        }
-
-        File playerDataFile = new File(dataFolder, getFilePath());
-        playerDataConfig = new YamlConfiguration();
-        if (!playerDataFile.exists()) {
-            return null;
-        }
-        try {
-            playerDataConfig.load(playerDataFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-        return playerDataConfig;
-    }
-
-    public File getPlayerFile() {
-        return new File(dataFolder, getFilePath());
+        Player player = getPlayer();
+        player.getPersistentDataContainer().set(getKey("gradient-enabled"), PersistentDataType.STRING, toggle + "");
     }
 
 
-    private String getFilePath() {
-        return "players" + File.separator + uuid.toString() + ".yml";
+    private NamespacedKey getKey(String name) {
+        return new NamespacedKey(UnitedChat.getPlugin(), name);
     }
 
 }
