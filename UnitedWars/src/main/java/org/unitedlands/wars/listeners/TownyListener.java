@@ -48,13 +48,17 @@ import static org.unitedlands.wars.war.WarDatabase.hasWar;
 public class TownyListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onTownInvite(TownInvitePlayerEvent event) {
+        var invite = event.getInvite();
+        if (!hasWar(invite.getSender()))
+            return;
+        invite.getDirectSender().sendMessage(Utils.getMessageRaw("cannot-do-in-war"));
+    }
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onJoinTown(TownPreAddResidentEvent event) {
         if (hasWar(event.getTown())) {
-            War war = WarDatabase.getWar(event.getTown());
-            if (war == null) {
-                return;
-            }
-            war.addResident(event.getResident(), event.getTown());
+            event.setCancelled(true);
+            event.setCancelMessage(Utils.getMessageRaw("cannot-do-in-war"));
         }
     }
 
