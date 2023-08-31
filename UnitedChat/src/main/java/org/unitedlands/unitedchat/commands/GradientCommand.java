@@ -53,7 +53,7 @@ public class GradientCommand implements CommandExecutor {
             return;
         }
         if (arg.contains("#")) {
-            if (player.hasPermission("unitedchat.gradient.all")) {
+            if (player.hasPermission("united.chat.gradient.all")) {
                 chatPlayer.setGradient(arg);
                 player.sendMessage(getMessage("gradient-changed"));
             }
