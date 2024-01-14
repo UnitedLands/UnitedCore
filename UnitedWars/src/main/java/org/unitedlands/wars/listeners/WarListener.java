@@ -71,13 +71,13 @@ public class WarListener implements Listener {
 
         warringEntity.getWarHealth().show(player);
 
-        // Player who joined isn't invisible, so they should count towards healing.
-        if (!player.isInvisible()) {
-            // No lives, don't bother.
-            if (!WarDataController.hasResidentLives(Utils.getTownyResident(player)))
-                return;
-            warringEntity.getWarHealth().incrementPlayers();
-        }
+        if (player.hasPotionEffect(PotionEffectType.INVISIBILITY))
+            return;
+        // No lives, don't bother.
+        if (!WarDataController.hasResidentLives(Utils.getTownyResident(player)))
+            return;
+        warringEntity.getWarHealth().addHealingPlayer(player.getUniqueId());
+
     }
 
     @EventHandler
@@ -86,12 +86,8 @@ public class WarListener implements Listener {
         WarringEntity warringEntity = WarDatabase.getWarringEntity(player);
         if (warringEntity == null)
             return;
-        if (player.isInvisible())
-            return;
-        if (!WarDataController.hasResidentLives(getTownyResident(player)))
-            return;
         WarHealth warHealth = warringEntity.getWarHealth();
-        warHealth.decrementPlayers();
+        warHealth.removeHealingPlayer(player.getUniqueId());
     }
     @EventHandler
     public void onPlayerTurnInvisible(EntityPotionEffectEvent event) {
@@ -102,12 +98,14 @@ public class WarListener implements Listener {
         PotionEffect effect = event.getNewEffect();
         if (effect == null)
             return;
+        if (event.getAction() != EntityPotionEffectEvent.Action.ADDED)
+            return;
         if (!effect.getType().equals(PotionEffectType.INVISIBILITY))
             return;
         if (player.isInvisible())
             return; // Already invisible, don't check again
         WarringEntity entity = WarDatabase.getWarringEntity(player);
-        entity.getWarHealth().decrementPlayers();
+        entity.getWarHealth().removeHealingPlayer(player.getUniqueId());
     }
 
     @EventHandler
@@ -119,12 +117,12 @@ public class WarListener implements Listener {
         PotionEffect effect = event.getOldEffect();
         if (effect == null)
             return;
-        Cause c = event.getCause();
-        if (c.equals(Cause.EXPIRATION) || c.equals(Cause.DEATH) || c.equals(Cause.MILK) || c.equals(Cause.COMMAND) || c.equals(Cause.UNKNOWN)) {
-            if (!event.getOldEffect().getType().equals(PotionEffectType.INVISIBILITY))
-                return;
+        if (!effect.getType().equals(PotionEffectType.INVISIBILITY))
+            return;
+        EntityPotionEffectEvent.Action action = event.getAction();
+        if (action == EntityPotionEffectEvent.Action.REMOVED || action == EntityPotionEffectEvent.Action.CLEARED) {
             WarringEntity entity = WarDatabase.getWarringEntity(player);
-            entity.getWarHealth().incrementPlayers();
+            entity.getWarHealth().addHealingPlayer(player.getUniqueId());
         }
     }
 
@@ -152,7 +150,7 @@ public class WarListener implements Listener {
     private void addResidentLives(WarringEntity warringEntity) {
         for (Resident resident: warringEntity.getWarParticipants()) {
             int currentLives = WarDataController.getResidentLives(resident);
-            WarDataController.setResidentLives(resident, Math.min(6, currentLives + 3));
+            WarDataController.setResidentLives(resident, Math.min(3, currentLives + 3));
         }
     }
 
@@ -161,7 +159,7 @@ public class WarListener implements Listener {
         WarringEntity enemy = warringEntity.getEnemy();
         int enemyCurrent = enemy.getWarHealth().getValue();
 
-        warringEntity.getWarHealth().setHealth(Math.max(0, current - 20));
+        warringEntity.getWarHealth().decreaseHealth(calculateDailyHealthDecrease(warringEntity));
         if (warringEntity.getWarHealth().getValue() != 0)
             return;
 
@@ -174,6 +172,21 @@ public class WarListener implements Listener {
             war.endWar(enemy, warringEntity);
         else
             war.endWar(warringEntity, enemy);
+    }
+
+    private int calculateDailyHealthDecrease(WarringEntity entity) {
+        War war = entity.getWar();
+        // Get the current timestamp
+        long currentTimestamp = System.currentTimeMillis();
+
+        // Calculate the number of milliseconds elapsed
+        long millisecondsPassed = currentTimestamp - war.getStartTime();
+
+        // Convert milliseconds to days
+        long daysPassed = (long) Math.floor(millisecondsPassed / (1000.0 * 60 * 60 * 24));
+
+        int damageAmount = Math.toIntExact(10 + (daysPassed * 5));
+        return Math.min(80, damageAmount);
     }
 
     @EventHandler

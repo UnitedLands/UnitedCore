@@ -239,7 +239,7 @@ public class BreweryCommand implements TabExecutor {
     }
 
     private Component getNextPageComponent() {
-        return miniMessage.deserialize("   <click:run_command:'/Brewery list " + page + "'><b><gray><hover:show_text:'Next Page'>»</hover></gray><b></click>");
+        return miniMessage.deserialize("   <click:run_command:'/brewery list " + page + "'><b><gray><hover:show_text:'Next Page'>»</hover></gray><b></click>");
     }
 
     private Component getBreweryComponent() {

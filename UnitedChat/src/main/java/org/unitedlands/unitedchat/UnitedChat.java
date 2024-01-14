@@ -1,80 +1,55 @@
 package org.unitedlands.unitedchat;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.unitedlands.unitedchat.commands.ClearChatCmd;
-import org.unitedlands.unitedchat.commands.GradientCmd;
+import org.unitedlands.unitedchat.commands.ChatToggleCommand;
+import org.unitedlands.unitedchat.commands.ClearChatCommand;
+import org.unitedlands.unitedchat.commands.GradientCommand;
+import org.unitedlands.unitedchat.hooks.Placeholders;
 import org.unitedlands.unitedchat.player.PlayerListener;
-
-import java.io.File;
-import java.io.IOException;
 
 public class UnitedChat extends JavaPlugin {
 
-    private FileConfiguration playerDataConfig;
+    private static UnitedChat PLUGIN;
 
-    public static String getMsg(String name, FileConfiguration config) {
-        String message = config.getString("messages." + name);
-        return ChatColor.translateAlternateColorCodes('&', message);
+    public UnitedChat() {
+        PLUGIN = this;
+    }
+
+    public static UnitedChat getPlugin() {
+        return PLUGIN;
     }
 
     @Override
     public void onEnable() {
-
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
             getLogger().warning("[Exception] PlaceholderAPI is required!");
             Bukkit.getPluginManager().disablePlugin(this);
         }
-        getServer().getPluginManager().registerEvents(new PlayerListener(this, new Formatter()), this);
-        this.getCommand("gradient").setExecutor(new GradientCmd(this));
-        this.getCommand("cc").setExecutor(new ClearChatCmd());
+        new Placeholders().register();
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getCommand("gradient").setExecutor(new GradientCommand());
+        getCommand("cc").setExecutor(new ClearChatCommand());
+        getCommand("chat").setExecutor(new ChatToggleCommand());
         saveDefaultConfig();
 
     }
 
-    public void createPlayerFile(Player player) {
-        File playerDataFile = new File(getDataFolder(), getFilePath(player));
-        if (!playerDataFile.exists()) {
-            playerDataFile.getParentFile().mkdirs();
-            saveResource(getFilePath(player), false);
-        }
-        playerDataConfig = new YamlConfiguration();
-        try {
-            playerDataConfig.load(playerDataFile);
-            playerDataConfig.set("Player Name", player.getName());
-            playerDataConfig.set("GradientEnabled", false);
-            playerDataConfig.set("Gradient", "#ffffff:#ffffff");
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
+    public static Component getMessage(String name) {
+        String prefix = PLUGIN.getConfig().getString("messages.prefix");
+        String message = PLUGIN.getConfig().getString("messages." + name);
+        return MiniMessage.miniMessage().deserialize(prefix + message);
     }
 
-    public FileConfiguration getPlayerConfig(Player player) {
-        File playerDataFile = new File(getDataFolder(), getFilePath(player));
-        playerDataConfig = new YamlConfiguration();
-        if (!playerDataFile.exists()) {
-            createPlayerFile(player);
-            saveResource(getFilePath(player), false);
+    public static Component getMessage(String message, TagResolver.Single... resolvers) {
+        String prefix = PLUGIN.getConfig().getString("messages.prefix");
+        String configuredMessage = PLUGIN.getConfig().getString("messages." + message);
+        if (configuredMessage == null) {
+            return MiniMessage.miniMessage().deserialize("<red>Message <yellow>" + message + "<red> could not be found in the config file!");
         }
-        try {
-            playerDataConfig.load(playerDataFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-        return playerDataConfig;
-    }
-
-    public File getPlayerFile(Player player) {
-        return new File(getDataFolder(), getFilePath(player));
-    }
-
-
-    private String getFilePath(Player player) {
-        return "players" + File.separator + player.getUniqueId().toString() + ".yml";
+        return MiniMessage.miniMessage().deserialize(prefix + configuredMessage, resolvers);
     }
 }

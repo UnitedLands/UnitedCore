@@ -1,6 +1,5 @@
 package org.unitedlands.wars.war.entities;
 
-import com.google.common.base.MoreObjects;
 import com.palmergames.bukkit.towny.object.Government;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -31,7 +30,7 @@ public class WarringNation implements WarringEntity {
     public WarringNation(Nation nation, WarHealth warHealth, List<Resident> warringResidents, List<UUID> mercenaries, War war) {
         this.nationUUID = nation.getUUID();
         this.warHealth = warHealth;
-        this.warringResidents = Utils.toUUID(warringResidents);
+        this.warringResidents = Utils.residentToUUID(warringResidents);
         this.warUUID = war.getUuid();
         this.mercenaries = mercenaries;
         WarDatabase.addWarringNation(this);

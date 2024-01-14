@@ -1,11 +1,11 @@
 package org.unitedlands.wars.listeners;
 
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.object.Government;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.jail.Jail;
-import com.palmergames.bukkit.towny.utils.SpawnUtil;
 import de.jeff_media.angelchest.AngelChest;
 import de.jeff_media.angelchest.AngelChestPlugin;
 import de.jeff_media.angelchest.events.AngelChestSpawnEvent;
@@ -23,8 +23,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityResurrectEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +34,7 @@ import org.unitedlands.wars.Utils;
 import org.unitedlands.wars.war.War;
 import org.unitedlands.wars.war.WarDatabase;
 import org.unitedlands.wars.war.entities.WarringEntity;
+import org.unitedlands.wars.war.health.WarHealth;
 
 import java.util.Optional;
 
@@ -90,8 +91,10 @@ public class PlayerListener implements Listener {
             return;
         if (cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT
                 || cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL
-                || cause == PlayerTeleportEvent.TeleportCause.SPECTATE)
+                || cause == PlayerTeleportEvent.TeleportCause.SPECTATE) {
+            event.setCancelled(false);
             return;
+        }
         // they can bypass.
         if (player.hasPermission("united.wars.bypass.tp")) {
             return;
@@ -157,42 +160,78 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onDeath(EntityDeathEvent event) {
-        LivingEntity dead = event.getEntity();
-
-        if (!(dead instanceof Player))
+    public void onPreGraveCreation(AngelChestSpawnPrepareEvent event) {
+        Resident resident = getTownyResident(event.getPlayer());
+        if (resident == null)
             return;
+        if (!resident.hasTown())
+            return;
+        if (WarDatabase.hasWar(resident.getPlayer()) && getResidentLives(resident) > 0) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        Player dead = event.getPlayer();
 
         Optional<Player> foundKiller = findKiller(dead);
         if (foundKiller.isEmpty()) {
-            runRegularDeathProccess((Player) dead);
+            runRegularDeathProcess(dead);
+            cancelDeath(event);
             return;
         }
 
         Resident killer = getTownyResident(foundKiller.get());
-        Resident victim = getTownyResident((Player) dead);
+        Resident victim = getTownyResident(dead);
 
-        if (!hasSameWar(killer, victim))
+        if (!WarDatabase.hasWar(dead))
             return;
 
-        // Killer doesn't have lives, return
+        if (!hasSameWar(victim, killer)) {
+            cancelDeath(event);
+            return;
+        }
+
         if (!hasResidentLives(killer) || !hasResidentLives(victim))
             return;
 
         WarringEntity warringEntity = WarDatabase.getWarringEntity(victim.getPlayer());
-        if (warringEntity.getWar().hasActiveTimer())
+        War war = warringEntity.getWar();
+        if (war.hasActiveTimer())
             return;
 
         decreaseHealth(victim, warringEntity);
         playSounds(warringEntity);
+
         if (getResidentLives(victim) == 0) {
             notifyWarKick(victim.getPlayer(), warringEntity);
             jailResident(victim, warringEntity);
             return;
         }
         Component message = getPlayerDeathMessage(warringEntity, killer, victim);
-        warringEntity.getWar().broadcast(message);
+        war.broadcast(message);
+        if (!isHoldingTotem(dead)) {
+            cancelDeath(event);
+        }
     }
+
+
+    private void cancelDeath(PlayerDeathEvent event) {
+        Player dead = event.getPlayer();
+        Resident resident = Utils.getTownyResident(dead);
+
+        if (getResidentLives(resident) == 0) {
+            event.setCancelled(false);
+            return;
+        }
+
+        event.setCancelled(true);
+        dead.setHealth(20.0);
+        dead.setFoodLevel(20);
+        Utils.teleportPlayerToSpawn(dead);
+    }
+
 
     private boolean isHoldingTotem(Player player) {
         return player.getInventory().getItemInMainHand().getType() == Material.TOTEM_OF_UNDYING || player.getInventory().getItemInOffHand().getType() == Material.TOTEM_OF_UNDYING;
@@ -206,42 +245,49 @@ public class PlayerListener implements Listener {
         victim.setJailHours(3);
         victim.save();
         TownyUniverse.getInstance().getJailedResidentMap().add(victim);
-        SpawnUtil.jailTeleport(victim);
+        victim.getPlayer().teleportAsync(victim.getJailSpawn(), PlayerTeleportEvent.TeleportCause.SPECTATE);
         victim.getPlayer().sendMessage(getMessage("you-were-jailed"));
     }
 
     private Jail getJail(WarringEntity warringEntity) {
-        if (warringEntity.getGovernment() instanceof Town town)
-            if (town.hasJails())
-                return town.getPrimaryJail();
-        else {
-            Nation nation = (Nation) warringEntity.getGovernment();
-            if (nation.getCapital().hasJails())
-                return nation.getCapital().getPrimaryJail();
+        Government government = warringEntity.getGovernment();
+
+        if (government instanceof Town town && town.hasJails()) {
+            return town.getPrimaryJail();
+        } else if (government instanceof Nation nation && nation.getCapital().hasJails()) {
+            return nation.getCapital().getPrimaryJail();
         }
+
         return null;
     }
 
-    private void runRegularDeathProccess(Player dead) {
-        Resident resident = getTownyResident(dead);
-        if (!WarDatabase.hasWar(dead))
+    private void runRegularDeathProcess(Player dead) {
+        if (!WarDatabase.hasWar(dead)) {
             return;
-        if (!hasResidentLives(resident))
-            return;
-        WarringEntity warringEntity = WarDatabase.getWarringEntity(dead);
-        if (warringEntity.getWar().hasActiveTimer())
-            return;
-        // Decrease the health by 3
-        warringEntity.getWarHealth().decreaseHealth(3);
-        warringEntity.getWarHealth().flash();
-        warringEntity.getWar().broadcast(getMessage("regular-death",
-                component("victim",
-                        text(dead.getName())),
-                component("victim-warrer",
-                        text(warringEntity.name()))));
-        playSounds(warringEntity);
+        }
 
+        Resident resident = getTownyResident(dead);
+        if (!hasResidentLives(resident)) {
+            return;
+        }
+
+        WarringEntity warringEntity = WarDatabase.getWarringEntity(dead);
+        if (warringEntity.getWar().hasActiveTimer()) {
+            return;
+        }
+
+        int healthDecrease = 3;
+        WarHealth health = warringEntity.getWarHealth();
+        health.decreaseHealth(healthDecrease);
+        health.flash();
+
+        Component message = getMessage("regular-death",
+                component("victim", text(dead.getName())),
+                component("victim-warrer", text(warringEntity.name())));
+        warringEntity.getWar().broadcast(message);
+        playSounds(warringEntity);
     }
+
 
     private void decreaseHealth(Resident victim, WarringEntity warringEntity) {
         warringEntity.getWarHealth().decreaseHealth(5);
@@ -270,9 +316,7 @@ public class PlayerListener implements Listener {
 
     @NotNull
     private Component getPlayerDeathMessage(WarringEntity entity, Resident killer, Resident victim) {
-        String message = "player-killed";
-        if (killer == victim)
-            message = "player-killed-self";
+        String message = killer == victim ? "player-killed-self" : "player-killed";
         return Utils.getMessage(message,
                 component("victim",
                         text(victim.getName())),

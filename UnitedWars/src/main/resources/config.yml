@@ -1,5 +1,5 @@
 banned-worlds:
-  - spawn
+  - world
   - world_resource
   - world_the_end
   - world_nether
@@ -287,6 +287,7 @@ messages:
   mayor-offline: '<red><yellow><name></yellow> is the mayor of <yellow><warring-name></yellow> and is currently offline! You can only make an offer if they''re online!'
   not-enough-money: '<red>You have that much money in your account to offer!'
   must-have-town: '<red>You must have a town to use this command!'
+  cannot-declare-official-nation: '<red>You cannot declare a war on a non-official nation without a reason! Please open a ticket on <yellow>discord.unitedlands.org</yellow> to start the war!'
   must-be-nationwar: '<red>You must be in a nation war to offer a town!'
   town-not-in-nation: '<red>You cannot offer a town that''s not part of your nation!'
   must-have-nation: '<red>You must have a nation to use this command!'

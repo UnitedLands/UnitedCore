@@ -78,7 +78,8 @@ public class WarDatabase {
                 }
             }
 
-            War war = new War(towns, nations, warResidents, warType, UUID.fromString(warUUID));
+            long startTime = warSection.getLong("start-time");
+            War war = new War(towns, nations, warResidents, warType, startTime, UUID.fromString(warUUID));
 
             for (WarringEntity warringEntity : war.getWarringEntities()) {
                 ConfigurationSection entitySection = section.getConfigurationSection(war.getUuid() + "." + warringEntity.getPath() + "." + warringEntity.getUUID());
@@ -148,6 +149,7 @@ public class WarDatabase {
             ConfigurationSection warSection = warConfig.createSection("wars." + war.getUuid().toString());
             // Save the War type
             warSection.set("type", war.getWarType().toString());
+            warSection.set("start-time", war.getStartTime());
             // Create a unified list of all war participants.
             List<WarringEntity> warringEntities = new ArrayList<>();
             if (war.getWarType() == WarType.TOWNWAR)
@@ -161,7 +163,8 @@ public class WarDatabase {
                 // Create a section for that entity
                 ConfigurationSection entitySection = warSection.createSection(warringEntity.getPath() + "." + warringEntity.getUUID());
                 saveHealth(warringEntity, entitySection);
-
+                entitySection.set("name", warringEntity.name());
+                
                 if (!warringEntity.getMercenaries().isEmpty()) {
                     entitySection.set("mercenaries", convertUUIDsToString(warringEntity.getMercenaries()));
                 }
@@ -362,13 +365,13 @@ public class WarDatabase {
         WARS.clear();
     }
 
-    private static int getValidHealingPlayers(WarringEntity entity) {
-        int amount = 0;
+    private static HashSet<UUID> getValidHealingPlayers(WarringEntity entity) {
+        HashSet<UUID> players = new HashSet<>();
         for (Player p : entity.getOnlinePlayers()) {
             if (!WarDataController.hasResidentLives(Utils.getTownyResident(p)) || p.isInvisible())
                 continue;
-            amount++;
+            players.add(p.getUniqueId());
         }
-        return amount;
+        return players;
     }
 }
