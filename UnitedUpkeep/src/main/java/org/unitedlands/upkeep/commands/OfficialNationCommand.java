@@ -19,7 +19,11 @@ import org.unitedlands.upkeep.util.NationMetaController;
 
 public class OfficialNationCommand implements TabExecutor {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        return args.length == 2 ? BaseCommand.getTownyStartingWith(args[1], "n") : Collections.emptyList();
+        return switch (args.length) {
+            case 1 -> Arrays.asList("true", "false");
+            case 2 -> BaseCommand.getTownyStartingWith(args[1], "n");
+            default -> Collections.emptyList();
+        };
     }
 
     public OfficialNationCommand() {
@@ -36,7 +40,7 @@ public class OfficialNationCommand implements TabExecutor {
                 sender.sendMessage("Invalid nation name!");
             } else {
                 NationMetaController.setOfficialNation(nation, args[0].equalsIgnoreCase("true"));
-                sender.sendMessage("Successfully set " + args[1] + " as an official nation!");
+                sender.sendMessage("Successfully " + (args[0].equalsIgnoreCase("true") ? "set " : "removed ")+ args[1] + " as an official nation!");
             }
             return true;
         }
