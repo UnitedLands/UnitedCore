@@ -31,7 +31,6 @@ public class OfficialNationCommand implements TabExecutor {
             sender.sendMessage("No permission to use this command!");
             return true;
         } else {
-            System.out.println(Arrays.toString(args));
             Nation nation = TownyAPI.getInstance().getNation(args[1]);
             if (nation == null) {
                 sender.sendMessage("Invalid nation name!");
