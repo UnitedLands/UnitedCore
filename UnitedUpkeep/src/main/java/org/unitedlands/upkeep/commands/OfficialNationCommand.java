@@ -36,7 +36,7 @@ public class OfficialNationCommand implements TabExecutor {
             if (nation == null) {
                 sender.sendMessage("Invalid nation name!");
             } else {
-                NationMetaController.setOfficialNation(nation, args[2].equalsIgnoreCase("true"));
+                NationMetaController.setOfficialNation(nation, args[0].equalsIgnoreCase("true"));
                 sender.sendMessage("Successfully set " + args[1] + " as an official nation!");
             }
             return true;
