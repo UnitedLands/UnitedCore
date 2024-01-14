@@ -21,3 +21,5 @@ horse-speed-modifier:
   - WARPED_PLANKS;0.3
   - CRIMSON_PLANKS;0.3
   - JUNGLE_PLANKS;0.3
+messages:
+  teleport-confirm: 'Are you sure you want to teleport <distance> blocks?'

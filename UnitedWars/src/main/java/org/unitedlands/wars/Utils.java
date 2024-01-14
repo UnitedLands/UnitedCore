@@ -78,10 +78,18 @@ public class Utils {
         return resident.getTownOrNull();
     }
 
-    public static HashSet<UUID> toUUID(Collection<Resident> residents) {
+    public static HashSet<UUID> residentToUUID(Collection<Resident> residents) {
         HashSet<UUID> uuids = new HashSet<>();
         for (Resident resident : residents) {
             uuids.add(resident.getUUID());
+        }
+        return uuids;
+    }
+    
+    public static HashSet<UUID> playerToUUID(Collection<Player> players) {
+        HashSet<UUID> uuids = new HashSet<>();
+        for (Player p : players) {
+            uuids.add(p.getUniqueId());
         }
         return uuids;
     }

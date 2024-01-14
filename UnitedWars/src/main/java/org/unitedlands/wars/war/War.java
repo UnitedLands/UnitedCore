@@ -1,5 +1,6 @@
 package org.unitedlands.wars.war;
 
+import com.palmergames.bukkit.towny.object.Government;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -32,6 +33,7 @@ public class War {
     private final HashSet<UUID> residents;
     private final WarType warType;
     private final UUID uuid;
+    private final long startTime;
     private WarTimer warTimer = null;
     private WarringEntity winner;
     private WarringEntity loser;
@@ -40,8 +42,9 @@ public class War {
         uuid = UUID.randomUUID();
         this.warringTowns = generateWarringTownList(warringTowns);
         this.warringNations = generateWarringNationList(warringNations);
-        this.residents = Utils.toUUID(residents);
+        this.residents = Utils.residentToUUID(residents);
         this.warType = warType;
+        this.startTime = System.currentTimeMillis();
         warTimer = new WarTimer(this);
         // Start the war immediately, since this is the first time.
         startWar();
@@ -50,12 +53,13 @@ public class War {
     }
 
     // Used for loading existing wars from the config.
-    public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType, UUID uuid) {
+    public War(List<Town> warringTowns, List<Nation> warringNations, HashSet<Resident> residents, WarType warType, long startTime, UUID uuid) {
         this.uuid = uuid;
         this.warringTowns = generateWarringTownList(warringTowns);
         this.warringNations = generateWarringNationList(warringNations);
-        this.residents = Utils.toUUID(residents);
+        this.residents = Utils.residentToUUID(residents);
         this.warType = warType;
+        this.startTime = startTime;
         // Save war to internal database
         WarDatabase.addWar(this);
     }
@@ -122,6 +126,9 @@ public class War {
         return warType;
     }
 
+    public long getStartTime() {
+        return startTime;
+    }
     public UUID getUuid() {
         return uuid;
     }
@@ -347,12 +354,25 @@ public class War {
 
 
     private void giveWarEarnings() {
-        winner.getGovernment().getAccount().deposit(calculateWonMoney(), "Won a war against" + loser.name());
-        loser.getGovernment().getAccount().withdraw(calculateWonMoney(), "Lost a war against " + winner.name());
-        if (winner instanceof WarringTown town)
+        Government loserGov = loser.getGovernment();
+        double lostMoney = loserGov.getAccount().getHoldingBalance() * 0.5;
+        loserGov.getAccount().payTo(lostMoney,  winner.getGovernment().getAccount(), "Won a war against " + loser.name());
+
+        if (loserGov instanceof Nation loserNation) {
+            for (Town town : loserNation.getTowns()) {
+                double townAmount = town.getAccount().getHoldingBalance() * 0.5;
+                town.getAccount().payTo(townAmount, winner.getGovernment().getAccount(), "Lost a war against " + winner.name());
+            }
+        }
+
+
+        if (winner instanceof WarringTown) {
+            WarringTown town = (WarringTown) winner;
             town.getTown().addBonusBlocks(calculateBonusBlocks());
-        else if (winner instanceof WarringNation nation)
+        } else if (winner instanceof WarringNation) {
+            WarringNation nation = (WarringNation) winner;
             nation.getNation().getCapital().addBonusBlocks(calculateBonusBlocks());
+        }
     }
 
     private int calculateBonusBlocks() {
@@ -377,7 +397,7 @@ public class War {
         List<WarringTown> generatedList = new ArrayList<>();
         for (Town town : townList) {
             WarringTown entity = new WarringTown(town, new WarHealth(town), town.getResidents(), new ArrayList<>(), this);
-            entity.getWarHealth().setValidPlayers(entity.getOnlinePlayers().size());
+            entity.getWarHealth().setValidPlayers(Utils.playerToUUID(entity.getOnlinePlayers()));
             generatedList.add(entity);
         }
         return generatedList;
@@ -392,7 +412,7 @@ public class War {
             // Create a list with the nation residents
             List<Resident> warringResidents = new ArrayList<>(nation.getResidents());
             WarringNation entity = new WarringNation(nation, new WarHealth(nation), warringResidents, new ArrayList<>(), this);
-            entity.getWarHealth().setValidPlayers(entity.getOnlinePlayers().size());
+            entity.getWarHealth().setValidPlayers(Utils.playerToUUID(entity.getOnlinePlayers()));
             generatedList.add(entity);
         }
         return generatedList;

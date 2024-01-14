@@ -157,16 +157,17 @@ public class TownyListener implements Listener {
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 0.4F);
             BossBar outlawedBossbar = getOutlawedBossbar(town);
             player.showBossBar(outlawedBossbar);
-            hideBossBarAfterFifteenSecs(outlawedBossbar);
+            startBossbarCountdown(outlawedBossbar, 15);
         }
     }
 
-    private void hideBossBarAfterFifteenSecs(BossBar bossBar) {
-        double timeDecrease =  (double) 1 / 15;
+    private void startBossbarCountdown(BossBar bossBar, int seconds) {
+        double timeDecrease =  (double) 1 / seconds;
         unitedPvP.getServer().getScheduler().runTaskTimer(unitedPvP, task -> {
             if (bossBar.progress() <= 0.0) {
-                task.cancel();
                 player.hideBossBar(bossBar);
+                task.cancel();
+                return;
             }
             bossBar.progress((float) Math.max(0.0, bossBar.progress() - timeDecrease));
         }, 0, 20L);

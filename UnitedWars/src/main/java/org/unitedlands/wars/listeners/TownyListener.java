@@ -48,13 +48,17 @@ import static org.unitedlands.wars.war.WarDatabase.hasWar;
 public class TownyListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onTownInvite(TownInvitePlayerEvent event) {
+        var invite = event.getInvite();
+        if (!hasWar(invite.getSender()))
+            return;
+        invite.getDirectSender().sendMessage(Utils.getMessageRaw("cannot-do-in-war"));
+    }
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onJoinTown(TownPreAddResidentEvent event) {
         if (hasWar(event.getTown())) {
-            War war = WarDatabase.getWar(event.getTown());
-            if (war == null) {
-                return;
-            }
-            war.addResident(event.getResident(), event.getTown());
+            event.setCancelled(true);
+            event.setCancelMessage(Utils.getMessageRaw("cannot-do-in-war"));
         }
     }
 
@@ -179,11 +183,12 @@ public class TownyListener implements Listener {
             return;
 
         Material mat = event.getMaterial();
-        if (isModifiableMaterial(mat)) {
+        if (isModifiableMaterial(mat))
             event.setCancelled(false);
-        }
         if (mat == Material.OBSIDIAN)
-            removeBlockLater(event.getBlock()); // 30 seconds * 20 ticks.
+            removeBlockLater(event.getBlock(), 30); // 30 secs
+        else
+            removeBlockLater(event.getBlock(), 60 * 5); // 5 mins
     }
 
     @EventHandler
@@ -340,6 +345,8 @@ public class TownyListener implements Listener {
         Resident resident = getTownyResident(player);
         if (resident.getTownOrNull().equals(town))
             return true;
+        if (town.getTrustedResidents().contains(resident))
+            return true;
         War war = WarDatabase.getWar(town);
         if (war == null)
             return true;
@@ -347,10 +354,10 @@ public class TownyListener implements Listener {
         return !war.equals(warringEntity.getWar());
     }
 
-    private void removeBlockLater(Block block) {
+    private void removeBlockLater(Block block, int time) {
         Bukkit.getServer().getScheduler().runTaskLater(UnitedWars.getInstance(), () -> {
             block.setType(Material.AIR);
-        }, 600);
+        }, time * 20);
     }
 
     private void setFrozen(Collection<TownBlock> blocks, boolean toggle) {

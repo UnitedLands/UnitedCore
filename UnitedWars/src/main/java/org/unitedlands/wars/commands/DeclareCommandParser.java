@@ -32,6 +32,7 @@ import org.unitedlands.wars.war.WarType;
 import java.util.*;
 
 import static net.kyori.adventure.text.Component.text;
+import static org.unitedlands.upkeep.util.NationMetaController.isOfficialNation;
 import static org.unitedlands.wars.Utils.*;
 import static org.unitedlands.wars.war.WarUtil.*;
 
@@ -64,8 +65,13 @@ public class DeclareCommandParser {
         }
         Town targetTown = target.town();
         if (targetTown == null) {
-           player.sendMessage(getMessage("invalid-town-name"));
-           return;
+            player.sendMessage(getMessage("invalid-town-name"));
+            return;
+        }
+        Resident resident = UnitedWars.TOWNY_API.getResident(player);
+        if (!resident.isMayor()) {
+            player.sendMessage(getMessage("must-be-mayor"));
+            return;
         }
         Confirmation.runOnAccept(() -> {
             if (invalidBook(WarType.TOWNWAR))
@@ -75,7 +81,6 @@ public class DeclareCommandParser {
                 player.sendMessage(getMessage("must-not-be-neutral-target"));
                 return;
             }
-            Resident resident = UnitedWars.TOWNY_API.getResident(player);
             Town town = resident.getTownOrNull();
             if (!townsHaveEnoughOnline(targetTown, town)) {
                 player.sendMessage(getMessage("must-have-online-player"));
@@ -107,6 +112,10 @@ public class DeclareCommandParser {
             player.sendMessage(getMessage("must-have-nation"));
             return;
         }
+        if (!resident.isKing()) {
+            player.sendMessage(getMessage("must-be-mayor"));
+            return;
+        }
         Nation declaringNation = resident.getNationOrNull();
         WarTarget target = getTargetFromBook();
         if (target == null) {
@@ -116,6 +125,10 @@ public class DeclareCommandParser {
         Nation targetNation = target.nation();
         if (targetNation == null) {
             player.sendMessage(getMessage("invalid-nation-name"));
+            return;
+        }
+        if ((isOfficialNation(declaringNation) && !isOfficialNation(targetNation))) {
+            player.sendMessage(getMessage("cannot-declare-official-nation"));
             return;
         }
 
