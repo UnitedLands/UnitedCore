@@ -15,8 +15,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.upkeep.UnitedUpkeep;
 import org.unitedlands.upkeep.calculators.TownUpkeepCalculator;
-
-import static org.unitedlands.upkeep.util.NationMetaController.isOfficialNation;
+import org.unitedlands.upkeep.util.NationMetaController;
 
 public class StatusScreenListener implements Listener {
     private final UnitedUpkeep unitedUpkeep;
@@ -30,141 +29,125 @@ public class StatusScreenListener implements Listener {
 
     @EventHandler
     public void onStatusScreen(NationStatusScreenEvent event) {
-        screen = event.getStatusScreen();
-        if (isOfficialNation(event.getNation())) {
-            addOfficialNationComponent();
+        this.screen = event.getStatusScreen();
+        if (NationMetaController.isOfficialNation(event.getNation())) {
+            this.addOfficialNationComponent();
         }
+
     }
+
     @EventHandler
     public void onStatusScreen(TownStatusScreenEvent event) {
-        screen = event.getStatusScreen();
-        town = event.getTown();
-        replaceTownSizeComponent();
-        replaceUpkeepComponent();
-        if (town.hasNation()) {
-            if (isOfficialNation(town.getNationOrNull()))
-                addOfficialTownComponent();
+        this.screen = event.getStatusScreen();
+        this.town = event.getTown();
+        this.replaceTownSizeComponent();
+        this.replaceUpkeepComponent();
+        if (this.town.hasNation() && NationMetaController.isOfficialNation(this.town.getNationOrNull())) {
+            this.addOfficialTownComponent();
         }
-        // Remove the default neutrality cost.
-        screen.removeStatusComponent("neutralityCost");
+
+        this.screen.removeStatusComponent("neutralityCost");
     }
 
     private void addOfficialTownComponent() {
-        Component subtitle = screen.getComponentOrNull("subtitle");
+        Component subtitle = this.screen.getComponentOrNull("subtitle");
         if (subtitle == null) {
-            subtitle = screen.getComponentOrNull("title");
-            screen.replaceComponent("title", subtitle.append(Component.newline().append(getOfficialTownComponent())));
-            return;
+            subtitle = this.screen.getComponentOrNull("title");
+            this.screen.replaceComponent("title", subtitle.append(Component.newline().append(this.getOfficialTownComponent())));
+        } else {
+            this.screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(this.getOfficialTownComponent())));
         }
-        screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(getOfficialTownComponent())));
     }
 
     private void addOfficialNationComponent() {
-        Component subtitle = screen.getComponentOrNull("subtitle");
+        Component subtitle = this.screen.getComponentOrNull("subtitle");
         if (subtitle == null) {
-            subtitle = screen.getComponentOrNull("nation_title");
-            screen.replaceComponent("nation_title", subtitle.append(Component.newline().append(getOfficialNationComponent())));
-            return;
+            subtitle = this.screen.getComponentOrNull("nation_title");
+            this.screen.replaceComponent("nation_title", subtitle.append(Component.newline().append(this.getOfficialNationComponent())));
+        } else {
+            this.screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(this.getOfficialNationComponent())));
         }
-        screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(getOfficialNationComponent())));
     }
 
     private TownUpkeepCalculator getTownUpkeepCalculator() {
-        return new TownUpkeepCalculator(unitedUpkeep, town);
+        return new TownUpkeepCalculator(this.unitedUpkeep, this.town);
     }
 
     private int getTownsize() {
-        return town.getTownBlocks().size();
+        return this.town.getTownBlocks().size();
     }
 
     private void replaceUpkeepComponent() {
-        TextComponent upkeepComponent = getUpkeepComponent();
-
-        if (getBonusBlockDiscount() > 0 && getNationDiscount() > 0) {
-            upkeepComponent = upkeepComponent.hoverEvent(HoverEvent.showText(getComponentWithAllDiscounts()));
-        } else if (getNationDiscount() > 0) {
-            upkeepComponent = upkeepComponent.hoverEvent(HoverEvent.showText(getNationDiscountComponent().append(getNeutralityComponent())));
-        } else if (getBonusBlockDiscount() > 0) {
-            upkeepComponent = upkeepComponent.hoverEvent(HoverEvent.showText(getBonusDiscountComponent().append(getNeutralityComponent())));
+        TextComponent upkeepComponent = this.getUpkeepComponent();
+        if (this.getBonusBlockDiscount() > 0.0 && this.getNationDiscount() > 0.0) {
+            upkeepComponent = (TextComponent)upkeepComponent.hoverEvent(HoverEvent.showText(this.getComponentWithAllDiscounts()));
+        } else if (this.getNationDiscount() > 0.0) {
+            upkeepComponent = (TextComponent)upkeepComponent.hoverEvent(HoverEvent.showText(this.getNationDiscountComponent().append(this.getNeutralityComponent())));
+        } else if (this.getBonusBlockDiscount() > 0.0) {
+            upkeepComponent = (TextComponent)upkeepComponent.hoverEvent(HoverEvent.showText(this.getBonusDiscountComponent().append(this.getNeutralityComponent())));
         }
 
-        screen.replaceComponent("upkeep", upkeepComponent);
+        this.screen.replaceComponent("upkeep", upkeepComponent);
     }
 
     private void replaceTownSizeComponent() {
-        TextComponent townSizeComponent = Component
-                .text("\nTown Size: ", NamedTextColor.DARK_GREEN)
-                .append(Component.text(getTownsize(), NamedTextColor.GREEN));
-        screen.replaceComponent("townblocks", townSizeComponent);
+        TextComponent townSizeComponent = (TextComponent)Component.text("\nTown Size: ", NamedTextColor.DARK_GREEN).append(Component.text(this.getTownsize(), NamedTextColor.GREEN));
+        this.screen.replaceComponent("townblocks", townSizeComponent);
     }
 
     private TextComponent getOfficialNationComponent() {
-        return (TextComponent) miniMessage.deserialize("                          <gradient:#D4AF37:#FCFDD3><bold>OFFICIAL NATION</gradient>");
+        return (TextComponent)this.miniMessage.deserialize("                          <gradient:#D4AF37:#FCFDD3><bold>OFFICIAL NATION</gradient>");
     }
+
     private TextComponent getOfficialTownComponent() {
-        return (TextComponent) miniMessage.deserialize("                  <gradient:#D4AF37:#FCFDD3><bold>OFFICIAL NATION MEMBER</gradient>");
+        return (TextComponent)this.miniMessage.deserialize("                  <gradient:#D4AF37:#FCFDD3><bold>OFFICIAL NATION MEMBER</gradient>");
     }
+
     private TextComponent getComponentWithAllDiscounts() {
-        return Component.text("")
-                .append(getNationDiscountComponent())
-                .append(Component.text("\n"))
-                .append(getBonusDiscountComponent())
-                .append(getNeutralityComponent());
+        return (TextComponent)((TextComponent)((TextComponent)((TextComponent)Component.text("").append(this.getNationDiscountComponent())).append(Component.text("\n"))).append(this.getBonusDiscountComponent())).append(this.getNeutralityComponent());
     }
 
     private TextComponent getNationDiscountComponent() {
-        return Component
-                .text("[Nation Discount: ", NamedTextColor.DARK_GREEN)
-                .append(Component.text(getNationDiscount() + " Gold", NamedTextColor.GREEN))
-                .append(Component.text("]", NamedTextColor.DARK_GREEN));
+        return (TextComponent)((TextComponent)Component.text("[Nation Discount: ", NamedTextColor.DARK_GREEN).append(Component.text(this.getNationDiscount() + " Gold", NamedTextColor.GREEN))).append(Component.text("]", NamedTextColor.DARK_GREEN));
     }
 
     private TextComponent getBonusDiscountComponent() {
-        return Component
-                .text("[Bonus Discount: ", NamedTextColor.DARK_GREEN)
-                .append(Component.text(getBonusBlockDiscount() + " Gold", NamedTextColor.GREEN))
-                .append(Component.text("]", NamedTextColor.DARK_GREEN));
+        return (TextComponent)((TextComponent)((TextComponent)Component.text("[Bonus Discount: ", NamedTextColor.DARK_GREEN).append(Component.text(this.getBonusBlockDiscount() + " Gold", NamedTextColor.GREEN))).append(Component.text("(" + this.town.getBonusBlocks() + ")", NamedTextColor.AQUA))).append(Component.text("]", NamedTextColor.DARK_GREEN));
     }
 
     private TextComponent getNeutralityComponent() {
-        // Return an empty component if the town isn't neutral.
-        if (!town.isNeutral()) {
+        if (!this.town.isNeutral()) {
             return Component.empty();
+        } else {
+            double fee = this.getNeutralityFee();
+            return (TextComponent)((TextComponent)Component.text("\n[Neutrality Fees: ", NamedTextColor.DARK_GREEN).append(Component.text("" + fee + " Gold", NamedTextColor.RED))).append(Component.text("]", NamedTextColor.DARK_GREEN));
         }
-        double fee = getNeutralityFee();
-        return Component
-                .text("\n[Neutrality Fees: ", NamedTextColor.DARK_GREEN)
-                .append(Component.text(fee + " Gold", NamedTextColor.RED))
-                .append(Component.text("]", NamedTextColor.DARK_GREEN));
     }
 
     private double getNeutralityFee() {
         int defaultFee = 25;
-        return Math.floor((getTownUpkeepCalculator().getDiscountedUpkeep() * 0.1) + defaultFee);
+        return Math.floor(this.getTownUpkeepCalculator().getDiscountedUpkeep() * 0.1 + (double)defaultFee);
     }
 
     private TextComponent getUpkeepComponent() {
-        var calculator = getTownUpkeepCalculator();
+        TownUpkeepCalculator calculator = this.getTownUpkeepCalculator();
         double neutralityFee = 0.0;
-        if (town.isNeutral()) {
-            neutralityFee = getNeutralityFee();
+        if (this.town.isNeutral()) {
+            neutralityFee = this.getNeutralityFee();
         }
+
         double upkeep = calculator.calculateTownUpkeep() + neutralityFee;
         double discountedUpkeep = calculator.getDiscountedUpkeep() + neutralityFee;
-        return Component
-                .text("")
-                .append(Component.text("\nUpkeep: ", NamedTextColor.DARK_GREEN))
-                .append(Component.text(upkeep, NamedTextColor.GRAY, TextDecoration.STRIKETHROUGH))
-                .append(Component.text( " " + discountedUpkeep + " Gold", NamedTextColor.RED));
+        return (TextComponent)((TextComponent)((TextComponent)Component.text("").append(Component.text("\nUpkeep: ", NamedTextColor.DARK_GREEN))).append(Component.text(upkeep, NamedTextColor.GRAY, new TextDecoration[]{TextDecoration.STRIKETHROUGH}))).append(Component.text(" " + discountedUpkeep + " Gold", NamedTextColor.RED));
     }
 
     private double getNationDiscount() {
-        var calculator = getTownUpkeepCalculator();
+        TownUpkeepCalculator calculator = this.getTownUpkeepCalculator();
         return calculator.getNationDiscount();
     }
 
     private double getBonusBlockDiscount() {
-        var calculator = getTownUpkeepCalculator();
+        TownUpkeepCalculator calculator = this.getTownUpkeepCalculator();
         return calculator.calculateBonusBlockDiscount();
     }
 }

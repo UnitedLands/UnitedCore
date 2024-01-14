@@ -15,31 +15,30 @@ public class CalculationListener implements Listener {
 
     public CalculationListener(UnitedUpkeep unitedUpkeep) {
         this.unitedUpkeep = unitedUpkeep;
-
     }
 
     @EventHandler
     public void calculateTownUpkeepEvent(TownUpkeepCalculationEvent event) {
         Town town = event.getTown();
-        final TownUpkeepCalculator calculator = new TownUpkeepCalculator(unitedUpkeep, town);
-
+        TownUpkeepCalculator calculator = new TownUpkeepCalculator(this.unitedUpkeep, town);
         double bonusDiscount = calculator.calculateBonusBlockDiscount();
         double upkeep = calculator.calculateNationDiscountedTownUpkeep() - bonusDiscount;
-        if (upkeep <= 0) {
-            upkeep = 0;
+        if (upkeep <= 0.0) {
+            upkeep = 0.0;
         }
+
         if (town.isNeutral()) {
-            // Neutrality fees should be 10% of the upkeep.
             int defaultFee = 25;
-            upkeep += Math.floor(upkeep * 0.1 + defaultFee);
+            upkeep += Math.floor(upkeep * 0.1 + (double)defaultFee);
         }
+
         event.setUpkeep(upkeep);
     }
 
     @EventHandler
     public void calculateNationUpkeepEvent(NationUpkeepCalculationEvent event) {
         Nation nation = event.getNation();
-        NationUpkeepCalculator nationUpkeepCalculator = new NationUpkeepCalculator(unitedUpkeep, nation);
+        NationUpkeepCalculator nationUpkeepCalculator = new NationUpkeepCalculator(this.unitedUpkeep, nation);
         double upkeep = nationUpkeepCalculator.calculateNationUpkeep();
         event.setUpkeep(upkeep);
     }

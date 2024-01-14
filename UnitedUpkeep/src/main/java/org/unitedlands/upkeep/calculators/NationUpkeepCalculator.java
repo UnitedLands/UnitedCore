@@ -3,8 +3,7 @@ package org.unitedlands.upkeep.calculators;
 import com.palmergames.bukkit.towny.object.Nation;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.unitedlands.upkeep.UnitedUpkeep;
-
-import static org.unitedlands.upkeep.util.NationMetaController.isOfficialNation;
+import org.unitedlands.upkeep.util.NationMetaController;
 
 public class NationUpkeepCalculator {
     private final UnitedUpkeep unitedUpkeep;
@@ -16,50 +15,40 @@ public class NationUpkeepCalculator {
     }
 
     public double calculateNationUpkeep() {
-        int townCount = nation.getNumTowns();
-        double townCountMod = (float) 1 / townCount;
-
-        double upkeepPerPlot = Math.floor(((getNationBaseUpkeep() * getRiseMod()) / getFallMod()) * townCountMod);
-
-        double upkeep = Math.floor(upkeepPerPlot * getNationPlotCount());
-        if (isOfficialNation(nation)) {
-            return Math.floor(upkeep * 0.05);
-        }
-        return upkeep;
+        int townCount = this.nation.getNumTowns();
+        double townCountMod = (double)(1.0F / (float)townCount);
+        double upkeepPerPlot = Math.floor((double)this.getNationBaseUpkeep() * this.getRiseMod() / this.getFallMod() * townCountMod);
+        double upkeep = Math.floor(upkeepPerPlot * (double)this.getNationPlotCount());
+        return NationMetaController.isOfficialNation(this.nation) ? Math.floor(upkeep * 0.2) : upkeep;
     }
 
     private double getRiseMod() {
-        double riseStep = getConfiguration().getDouble("nation.riseStep");
-        int riseAt = getConfiguration().getInt("nation.riseAt");
-
-        int nationPlotStep = getNationPlotCount() / riseAt;
-
-        return (riseStep * nationPlotStep) + 1;
+        double riseStep = this.getConfiguration().getDouble("nation.riseStep");
+        int riseAt = this.getConfiguration().getInt("nation.riseAt");
+        int nationPlotStep = this.getNationPlotCount() / riseAt;
+        return riseStep * (double)nationPlotStep + 1.0;
     }
 
     private double getFallMod() {
-        double fallStep = getConfiguration().getDouble("nation.fallStep");
-        int fallAt = getConfiguration().getInt("nation.fallAt");
-
-        int nationResidentStep = getNationResidentCount() / fallAt;
-
-        return (fallStep * nationResidentStep) + 1;
+        double fallStep = this.getConfiguration().getDouble("nation.fallStep");
+        int fallAt = this.getConfiguration().getInt("nation.fallAt");
+        int nationResidentStep = this.getNationResidentCount() / fallAt;
+        return fallStep * (double)nationResidentStep + 1.0;
     }
 
     private int getNationResidentCount() {
-        return nation.getNumResidents();
+        return this.nation.getNumResidents();
     }
 
     private int getNationPlotCount() {
-        return nation.getTownBlocks().size();
+        return this.nation.getTownBlocks().size();
     }
 
     private int getNationBaseUpkeep() {
-        return getConfiguration().getInt("nation.baseUpkeepPrice");
+        return this.getConfiguration().getInt("nation.baseUpkeepPrice");
     }
 
     private FileConfiguration getConfiguration() {
-        return unitedUpkeep.getConfig();
+        return this.unitedUpkeep.getConfig();
     }
-
 }
