@@ -5,6 +5,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.unitedlands.upkeep.UnitedUpkeep;
 import org.unitedlands.upkeep.util.NationMetaController;
+import org.unitedlands.upkeep.util.TerritorialMetaController;
 
 public class TownUpkeepCalculator {
     private final UnitedUpkeep unitedUpkeep;
@@ -23,12 +24,24 @@ public class TownUpkeepCalculator {
 
     public double calculateTownUpkeep() {
         double upkeepPerPlot = (double)this.getBaseTownUpkeepPrice() * this.getRiseMod() / this.getFallMod();
-        double upkeep = Math.floor(upkeepPerPlot * (double)this.getTownPlotCount());
-        return this.addOfficialNationDiscountOrNone(upkeep);
+        return Math.floor(upkeepPerPlot * (double) this.getTownPlotCount());
     }
 
     private double addOfficialNationDiscountOrNone(double upkeep) {
-        return this.town.hasNation() && NationMetaController.isOfficialNation(this.town.getNationOrNull()) ? Math.floor(upkeep * 0.05) : upkeep;
+        if(this.town.hasNation() && NationMetaController.isOfficialNation(this.town.getNationOrNull(), "minor")) {
+            if(TerritorialMetaController.toggledTerritorialWars(this.town)) {
+                return Math.floor(upkeep * unitedUpkeep.getConfig().getDouble("multiplier.town.minor-territorial-war"));
+            } else
+                return Math.floor(upkeep * unitedUpkeep.getConfig().getDouble("multiplier.town.minor"));
+        } else if(this.town.hasNation() && NationMetaController.isOfficialNation(this.town.getNationOrNull(), "major")) {
+            if(TerritorialMetaController.toggledTerritorialWars(this.town)) {
+                return Math.floor(upkeep * unitedUpkeep.getConfig().getDouble("multiplier.town.major-territorial-war"));
+            } else
+                return Math.floor(upkeep * unitedUpkeep.getConfig().getDouble("multiplier.town.major"));
+        }
+        if(TerritorialMetaController.toggledTerritorialWars(this.town))
+            return Math.floor(upkeep * unitedUpkeep.getConfig().getDouble("multiplier.town.territorial-war"));
+        return upkeep;
     }
 
     public double calculateBonusBlockDiscount() {

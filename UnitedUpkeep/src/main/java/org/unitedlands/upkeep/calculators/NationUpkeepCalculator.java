@@ -19,7 +19,12 @@ public class NationUpkeepCalculator {
         double townCountMod = (double)(1.0F / (float)townCount);
         double upkeepPerPlot = Math.floor((double)this.getNationBaseUpkeep() * this.getRiseMod() / this.getFallMod() * townCountMod);
         double upkeep = Math.floor(upkeepPerPlot * (double)this.getNationPlotCount());
-        return NationMetaController.isOfficialNation(this.nation) ? Math.floor(upkeep * 0.2) : upkeep;
+        if(NationMetaController.isOfficialNation(this.nation, "major")) {
+            return Math.floor(upkeep * unitedUpkeep.getConfig().getDouble("multiplier.nation.major"));
+        } else if(NationMetaController.isOfficialNation(this.nation, "minor")) {
+            return Math.floor(upkeep * unitedUpkeep.getConfig().getDouble("multiplier.nation.minor"));
+        }
+        return upkeep;
     }
 
     private double getRiseMod() {

@@ -1,6 +1,6 @@
 package org.unitedlands.upkeep.listeners;
 
-import com.palmergames.bukkit.towny.event.NationUpkeepCalculationEvent;
+import com.palmergames.bukkit.towny.event.NationUpkeepCalculationEvent; 
 import com.palmergames.bukkit.towny.event.TownUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.unitedlands.upkeep.UnitedUpkeep;
 import org.unitedlands.upkeep.calculators.NationUpkeepCalculator;
 import org.unitedlands.upkeep.calculators.TownUpkeepCalculator;
+import org.unitedlands.upkeep.util.TerritorialMetaController;
 
 public class CalculationListener implements Listener {
     private final UnitedUpkeep unitedUpkeep;
@@ -31,6 +32,7 @@ public class CalculationListener implements Listener {
             int defaultFee = 25;
             upkeep += Math.floor(upkeep * 0.1 + (double)defaultFee);
         }
+
 
         event.setUpkeep(upkeep);
     }

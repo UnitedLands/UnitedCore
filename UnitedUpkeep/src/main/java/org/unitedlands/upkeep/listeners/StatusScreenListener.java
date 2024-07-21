@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.unitedlands.upkeep.UnitedUpkeep;
 import org.unitedlands.upkeep.calculators.TownUpkeepCalculator;
 import org.unitedlands.upkeep.util.NationMetaController;
+import org.unitedlands.upkeep.util.TerritorialMetaController;
 
 public class StatusScreenListener implements Listener {
     private final UnitedUpkeep unitedUpkeep;
@@ -30,8 +31,10 @@ public class StatusScreenListener implements Listener {
     @EventHandler
     public void onStatusScreen(NationStatusScreenEvent event) {
         this.screen = event.getStatusScreen();
-        if (NationMetaController.isOfficialNation(event.getNation())) {
-            this.addOfficialNationComponent();
+        if (NationMetaController.isOfficialNation(event.getNation(), "major")) {
+            this.addMajorNationComponent();
+        } else if (NationMetaController.isOfficialNation(event.getNation(), "minor")) {
+            this.addMinorNationComponent();
         }
 
     }
@@ -42,30 +45,65 @@ public class StatusScreenListener implements Listener {
         this.town = event.getTown();
         this.replaceTownSizeComponent();
         this.replaceUpkeepComponent();
-        if (this.town.hasNation() && NationMetaController.isOfficialNation(this.town.getNationOrNull())) {
-            this.addOfficialTownComponent();
+        if(TerritorialMetaController.toggledTerritorialWars(this.town)) {
+            this.addTerritorialWarComponent();
         }
-
+        if (this.town.hasNation() && NationMetaController.isOfficialNation(this.town.getNationOrNull(), "major")) {
+            this.addMajorTownComponent();
+        } else if (this.town.hasNation() && NationMetaController.isOfficialNation(this.town.getNationOrNull(), "minor")) {
+            this.addMinorTownComponent();
+        }
         this.screen.removeStatusComponent("neutralityCost");
     }
 
-    private void addOfficialTownComponent() {
+    private void addTerritorialWarComponent() {
+        Component territorialWarComponent = (TextComponent)this.miniMessage.deserialize(this.unitedUpkeep.getConfig().getString("messages.territorialWars"));
         Component subtitle = this.screen.getComponentOrNull("subtitle");
         if (subtitle == null) {
             subtitle = this.screen.getComponentOrNull("title");
-            this.screen.replaceComponent("title", subtitle.append(Component.newline().append(this.getOfficialTownComponent())));
+            this.screen.replaceComponent("title", subtitle.append(Component.newline().append(territorialWarComponent)));
         } else {
-            this.screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(this.getOfficialTownComponent())));
+            this.screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(territorialWarComponent)));
         }
     }
 
-    private void addOfficialNationComponent() {
+    private void addMajorTownComponent() {
+        Component subtitle = this.screen.getComponentOrNull("subtitle");
+        if (subtitle == null) {
+            subtitle = this.screen.getComponentOrNull("title");
+            this.screen.replaceComponent("title", subtitle.append(Component.newline().append(this.getMajorTownComponent())));
+        } else {
+            this.screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(this.getMajorTownComponent())));
+        }
+    }
+
+    private void addMajorNationComponent() {
         Component subtitle = this.screen.getComponentOrNull("subtitle");
         if (subtitle == null) {
             subtitle = this.screen.getComponentOrNull("nation_title");
-            this.screen.replaceComponent("nation_title", subtitle.append(Component.newline().append(this.getOfficialNationComponent())));
+            this.screen.replaceComponent("nation_title", subtitle.append(Component.newline().append(this.getMajorNationComponent())));
         } else {
-            this.screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(this.getOfficialNationComponent())));
+            this.screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(this.getMajorNationComponent())));
+        }
+    }
+
+    private void addMinorTownComponent() {
+        Component subtitle = this.screen.getComponentOrNull("subtitle");
+        if (subtitle == null) {
+            subtitle = this.screen.getComponentOrNull("title");
+            this.screen.replaceComponent("title", subtitle.append(Component.newline().append(this.getMinorTownComponent())));
+        } else {
+            this.screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(this.getMinorTownComponent())));
+        }
+    }
+
+    private void addMinorNationComponent() {
+        Component subtitle = this.screen.getComponentOrNull("subtitle");
+        if (subtitle == null) {
+            subtitle = this.screen.getComponentOrNull("nation_title");
+            this.screen.replaceComponent("nation_title", subtitle.append(Component.newline().append(this.getMinorNationComponent())));
+        } else {
+            this.screen.replaceComponent("subtitle", subtitle.append(Component.newline().append(this.getMinorNationComponent())));
         }
     }
 
@@ -95,12 +133,22 @@ public class StatusScreenListener implements Listener {
         this.screen.replaceComponent("townblocks", townSizeComponent);
     }
 
-    private TextComponent getOfficialNationComponent() {
-        return (TextComponent)this.miniMessage.deserialize("                          <gradient:#D4AF37:#FCFDD3><bold>OFFICIAL NATION</gradient>");
+    private TextComponent getMajorNationComponent() {
+        return (TextComponent)this.miniMessage.deserialize(this.unitedUpkeep.getConfig().getString("titles-nation.major"));
     }
 
-    private TextComponent getOfficialTownComponent() {
-        return (TextComponent)this.miniMessage.deserialize("                  <gradient:#D4AF37:#FCFDD3><bold>OFFICIAL NATION MEMBER</gradient>");
+
+    private TextComponent getMajorTownComponent() {
+        return (TextComponent)this.miniMessage.deserialize(this.unitedUpkeep.getConfig().getString("titles-town.major"));
+    }
+
+    private TextComponent getMinorNationComponent() {
+        return (TextComponent)this.miniMessage.deserialize(this.unitedUpkeep.getConfig().getString("titles-nation.minor"));
+    }
+
+
+    private TextComponent getMinorTownComponent() {
+        return (TextComponent)this.miniMessage.deserialize(this.unitedUpkeep.getConfig().getString("titles-town.minor"));
     }
 
     private TextComponent getComponentWithAllDiscounts() {

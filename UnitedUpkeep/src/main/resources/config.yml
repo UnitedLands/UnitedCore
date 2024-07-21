@@ -15,3 +15,36 @@ nation: # Configurations are the same as explained above, but it applies for the
   riseAt: 20
   fallStep: 0.25
   fallAt: 2
+
+multiplier:
+  town:
+    major: 0.3
+    minor: 0.6
+    major-territorial-war: 0.2
+    minor-territorial-war: 0.5
+    territorial-war: 0.9
+  nation:
+    major: 0.3
+    minor: 0.6
+
+
+# Text Formatting for the plugin
+errors:
+  # User is not in a town and is trying to toggle territorial wars
+  noTown: "You must be in a town to use this command!"
+  # User is not the mayor of the town
+  notMayor: "You must be the mayor of the town to use this command!"
+  # The town that the user is trying to toggle territorial wars for is neutral
+  neutralTown: "You cannot toggle territorial wars for a neutral town!"
+
+titles-nation:
+  major: "                          <gradient:#D4AF37:#FCFDD3><bold>MAJOR NATION</gradient>"
+  minor: "                          <gradient:#757575:#D7D7D7><bold>MINOR NATION</gradient>"
+titles-town:
+  major: "                       <gradient:#D4AF37:#FCFDD3><bold>MAJOR NATION MEMBER</gradient>"
+  minor: "                       <gradient:#757575:#D7D7D7><bold>MINOR NATION MEMBER</gradient>"
+
+messages:
+  enabledTerritorial: "Territorial wars have been enabled for your town!"
+  disabledTerritorial: "Territorial wars have been disabled for your town!"
+  territorialWars: "<gold>.]|[.                          <red>(Territorial War)</red>                         .]|[.</gold>"
