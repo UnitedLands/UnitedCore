@@ -25,11 +25,6 @@ public class CalculationListener implements Listener {
         TownUpkeepCalculator calculator = new TownUpkeepCalculator(this.unitedUpkeep, town);
         double bonusDiscount = calculator.calculateBonusBlockDiscount();
         double upkeep = bonusDiscount;
-        System.out.println("upkeep currently before is " + event.getUpkeep());
-        System.out.println("total amount of plots/blocks" + event.getTown().getTownBlocks().size());
-        System.out.println("total amount of plots minus bonus" + (event.getTown().getTownBlocks().size() - event.getTown().getBonusBlocks()));
-        System.out.println("amount of bonus blocks before :" + event.getTown().getBonusBlocks());
-        System.out.println("bonus discount: " + bonusDiscount);
         if (upkeep <= 0.0) {
             upkeep = 0.0;
         }
@@ -41,10 +36,6 @@ public class CalculationListener implements Listener {
 
 
         event.setUpkeep(upkeep);
-
-        System.out.println("upkeep currently is now " + event.getUpkeep());
-        System.out.println("amount of bonus blocks after :" + event.getTown().getBonusBlocks());
-        System.out.println("bonus blocks cost: " + event.getTown().getBonusBlocks());
     }
 
     @EventHandler
