@@ -1,6 +1,6 @@
 package org.unitedlands.upkeep.listeners;
 
-import com.palmergames.bukkit.towny.event.NationUpkeepCalculationEvent; 
+import com.palmergames.bukkit.towny.event.NationUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.event.TownUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
@@ -21,9 +21,15 @@ public class CalculationListener implements Listener {
     @EventHandler
     public void calculateTownUpkeepEvent(TownUpkeepCalculationEvent event) {
         Town town = event.getTown();
+
         TownUpkeepCalculator calculator = new TownUpkeepCalculator(this.unitedUpkeep, town);
         double bonusDiscount = calculator.calculateBonusBlockDiscount();
-        double upkeep = calculator.calculateNationDiscountedTownUpkeep() - bonusDiscount;
+        double upkeep = bonusDiscount;
+        System.out.println("upkeep currently before is " + event.getUpkeep());
+        System.out.println("total amount of plots/blocks" + event.getTown().getTownBlocks().size());
+        System.out.println("total amount of plots minus bonus" + (event.getTown().getTownBlocks().size() - event.getTown().getBonusBlocks()));
+        System.out.println("amount of bonus blocks before :" + event.getTown().getBonusBlocks());
+        System.out.println("bonus discount: " + bonusDiscount);
         if (upkeep <= 0.0) {
             upkeep = 0.0;
         }
@@ -35,6 +41,10 @@ public class CalculationListener implements Listener {
 
 
         event.setUpkeep(upkeep);
+
+        System.out.println("upkeep currently is now " + event.getUpkeep());
+        System.out.println("amount of bonus blocks after :" + event.getTown().getBonusBlocks());
+        System.out.println("bonus blocks cost: " + event.getTown().getBonusBlocks());
     }
 
     @EventHandler
