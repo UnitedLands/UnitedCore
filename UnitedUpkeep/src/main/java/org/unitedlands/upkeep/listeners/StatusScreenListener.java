@@ -184,8 +184,8 @@ public class StatusScreenListener implements Listener {
             neutralityFee = this.getNeutralityFee();
         }
 
-        double upkeep = calculator.calculateTownUpkeep() + neutralityFee;
-        double discountedUpkeep = calculator.getDiscountedUpkeep() + neutralityFee;
+        double upkeep = calculator.townUpkeepWithoutBonusDiscount() + neutralityFee;
+        double discountedUpkeep = calculator.calculateTownUpkeep() + neutralityFee;
         return (TextComponent)((TextComponent)((TextComponent)Component.text("").append(Component.text("\nUpkeep: ", NamedTextColor.DARK_GREEN))).append(Component.text(upkeep, NamedTextColor.GRAY, new TextDecoration[]{TextDecoration.STRIKETHROUGH}))).append(Component.text(" " + discountedUpkeep + " Gold", NamedTextColor.RED));
     }
 
@@ -196,6 +196,6 @@ public class StatusScreenListener implements Listener {
 
     private double getBonusBlockDiscount() {
         TownUpkeepCalculator calculator = this.getTownUpkeepCalculator();
-        return calculator.calculateBonusBlockDiscount();
+        return calculator.townUpkeepWithoutBonusDiscount() - calculator.calculateBonusBlockDiscount();
     }
 }

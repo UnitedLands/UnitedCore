@@ -22,10 +22,27 @@ public class TownUpkeepCalculator {
         return this.addOfficialNationDiscountOrNone(upkeep);
     }
 
-    public double calculateTownUpkeep() {
-        double upkeepPerPlot = (double)this.getBaseTownUpkeepPrice() * this.getRiseMod() / this.getFallMod();
-        return Math.floor(upkeepPerPlot * (double) this.getTownPlotCount());
+    public double calculateTownUpkeep(){
+        double upkeepPerPlot = 0;
+        if(town.hasNation()){
+            upkeepPerPlot = (double)this.getBaseTownUpkeepPrice() * this.getRiseMod() / (this.getFallMod() + this.calculateNationDiscount());
+        }else{
+            upkeepPerPlot = (double)this.getBaseTownUpkeepPrice() * this.getRiseMod() / this.getFallMod();
+        }
+        int bonusBlocks = town.getBonusBlocks();
+
+        if(bonusBlocks >= this.getTownPlotCount()){
+            return this.unitedUpkeep.getConfig().getDouble("town.baseUpkeepPrice");
+        }else{
+            return addOfficialNationDiscountOrNone(Math.floor(upkeepPerPlot * ((double) this.getTownPlotCount() - town.getBonusBlocks())));
+        }
     }
+
+    public double townUpkeepWithoutBonusDiscount(){
+        double upkeepPerPlot = (double)this.getBaseTownUpkeepPrice() * this.getRiseMod() / this.getFallMod();
+            return Math.floor(upkeepPerPlot * ((double) this.getTownPlotCount()));
+        }
+
 
     private double addOfficialNationDiscountOrNone(double upkeep) {
         if(this.town.hasNation() && NationMetaController.isOfficialNation(this.town.getNationOrNull(), "minor")) {
@@ -45,14 +62,8 @@ public class TownUpkeepCalculator {
     }
 
     public double calculateBonusBlockDiscount() {
-        int totalBlocks = this.getTownPlotCount();
-        int bonusBlocks = this.town.getBonusBlocks();
-        double upkeepPerPlot = Math.floor(this.calculateTownUpkeep() / (double)totalBlocks);
-        if (bonusBlocks == 0) {
-            return 0.0;
-        } else {
-            return bonusBlocks >= totalBlocks ? this.calculateNationDiscountedTownUpkeep() : (double)bonusBlocks * upkeepPerPlot;
-        }
+        double upkeepPerPlot = Math.floor(this.calculateTownUpkeep());
+            return upkeepPerPlot;
     }
 
     private double getFallMod() {

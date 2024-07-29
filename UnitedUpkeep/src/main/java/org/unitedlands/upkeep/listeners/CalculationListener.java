@@ -1,6 +1,6 @@
 package org.unitedlands.upkeep.listeners;
 
-import com.palmergames.bukkit.towny.event.NationUpkeepCalculationEvent; 
+import com.palmergames.bukkit.towny.event.NationUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.event.TownUpkeepCalculationEvent;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
@@ -21,9 +21,10 @@ public class CalculationListener implements Listener {
     @EventHandler
     public void calculateTownUpkeepEvent(TownUpkeepCalculationEvent event) {
         Town town = event.getTown();
+
         TownUpkeepCalculator calculator = new TownUpkeepCalculator(this.unitedUpkeep, town);
         double bonusDiscount = calculator.calculateBonusBlockDiscount();
-        double upkeep = calculator.calculateNationDiscountedTownUpkeep() - bonusDiscount;
+        double upkeep = bonusDiscount;
         if (upkeep <= 0.0) {
             upkeep = 0.0;
         }
