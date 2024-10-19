@@ -514,12 +514,10 @@ archaeologist-loot:
       - MYCELIUM
 mineral-finder-loot:
   maronine:
-    material: GOLD_NUGGET
-    name: "<!i><color:#800000>Maronine Nugget"
+    material: PAPER
+    name: "&eMaronine Nugget"
     min: 1
     max: 1
-    lore:
-      - "<!i><grey>Can be used to craft <color:#800000>Maronine Ingots"
     chance: 0.005
     required-level: 1
     level-modifier: 0.0
@@ -528,15 +526,13 @@ mineral-finder-loot:
       - SOUL_SAND
       - SOUL_SOIL
   litnium:
-    material: GOLD_NUGGET
+    material: PAPER
     chance: 0.005
     min: 1
     max: 2
     required-level: 2
     custom-model-data: 2
-    name: "<!i><color:#14C183>Litnium Nugget"
-    lore:
-      - "<!i><grey>Can be used to craft <color:#14C183>Litnium Ingots"
+    name: "&eLitnium Nugget"
     level-modifier: 0.0
     blocks:
       - DIRT
@@ -552,18 +548,14 @@ mineral-finder-loot:
     max: 1
     required-level: 3
     custom-model-data: 3
-    name: "<!i><color:#C0A6D3>Cinnarite Nugget"
-    lore:
-      - "<!i><grey>Can be used to craft <color:#C0A6D3>Cinnarite Ingots"
+    name: "&eCinnarite Nugget"
     level-modifier: 0.0
     blocks:
       - SAND
       - RED_SAND
 rare-catch-loot:
   riverfish:
-    name: "<!i><aqua>Riverfish"
-    lore:
-      - "<!i><grey>Can be used to extract a <yellow>rare oil"
+    name: "&eRiverfish"
     material: COD
     chance: 0.05
     min: 1
@@ -574,9 +566,7 @@ rare-catch-loot:
     biomes:
       - RIVER
   shimmerfish:
-    name: "<!i><aqua>Shimmerfish"
-    lore:
-      - "<!i><grey>Can be used to extract a <yellow>rare oil"
+    name: "&eShimmerfish"
     material: COD
     chance: 0.05
     min: 1
@@ -587,9 +577,7 @@ rare-catch-loot:
     biomes:
       - WARM_OCEAN
   icefish:
-    name: "<!i><aqua>Icefish"
-    lore:
-      - "<!i><grey>Can be used to extract a <yellow>rare oil"
+    name: "&eIcefish"
     material: COD
     chance: 0.05
     min: 1

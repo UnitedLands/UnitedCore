@@ -4,12 +4,12 @@ import com.destroystokyo.paper.ParticleBuilder;
 import com.gamingmesh.jobs.Jobs;
 import com.gamingmesh.jobs.actions.BlockActionInfo;
 import com.gamingmesh.jobs.container.ActionType;
-import com.songoda.ultimatetimber.UltimateTimber;
-import com.songoda.ultimatetimber.events.TreeFallEvent;
-import com.songoda.ultimatetimber.manager.SaplingManager;
-import com.songoda.ultimatetimber.tree.DetectedTree;
-import com.songoda.ultimatetimber.tree.ITreeBlock;
-import com.songoda.ultimatetimber.tree.TreeDefinition;
+import com.craftaro.ultimatetimber.UltimateTimber;
+import com.craftaro.ultimatetimber.events.TreeFallEvent;
+import com.craftaro.ultimatetimber.manager.SaplingManager;
+import com.craftaro.ultimatetimber.tree.DetectedTree;
+import com.craftaro.ultimatetimber.tree.ITreeBlock;
+import com.craftaro.ultimatetimber.tree.TreeDefinition;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -47,7 +47,7 @@ public class WoodcutterAbilities implements Listener {
     @EventHandler
     public void onAxeInteract(PlayerInteractEvent event) {
         player = event.getPlayer();
-        if (!isWoodCutter()) {
+        if (isWoodCutter()) {
             return;
         }
         ActiveSkill treeFeller = new ActiveSkill(player, SkillType.TREE_FELLER, cooldowns, durations);
@@ -60,7 +60,7 @@ public class WoodcutterAbilities implements Listener {
     @EventHandler
     public void onTreeFell(TreeFallEvent event) {
         player = event.getPlayer();
-        if (!isWoodCutter()) {
+        if (isWoodCutter()) {
             event.setCancelled(true);
             return;
         }
@@ -104,7 +104,7 @@ public class WoodcutterAbilities implements Listener {
     @EventHandler
     public void onPreciseCut(BlockBreakEvent event) {
         player = event.getPlayer();
-        if (!isWoodCutter()) {
+        if (isWoodCutter()) {
             return;
         }
         Skill precisionCutting = new Skill(player, SkillType.PRECISION_CUTTING);
@@ -125,7 +125,7 @@ public class WoodcutterAbilities implements Listener {
     }
 
     private boolean isWoodCutter() {
-        return isInJob(player, "Woodcutter");
+        return !isInJob(player, "Woodcutter");
     }
 
 }

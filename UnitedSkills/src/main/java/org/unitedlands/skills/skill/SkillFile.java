@@ -34,14 +34,6 @@ public class SkillFile {
         }
     }
 
-    public void saveConfig(FileConfiguration skillsConfig) {
-        try {
-            skillsConfig.save(getSkillsFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public  FileConfiguration getSkillsConfig() {
         File skillsFile = getSkillsFile();
         skillsConfig = new YamlConfiguration();

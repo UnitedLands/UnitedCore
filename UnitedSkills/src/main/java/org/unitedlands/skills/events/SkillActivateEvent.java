@@ -18,10 +18,6 @@ public class SkillActivateEvent extends Event implements Cancellable {
         this.skill = skill;
     }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
     @Override
     public @NotNull HandlerList getHandlers() {
         return handlers;

@@ -9,11 +9,11 @@ import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.UnitedSkills;
 import org.unitedlands.skills.skill.SkillFile;
 
-public class UnitedSkillsComand implements CommandExecutor {
+public class UnitedSkillsCommand implements CommandExecutor {
 
     private final UnitedSkills unitedSkills;
 
-    public UnitedSkillsComand(UnitedSkills unitedSkills) {
+    public UnitedSkillsCommand(UnitedSkills unitedSkills) {
         this.unitedSkills = unitedSkills;
     }
 

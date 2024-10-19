@@ -78,7 +78,7 @@ public class UnitedSkillsPlaceholders extends PlaceholderExpansion {
                 }
                 case "is-active-skill" -> {
                     FileConfiguration skillConfig = getSkillsConfig();
-                    // if the cooldown is not 0, that means it exists and its an active skill
+                    // if the cooldown is not 0, that means it exists and it's an active skill
                     return String.valueOf(skillConfig.getInt("skills." + args[1] + ".1." + "cooldown") != 0);
                 }
                 // %unitedskills_value_<skill>_<level>_<data-point>%

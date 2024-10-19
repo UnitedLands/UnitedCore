@@ -48,7 +48,7 @@ public class SafariNetListener implements Listener {
             // They can use the net if it's a passive entity, they're a farmer, and they have the skill.
             return true;
         }
-        // It wasn't a passive mob, so we're double checking to see if its a valid hostile mob
+        // It wasn't a passive mob, so we're double-checking to see if it's a valid hostile mob
         if (isInList(entity, "trafficker-mobs")) {
             // They aren't a hunter, return an error message
             if (!isInJob(player, "Hunter")) {

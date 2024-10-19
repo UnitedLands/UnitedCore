@@ -212,7 +212,7 @@ public class BiomeKit implements Listener {
             return false;
         }
         // Only compare the first line in the list, since the others are prone to change.
-        return targetLore.get(0).equals(actualLore.get(0));
+        return targetLore.getFirst().equals(actualLore.getFirst());
     }
 
     private void setChunkBiome(Chunk chunk) {
