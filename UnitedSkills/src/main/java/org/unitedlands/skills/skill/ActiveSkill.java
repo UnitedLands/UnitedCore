@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.unitedlands.skills.UnitedSkills;
 import org.unitedlands.skills.events.SkillActivateEvent;
 
 import java.util.ArrayList;
@@ -96,11 +95,11 @@ public class ActiveSkill extends Skill {
 
     private boolean hasFullMasterworkSet() {
         ArrayList<ItemStack> masterworkSet = new ArrayList<>();
-        masterworkSet.add(CustomStack.getInstance("unitedlands:masterwork_sword").getItemStack());
-        masterworkSet.add(CustomStack.getInstance("unitedlands:masterwork_pickaxe").getItemStack());
-        masterworkSet.add(CustomStack.getInstance("unitedlands:masterwork_axe").getItemStack());
-        masterworkSet.add(CustomStack.getInstance("unitedlands:masterwork_shovel").getItemStack());
-        masterworkSet.add(CustomStack.getInstance("unitedlands:masterwork_hoe").getItemStack());
+        masterworkSet.add(CustomStack.getInstance("masterwork:masterwork_sword").getItemStack());
+        masterworkSet.add(CustomStack.getInstance("masterwork:masterwork_pickaxe").getItemStack());
+        masterworkSet.add(CustomStack.getInstance("masterwork:masterwork_axe").getItemStack());
+        masterworkSet.add(CustomStack.getInstance("masterwork:masterwork_shovel").getItemStack());
+        masterworkSet.add(CustomStack.getInstance("masterwork:masterwork_hoe").getItemStack());
 
         List<@Nullable ItemStack> inventoryContents = Arrays.stream(player.getInventory().getContents()).toList();
         return new HashSet<>(inventoryContents).containsAll(masterworkSet);

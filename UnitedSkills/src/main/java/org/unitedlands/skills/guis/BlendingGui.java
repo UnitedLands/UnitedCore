@@ -27,6 +27,7 @@ import org.unitedlands.skills.skill.SkillType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BlendingGui {
     private final UnitedSkills unitedSkills;
@@ -46,9 +47,7 @@ public class BlendingGui {
                         NamedTextColor.RED, TextDecoration.BOLD))
                 .rows(4)
                 .create();
-        gui.setOpenGuiAction(event -> {
-            playBrewingSound();
-        });
+        gui.setOpenGuiAction(event -> playBrewingSound());
         gui.setCloseGuiAction(event -> {
             Inventory gui = event.getInventory();
             ItemStack firstItem = gui.getItem(11);
@@ -174,11 +173,11 @@ public class BlendingGui {
     }
 
     private boolean hasSplashPotions() {
-        return gui.getInventory().getItem(11).getType().equals(Material.SPLASH_POTION);
+        return Objects.requireNonNull(gui.getInventory().getItem(11)).getType().equals(Material.SPLASH_POTION);
     }
 
     private boolean hasLingeringPotions() {
-        return gui.getInventory().getItem(11).getType().equals(Material.LINGERING_POTION);
+        return Objects.requireNonNull(gui.getInventory().getItem(11)).getType().equals(Material.LINGERING_POTION);
     }
 
     private void doubleBlendPotion(PotionMeta potionMeta, PotionMeta otherPotionMeta, PotionMeta blendedPotionMeta) {
@@ -208,9 +207,10 @@ public class BlendingGui {
         PotionData potionData = potionMeta.getBasePotionData();
         if (potionMeta.hasCustomEffects()) {
             if (potionMeta.getCustomEffects().size() == 1) {
-                return potionMeta.getCustomEffects().get(0);
+                return potionMeta.getCustomEffects().getFirst();
             }
         }
+        assert potionData.getType().getEffectType() != null;
         return potionData.getType().getEffectType().createEffect(getNewDuration(potionData), getAmplifier(potionData));
     }
 
@@ -299,7 +299,7 @@ public class BlendingGui {
                 return Color.fromRGB(255, 255, 255);
             }
         }
-        return potionMeta.getBasePotionData().getType().getEffectType().getColor();
+        return Objects.requireNonNull(potionMeta.getBasePotionData().getType().getEffectType()).getColor();
     }
 
     private boolean hasCustomEffects() {
@@ -311,7 +311,7 @@ public class BlendingGui {
     }
 
     private boolean hasOneDoublePotion() {
-        return getPotionMeta(potion).getCustomEffects().size() >= 1 || getPotionMeta(otherPotion).getCustomEffects().size() >= 1;
+        return !getPotionMeta(potion).getCustomEffects().isEmpty() || !getPotionMeta(otherPotion).getCustomEffects().isEmpty();
     }
 
     private int getExtraEffects() {
@@ -339,14 +339,10 @@ public class BlendingGui {
     private void addGuiPattern() {
         GuiItem redGlass = ItemBuilder.from(Material.RED_STAINED_GLASS_PANE)
                 .name(Component.text(" "))
-                .asGuiItem(event -> {
-                    event.setCancelled(true);
-                });
+                .asGuiItem(event -> event.setCancelled(true));
         GuiItem whiteGlass = ItemBuilder.from(Material.WHITE_STAINED_GLASS_PANE)
                 .name(Component.text(" "))
-                .asGuiItem(event -> {
-                    event.setCancelled(true);
-                });
+                .asGuiItem(event -> event.setCancelled(true));
         List<GuiItem> glassList = new ArrayList<>();
         glassList.add(redGlass);
         glassList.add(whiteGlass);

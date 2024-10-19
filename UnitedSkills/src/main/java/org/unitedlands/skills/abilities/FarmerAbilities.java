@@ -39,6 +39,7 @@ import org.unitedlands.skills.skill.SkillType;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.unitedlands.skills.Utils.canActivate;
@@ -58,7 +59,7 @@ public class FarmerAbilities implements Listener {
     @EventHandler
     public void onGreenThumbActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
-        if (!isFarmer()) {
+        if (isFarmer()) {
             return;
         }
         ActiveSkill skill = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
@@ -70,7 +71,7 @@ public class FarmerAbilities implements Listener {
     @EventHandler
     public void onCropPlant(BlockPlaceEvent event) {
         player = event.getPlayer();
-        if (!isFarmer()) {
+        if (isFarmer()) {
             return;
         }
         Skill fertiliser = new Skill(player, SkillType.FERTILISER);
@@ -78,7 +79,7 @@ public class FarmerAbilities implements Listener {
             return;
         }
         Block block = event.getBlock();
-        if (!isCrop(block.getType())) {
+        if (isCrop(block.getType())) {
             return;
         }
         Ageable crop = (Ageable) block.getBlockData();
@@ -110,7 +111,7 @@ public class FarmerAbilities implements Listener {
     @EventHandler
     public void onEntityInteract(PlayerInteractAtEntityEvent event) {
         player = event.getPlayer();
-        if (!isFarmer()) {
+        if (isFarmer()) {
             return;
         }
         Skill skill = new Skill(player, SkillType.FUNGAL);
@@ -139,7 +140,7 @@ public class FarmerAbilities implements Listener {
     @EventHandler
     public void onBlockInteract(PlayerInteractEvent event) {
         player = event.getPlayer();
-        if (!isFarmer()) {
+        if (isFarmer()) {
             return;
         }
         Skill fungal = new Skill(player, SkillType.FUNGAL);
@@ -195,10 +196,7 @@ public class FarmerAbilities implements Listener {
         final Material handItemType = handItem.getType();
         if (offhandItemType.equals(Material.RED_MUSHROOM) && handItemType.equals(Material.BROWN_MUSHROOM)) {
             return true;
-        } else if (offhandItemType.equals(Material.BROWN_MUSHROOM) && handItemType.equals(Material.RED_MUSHROOM)) {
-            return true;
-        }
-        return false;
+        } else return offhandItemType.equals(Material.BROWN_MUSHROOM) && handItemType.equals(Material.RED_MUSHROOM);
     }
 
     private boolean isInOwnTownOrWilderness() {
@@ -207,9 +205,10 @@ public class FarmerAbilities implements Listener {
         if (towny.isWilderness(location)) {
             return true;
         }
-        Town town = towny.getTownBlock(location).getTownOrNull();
+        Town town = Objects.requireNonNull(towny.getTownBlock(location)).getTownOrNull();
         TextComponent canOnlyUseInTown = Component.text("You can only use this skill in your town!", NamedTextColor.RED);
 
+        assert resident != null;
         if (resident.getTownOrNull() == null) {
             player.sendActionBar(canOnlyUseInTown);
             return false;
@@ -227,7 +226,7 @@ public class FarmerAbilities implements Listener {
         if (!isPlantFood(item.getType())) {
             return;
         }
-        if (!isFarmer()) {
+        if (isFarmer()) {
             return;
         }
         Skill vegetarian = new Skill(player, SkillType.VEGETARIAN);
@@ -245,10 +244,10 @@ public class FarmerAbilities implements Listener {
     public void onCropBreak(BlockBreakEvent event) {
         Material material = event.getBlock().getType();
         player = event.getPlayer();
-        if (!isCrop(material)) {
+        if (isCrop(material)) {
             return;
         }
-        if (!isFarmer()) {
+        if (isFarmer()) {
             return;
         }
         ActiveSkill greenThumb = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
@@ -287,17 +286,17 @@ public class FarmerAbilities implements Listener {
     public void onCropDrop(BlockDropItemEvent event) {
         @NotNull Material material = event.getBlockState().getType();
         player = event.getPlayer();
-        if (!isCrop(material)) {
+        if (isCrop(material)) {
             return;
         }
-        if (!isFarmer()) {
+        if (isFarmer()) {
             return;
         }
 
         ActiveSkill greenThumb = new ActiveSkill(player, SkillType.GREEN_THUMB, cooldowns, durations);
 
         if (greenThumb.isSuccessful() && greenThumb.isActive()) {
-            if (!isMaxAge(event.getBlock())) {
+            if (isMaxAge(event.getBlock())) {
                 return;
             }
             for (Item item : event.getItems()) {
@@ -311,7 +310,7 @@ public class FarmerAbilities implements Listener {
                 if (item.getName().contains("Seeds")) {
                     return;
                 }
-                if (!isMaxAge(event.getBlock())) {
+                if (isMaxAge(event.getBlock())) {
                     return;
                 }
                 Utils.multiplyItem(player, item.getItemStack(), 1);
@@ -322,18 +321,18 @@ public class FarmerAbilities implements Listener {
     private boolean isMaxAge(@NotNull Block block) {
         BlockData dataPlant = block.getBlockData();
         if (!(dataPlant instanceof Ageable plant)) {
-            return false;
+            return true;
         }
-        if (!isCrop(block.getType())) {
-            return false;
+        if (isCrop(block.getType())) {
+            return true;
         }
-        return plant.getAge() == plant.getMaximumAge();
+        return plant.getAge() != plant.getMaximumAge();
     }
 
     private boolean isCrop(@NotNull Material material) {
         FileConfiguration configuration = getConfig();
         List<String> cropNames = configuration.getStringList("crop-names");
-        return cropNames.contains(material.toString());
+        return !cropNames.contains(material.toString());
     }
 
     private boolean isPlantFood(Material material) {
@@ -342,7 +341,7 @@ public class FarmerAbilities implements Listener {
     }
 
     private boolean isFarmer() {
-        return Utils.isInJob(player, "Farmer");
+        return !Utils.isInJob(player, "Farmer");
     }
 
     @NotNull

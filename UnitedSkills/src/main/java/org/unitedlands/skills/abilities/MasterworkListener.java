@@ -47,12 +47,8 @@ public class MasterworkListener implements Listener {
             if (customStack.getId().contains("masterwork"))
                 continue;
             switch (customStack.getItemStack().getType()) {
-                case LEATHER_HELMET, LEATHER_BOOTS ->  {
-                    modifier += getModifier("tips");
-                }
-                case LEATHER_CHESTPLATE, LEATHER_LEGGINGS -> {
-                    modifier += getModifier("middle");
-                }
+                case LEATHER_HELMET, LEATHER_BOOTS -> modifier += getModifier("tips");
+                case LEATHER_CHESTPLATE, LEATHER_LEGGINGS -> modifier += getModifier("middle");
             }
         }
         return modifier;

@@ -12,10 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.skill.Skill;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class LootTable {
     private final String name;
@@ -33,9 +30,11 @@ public class LootTable {
      */
     public ItemStack getRandomItem() {
         ConfigurationSection lootSection = unitedSkills.getConfig().getConfigurationSection(name);
+        assert lootSection != null;
         Set<String> itemIDS = lootSection.getKeys(false);
         for (String itemID : itemIDS) {
             ConfigurationSection itemSection = lootSection.getConfigurationSection(itemID);
+            assert itemSection != null;
             if (isSuccessful(itemSection)) {
                 return generateItem(itemSection);
             }
@@ -49,9 +48,11 @@ public class LootTable {
      */
     public ItemStack getRandomItem(Biome biome) {
         ConfigurationSection lootSection = unitedSkills.getConfig().getConfigurationSection(name);
+        assert lootSection != null;
         Set<String> itemIDS = lootSection.getKeys(false);
         for (String itemID : itemIDS) {
             ConfigurationSection itemSection = lootSection.getConfigurationSection(itemID);
+            assert itemSection != null;
             @NotNull List<String> itemBiomes = itemSection.getStringList("biomes");
             if (!itemBiomes.contains(biome.name())) {
                 continue;
@@ -70,9 +71,11 @@ public class LootTable {
      */
     public ItemStack getRandomItem(Block block) {
         ConfigurationSection lootSection = unitedSkills.getConfig().getConfigurationSection(name);
+        assert lootSection != null;
         Set<String> itemIDS = lootSection.getKeys(false);
         for (String itemID : itemIDS) {
             ConfigurationSection itemSection = lootSection.getConfigurationSection(itemID);
+            assert itemSection != null;
             if (!itemSection.getStringList("blocks").contains(block.getType().toString())) {
                 continue;
             }
@@ -95,7 +98,7 @@ public class LootTable {
     private ItemStack generateItem(ConfigurationSection itemSection) {
         int amount = getAmount(itemSection);
 
-        Material itemMaterial = Material.getMaterial(itemSection.getString("material"));
+        Material itemMaterial = Material.getMaterial(Objects.requireNonNull(itemSection.getString("material")));
         if (!itemSection.getStringList("materials").isEmpty()) {
             itemMaterial = getRandomMaterial(itemSection);
         }

@@ -1,8 +1,6 @@
 package org.unitedlands.skills.abilities;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import com.gamingmesh.jobs.Jobs;
-import com.gamingmesh.jobs.container.JobsPlayer;
 import com.gamingmesh.jobs.container.blockOwnerShip.BlockOwnerShip;
 import com.gamingmesh.jobs.container.blockOwnerShip.BlockTypes;
 import dev.lone.itemsadder.api.CustomStack;
@@ -49,6 +47,7 @@ import org.unitedlands.skills.skill.SkillType;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.unitedlands.skills.Utils.*;
@@ -69,7 +68,7 @@ public class BrewerAbilities implements Listener {
             return;
         }
         player = (Player) event.getEntity().getShooter();
-        if (!isBrewer()) {
+        if (isBrewer()) {
             return;
         }
         Skill splashBoost = new Skill(player, SkillType.SPLASH_BOOST);
@@ -82,8 +81,13 @@ public class BrewerAbilities implements Listener {
         if (fortification.isActive()) {
             PotionData basePotionData = cloud.getBasePotionData();
             PotionMeta potionMeta = event.getEntity().getPotionMeta();
-            PotionEffect amplifiedEffect = basePotionData.getType().getEffectType().createEffect(getPotionDuration(basePotionData), getAmplifier(potionMeta));
-            cloud.addCustomEffect(amplifiedEffect, true);
+            PotionEffect amplifiedEffect = null;
+            if (basePotionData.getType().getEffectType() != null) {
+                amplifiedEffect = basePotionData.getType().getEffectType().createEffect(getPotionDuration(basePotionData), getAmplifier(potionMeta));
+            }
+            if (amplifiedEffect != null) {
+                cloud.addCustomEffect(amplifiedEffect, true);
+            }
         }
     }
 
@@ -93,7 +97,7 @@ public class BrewerAbilities implements Listener {
             return;
         }
         player = (Player) event.getEntity().getShooter();
-        if (!isBrewer()) {
+        if (isBrewer()) {
             return;
         }
         Skill splashBoost = new Skill(player, SkillType.SPLASH_BOOST);
@@ -139,7 +143,7 @@ public class BrewerAbilities implements Listener {
             return;
         }
         player = (Player) entity;
-        if (!isBrewer()) {
+        if (isBrewer()) {
             return;
         }
         if (effect == null) {
@@ -159,7 +163,7 @@ public class BrewerAbilities implements Listener {
     @EventHandler
     public void onFortificationActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
-        if (!isBrewer()) {
+        if (isBrewer()) {
             return;
         }
         ActiveSkill fortification = new ActiveSkill(player, SkillType.FORTIFICATION, cooldowns, durations);
@@ -171,7 +175,7 @@ public class BrewerAbilities implements Listener {
     @EventHandler
     public void onItemConsume(PlayerItemConsumeEvent event) {
         player = event.getPlayer();
-        if (!isBrewer()) {
+        if (isBrewer()) {
             return;
         }
 
@@ -258,27 +262,24 @@ public class BrewerAbilities implements Listener {
             return;
         }
         player = (Player) event.getWhoClicked();
-        if (!isBrewer()) {
+        if (isBrewer()) {
             return;
         }
         Skill modifiedHardware = new Skill(player, SkillType.MODIFIED_HARDWARE);
         if (modifiedHardware.getLevel() == 0) {
             return;
         }
-        Block brewingStandBlock = inventory.getLocation().getBlock();
+        Block brewingStandBlock = Objects.requireNonNull(inventory.getLocation()).getBlock();
         BrewingStand brewingStand = (BrewingStand) brewingStandBlock.getState(false);
         if (!ownsBrewingStand(brewingStandBlock)) {
             return;
         }
-        if (!canStartBrewing(brewingStand)) {
+        if (canStartBrewing(brewingStand)) {
             return;
         }
 
         unitedSkills.getServer().getScheduler().runTaskLater(unitedSkills, task -> {
-            if (!(brewingStand instanceof BrewingStand)) {
-                return;
-            }
-            if (!canStartBrewing(brewingStand)) {
+            if (canStartBrewing(brewingStand)) {
                 return;
             }
             if (brewingStand.getBrewingTime() == 0) {
@@ -323,10 +324,9 @@ public class BrewerAbilities implements Listener {
     }
 
     private boolean canStartBrewing(BrewingStand brewingStand) {
-        if (hasBottleOrPotion(brewingStand.getInventory())) return true;
-        if (hasBrewingItem(brewingStand.getInventory())) return true;
-        if (hasBlazePowder(brewingStand)) return true;
-        return false;
+        if (hasBottleOrPotion(brewingStand.getInventory())) return false;
+        if (hasBrewingItem(brewingStand.getInventory())) return false;
+        return !hasBlazePowder(brewingStand);
     }
 
     private boolean hasBottleOrPotion(Inventory inventory) {
@@ -365,11 +365,12 @@ public class BrewerAbilities implements Listener {
     private Player getBrewingStandOwner(Block block) {
         if (block.hasMetadata("jobsBrewingOwner")) {
             BlockOwnerShip blockOwner = getJobs().getBlockOwnerShip(BlockTypes.BREWING_STAND).orElse(null);
+            assert blockOwner != null;
             List<MetadataValue> data = blockOwner.getBlockMetadatas(block);
             if (data.isEmpty()) {
                 return null;
             }
-            MetadataValue value = data.get(0);
+            MetadataValue value = data.getFirst();
             String uuid = value.asString();
             Bukkit.getOfflinePlayer(UUID.fromString(uuid));
         }
@@ -379,11 +380,12 @@ public class BrewerAbilities implements Listener {
     private boolean ownsBrewingStand(Block block) {
         if (block.hasMetadata("jobsBrewingOwner")) {
             BlockOwnerShip blockOwner = getJobs().getBlockOwnerShip(BlockTypes.BREWING_STAND).orElse(null);
+            assert blockOwner != null;
             List<MetadataValue> data = blockOwner.getBlockMetadatas(block);
             if (data.isEmpty()) {
                 return false;
             }
-            MetadataValue value = data.get(0);
+            MetadataValue value = data.getFirst();
             String uuid = value.asString();
             return uuid.equals(player.getUniqueId().toString());
         }
@@ -396,7 +398,7 @@ public class BrewerAbilities implements Listener {
         if (!event.getInventory().getType().equals(InventoryType.BREWING)) {
             return;
         }
-        if (!isBrewer()) {
+        if (isBrewer()) {
             return;
         }
         if (player.isSneaking()) {
@@ -420,7 +422,7 @@ public class BrewerAbilities implements Listener {
                 return;
             }
             player = (Player) entity;
-            if (!isBrewer()) {
+            if (isBrewer()) {
                 return;
             }
 
@@ -512,10 +514,6 @@ public class BrewerAbilities implements Listener {
         return harmfulPotions.contains(effect.getType().getName());
     }
 
-    private JobsPlayer getJobsPlayer() {
-        return Jobs.getPlayerManager().getJobsPlayer(player);
-    }
-
     private int getAmplifier(PotionMeta potionMeta) {
         PotionData potionData = potionMeta.getBasePotionData();
         int amplifier = 0;
@@ -551,6 +549,6 @@ public class BrewerAbilities implements Listener {
     }
 
     private boolean isBrewer() {
-        return Utils.isInJob(player, "Brewer");
+        return !Utils.isInJob(player, "Brewer");
     }
 }

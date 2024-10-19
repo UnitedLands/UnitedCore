@@ -16,16 +16,15 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.unitedlands.skills.skill.ActiveSkill;
 
+import java.util.Objects;
+
 public class Utils {
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     @NotNull
     public static Component getMessage(String message) {
         String configMessage = getUnitedSkills().getConfig().getString("messages." + message);
-        if (configMessage == null) {
-            return miniMessage.deserialize("<red>Message <yellow>" + message + "<red> could not be found in the config file!");
-        }
-        return miniMessage.deserialize(configMessage);
+        return miniMessage.deserialize(Objects.requireNonNullElseGet(configMessage, () -> "<red>Message <yellow>" + message + "<red> could not be found in the config file!"));
     }
 
     public static UnitedSkills getUnitedSkills() {
@@ -79,8 +78,7 @@ public class Utils {
         Player player = event.getPlayer();
         if (!player.isSneaking()) return false;
         if (!event.getItem().getType().toString().contains(materialKeyword)) return false;
-        if (skill.getLevel() == 0) return false;
-        return true;
+        return skill.getLevel() != 0;
     }
 
     public static boolean isInJob(Player player, String jobName) {

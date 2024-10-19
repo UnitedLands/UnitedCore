@@ -34,10 +34,7 @@ import org.unitedlands.skills.skill.ActiveSkill;
 import org.unitedlands.skills.skill.Skill;
 import org.unitedlands.skills.skill.SkillType;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.unitedlands.skills.Utils.canActivate;
 
@@ -54,7 +51,7 @@ public class FishermanAbilities implements Listener {
     @EventHandler
     public void onRareCatchFish(PlayerFishEvent event) {
         player = event.getPlayer();
-        if (!isFisherman()) {
+        if (isFisherman()) {
             return;
         }
         Skill rareCatch = new Skill(player, SkillType.RARE_CATCH);
@@ -71,7 +68,7 @@ public class FishermanAbilities implements Listener {
     @EventHandler
     public void onTreasureHunterFish(PlayerFishEvent event) {
         player = event.getPlayer();
-        if (!isFisherman()) {
+        if (isFisherman()) {
             return;
         }
         Skill treasureHunter = new Skill(player, SkillType.TREASURE_HUNTER);
@@ -109,7 +106,7 @@ public class FishermanAbilities implements Listener {
         if (!player.isSwimming()) {
             return;
         }
-        if (!isFisherman()) {
+        if (isFisherman()) {
             return;
         }
         Skill swiftSwimmer = new Skill(player, SkillType.SWIFT_SWIMMER);
@@ -123,7 +120,7 @@ public class FishermanAbilities implements Listener {
     @EventHandler
     public void onAnglerFish(PlayerFishEvent event) {
         player = event.getPlayer();
-        if (!isFisherman()) {
+        if (isFisherman()) {
             return;
         }
         Skill angler = new Skill(player, SkillType.ANGLER);
@@ -147,7 +144,7 @@ public class FishermanAbilities implements Listener {
     @EventHandler
     public void onGrappleActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
-        if (!isFisherman()) {
+        if (isFisherman()) {
             return;
         }
         ActiveSkill grapple = new ActiveSkill(player, SkillType.GRAPPLE, cooldowns, durations);
@@ -159,7 +156,7 @@ public class FishermanAbilities implements Listener {
     @EventHandler
     public void onGrapple(PlayerFishEvent event) {
         player = event.getPlayer();
-        if (!isFisherman()) {
+        if (isFisherman()) {
             return;
         }
         ActiveSkill grapple = new ActiveSkill(player, SkillType.GRAPPLE, cooldowns, durations);
@@ -181,7 +178,7 @@ public class FishermanAbilities implements Listener {
         FishHook hook = event.getHook();
         if (hook.hasMetadata("stuckBlock")) {
             hook.removeMetadata("stuckBlock", unitedSkills);
-            hook.getVehicle().remove();
+            Objects.requireNonNull(hook.getVehicle()).remove();
             @NotNull Vector direction = hook.getLocation().toVector().subtract(player.getLocation().toVector()).normalize();
             player.setVelocity(direction.multiply(grapple.getLevel() * 0.8));
             return;
@@ -198,7 +195,7 @@ public class FishermanAbilities implements Listener {
 
     @EventHandler
     public void onHookStick(ProjectileHitEvent event) {
-        if (event.getEntity() instanceof FishHook fishHook && event.getEntity().getShooter() instanceof Player player) {
+        if ((event.getEntity() instanceof FishHook fishHook) && (event.getEntity().getShooter() instanceof Player player)) {
             this.player = player;
             ActiveSkill grapple = new ActiveSkill(player, SkillType.GRAPPLE, cooldowns, durations);
             if (!grapple.isActive()) {
@@ -218,12 +215,13 @@ public class FishermanAbilities implements Listener {
                 fishHook.setMetadata("stuckBlock", new FixedMetadataValue(unitedSkills, ""));
             }
         }
+
     }
 
     @EventHandler
     public void onHookedUse(PlayerFishEvent event) {
         player = event.getPlayer();
-        if (!isFisherman()) {
+        if (isFisherman()) {
             return;
         }
         Skill hooked = new Skill(player, SkillType.HOOKED);
@@ -289,7 +287,7 @@ public class FishermanAbilities implements Listener {
     @EventHandler
     public void onLuckyCatch(PlayerFishEvent event) {
         player = event.getPlayer();
-        if (!isFisherman()) {
+        if (isFisherman()) {
             return;
         }
 
@@ -317,7 +315,7 @@ public class FishermanAbilities implements Listener {
     @EventHandler
     public void onFishFoodEat(PlayerItemConsumeEvent event) {
         player = event.getPlayer();
-        if (!isFisherman()) {
+        if (isFisherman()) {
             return;
         }
         Skill pescatarian = new Skill(player, SkillType.PESCATARIAN);
@@ -343,6 +341,6 @@ public class FishermanAbilities implements Listener {
     }
 
     private boolean isFisherman() {
-        return Utils.isInJob(player, "Fisherman");
+        return !Utils.isInJob(player, "Fisherman");
     }
 }

@@ -8,12 +8,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.unitedlands.skills.abilities.*;
 import org.unitedlands.skills.commands.BlendCommand;
 import org.unitedlands.skills.commands.PointsCommand;
-import org.unitedlands.skills.commands.UnitedSkillsComand;
+import org.unitedlands.skills.commands.UnitedSkillsCommand;
 import org.unitedlands.skills.guis.BiomeKit;
 import org.unitedlands.skills.hooks.UnitedSkillsPlaceholders;
 import org.unitedlands.skills.points.JobsListener;
 import org.unitedlands.skills.safarinets.SafariNetListener;
 import org.unitedlands.skills.skill.SkillFile;
+
+import java.util.Objects;
 
 public final class UnitedSkills extends JavaPlugin {
     @Override
@@ -27,9 +29,9 @@ public final class UnitedSkills extends JavaPlugin {
     }
 
     private void registerCommands() {
-        getCommand("blend").setExecutor(new BlendCommand(this));
-        getCommand("unitedskills").setExecutor(new UnitedSkillsComand(this));
-        getCommand("points").setExecutor(new PointsCommand(this));
+        Objects.requireNonNull(getCommand("blend")).setExecutor(new BlendCommand(this));
+        Objects.requireNonNull(getCommand("unitedskills")).setExecutor(new UnitedSkillsCommand(this));
+        Objects.requireNonNull(getCommand("points")).setExecutor(new PointsCommand(this));
     }
 
     private void registerListeners() {

@@ -27,6 +27,7 @@ import org.unitedlands.skills.skill.SkillType;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.unitedlands.skills.Utils.canActivate;
@@ -47,7 +48,7 @@ public class DiggerAbilities implements Listener {
     public void onMineralFinderBreak(BlockBreakEvent event) {
         player = event.getPlayer();
         if (event.isCancelled()) return;
-        if (!isDigger()) {
+        if (isDigger()) {
             return;
         }
         Skill mineralFinder = new Skill(player, SkillType.MINERAL_FINDER);
@@ -70,7 +71,7 @@ public class DiggerAbilities implements Listener {
     public void onArchaeologistBlockBreak(BlockBreakEvent event) {
         player = event.getPlayer();
         if (event.isCancelled()) return;
-        if (!isDigger()) {
+        if (isDigger()) {
             return;
         }
         Skill archaeologist = new Skill(player, SkillType.ARCHAEOLOGIST);
@@ -92,7 +93,7 @@ public class DiggerAbilities implements Listener {
     @EventHandler
     public void onBlockDrop(BlockDropItemEvent event) {
         player = event.getPlayer();
-        if (!isDigger()) {
+        if (isDigger()) {
             return;
         }
         Skill excavator = new Skill(player, SkillType.EXCAVATOR);
@@ -102,7 +103,7 @@ public class DiggerAbilities implements Listener {
         if (excavator.isSuccessful()) {
             List<Item> items = event.getItems();
             for (Item item : items) {
-                if (unitedSkills.getConfig().getList("excavator-items").contains(item.getItemStack().getType().toString())) {
+                if (Objects.requireNonNull(unitedSkills.getConfig().getList("excavator-items")).contains(item.getItemStack().getType().toString())) {
                     Utils.multiplyItem(player, item.getItemStack(), 1);
                 }
             }
@@ -112,7 +113,7 @@ public class DiggerAbilities implements Listener {
     @EventHandler
     public void onTunnellerActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
-        if (!isDigger()) {
+        if (isDigger()) {
             return;
         }
         ActiveSkill tunneller = new ActiveSkill(player, SkillType.TUNNELLER, cooldowns, durations);
@@ -124,7 +125,7 @@ public class DiggerAbilities implements Listener {
     @EventHandler
     public void onRefinerActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
-        if (!isDigger()) {
+        if (isDigger()) {
             return;
         }
         ActiveSkill refiner = new ActiveSkill(player, SkillType.REFINER, cooldowns, durations);
@@ -136,7 +137,7 @@ public class DiggerAbilities implements Listener {
     @EventHandler
     public void onRefineBreak(BlockDropItemEvent event) {
         player = event.getPlayer();
-        if (!isDigger()) {
+        if (isDigger()) {
             return;
         }
         ActiveSkill refiner = new ActiveSkill(player, SkillType.REFINER, cooldowns, durations);
@@ -151,6 +152,7 @@ public class DiggerAbilities implements Listener {
             event.setCancelled(true);
         } else if (blockType.toString().contains("CONCRETE_POWDER") && level >= 2) {
             Material concreteMaterial = Material.getMaterial(blockType.toString().replace("_POWDER", ""));
+            assert concreteMaterial != null;
             block.getWorld().dropItem(block.getLocation(), new ItemStack(concreteMaterial));
             event.setCancelled(true);
         } else if (blockType.equals(Material.SAND) && level >= 1) {
@@ -163,7 +165,7 @@ public class DiggerAbilities implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onTunnelBreak(BlockBreakEvent event) {
         player = event.getPlayer();
-        if (!isDigger()) {
+        if (isDigger()) {
             return;
         }
         if (event.isCancelled()) {
@@ -204,7 +206,7 @@ public class DiggerAbilities implements Listener {
             }
             // Skip blocks that should not be mined
             if (blockAdd.equals(block)) continue;
-            // Skip any stuff that shovels wouldn't drop, and make sure the level is 1 (i.e can't break stone)
+            // Skip any stuff that shovels wouldn't drop, and make sure the level is 1 (i.e. can't break stone)
             if (blockAdd.getDrops(item).isEmpty()) continue;
             if (blockAdd.isLiquid()) continue;
 
@@ -250,6 +252,6 @@ public class DiggerAbilities implements Listener {
     }
 
     private boolean isDigger() {
-        return Utils.isInJob(player, "Digger");
+        return !Utils.isInJob(player, "Digger");
     }
 }

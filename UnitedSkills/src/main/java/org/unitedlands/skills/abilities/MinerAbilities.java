@@ -49,7 +49,7 @@ public class MinerAbilities implements Listener {
     @EventHandler
     public void onBlastMiningActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
-        if (!isMiner()) {
+        if (isMiner()) {
             return;
         }
         ActiveSkill blastMining = new ActiveSkill(player, SkillType.BLAST_MINING, cooldowns, durations);
@@ -61,7 +61,7 @@ public class MinerAbilities implements Listener {
     @EventHandler
     public void onFrenzyActivate(PlayerInteractEvent event) {
         player = event.getPlayer();
-        if (!isMiner()) {
+        if (isMiner()) {
             return;
         }
         ActiveSkill frenzy = new ActiveSkill(player, SkillType.FRENZY, cooldowns, durations);
@@ -77,7 +77,7 @@ public class MinerAbilities implements Listener {
     @EventHandler
     public void onBlockDrop(BlockDropItemEvent event) {
         player = event.getPlayer();
-        if (!isMiner()) {
+        if (isMiner()) {
             return;
         }
 
@@ -117,7 +117,7 @@ public class MinerAbilities implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         player = event.getPlayer();
-        if (!isMiner()) {
+        if (isMiner()) {
             return;
         }
         Block block = event.getBlock();
@@ -162,7 +162,7 @@ public class MinerAbilities implements Listener {
         if (!(event.getCause().equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION)
                 || event.getCause().equals(EntityDamageEvent.DamageCause.BLOCK_EXPLOSION))) return;
         player = (Player) event.getEntity();
-        if (!isMiner()) {
+        if (isMiner()) {
             return;
         }
         Skill shellShocked = new Skill(player, SkillType.SHELL_SHOCKED);
@@ -186,7 +186,7 @@ public class MinerAbilities implements Listener {
             return;
         }
         player = (Player) tnt.getSource();
-        if (!isMiner()) {
+        if (isMiner()) {
             return;
         }
         float power = getPyrotechnicsPower();
@@ -205,7 +205,7 @@ public class MinerAbilities implements Listener {
     }
 
     private boolean isMiner() {
-        return Utils.isInJob(player, "Miner");
+        return !Utils.isInJob(player, "Miner");
     }
 
 }
