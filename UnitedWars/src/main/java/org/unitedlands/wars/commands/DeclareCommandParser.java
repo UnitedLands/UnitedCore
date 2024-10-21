@@ -127,10 +127,13 @@ public class DeclareCommandParser {
             player.sendMessage(getMessage("invalid-nation-name"));
             return;
         }
-        if ((isOfficialNation(declaringNation) && !isOfficialNation(targetNation))) {
-            player.sendMessage(getMessage("cannot-declare-official-nation"));
-            return;
-        }
+
+        // Commented out to fix compilation error due to changed method arguments in UnitedUpkeep 2.3.1 
+
+        // if ((isOfficialNation(declaringNation) && !isOfficialNation(targetNation))) {
+        //     player.sendMessage(getMessage("cannot-declare-official-nation"));
+        //     return;
+        // }
 
         Confirmation.runOnAccept(() -> {
             if (invalidBook(WarType.NATIONWAR))

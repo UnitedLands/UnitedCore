@@ -12,13 +12,13 @@
     <modules>
         <module>UnitedChat</module>
         <module>UnitedPvP</module>
+        <module>UnitedSkills</module>
         <module>UnitedItems</module>
         <module>UnitedUpkeep</module>
+        <module>UnitedWars</module>
         <module>UnitedProtection</module>
-        <module>UnitedSkills</module>
         <module>UnitedTransport</module>
         <module>UnitedBrands</module>
-        <module>UnitedWars</module>
     </modules>
     <build>
         <plugins>
